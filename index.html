@@ -356,6 +356,46 @@ animation:bounce 1.4s infinite both;
 @keyframes bounce{0%,80%,100%{transform:scale(0)}40%{transform:scale(1)}}
 
 /* READING MODAL */
+/* IMMERSIVE READ */
+.modal.immersive-read{background:#050508;}
+.modal.immersive-read .rd-hdr{display:none;}
+.modal.immersive-read .rd-body{padding:30px 28px 140px;}
+.modal.immersive-read .rd-title{font-size:24px;text-align:center;margin-bottom:20px;}
+.modal.immersive-read .rd-meta{justify-content:center;}
+.modal.immersive-read .rd-content{font-size:18px;line-height:2.4;}
+.modal.immersive-read .ch-nav{justify-content:center;}
+.modal.immersive-read .cont-wrap{display:none!important;}
+.modal.immersive-read .rd-settings{display:none!important;}
+.immersive-read-bar{
+position:fixed;bottom:0;left:0;right:0;z-index:20;
+background:rgba(5,5,8,.95);backdrop-filter:blur(10px);
+padding:14px 20px;display:none;
+border-top:1px solid rgba(108,92,231,.2);
+flex-wrap:wrap;gap:10px;justify-content:center;align-items:center;
+}
+.modal.immersive-read .immersive-read-bar{display:flex;}
+.immersive-read-bar button{
+padding:8px 16px;border-radius:20px;border:1px solid var(--border);
+background:var(--card);color:var(--text);font-size:11px;cursor:pointer;
+transition:all .3s;
+}
+.immersive-read-bar button:active{transform:scale(.95);}
+.immersive-read-bar button.act{background:var(--accent);color:#fff;border-color:var(--accent);}
+.immersive-read-bar .speed-ctrl{
+display:flex;align-items:center;gap:8px;
+padding:6px 12px;background:var(--card);border-radius:20px;border:1px solid var(--border);
+}
+.immersive-read-bar .speed-ctrl span{font-size:10px;color:var(--text2);}
+.immersive-read-bar .speed-ctrl input{width:80px;accent-color:var(--accent);}
+.immersive-exit-float{
+position:fixed;top:20px;right:20px;z-index:100;
+padding:10px 18px;border-radius:25px;
+background:rgba(108,92,231,.3);border:1px solid var(--accent);
+color:#fff;font-size:12px;cursor:pointer;
+display:none;backdrop-filter:blur(8px);
+box-shadow:0 4px 15px rgba(0,0,0,.3);
+}
+.modal.immersive-read .immersive-exit-float{display:block;}
 .modal{
 display:none;position:fixed;inset:0;z-index:500;
 background:var(--bg);overflow-y:auto;
@@ -383,13 +423,20 @@ display:flex;align-items:center;gap:5px;background:none;
 border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:4px;
 }
 .rd-back svg{width:18px;height:18px;}
-.rd-acts{display:flex;gap:6px;}
+.rd-acts{
+display:flex;gap:6px;
+overflow-x:auto;
+flex-wrap:nowrap;
+-webkit-overflow-scrolling:touch;
+padding-bottom:2px;
+}
+.rd-acts::-webkit-scrollbar{display:none;}
 .rd-acts button{
+flex-shrink:0;
 padding:5px 10px;border-radius:9px;border:1px solid var(--border);
 background:var(--card);color:var(--text2);font-size:11px;cursor:pointer;
-transition:all .3s;
+transition:all .3s;white-space:nowrap;
 }
-.rd-acts button:active{transform:scale(.95);}
 .rd-body{padding:22px 20px 70px;position:relative;z-index:1;}
 .rd-title{font-size:20px;font-weight:800;line-height:1.4;margin-bottom:12px;}
 .rd-meta{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap;}
@@ -579,6 +626,38 @@ background-clip:text;
 .ucard-stat-label{font-size:9px;color:var(--text2);margin-top:2px;}
 /* SETTINGS */
 .set-sec{padding:14px 18px;}
+/* SETTINGS MODAL */
+.set-modal{
+display:none;position:fixed;inset:0;z-index:600;
+background:var(--bg);overflow-y:auto;
+}
+.set-modal.show{display:block;animation:slideUp .3s ease;}
+.set-modal-hdr{
+position:sticky;top:0;z-index:10;
+background:var(--bg);padding:14px 18px;
+display:flex;align-items:center;gap:10px;
+border-bottom:1px solid var(--border);
+}
+.set-modal-hdr button{
+background:none;border:none;color:var(--accent2);
+font-size:13px;cursor:pointer;padding:4px;
+display:flex;align-items:center;gap:5px;
+}
+.set-modal-hdr button svg{width:18px;height:18px;}
+.set-modal-hdr h2{font-size:16px;font-weight:700;flex:1;}
+.set-modal-body{padding:18px;}
+.set-entry{
+background:var(--card);border-radius:14px;padding:16px;
+border:1px solid var(--border);margin-bottom:12px;
+display:flex;justify-content:space-between;align-items:center;
+cursor:pointer;transition:all .3s;
+}
+.set-entry:active{transform:scale(.98);border-color:var(--accent);}
+.set-entry-left{display:flex;align-items:center;gap:12px;}
+.set-entry-icon{font-size:22px;}
+.set-entry-info h3{font-size:14px;font-weight:600;margin-bottom:2px;}
+.set-entry-info p{font-size:11px;color:var(--text2);}
+.set-entry-arrow{color:var(--text2);font-size:18px;}
 .set-grp{
 background:var(--card);border-radius:15px;
 border:1px solid var(--border);margin-bottom:13px;overflow:hidden;
@@ -832,6 +911,31 @@ transition:all .3s;
 .cr-new-bar button:active{transform:scale(.97);}
 
 /* EDITOR MODAL */
+/* IMMERSIVE MODE */
+.ed-modal.immersive{background:#0a0a0f;}
+.ed-modal.immersive .ed-hdr{display:none;}
+.ed-modal.immersive .ed-acts{display:none;}
+.ed-modal.immersive .ed-ch-bar{display:none;}
+.ed-modal.immersive .ed-footer{
+position:fixed;bottom:0;left:0;right:0;
+background:rgba(10,10,15,.9);backdrop-filter:blur(10px);
+border-top:1px solid rgba(108,92,231,.2);
+}
+.ed-modal.immersive .ed-body{padding:20px 24px 80px;}
+.ed-modal.immersive .ed-textarea{
+background:transparent;border:none;
+font-size:18px;line-height:2.2;
+min-height:calc(100vh - 100px);
+}
+.ed-modal.immersive .ed-textarea:focus{border:none;box-shadow:none;}
+.immersive-exit{
+position:fixed;top:16px;right:16px;z-index:100;
+padding:8px 14px;border-radius:20px;
+background:rgba(108,92,231,.2);border:1px solid var(--accent);
+color:var(--accent2);font-size:11px;cursor:pointer;
+display:none;
+}
+.ed-modal.immersive .immersive-exit{display:block;}
 .ed-modal{
 display:none;position:fixed;inset:0;z-index:510;
 background:var(--bg);overflow-y:auto;
@@ -1094,6 +1198,48 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 .rd-para{transition:background .3s;border-radius:4px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y;}
+/* TTS 语音朗读 */
+.tts-bar{
+position:fixed;bottom:60px;left:0;right:0;z-index:30;
+background:rgba(26,26,36,.95);backdrop-filter:blur(12px);
+padding:12px 18px;display:none;
+border-top:1px solid var(--border);
+flex-direction:column;gap:10px;
+}
+.tts-bar.show{display:flex;}
+.tts-bar-row{display:flex;align-items:center;gap:10px;}
+.tts-bar-btns{display:flex;gap:6px;}
+.tts-bar-btns button{
+padding:8px 14px;border-radius:10px;border:1px solid var(--border);
+background:var(--card);color:var(--text);font-size:11px;cursor:pointer;
+transition:all .3s;display:flex;align-items:center;gap:4px;
+}
+.tts-bar-btns button:active{transform:scale(.95);}
+.tts-bar-btns button.act{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tts-bar-progress{
+flex:1;height:4px;background:var(--border);border-radius:2px;overflow:hidden;
+}
+.tts-bar-progress-inner{
+height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));
+transition:width .3s;
+}
+.tts-bar-info{font-size:10px;color:var(--text2);white-space:nowrap;}
+.tts-settings{
+background:var(--card);border-radius:10px;padding:10px 12px;
+border:1px solid var(--border);display:none;
+}
+.tts-settings.show{display:block;}
+.tts-s-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.tts-s-row:last-child{margin-bottom:0;}
+.tts-s-label{font-size:10px;color:var(--text2);width:45px;flex-shrink:0;}
+.tts-s-row select{
+flex:1;padding:6px 10px;border-radius:8px;
+border:1px solid var(--border);background:var(--bg);
+color:var(--text);font-size:11px;outline:none;
+}
+.tts-s-row input[type=range]{flex:1;accent-color:var(--accent);}
+.tts-s-val{font-size:10px;color:var(--accent2);width:30px;text-align:right;}
+.tts-highlight{background:rgba(108,92,231,.25);border-radius:3px;}
 </style>
 </head>
 <body>
@@ -1115,7 +1261,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.4.0</div>
+<div class="splash-ver" id="splashVer">v2.5.0</div>
 </div>
 
 <!-- APP -->
@@ -1234,164 +1380,39 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </div>
 </div>
 <input type="file" id="avatarUp" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
-<div class="set-sec">
-
-<!-- API -->
-<div class="set-grp">
-<div class="set-grp-t exp" onclick="toggleGrp(this)">
-🔑 API设置
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+<div style="padding:14px 18px 8px"><h2 style="font-size:16px;font-weight:700">⚙️ 设置中心</h2></div>
+<div style="padding:0 18px 18px">
+<div class="set-entry" onclick="openSetModal('api')">
+<div class="set-entry-left"><span class="set-entry-icon">🔑</span><div class="set-entry-info"><h3>API设置</h3><p>配置接口地址、密钥、模型</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
-<div class="set-grp-c show">
-<div class="fg"><label class="fl">API地址 (Base URL)</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
-<div class="fg"><label class="fl">API密钥 (Key)</label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password';this.textContent=k.type==='password'?'👁':'🙈'" style="width:auto;padding:6px 10px;margin:0;font-size:14px">👁</button></div></div>
-<div class="fg"><label class="fl">模型名称</label> <div style="display:flex;gap:6px"> <input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"> <datalist id="modelSuggest"></datalist> <button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0;white-space:nowrap;font-size:11px">拉取模型</button> </div> </div>
-<div class="frow">
-<div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div>
-<div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div>
+<div class="set-entry" onclick="openSetModal('char')">
+<div class="set-entry-left"><span class="set-entry-icon">👤</span><div class="set-entry-info"><h3>人物设定</h3><p>创建和管理角色</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
-<div class="fg">
-<label class="fl">场景预设（点击自动调整Temperature）</label>
-<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
-<button class="tag" onclick="setTempPreset(0.5,'严谨')">📐 严谨叙事</button>
-<button class="tag" onclick="setTempPreset(0.7,'平衡')">⚖️ 平衡</button>
-<button class="tag" onclick="setTempPreset(0.9,'创意')">💡 创意发散</button>
-<button class="tag" onclick="setTempPreset(1.1,'狂野')">🔥 狂野实验</button>
+<div class="set-entry" onclick="openSetModal('world')">
+<div class="set-entry-left"><span class="set-entry-icon">🌍</span><div class="set-entry-info"><h3>世界观设定</h3><p>故事背景与规则</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
-<p style="font-size:9px;color:var(--text2);margin-top:4px">严谨：适合推理/悬疑，逻辑严密；创意：适合奇幻/脑洞，天马行空</p>
+<div class="set-entry" onclick="openSetModal('style')">
+<div class="set-entry-left"><span class="set-entry-icon">✒️</span><div class="set-entry-info"><h3>文风设置</h3><p>写作风格与语言</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
-<div class="fg" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
-<label class="fl" style="margin:0">流式输出（逐字显示）</label>
-<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleStreamSwitch(this)">
-<input type="checkbox" id="streamOn" checked style="display:none">
-<div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s;position:relative" id="streamTrack">
-<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="streamThumb"></div>
+<div class="set-entry" onclick="openSetModal('rule')">
+<div class="set-entry-left"><span class="set-entry-icon">📜</span><div class="set-entry-info"><h3>规则设置</h3><p>创作限制与要求</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
+<div class="set-entry" onclick="openSetModal('ban')">
+<div class="set-entry-left"><span class="set-entry-icon">🚫</span><div class="set-entry-info"><h3>禁用词设置</h3><p>AI避免使用的词汇</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
+<div class="set-entry" onclick="openSetModal('theme')">
+<div class="set-entry-left"><span class="set-entry-icon">🎨</span><div class="set-entry-info"><h3>页面美化</h3><p>主题、字体、背景</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
-<p style="font-size:9px;color:var(--text2);margin-top:2px">关闭后将一次性返回完整内容，适合不支持流式的API或网络不稳定时使用</p>
-<button class="btn-s" onclick="testApiConnection()" id="btnTestApi" style="margin-bottom:5px">🔗 测试连接</button>
-<button class="btn-p" onclick="saveApiPreset()">💾 保存为预设</button>
-<div class="plist" id="apiPL"></div>
-</div>
-</div>
-
-<!-- Characters -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-👤 人物设定
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="char-cards" id="charCards"></div>
-<button class="btn-s" onclick="addCharacter()" style="margin-top:10px">＋ 添加角色</button>
-<button class="btn-p" onclick="saveCharPreset()">💾 保存人物预设</button>
-<div class="plist" id="charPL"></div>
-</div>
-</div>
-
-<!-- World -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-🌍 世界观设定
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="fg"><label class="fl">世界观 / 背景设定</label><textarea class="fta" id="worldDesc" placeholder="描述故事发生的世界背景、时代、地理、社会规则等...（不包含文风，文风请在下方单独设置）" style="min-height:120px"></textarea></div>
-<div class="fg"><label class="fl">每章最少字数</label><div class="wc-set"><input class="fi" id="minWords" type="number" value="800" min="100" step="100"><span style="color:var(--text2);font-size:11px">字</span></div></div>
-<button class="btn-p" onclick="saveWorldPreset()">💾 保存世界观预设</button>
-<div class="plist" id="worldPL"></div>
-</div>
-</div>
-
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-✒️ 文风设置
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="fg"><label class="fl">当前文风描述</label><textarea class="fta" id="styleDesc" placeholder="例如：轻松幽默的都市风、沉郁冷峻的纯文学风、细腻温柔的少女漫风、硬核写实的军事风..." style="min-height:90px"></textarea></div>
-<div class="fg"><label class="fl">快捷文风模板</label>
-<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
-<button class="tag" onclick="applyStyleTemplate('轻松日常')">轻松日常</button>
-<button class="tag" onclick="applyStyleTemplate('沉郁文学')">沉郁文学</button>
-<button class="tag" onclick="applyStyleTemplate('甜宠言情')">甜宠言情</button>
-<button class="tag" onclick="applyStyleTemplate('悬疑紧张')">悬疑紧张</button>
-<button class="tag" onclick="applyStyleTemplate('古风典雅')">古风典雅</button>
-<button class="tag" onclick="applyStyleTemplate('幽默讽刺')">幽默讽刺</button>
-<button class="tag" onclick="applyStyleTemplate('硬核写实')">硬核写实</button>
-</div>
-</div>
-<button class="btn-p" onclick="saveStylePreset()">💾 保存文风预设</button>
-<div class="plist" id="stylePL"></div>
-</div>
-</div>
-<!-- 规则设置 -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-📜 规则设置
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="fg"><label class="fl">当前规则（限制/提示AI的内容）</label><textarea class="fta" id="ruleDesc" placeholder="例如：&#10;- 禁止出现现代科技词汇&#10;- 对话必须使用古风语气&#10;- 每章必须有一个小悬念&#10;- 主角不能主动表白&#10;- 战斗场面要详细描写..." style="min-height:120px" oninput="curRule=this.value;sv('bj_curRule',curRule)"></textarea></div>
-<p style="font-size:10px;color:var(--text2);margin-bottom:10px;line-height:1.6">💡 规则会作为强制要求发送给AI，用于限制剧情走向、文风要求、禁止事项等。每条规则建议单独一行，以"-"开头更清晰。</p>
-<button class="btn-p" onclick="saveRulePreset()">💾 保存规则预设</button>
-<div class="plist" id="rulePL"></div>
-</div>
-</div>
-<!-- 禁用词设置 -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-🚫 禁用词设置
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="fg"><label class="fl">禁用词列表（AI会避免使用这些词）</label><textarea class="fta" id="banWordsInput" placeholder="每行一个词，例如：&#10;系统&#10;穿越&#10;金手指&#10;开挂&#10;躺赢" style="min-height:100px" oninput="banWords=this.value;sv('bj_banWords',banWords)"></textarea></div>
-<p style="font-size:10px;color:var(--text2);margin-bottom:10px;line-height:1.6">💡 填写你不希望出现在文章中的词汇，AI生成时会尽量避免。每行写一个词。</p>
-<button class="btn-p" onclick="saveBanWordsPreset()">💾 保存禁用词预设</button>
-<div class="plist" id="banWordsPL"></div>
-</div>
-</div>
-<!-- Appearance -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-🎨 页面美化
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="fg"><label class="fl">主题风格</label>
-<div class="theme-opts">
-<div class="t-opt t0 act" onclick="setTheme('default',this)" title="默认紫"></div>
-<div class="t-opt t1" onclick="setTheme('warm',this)" title="暖橙"></div>
-<div class="t-opt t2" onclick="setTheme('green',this)" title="翠绿"></div>
-<div class="t-opt t3" onclick="setTheme('blue',this)" title="深蓝"></div>
-<div class="t-opt t4" onclick="setTheme('light',this)" title="日间"></div>
-</div></div>
-<div class="fg"><label class="fl">自定义字体链接（ttf/woff/woff2）</label><input class="fi" id="customFontUrl" placeholder="https://example.com/font.ttf"><p style="font-size:9px;color:var(--text2);margin-top:3px">输入字体文件链接后全局生效，留空使用默认字体</p></div>
-<div class="fg"><label class="fl">阅读背景图片</label>
-<button class="btn-s" onclick="document.getElementById('rdBgUp').click()">📁 上传本地图片</button>
-<input type="file" id="rdBgUp" accept="image/*" style="display:none" onchange="uploadRdBg(event)">
-<button class="btn-s" onclick="clearRdBg()" style="margin-top:5px">🗑️ 清除背景图</button>
-<p style="font-size:9px;color:var(--text2);margin-top:3px">上传图片将在阅读时显示为淡化背景</p>
-</div>
-</div>
-</div>
-
-<!-- Data -->
-<div class="set-grp">
-<div class="set-grp-t" onclick="toggleGrp(this)">
-📦 数据管理
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-</div>
-<div class="set-grp-c">
-<div class="data-btns">
-<button onclick="exportData()">📤 导出全部数据</button>
-<button onclick="document.getElementById('importFile').click()">📥 导入数据</button>
-<input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
-<button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button>
-</div>
-<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">导出内容包含：API预设、人物设定、世界观预设、文风预设、收藏内容、创作内容、笔记、外观设置、卡片设置</p> <div id="storageInfo" style="margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border)"> <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"> <span style="font-size:11px;color:var(--text2)">存储空间使用</span> <span style="font-size:11px;font-weight:600;color:var(--accent2)" id="storagePercent">计算中...</span> </div> <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"> <div id="storageBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s"></div> </div> <div style="font-size:9px;color:var(--text2);margin-top:4px" id="storageDetail">已用 0MB / 5MB</div> </div>
-</div>
+<div class="set-entry" onclick="openSetModal('data')">
+<div class="set-entry-left"><span class="set-entry-icon">📦</span><div class="set-entry-info"><h3>数据管理</h3><p>导入导出、清空数据</p></div></div>
+<span class="set-entry-arrow">›</span>
 </div>
 </div>
 </div>
@@ -1431,9 +1452,12 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <button onclick="copyCurrentArticle()">📋</button>
 <button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
 <button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button> <button onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
+<button onclick="enterImmersiveRead()" title="沉浸阅读">🌙</button>
+<button onclick="toggleTtsBar()" id="rdTtsBtn" title="语音朗读">🔊</button>
 </div>
 </div>
 <div class="rd-body">
+  <button class="immersive-exit-float" onclick="exitImmersiveRead()">✕ 退出沉浸</button>
 <h1 class="rd-title" id="rdTitle"></h1>
 <div class="rd-meta" id="rdMeta"></div>
 <div class="rd-settings" id="rdSettingsPanel">
@@ -1446,6 +1470,47 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <div class="cont-wrap" id="contWrap" style="display:none">
 <div class="rd-dir-input" id="dirInputWrap">
 <input type="text" id="dirInput" placeholder="给下一章的方向提示（可留空）...">
+</div>
+<!-- TTS 语音朗读控制栏 -->
+<div class="tts-bar" id="ttsBar">
+<div class="tts-bar-row">
+<div class="tts-bar-btns">
+<button onclick="ttsPlayPause()" id="ttsPlayBtn">▶ 朗读</button>
+<button onclick="ttsStop()">⏹ 停止</button>
+<button onclick="ttsPrevPara()">⏮</button>
+<button onclick="ttsNextPara()">⏭</button>
+<button onclick="toggleTtsSettings()" id="ttsSettingsBtn">⚙</button>
+</div>
+<div class="tts-bar-progress"><div class="tts-bar-progress-inner" id="ttsProgress"></div></div>
+<span class="tts-bar-info" id="ttsInfo">0/0段</span>
+</div>
+<div class="tts-settings" id="ttsSettings">
+<div class="tts-s-row">
+<span class="tts-s-label">语音</span>
+<select id="ttsVoiceSelect" onchange="saveTtsSettings()"></select>
+</div>
+<div class="tts-s-row">
+<span class="tts-s-label">语速</span>
+<input type="range" min="0.5" max="2" step="0.1" value="1" id="ttsRate" oninput="updateTtsRate()">
+<span class="tts-s-val" id="ttsRateVal">1.0</span>
+</div>
+<div class="tts-s-row">
+<span class="tts-s-label">音调</span>
+<input type="range" min="0.5" max="2" step="0.1" value="1" id="ttsPitch" oninput="updateTtsPitch()">
+<span class="tts-s-val" id="ttsPitchVal">1.0</span>
+</div>
+</div>
+</div>
+<div class="immersive-read-bar" id="immersiveReadBar">
+<button onclick="exitImmersiveRead()">✕ 退出</button>
+<button onclick="toggleAutoScroll()" id="autoScrollBtn">▶ 自动阅读</button>
+<div class="speed-ctrl">
+<span>速度</span>
+<input type="range" min="1" max="10" value="3" id="scrollSpeed" oninput="updateScrollSpeed()">
+<span id="speedVal">3</span>
+</div>
+<button onclick="immersivePrevCh()">◀ 上一章</button>
+<button onclick="immersiveNextCh()">下一章 ▶</button>
 </div>
 <button class="btn-cont" id="btnCont" onclick="continueChapter()">📝 继续连载下一章</button>
 <button class="btn-undo" id="btnUndo" style="display:none" onclick="undoChapter()">↩ 撤销上一章</button>
@@ -1460,64 +1525,419 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <h2>📖 使用手册</h2>
 </div>
 <div class="hb-body">
+
 <h3>一、欢迎使用笔记AI</h3>
-<p>笔记AI是一款基于大语言模型的AI创作工坊，帮助你快速生成高质量的小说、散文等文学作品。无论你是新手写作者还是资深创作人，这里都能成为你的灵感引擎。</p>
+<p>笔记AI是一款基于大语言模型的AI创作工坊，帮助你快速生成高质量的小说、散文等文学作品。无论你是新手写作者还是资深创作人，这里都能成为你的灵感引擎和创作伙伴。</p>
+
 <div class="notice">
-<p>🎉 <strong>v2.4.0 更新内容</strong></p>
-<p>· 全新启动动画，更加流畅炫酷<br>· 优化卡片视觉效果<br>· 修复人物性格标签Bug<br>· 新增触觉反馈体验<br>· 手册增加使用技巧</p>
+<p>🎉 <strong>v2.5.0 更新亮点</strong></p>
+<p>· 新增语音朗读功能，解放双眼听小说<br>· 支持选择语音、调节语速和音调<br>· 朗读时自动高亮当前段落<br>· 优化沉浸式阅读体验<br>· 修复若干已知问题</p>
 </div>
-<h3>二、快速开始</h3>
+
+<h3>二、快速开始（5分钟上手）</h3>
+<p>按照以下步骤，你可以在5分钟内开始你的第一次AI创作：</p>
+
+<p><strong>第1步：配置API（必须）</strong></p>
 <ul>
-<li><strong>第1步：配置API</strong> — 进入「设置」→「API设置」，填写API地址、密钥和模型名称。支持官方OpenAI或兼容的第三方公益站。</li>
-<li><strong>第2步：设定人物（可选）</strong> — 在「人物设定」中添加角色（不限数量），填写名称和背景描述。</li>
-<li><strong>第3步：设定世界观（可选）</strong> — 在「世界观设定」中描述背景设定。</li> <li><strong>第3.5步：选择文风（可选）</strong> — 在「文风设置」中选择快捷模板或自定义文风。</li>
-<li><strong>第4步：开始创作</strong> — 回到「作坊」，输入方向，选标签，选长/短篇，点击「生成」！</li>
+<li>点击底部「设置」→「API设置」</li>
+<li>填写API地址（如 https://api.openai.com/v1 或其他兼容接口）</li>
+<li>填写API密钥（以 sk- 开头的密钥）</li>
+<li>模型名称建议填 gpt-4o-mini 或 gpt-4o</li>
+<li>点击「测试连接」确认配置正确</li>
 </ul>
-<h3>三、长篇与短篇</h3>
-<p><strong>长篇连载</strong>：生成后可以不断续写新章节。需要先收藏才能使用「继续连载」功能。续写前可以输入方向提示引导AI。支持撤销上一章重新生成。章节较多时可点击「📑 目录」打开章节列表快速跳转。</p>
-<p><strong>短篇一发</strong>：一次性生成完整故事，适合灵感速写或短文创作。</p>
-<h3>四、流式输出</h3>
-<p>生成文章时采用流式输出技术，你可以实时看到AI逐字创作的过程，无需漫长等待。生成过程中会显示已生成字数和耗时。点击「停止」按钮或关闭阅读界面可随时中止生成。</p>
-<h3>五、收藏管理</h3>
-<p>点击♡按钮即可收藏。长篇可上传封面、设置状态（连载中/已完结/暂停）、给文章打星评分。支持一键复制纯文本（自动添加创作来源注释）。</p>
-<h3>五点五、创作页面</h3>
-<p>底部导航栏的「创作」页面是你的个人写作空间，支持两种模式：</p>
+
+<p><strong>第2步：开始创作</strong></p>
 <ul>
-<li><strong>草稿</strong>：单篇文档，适合随手记录灵感、写短文。</li>
-<li><strong>小说</strong>：多章节连载，可自由添加和删除章节，适合长篇创作。</li>
+<li>回到「作坊」页面</li>
+<li>在输入框描述你想要的故事，比如"校园甜文，学霸女主和体育生男主"</li>
+<li>选择「长篇连载」或「短篇一发」</li>
+<li>点击「生成」按钮，等待AI创作</li>
 </ul>
-<p>编辑器支持实时字数统计、2秒自动保存、一键复制全文。点击编辑器右上角的🤖按钮，可以让AI对当前章节进行专业评价，给出亮点分析和改进建议。</p>
-<h3>六、阅读体验</h3>
-<p>阅读时可调节字号和行高、切换全屏模式、设置背景图片，打造专属阅读空间。</p>
-<h3>七、个性化设置</h3>
-<p>五种主题风格（默认紫/暖橙/翠绿/深蓝/日间浅色）、自定义字体、阅读背景图片。支持独立的文风设置，内置7种快捷文风模板（轻松日常/沉郁文学/甜宠言情/悬疑紧张/古风典雅/幽默讽刺/硬核写实），也可自定义文风并保存为预设。</p>
-<h3>七点五、资源广场</h3>
-<p>底部导航栏的「资源」页面用于打包分享和导入设定资源。</p>
+
+<p><strong>第3步：收藏与续写</strong></p>
 <ul>
-<li><strong>打包导出</strong>：勾选你想分享的人物设定、世界观、文风、创作作品，打包成 .json 资源文件。把文件发给朋友或分享到社群即可。</li>
-<li><strong>导入资源包</strong>：收到别人的资源包文件后，点击导入即可查看和使用。</li>
-<li><strong>应用资源</strong>：点击资源卡片上的「应用」按钮，可以一键将人物/世界观/文风加载到你的设置中，作品会导入到创作页。</li>
-<li><strong>写经验</strong>：直接在资源页撰写创作心得，保存后也可以导出分享。</li>
-<li><strong>创作页分享</strong>：创作页的作品卡片上有「分享」按钮，可以快速将作品导出为资源包。</li>
+<li>生成完成后，点击「♡ 收藏」将作品加入书架</li>
+<li>长篇作品收藏后，可以点击「继续连载下一章」让AI续写</li>
 </ul>
-<h3>八、数据安全</h3>
-<p>所有数据保存在浏览器本地（localStorage），不上传到任何服务器。封面图片建议使用小尺寸图以节省存储空间。建议定期通过「数据管理」导出备份。</p>
-<h3>九、使用技巧</h3>
+
+<h3>三、五大核心页面详解</h3>
+
+<p><strong>📝 作坊（首页）</strong></p>
+<p>这是AI创作的主战场，所有新作品都从这里诞生。</p>
 <ul>
-<li><strong>提高生成质量</strong>：描述越具体，AI理解越准确。比如"校园甜文，女主是学霸，男主是体育生"比"写个恋爱故事"效果好得多。</li>
-<li><strong>善用方向提示</strong>：续写时在方向框输入"本章要有误会""加入新角色"等，AI会按你的意图发展。</li>
-<li><strong>调节创意度</strong>：Temperature低（0.5-0.7）适合逻辑严密的悬疑推理；高（0.9-1.2）适合天马行空的奇幻脑洞。</li>
-<li><strong>长按引用</strong>：阅读时长按任意段落，可以快速引用到笔记中，方便记录灵感。</li>
-<li><strong>批量管理</strong>：在创作页可以统一管理所有草稿和小说，支持一键导出TXT。</li>
-<li><strong>文风模板</strong>：不知道怎么描述文风？直接用设置里的7种快捷模板，一键应用。</li>
-<li><strong>章节大纲</strong>：写长篇时，先用「AI大纲」生成整体框架，再逐章填充，效率翻倍。</li>
-<li><strong>定期备份</strong>：每周导出一次数据，防止浏览器清理缓存导致数据丢失。</li>
+<li><strong>输入框</strong>：描述你想要的故事方向，写得越具体效果越好</li>
+<li><strong>标签</strong>：点击选择氛围标签，可以多选，也可以自建标签</li>
+<li><strong>长篇/短篇切换</strong>：长篇可以持续续写，短篇一次生成完整故事</li>
+<li><strong>创意度滑块</strong>：左边（0.5）更稳定可控，右边（1.2）更天马行空</li>
+<li><strong>灵感按钮</strong>：点击右上角「灵感」可以随机获取创意方向</li>
 </ul>
+
+<p><strong>📚 收藏（书架）</strong></p>
+<p>管理你喜欢的作品，长篇和短篇分开展示。</p>
+<ul>
+<li><strong>长篇书架</strong>：可以上传封面、设置状态（连载中/已完结/暂停）、打星评分</li>
+<li><strong>短篇收藏</strong>：快速浏览和管理短篇作品</li>
+<li><strong>搜索</strong>：输入关键词快速找到作品</li>
+<li><strong>操作按钮</strong>：复制全文、导出TXT、删除等</li>
+</ul>
+
+<p><strong>✏️ 创作（个人写作）</strong></p>
+<p>这是你的私人写作空间，用于手动创作或编辑AI生成的内容。</p>
+<ul>
+<li><strong>草稿</strong>：单篇文档，适合随手记录灵感、写短文</li>
+<li><strong>小说</strong>：多章节结构，适合长篇连载创作</li>
+<li><strong>AI大纲</strong>：让AI帮你生成故事大纲框架</li>
+<li><strong>AI起名</strong>：为角色、书名、地名生成创意名字</li>
+</ul>
+
+<p><strong>⚙️ 设置（配置中心）</strong></p>
+<p>所有个性化配置都在这里，包括API、人物、世界观、文风等。</p>
+
+<p><strong>📦 资源（分享广场）</strong></p>
+<p>打包分享你的设定，或导入别人的资源包。</p>
+
+<h3>四、如何写出高质量的作品</h3>
+
+<p><strong>技巧1：描述要具体</strong></p>
+<ul>
+<li>❌ 差的描述："写个恋爱故事"</li>
+<li>✅ 好的描述："民国背景，大家族千金和穷书生的虐恋，女主外柔内刚，男主清冷傲骨"</li>
+</ul>
+
+<p><strong>技巧2：善用人物设定</strong></p>
+<ul>
+<li>进入「设置」→「人物设定」</li>
+<li>为每个角色填写名字、性格标签、详细背景</li>
+<li>性格标签会影响角色的言行举止</li>
+<li>详细设定可以写外貌、说话方式、口头禅、过往经历等</li>
+</ul>
+
+<p><strong>技巧3：建立世界观</strong></p>
+<ul>
+<li>进入「设置」→「世界观设定」</li>
+<li>描述故事发生的时代、地点、社会规则</li>
+<li>如果是奇幻/科幻，写清楚魔法体系或科技水平</li>
+<li>设置每章最少字数（建议800-1500字）</li>
+</ul>
+
+<p><strong>技巧4：选择合适的文风</strong></p>
+<ul>
+<li>进入「设置」→「文风设置」</li>
+<li>可以选择7种快捷模板：轻松日常、沉郁文学、甜宠言情、悬疑紧张、古风典雅、幽默讽刺、硬核写实</li>
+<li>也可以自己描述想要的文风，比如"村上春树式的冷淡叙述"</li>
+</ul>
+
+<p><strong>技巧5：调节创意度</strong></p>
+<ul>
+<li><strong>0.5-0.7</strong>：稳定可控，适合逻辑严密的悬疑推理、需要前后一致的续写</li>
+<li><strong>0.8-0.9</strong>：平衡模式，适合大多数创作场景</li>
+<li><strong>1.0-1.2</strong>：创意发散，适合奇幻脑洞、需要惊喜的场景</li>
+</ul>
+
+<h3>五、长篇连载完全指南</h3>
+
+<p><strong>开始一部长篇</strong></p>
+<ol>
+<li>在作坊选择「长篇连载」</li>
+<li>输入故事方向，点击生成</li>
+<li>生成第一章后，点击「♡ 收藏」加入书架</li>
+<li>只有收藏后才能续写</li>
+</ol>
+
+<p><strong>续写下一章</strong></p>
+<ol>
+<li>打开已收藏的长篇作品</li>
+<li>滚动到底部，看到「继续连载下一章」按钮</li>
+<li>在「方向提示」框中输入本章想要的发展（可留空）</li>
+<li>点击按钮，等待AI创作</li>
+</ol>
+
+<p><strong>方向提示的写法</strong></p>
+<ul>
+<li>"本章要有一场误会"</li>
+<li>"加入一个新角色，是女主的青梅竹马"</li>
+<li>"本章结尾要有反转"</li>
+<li>"让男女主有一段独处的甜蜜时光"</li>
+<li>"揭露一个关于男主身世的秘密"</li>
+</ul>
+
+<p><strong>章节管理</strong></p>
+<ul>
+<li>点击「📑 目录」可以查看所有章节列表</li>
+<li>点击任意章节可以跳转阅读</li>
+<li>「撤销上一章」可以删除最后一章重新生成</li>
+</ul>
+
+<h3>六、大纲驱动创作（进阶玩法）</h3>
+
+<p>如果你已经有完整的故事构思，想让AI严格按照你的大纲创作，请使用这个方法：</p>
+
+<p><strong>方法一：使用AI大纲功能</strong></p>
+<ol>
+<li>进入「创作」页面，点击「🧠 AI大纲」</li>
+<li>描述你的故事方向</li>
+<li>选择章节数量（5-30章）</li>
+<li>点击「生成大纲」</li>
+<li>检查大纲，满意后点击「确认并创建小说」</li>
+<li>大纲会自动保存，AI续写时会参考</li>
+</ol>
+
+<p><strong>方法二：手动编辑章节大纲</strong></p>
+<ol>
+<li>打开小说编辑器</li>
+<li>点击顶部的「📝 章节大纲」按钮</li>
+<li>为每一章填写详细大纲</li>
+<li>大纲写得越详细，AI越能按你的意图创作</li>
+</ol>
+
+<p><strong>章节大纲怎么写</strong></p>
+<ul>
+<li><strong>必须出现的事件</strong>：如"女主发现男主的秘密日记"</li>
+<li><strong>情绪走向</strong>：如"开头平静→中段震惊→结尾心碎"</li>
+<li><strong>要埋的伏笔</strong>：如"让读者注意到女主手腕的胎记"</li>
+<li><strong>禁止出现的内容</strong>：如"本章不要揭露真凶身份"</li>
+<li><strong>对话要点</strong>：如"男主要说出那句'我从未后悔遇见你'"</li>
+</ul>
+
+<div class="notice">
+<p>💡 <strong>大纲越详细，AI发挥空间越小，结果越可控。</strong>如果你希望AI有一定自由度，可以只写关键事件，细节留给AI发挥。</p>
+</div>
+
+<h3>七、编辑器功能详解</h3>
+
+<p>在「创作」页面打开任意作品，进入编辑器，这里有丰富的功能：</p>
+
+<p><strong>基础功能</strong></p>
+<ul>
+<li><strong>自动保存</strong>：编辑后2秒自动保存，无需手动</li>
+<li><strong>字数统计</strong>：底部实时显示当前字数</li>
+<li><strong>排版</strong>：一键整理段落格式</li>
+<li><strong>复制/导出</strong>：复制全文或导出为TXT文件</li>
+</ul>
+
+<p><strong>AI辅助功能</strong></p>
+<ul>
+<li><strong>🤖 AI评价</strong>：让AI对当前章节进行专业点评，给出亮点和改进建议</li>
+<li><strong>🔄 AI重写</strong>：让AI重新改写当前章节，保留情节但优化文笔</li>
+<li><strong>📈 AI扩写</strong>：选择一段文字，让AI添加更多细节描写</li>
+<li><strong>📉 AI缩写</strong>：选择一段文字，让AI精简内容</li>
+</ul>
+
+<p><strong>章节管理（小说模式）</strong></p>
+<ul>
+<li>顶部显示当前章节，点击可打开目录</li>
+<li>「上一章/下一章」快速切换</li>
+<li>「+ 添加新章节」在末尾新增章节</li>
+<li>「删除本章」删除当前章节（至少保留一章）</li>
+</ul>
+
+<p><strong>沉浸模式</strong></p>
+<ul>
+<li>点击「🌙 沉浸」进入沉浸写作模式</li>
+<li>隐藏所有干扰元素，只剩下纯净的写作界面</li>
+<li>适合需要专注的长时间写作</li>
+</ul>
+
+<h3>八、阅读体验优化</h3>
+
+<p><strong>基础阅读设置</strong></p>
+<ul>
+<li>点击阅读界面的「⚙」按钮打开设置</li>
+<li>调节字号（12-24）和行高（1.4-3.0）</li>
+<li>设置会自动保存，下次打开仍然生效</li>
+</ul>
+
+<p><strong>全屏模式</strong></p>
+<ul>
+<li>点击「⛶」进入全屏，隐藏底部导航栏</li>
+<li>再次点击退出全屏</li>
+</ul>
+
+<p><strong>沉浸阅读模式</strong></p>
+<ul>
+<li>点击「🌙」进入沉浸阅读</li>
+<li>极简界面，只有正文内容</li>
+<li>支持自动滚动阅读，可调节速度</li>
+<li>支持上一章/下一章快速切换</li>
+</ul>
+
+<p><strong>语音朗读</strong></p>
+<ul>
+<li>点击「🔊」开启语音朗读功能</li>
+<li>支持播放/暂停、上一段/下一段</li>
+<li>可选择不同语音（优先显示中文语音）</li>
+<li>可调节语速（0.5x-2x）和音调</li>
+<li>朗读时自动高亮当前段落并滚动跟随</li>
+</ul>
+
+<p><strong>阅读背景</strong></p>
+<ul>
+<li>进入「设置」→「页面美化」</li>
+<li>点击「上传图片」设置阅读背景</li>
+<li>建议使用浅色、低对比度的图片</li>
+</ul>
+
+<p><strong>章节笔记</strong></p>
+<ul>
+<li>点击「📝」打开笔记面板</li>
+<li>可以为每章记录想法、灵感、修改计划</li>
+<li>长按任意段落可以快速引用到笔记中</li>
+</ul>
+
+<h3>九、设置项详解</h3>
+
+<p><strong>🔑 API设置</strong></p>
+<ul>
+<li><strong>API地址</strong>：填写接口地址，官方是 https://api.openai.com/v1</li>
+<li><strong>API密钥</strong>：你的密钥，以 sk- 开头</li>
+<li><strong>模型名称</strong>：推荐 gpt-4o-mini（便宜）或 gpt-4o（更强）</li>
+<li><strong>Temperature</strong>：创意度，0.5稳定，1.2狂野</li>
+<li><strong>Max Tokens</strong>：最大生成长度，建议4096</li>
+<li><strong>流式输出</strong>：开启后可以看到AI逐字创作过程</li>
+<li><strong>拉取模型</strong>：自动获取可用模型列表</li>
+<li><strong>测试连接</strong>：检查API是否配置正确</li>
+</ul>
+
+<p><strong>👤 人物设定</strong></p>
+<ul>
+<li>可以添加任意数量的角色</li>
+<li>每个角色可设置：名称、性格标签、详细描述</li>
+<li>性格标签支持自定义添加</li>
+<li>可以保存为预设，方便切换不同作品的人物</li>
+</ul>
+
+<p><strong>🌍 世界观设定</strong></p>
+<ul>
+<li>描述故事发生的背景、时代、规则</li>
+<li>设置每章最少字数</li>
+<li>可以保存多个世界观预设</li>
+</ul>
+
+<p><strong>✒️ 文风设置</strong></p>
+<ul>
+<li>7种快捷模板一键应用</li>
+<li>也可以自定义描述文风</li>
+<li>可以保存为预设</li>
+</ul>
+
+<p><strong>📜 规则设置</strong></p>
+<ul>
+<li>设置AI必须遵守的创作规则</li>
+<li>比如"禁止出现现代词汇"、"对话必须用「」"</li>
+</ul>
+
+<p><strong>🚫 禁用词设置</strong></p>
+<ul>
+<li>每行一个词，AI会避免使用这些词</li>
+<li>比如"不禁"、"缓缓"、"淡淡"等</li>
+</ul>
+
+<p><strong>🎨 页面美化</strong></p>
+<ul>
+<li>5种主题风格：默认紫、暖橙、翠绿、深蓝、日间浅色</li>
+<li>自定义字体（填写字体文件URL）</li>
+<li>阅读背景图片</li>
+</ul>
+
+<p><strong>📦 数据管理</strong></p>
+<ul>
+<li>导出全部数据（建议每周备份一次）</li>
+<li>导入数据（恢复备份）</li>
+<li>清空作坊（删除所有生成的文章）</li>
+<li>显示存储空间使用情况</li>
+</ul>
+
+<h3>十、资源广场使用</h3>
+
+<p><strong>打包导出</strong></p>
+<ol>
+<li>点击「📤 打包导出」</li>
+<li>勾选想要分享的内容（人物、世界观、文风、作品等）</li>
+<li>给资源包起名字，写简介</li>
+<li>点击导出，生成 .json 文件</li>
+<li>把文件发给朋友或分享到社群</li>
+</ol>
+
+<p><strong>导入资源包</strong></p>
+<ol>
+<li>点击「📥 导入资源包」</li>
+<li>选择收到的 .json 文件</li>
+<li>导入后可以在资源列表中看到</li>
+<li>点击「应用」可以将设定加载到你的配置中</li>
+</ol>
+
+<p><strong>写经验分享</strong></p>
+<ul>
+<li>点击「✍️ 写经验」</li>
+<li>分享你的创作心得、写作技巧、踩坑经验</li>
+<li>保存后可以导出分享给别人</li>
+</ul>
+
+<h3>十一、常见问题解答</h3>
+
+<p><strong>Q：生成失败怎么办？</strong></p>
+<ul>
+<li>检查API设置是否正确，点击「测试连接」</li>
+<li>确认API密钥有余额</li>
+<li>尝试更换模型（如从gpt-4o换成gpt-4o-mini）</li>
+<li>检查网络连接</li>
+</ul>
+
+<p><strong>Q：生成的内容质量不好怎么办？</strong></p>
+<ul>
+<li>描述写得更具体详细</li>
+<li>完善人物设定和世界观</li>
+<li>选择合适的文风模板</li>
+<li>在禁用词里添加不想看到的词</li>
+<li>调低创意度（Temperature）让输出更稳定</li>
+</ul>
+
+<p><strong>Q：续写和前文不连贯怎么办？</strong></p>
+<ul>
+<li>在方向提示里写清楚要承接什么</li>
+<li>调低创意度到0.6-0.7</li>
+<li>使用章节大纲功能，明确每章内容</li>
+</ul>
+
+<p><strong>Q：数据会丢失吗？</strong></p>
+<ul>
+<li>数据保存在浏览器本地，清除浏览器数据会丢失</li>
+<li>建议每周通过「数据管理」导出备份</li>
+<li>换设备需要导入备份文件</li>
+</ul>
+
+<p><strong>Q：可以在手机上使用吗？</strong></p>
+<ul>
+<li>完全支持手机浏览器使用</li>
+<li>建议添加到主屏幕，体验更好</li>
+</ul>
+
+<h3>十二、进阶技巧汇总</h3>
+
+<ul>
+<li><strong>先大纲后创作</strong>：写长篇前先用AI大纲功能规划全局，再逐章填充</li>
+<li><strong>分段扩写</strong>：先让AI写出骨架，再用扩写功能丰富细节</li>
+<li><strong>人工润色</strong>：AI生成后在编辑器里手动修改，效果最好</li>
+<li><strong>多次重写</strong>：对不满意的章节使用AI重写，可能会有惊喜</li>
+<li><strong>善用笔记</strong>：阅读时随手记录灵感，方便后续修改</li>
+<li><strong>定期备份</strong>：每周导出一次数据，防止意外丢失</li>
+<li><strong>尝试不同文风</strong>：同一个故事用不同文风生成，对比效果</li>
+<li><strong>控制章节长度</strong>：在世界观设置里调整最少字数</li>
+</ul>
+
+<h3>十三、创作伦理提醒</h3>
+
 <div class="notice">
 <p>⚠️ <strong>诚信创作倡议</strong></p>
-<p>笔记AI鼓励创作者诚信使用AI辅助创作。请勿将AI生成的内容伪装为完全原创作品。在发布时请如实标注"本文由AI辅助创作"，尊重读者知情权。让我们共同维护良好的创作环境。</p>
+<p>笔记AI鼓励创作者诚信使用AI辅助创作：</p>
+<p>· 请勿将AI生成的内容伪装为完全原创作品</p>
+<p>· 在发布时请如实标注"本文由AI辅助创作"</p>
+<p>· 尊重读者知情权</p>
+<p>· AI是工具，创意和灵魂来自你自己</p>
+<p>让我们共同维护良好的创作环境。</p>
 </div>
-<h3>十、联系作者</h3>
+
+<h3>十四、联系作者</h3>
 <p>如遇问题或有建议反馈，欢迎联系：</p>
 <div class="contact">
 <p>📕 小红书：95567118758</p>
@@ -1525,7 +1945,9 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <p>💬 微信：Aa9620520</p>
 <p>💬 QQ：962005530</p>
 </div>
-<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.4.0 · Created by 心田<br>让每一个灵感都值得被记录 ✨</p>
+
+<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.5.0 · Created by 心田<br>让每一个灵感都值得被记录 ✨</p>
+
 </div>
 </div>
 
@@ -1586,6 +2008,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <input class="ed-title-input" id="edTitle" placeholder="输入标题...">
 </div>
 <div class="ed-acts">
+<button onclick="toggleImmersiveEdit()" id="immersiveEditBtn">🌙 沉浸</button>
 <button onclick="saveEditorContent()">💾 保存</button>
 <button onclick="formatEditorText()">¶ 排版</button>
 <button onclick="copyEditorContent()">📋 复制</button> <button onclick="exportEdToTxt()">📥 导出TXT</button>
@@ -1599,6 +2022,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </div>
 <div class="ed-ch-bar" id="edChBar" style="display:none"> <button class="ed-ch-btn act" id="edChCurrent" onclick="openEdChList()">第1章</button> <button class="ed-ch-btn" onclick="goEdPrevCh()" id="edPrevBtn" style="display:none">◀ 上一章</button> <button class="ed-ch-btn" onclick="goEdNextCh()" id="edNextBtn" style="display:none">下一章 ▶</button> <button class="ed-ch-btn" onclick="openEdChList()">📑 目录</button> </div>
 <div class="ed-body">
+  <button class="immersive-exit" onclick="toggleImmersiveEdit()">✕ 退出沉浸</button>
 <textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
 </div>
 <div class="ed-footer">
@@ -1758,6 +2182,91 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </div>
 </div>
 </div>
+<!-- SETTINGS MODALS -->
+<div class="set-modal" id="setModalApi">
+<div class="set-modal-hdr"><button onclick="closeSetModal('api')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🔑 API设置</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">API地址</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
+<div class="fg"><label class="fl">API密钥</label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0">👁</button></div></div>
+<div class="fg"><label class="fl">模型名称</label><div style="display:flex;gap:6px"><input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"><datalist id="modelSuggest"></datalist><button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0">拉取</button></div></div>
+<div class="frow"><div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div><div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div></div>
+<div class="fg"><label class="fl">场景预设</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="tag" onclick="setTempPreset(0.5,'严谨')">📐 严谨</button><button class="tag" onclick="setTempPreset(0.7,'平衡')">⚖️ 平衡</button><button class="tag" onclick="setTempPreset(0.9,'创意')">💡 创意</button><button class="tag" onclick="setTempPreset(1.1,'狂野')">🔥 狂野</button></div></div>
+<div class="fg" style="display:flex;align-items:center;justify-content:space-between"><label class="fl" style="margin:0">流式输出</label><div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleStreamSwitch(this)"><input type="checkbox" id="streamOn" checked style="display:none"><div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s" id="streamTrack"><div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="streamThumb"></div></div></div></div>
+<button class="btn-s" onclick="testApiConnection()" id="btnTestApi">🔗 测试连接</button>
+<button class="btn-p" onclick="saveApiPreset()">💾 保存为预设</button>
+<div class="plist" id="apiPL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalChar">
+<div class="set-modal-hdr"><button onclick="closeSetModal('char')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>👤 人物设定</h2></div>
+<div class="set-modal-body">
+<div class="char-cards" id="charCards"></div>
+<button class="btn-s" onclick="addCharacter()" style="margin-top:10px">＋ 添加角色</button>
+<div class="fg" style="margin-top:15px;padding-top:15px;border-top:1px solid var(--border)">
+<label class="fl">自定义性格标签管理</label>
+<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px" id="customTraitList"></div>
+<button class="btn-s" onclick="renderCustomTraitList()" style="margin-top:8px">🔄 刷新列表</button>
+</div>
+<button class="btn-p" onclick="saveCharPreset()">💾 保存人物预设</button>
+<div class="plist" id="charPL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalWorld">
+<div class="set-modal-hdr"><button onclick="closeSetModal('world')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🌍 世界观设定</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">世界观 / 背景设定</label><textarea class="fta" id="worldDesc" placeholder="描述故事发生的世界背景..." style="min-height:150px"></textarea></div>
+<div class="fg"><label class="fl">每章最少字数</label><div class="wc-set"><input class="fi" id="minWords" type="number" value="800" min="100" step="100"><span style="color:var(--text2);font-size:11px">字</span></div></div>
+<button class="btn-p" onclick="saveWorldPreset()">💾 保存世界观预设</button>
+<div class="plist" id="worldPL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalStyle">
+<div class="set-modal-hdr"><button onclick="closeSetModal('style')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>✒️ 文风设置</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">当前文风描述</label><textarea class="fta" id="styleDesc" placeholder="例如：轻松幽默的都市风..." style="min-height:100px"></textarea></div>
+<div class="fg"><label class="fl">快捷文风模板</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="tag" onclick="applyStyleTemplate('轻松日常')">轻松日常</button><button class="tag" onclick="applyStyleTemplate('沉郁文学')">沉郁文学</button><button class="tag" onclick="applyStyleTemplate('甜宠言情')">甜宠言情</button><button class="tag" onclick="applyStyleTemplate('悬疑紧张')">悬疑紧张</button><button class="tag" onclick="applyStyleTemplate('古风典雅')">古风典雅</button><button class="tag" onclick="applyStyleTemplate('幽默讽刺')">幽默讽刺</button><button class="tag" onclick="applyStyleTemplate('硬核写实')">硬核写实</button></div></div>
+<button class="btn-p" onclick="saveStylePreset()">💾 保存文风预设</button>
+<div class="plist" id="stylePL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalRule">
+<div class="set-modal-hdr"><button onclick="closeSetModal('rule')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>📜 规则设置</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">当前规则</label><textarea class="fta" id="ruleDesc" placeholder="例如：- 禁止出现现代科技词汇" style="min-height:150px" oninput="curRule=this.value;sv('bj_curRule',curRule)"></textarea></div>
+<button class="btn-p" onclick="saveRulePreset()">💾 保存规则预设</button>
+<div class="plist" id="rulePL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalBan">
+<div class="set-modal-hdr"><button onclick="closeSetModal('ban')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🚫 禁用词设置</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">禁用词列表（每行一个）</label><textarea class="fta" id="banWordsInput" placeholder="每行一个词" style="min-height:120px" oninput="banWords=this.value;sv('bj_banWords',banWords)"></textarea></div>
+<button class="btn-p" onclick="saveBanWordsPreset()">💾 保存禁用词预设</button>
+<div class="plist" id="banWordsPL"></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalTheme">
+<div class="set-modal-hdr"><button onclick="closeSetModal('theme')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🎨 页面美化</h2></div>
+<div class="set-modal-body">
+<div class="fg"><label class="fl">主题风格</label><div class="theme-opts"><div class="t-opt t0 act" onclick="setTheme('default',this)"></div><div class="t-opt t1" onclick="setTheme('warm',this)"></div><div class="t-opt t2" onclick="setTheme('green',this)"></div><div class="t-opt t3" onclick="setTheme('blue',this)"></div><div class="t-opt t4" onclick="setTheme('light',this)"></div></div></div>
+<div class="fg"><label class="fl">自定义字体链接</label><input class="fi" id="customFontUrl" placeholder="https://example.com/font.ttf"></div>
+<div class="fg"><label class="fl">阅读背景图片</label><button class="btn-s" onclick="document.getElementById('rdBgUp').click()">📁 上传图片</button><input type="file" id="rdBgUp" accept="image/*" style="display:none" onchange="uploadRdBg(event)"><button class="btn-s" onclick="clearRdBg()" style="margin-top:5px">🗑️ 清除背景</button></div>
+</div>
+</div>
+
+<div class="set-modal" id="setModalData">
+<div class="set-modal-hdr"><button onclick="closeSetModal('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>📦 数据管理</h2></div>
+<div class="set-modal-body">
+<div class="data-btns"><button onclick="exportData()">📤 导出全部数据</button><button onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button></div>
+<div id="storageInfo" style="margin-top:15px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:var(--text2)">存储空间</span><span style="font-size:11px;color:var(--accent2)" id="storagePercent">计算中...</span></div><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div id="storageBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px"></div></div><div style="font-size:9px;color:var(--text2);margin-top:4px" id="storageDetail">已用 0MB / 50MB</div></div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
@@ -1906,7 +2415,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v2.4.0';
+const APP_VER='v2.5.0';
 
 // ==================== STORAGE ====================
 const K={
@@ -1969,6 +2478,7 @@ let banWords=ld('bj_banWords','');
 let banWordsP=ld('bj_banWordsP',[]);
 let ap=ld(K.ap,{theme:'default',fontUrl:'',rdBg:'',rdFontSize:15,rdLineHeight:2,curStyle:''});
 let characters=ld(K.curChars,[{name:'',desc:''},{name:'',desc:''}]);
+let customTraits=ld('bj_customTraits',[]);
 let curRd=null;// current reading article
 let curCh=0;// current chapter index
 let isGen=false;
@@ -2284,26 +2794,68 @@ characters.forEach((c,i)=>{
 const card=document.createElement('div');
 card.className='char-card';
 const traits=c.traits||[];
-const traitBtns=['内向','外向','冷静','冲动','善良','腹黑','傲娇','温柔','毒舌','天然呆'];
+const defaultTraits=['内向','外向','冷静','冲动','善良','腹黑','傲娇','温柔','毒舌','天然呆'];
+const allTraits=[...defaultTraits,...customTraits];
+const traitBtnsHtml=allTraits.map(t=>
+'<span class="tag'+(traits.includes(t)?' act':'')+'" style="font-size:10px;padding:3px 8px" onclick="toggleCharTrait('+i+',\''+t+'\',this)">'+t+'</span>'
+).join('');
 card.innerHTML=
 '<div class="char-card-hdr"><span>角色 '+(i+1)+'</span>'+
 (characters.length>1?'<button class="char-card-del" onclick="removeChar('+i+')">删除</button>':'')+'</div>'+
 '<div class="fg"><label class="fl">名称</label><input class="fi char-name" data-idx="'+i+'" value="'+esc(c.name||'')+'" placeholder="角色名" oninput="saveCharactersFromUI()"></div>'+
-'<div class="fg"><label class="fl">性格标签（点击选择，AI会严格遵守）</label>'+
-'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+
-traitBtns.map(t=>'<span class="tag'+(traits.includes(t)?' act':'')+'" style="font-size:10px;padding:3px 8px" onclick="toggleCharTrait('+i+',\''+t+'\',this)">'+t+'</span>').join('')+
+'<div class="fg"><label class="fl">性格标签（点击选择）</label>'+
+'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px" id="traitWrap'+i+'">'+
+traitBtnsHtml+
+'<span class="tag" style="font-size:10px;padding:3px 8px;border-style:dashed;color:var(--accent2)" onclick="addCustomTrait('+i+')">+ 自定义</span>'+
 '</div></div>'+
 '<div class="fg"><label class="fl">详细设定</label><textarea class="fta char-desc" data-idx="'+i+'" placeholder="外貌、背景、说话方式、口头禅..." oninput="saveCharactersFromUI()">'+esc(c.desc||'')+'</textarea></div>';
 wrap.appendChild(card);
 });
 }
 
-function addCharacter(){
-characters.push({name:'',desc:''});
+function renderCustomTraitList(){
+const wrap=document.getElementById('customTraitList');
+if(!wrap)return;
+if(customTraits.length===0){
+wrap.innerHTML='<span style="font-size:11px;color:var(--text2)">暂无自定义标签</span>';
+return;
+}
+wrap.innerHTML=customTraits.map(t=>
+'<span class="tag act" style="font-size:10px;padding:3px 8px">'+esc(t)+' <span style="margin-left:4px;cursor:pointer" onclick="event.stopPropagation();deleteCustomTrait(\''+t+'\')">✕</span></span>'
+).join('');
+}
+
+function addCustomTrait(charIdx){
+showInp('添加自定义性格标签','输入标签名称（如：话痨、社恐、吃货）',trait=>{
+trait=trait.trim();
+if(!trait){showToast('标签不能为空');return;}
+if(customTraits.includes(trait)){
+showToast('该标签已存在');
+return;
+}
+customTraits.push(trait);
+sv('bj_customTraits',customTraits);
+if(!characters[charIdx].traits)characters[charIdx].traits=[];
+characters[charIdx].traits.push(trait);
 sv(K.curChars,characters);
 renderCharCards();
-showToast('已添加新角色');
+showToast('已添加标签：'+trait);
+});
 }
+
+function deleteCustomTrait(trait){
+showDlg('删除标签','确定要删除自定义标签「'+trait+'」吗？',()=>{
+customTraits=customTraits.filter(t=>t!==trait);
+sv('bj_customTraits',customTraits);
+characters.forEach(c=>{
+if(c.traits)c.traits=c.traits.filter(t=>t!==trait);
+});
+sv(K.curChars,characters);
+renderCharCards();
+showToast('标签已删除');
+},true);
+}
+
 function toggleCharTrait(charIdx,trait,el){
 if(!characters[charIdx].traits)characters[charIdx].traits=[];
 const idx=characters[charIdx].traits.indexOf(trait);
@@ -3011,10 +3563,16 @@ function closeChapterList(){
 document.getElementById('chOv').classList.remove('show');
 }
 function closeReading(){
-if(abortCtrl){abortCtrl.abort();abortCtrl=null;isGen=false;}
+try{ttsStop();}catch(e){}
+try{document.getElementById('ttsBar').classList.remove('show');}catch(e){}
+if(abortCtrl){try{abortCtrl.abort();}catch(e){}abortCtrl=null;isGen=false;}
 if(isFS)toggleFullscreen();
+if(isImmersiveRead)exitImmersiveRead();
+stopAutoScroll();
 document.getElementById('rdModal').classList.remove('show');
+document.getElementById('rdModal').classList.remove('immersive-read');
 document.getElementById('rdSettingsPanel').classList.remove('show');
+document.getElementById('bnav').classList.remove('hide');
 closeNotePanel();
 closeChapterList();
 curRd=null;
@@ -3022,7 +3580,93 @@ curCh=0;
 renderArticles();
 renderCollections();
 }
+// ==================== IMMERSIVE READ ====================
+let isImmersiveRead=false;
+let autoScrolling=false;
+let scrollInterval=null;
+let scrollSpeed=3;
 
+function enterImmersiveRead(){
+const modal=document.getElementById('rdModal');
+modal.classList.add('immersive-read');
+isImmersiveRead=true;
+document.getElementById('bnav').classList.add('hide');
+if(document.documentElement.requestFullscreen){
+document.documentElement.requestFullscreen().catch(()=>{});
+}
+showToast('已进入沉浸阅读模式 🌙');
+}
+
+function exitImmersiveRead(){
+const modal=document.getElementById('rdModal');
+modal.classList.remove('immersive-read');
+isImmersiveRead=false;
+stopAutoScroll();
+document.getElementById('bnav').classList.remove('hide');
+if(document.fullscreenElement){
+document.exitFullscreen().catch(()=>{});
+}
+}
+
+function toggleAutoScroll(){
+if(autoScrolling){
+stopAutoScroll();
+}else{
+startAutoScroll();
+}
+}
+
+function startAutoScroll(){
+autoScrolling=true;
+document.getElementById('autoScrollBtn').textContent='⏸ 暂停';
+document.getElementById('autoScrollBtn').classList.add('act');
+const modal=document.getElementById('rdModal');
+const speed=scrollSpeed;
+scrollInterval=setInterval(()=>{
+modal.scrollTop+=speed;
+// 检查是否到底
+if(modal.scrollTop+modal.clientHeight>=modal.scrollHeight-50){
+stopAutoScroll();
+showToast('已到达底部');
+}
+},50);
+}
+
+function stopAutoScroll(){
+autoScrolling=false;
+document.getElementById('autoScrollBtn').textContent='▶ 自动阅读';
+document.getElementById('autoScrollBtn').classList.remove('act');
+if(scrollInterval){
+clearInterval(scrollInterval);
+scrollInterval=null;
+}
+}
+
+function updateScrollSpeed(){
+scrollSpeed=parseInt(document.getElementById('scrollSpeed').value);
+document.getElementById('speedVal').textContent=scrollSpeed;
+// 如果正在滚动，重新启动以应用新速度
+if(autoScrolling){
+stopAutoScroll();
+startAutoScroll();
+}
+}
+
+function immersivePrevCh(){
+if(!curRd||!curRd.chapters||curCh<=0)return;
+stopAutoScroll();
+curCh--;
+renderChContent();
+document.getElementById('rdModal').scrollTop=0;
+}
+
+function immersiveNextCh(){
+if(!curRd||!curRd.chapters||curCh>=curRd.chapters.length-1)return;
+stopAutoScroll();
+curCh++;
+renderChContent();
+document.getElementById('rdModal').scrollTop=0;
+}
 function toggleFullscreen(){
 const modal=document.getElementById('rdModal');
 const btn=document.getElementById('btnFS');
@@ -3171,6 +3815,19 @@ let chOutlineHint='';
 if(curRd.chOutlines&&curRd.chOutlines[chNum-1]){
 chOutlineHint=curRd.chOutlines[chNum-1];
 }
+// 也检查收藏和创作页的大纲
+if(!chOutlineHint){
+const colBook=cols.books.find(b=>b.id===curRd.id);
+if(colBook&&colBook.chOutlines&&colBook.chOutlines[chNum-1]){
+chOutlineHint=colBook.chOutlines[chNum-1];
+}
+}
+if(!chOutlineHint){
+const crWork=crWorks.find(w=>w.id===curRd.id);
+if(crWork&&crWork.chOutlines&&crWork.chOutlines[chNum-1]){
+chOutlineHint=crWork.chOutlines[chNum-1];
+}
+}
 
 let outlineHint='';
 if(outline){
@@ -3179,10 +3836,11 @@ for(let i=0;i<outlineLines.length;i++){
 const line=outlineLines[i].trim();
 if(line.includes('第'+chNum+'章')||line.includes('第'+chNum+'章')){
 outlineHint=line;
-// 也取下一行（通常是概要）
-if(i+1<outlineLines.length){
-const nextLine=outlineLines[i+1].trim();
-if(nextLine.startsWith('-')||nextLine.startsWith('—'))outlineHint+='\n'+nextLine;
+// 多取几行，获取更完整的章节信息
+for(let j=i+1;j<Math.min(i+5,outlineLines.length);j++){
+const nextLine=outlineLines[j].trim();
+if(nextLine.startsWith('第')&&nextLine.includes('章'))break;// 到下一章了
+if(nextLine)outlineHint+='\n'+nextLine;
 }
 break;
 }
@@ -3191,8 +3849,14 @@ break;
 
 let userMsg='请创作《'+curRd.title+'》的第'+chNum+'章。\n\n';
 userMsg+=context+'\n';
-if(chOutlineHint)userMsg+='【本章详细大纲】\n'+chOutlineHint+'\n\n';
-else if(outlineHint)userMsg+='【本章大纲参考】\n'+outlineHint+'\n\n';
+if(chOutlineHint){
+userMsg+='【本章创作指令——必须严格执行】\n';
+userMsg+='以下是本章必须完成的内容，这是硬性要求，不是建议：\n';
+userMsg+=chOutlineHint+'\n';
+userMsg+='⚠️ 漏掉大纲中的任何关键事件都是创作失败。请逐条检查是否完成。\n\n';
+}else if(outlineHint){
+userMsg+='【本章大纲参考】\n'+outlineHint+'\n\n';
+}
 if(direction)userMsg+='【作者对本章的方向提示】\n'+direction+'\n\n';
 userMsg+='【创作要求——逐条检查】\n';
 userMsg+='□ 开头：自然承接，不复述前情，用一个动作或对话直接切入\n';
@@ -3496,6 +4160,23 @@ sv(K.cols,cols);renderCollections();showToast('已删除');
 }
 
 // ==================== SETTINGS ====================
+// ==================== SETTINGS MODAL ====================
+function openSetModal(type){
+const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',data:'setModalData'};
+const id=map[type];if(!id)return;
+document.getElementById(id).classList.add('show');
+document.getElementById('bnav').classList.add('hide');
+if(type==='char'){renderCharCards();renderCustomTraitList();}
+if(type==='data')updateStorageDisplay();
+renderAllPresets();
+}
+function closeSetModal(type){
+const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',data:'setModalData'};
+const id=map[type];if(!id)return;
+document.getElementById(id).classList.remove('show');
+document.getElementById('bnav').classList.remove('hide');
+saveCurSettings();
+}
 function toggleGrp(el){el.classList.toggle('exp');el.nextElementSibling.classList.toggle('show');}
 
 // API Presets
@@ -4001,6 +4682,21 @@ doCopy(header+text.trim()+footer);
 }
 
 // ==================== EDITOR ====================
+// ==================== IMMERSIVE EDIT ====================
+let isImmersiveEdit=false;
+function toggleImmersiveEdit(){
+const modal=document.getElementById('edModal');
+isImmersiveEdit=!isImmersiveEdit;
+if(isImmersiveEdit){
+modal.classList.add('immersive');
+document.getElementById('immersiveEditBtn').textContent='☀️ 普通';
+if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+}else{
+modal.classList.remove('immersive');
+document.getElementById('immersiveEditBtn').textContent='🌙 沉浸';
+if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+}
+}
 function openEditor(id){
 const work=crWorks.find(w=>w.id===id);
 if(!work)return;
@@ -4251,7 +4947,7 @@ const item=document.createElement('div');
 item.className='ch-outline-item';
 item.innerHTML=
 '<div class="ch-outline-item-hdr"><span>第'+(i+1)+'章</span><span style="font-size:10px;color:var(--text2);font-weight:400">'+esc(preview)+'...</span></div>'+
-'<textarea data-ch="'+i+'" placeholder="本章大纲：主要事件、情感转折、关键信息...">'+esc(outline)+'</textarea>';
+'<textarea data-ch="'+i+'" placeholder="【必填内容】本章必须出现的事件、人物行为、情绪走向、要埋的伏笔、禁止出现的内容...写得越详细AI越听话">'+esc(outline)+'</textarea>';;
 list.appendChild(item);
 });
 document.getElementById('chOutlineOv').classList.add('show');
@@ -5562,6 +6258,226 @@ showToast('💾 已有一周未备份，建议导出数据',4000);
 
 function markBackupDone(){
 localStorage.setItem('bj_lastBackup',Date.now().toString());
+}
+// ==================== TTS 语音朗读 ====================
+let ttsUtterance=null;
+let ttsPlaying=false;
+let ttsPaused=false;
+let ttsParas=[];
+let ttsCurrentPara=0;
+let ttsSettings_=ld('bj_ttsSettings',{voiceURI:'',rate:1,pitch:1});
+
+function initTtsVoices(){
+const select=document.getElementById('ttsVoiceSelect');
+if(!select)return;
+if(typeof speechSynthesis==='undefined'||!speechSynthesis)return;
+let voices=[];
+try{voices=speechSynthesis.getVoices();}catch(e){return;}
+select.innerHTML='';
+const cnVoices=voices.filter(v=>v.lang.includes('zh')||v.lang.includes('CN'));
+const otherVoices=voices.filter(v=>!v.lang.includes('zh')&&!v.lang.includes('CN'));
+const sorted=[...cnVoices,...otherVoices];
+sorted.forEach(v=>{
+const opt=document.createElement('option');
+opt.value=v.voiceURI;
+opt.textContent=v.name+(v.lang?' ('+v.lang+')':'');
+if(v.voiceURI===ttsSettings_.voiceURI)opt.selected=true;
+select.appendChild(opt);
+});
+if(!ttsSettings_.voiceURI&&cnVoices.length>0){
+select.value=cnVoices[0].voiceURI;
+}
+}
+
+function toggleTtsBar(){
+const bar=document.getElementById('ttsBar');
+bar.classList.toggle('show');
+if(bar.classList.contains('show')){
+initTtsVoices();
+loadTtsParas();
+document.getElementById('ttsRate').value=ttsSettings_.rate;
+document.getElementById('ttsRateVal').textContent=ttsSettings_.rate.toFixed(1);
+document.getElementById('ttsPitch').value=ttsSettings_.pitch;
+document.getElementById('ttsPitchVal').textContent=ttsSettings_.pitch.toFixed(1);
+}else{
+ttsStop();
+}
+}
+
+function toggleTtsSettings(){
+document.getElementById('ttsSettings').classList.toggle('show');
+}
+
+function loadTtsParas(){
+const content=document.getElementById('rdContent');
+if(!content)return;
+ttsParas=Array.from(content.querySelectorAll('p')).map(p=>p.textContent.trim()).filter(t=>t);
+ttsCurrentPara=0;
+updateTtsInfo();
+}
+
+function updateTtsInfo(){
+try{
+document.getElementById('ttsInfo').textContent=(ttsCurrentPara+1)+'/'+ttsParas.length+'段';
+const pct=ttsParas.length>0?((ttsCurrentPara+1)/ttsParas.length*100):0;
+document.getElementById('ttsProgress').style.width=pct+'%';
+}catch(e){}
+}
+
+function highlightCurrentPara(){
+try{
+const content=document.getElementById('rdContent');
+if(!content)return;
+content.querySelectorAll('p').forEach((p,i)=>{
+p.classList.toggle('tts-highlight',i===ttsCurrentPara);
+});
+const paras=content.querySelectorAll('p');
+if(paras[ttsCurrentPara]){
+paras[ttsCurrentPara].scrollIntoView({behavior:'smooth',block:'center'});
+}
+}catch(e){}
+}
+
+function ttsPlayPause(){
+if(typeof speechSynthesis==='undefined'||!speechSynthesis){
+showToast('你的浏览器不支持语音朗读');
+return;
+}
+if(ttsParas.length===0){
+loadTtsParas();
+if(ttsParas.length===0){
+showToast('没有可朗读的内容');
+return;
+}
+}
+if(ttsPlaying&&!ttsPaused){
+try{speechSynthesis.pause();}catch(e){}
+ttsPaused=true;
+document.getElementById('ttsPlayBtn').textContent='▶ 继续';
+return;
+}
+if(ttsPaused){
+try{speechSynthesis.resume();}catch(e){}
+ttsPaused=false;
+document.getElementById('ttsPlayBtn').textContent='⏸ 暂停';
+return;
+}
+ttsPlaying=true;
+ttsPaused=false;
+document.getElementById('ttsPlayBtn').textContent='⏸ 暂停';
+speakCurrentPara();
+}
+
+function speakCurrentPara(){
+if(typeof speechSynthesis==='undefined'||!speechSynthesis)return;
+if(ttsCurrentPara>=ttsParas.length){
+ttsStop();
+showToast('朗读完成 🎉');
+return;
+}
+const text=ttsParas[ttsCurrentPara];
+ttsUtterance=new SpeechSynthesisUtterance(text);
+try{
+const voices=speechSynthesis.getVoices();
+const selectedURI=document.getElementById('ttsVoiceSelect').value;
+const voice=voices.find(v=>v.voiceURI===selectedURI);
+if(voice)ttsUtterance.voice=voice;
+}catch(e){}
+ttsUtterance.rate=parseFloat(document.getElementById('ttsRate').value)||1;
+ttsUtterance.pitch=parseFloat(document.getElementById('ttsPitch').value)||1;
+ttsUtterance.onend=()=>{
+if(!ttsPlaying)return;
+ttsCurrentPara++;
+updateTtsInfo();
+if(ttsCurrentPara<ttsParas.length){
+highlightCurrentPara();
+speakCurrentPara();
+}else{
+ttsStop();
+showToast('朗读完成 🎉');
+}
+};
+ttsUtterance.onerror=(e)=>{
+console.error('TTS错误:',e);
+if(e.error!=='interrupted'){
+showToast('朗读出错，请换个语音试试');
+}
+};
+highlightCurrentPara();
+updateTtsInfo();
+try{speechSynthesis.speak(ttsUtterance);}catch(e){}
+}
+
+function ttsStop(){
+try{if(typeof speechSynthesis!=='undefined'&&speechSynthesis)speechSynthesis.cancel();}catch(e){}
+ttsPlaying=false;
+ttsPaused=false;
+ttsCurrentPara=0;
+try{document.getElementById('ttsPlayBtn').textContent='▶ 朗读';}catch(e){}
+try{
+const content=document.getElementById('rdContent');
+if(content){
+content.querySelectorAll('p').forEach(p=>p.classList.remove('tts-highlight'));
+}
+}catch(e){}
+try{updateTtsInfo();}catch(e){}
+}
+
+function ttsPrevPara(){
+if(ttsCurrentPara>0){
+ttsCurrentPara--;
+if(ttsPlaying){
+try{speechSynthesis.cancel();}catch(e){}
+ttsPaused=false;
+speakCurrentPara();
+}else{
+highlightCurrentPara();
+updateTtsInfo();
+}
+}
+}
+
+function ttsNextPara(){
+if(ttsCurrentPara<ttsParas.length-1){
+ttsCurrentPara++;
+if(ttsPlaying){
+try{speechSynthesis.cancel();}catch(e){}
+ttsPaused=false;
+speakCurrentPara();
+}else{
+highlightCurrentPara();
+updateTtsInfo();
+}
+}
+}
+
+function updateTtsRate(){
+const val=parseFloat(document.getElementById('ttsRate').value);
+document.getElementById('ttsRateVal').textContent=val.toFixed(1);
+ttsSettings_.rate=val;
+saveTtsSettings();
+}
+
+function updateTtsPitch(){
+const val=parseFloat(document.getElementById('ttsPitch').value);
+document.getElementById('ttsPitchVal').textContent=val.toFixed(1);
+ttsSettings_.pitch=val;
+saveTtsSettings();
+}
+
+function saveTtsSettings(){
+ttsSettings_.voiceURI=document.getElementById('ttsVoiceSelect').value;
+ttsSettings_.rate=parseFloat(document.getElementById('ttsRate').value)||1;
+ttsSettings_.pitch=parseFloat(document.getElementById('ttsPitch').value)||1;
+sv('bj_ttsSettings',ttsSettings_);
+}
+
+try{
+if(typeof speechSynthesis!=='undefined'&&speechSynthesis){
+speechSynthesis.onvoiceschanged=initTtsVoices;
+}
+}catch(e){
+console.warn('语音合成API不可用:',e);
 }
 // ==================== SPLASH & INIT ====================
 function initApp(){
