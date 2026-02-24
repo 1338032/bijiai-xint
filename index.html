@@ -29,7 +29,8 @@ body.theme-light{
 body.theme-light.theme-warm{--accent:#e67e22;--accent2:#d35400;}
 body.theme-light.theme-green{--accent:#27ae60;--accent2:#1e8449;}
 body.theme-light.theme-blue{--accent:#2980b9;--accent2:#1a5276;}
-
+body.theme-light .bnav{background:rgba(245,245,248,.92);}
+body.theme-light .rd-hdr{background:rgba(245,245,248,.88);}
 /* SPLASH */
 .splash{
 position:fixed;inset:0;z-index:10000;
@@ -88,11 +89,11 @@ display:flex;align-items:center;gap:4px;transition:all .3s;
 /* BOTTOM NAV */
 .bnav{
 position:fixed;bottom:0;left:0;right:0;z-index:200;
-background:var(--card);border-top:1px solid var(--border);
+background:rgba(26,26,36,.92);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+border-top:1px solid var(--border);
 display:flex;justify-content:space-around;padding:7px 0 11px;
 transition:transform .3s;
 }
-.bnav.hide{transform:translateY(100%);}
 .bnav-i{
 display:flex;flex-direction:column;align-items:center;gap:2px;
 cursor:pointer;padding:5px 14px;border-radius:12px;
@@ -124,19 +125,19 @@ color:#fff;font-size:13px;font-weight:600;cursor:pointer;
 white-space:nowrap;transition:all .3s;
 box-shadow:0 3px 12px rgba(108,92,231,.25);
 }
-.btn-gen:active{transform:scale(.95);}
-.btn-gen:disabled{opacity:.5;cursor:not-allowed;}
+.btn-gen:active{transform:scale(.93);}
+.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
 /* TAGS */
 .tags-sec{padding:4px 18px 8px;}
-.tags-wrap{display:flex;flex-wrap:wrap;gap:7px;align-items:center;}
+.tags-wrap{display:flex;flex-wrap:nowrap;gap:7px;align-items:center;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;} .tags-wrap::-webkit-scrollbar{height:2px;} .tags-wrap::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px;} .tags-wrap .tag,.tags-wrap .tag-add{flex-shrink:0;}
 .tag{
 padding:5px 13px;border-radius:18px;font-size:11px;cursor:pointer;
 transition:all .3s;border:1px solid var(--border);background:var(--card);
 color:var(--text2);display:flex;align-items:center;gap:4px;
 user-select:none;
 }
-.tag.act{background:var(--accent);color:#fff;border-color:var(--accent);}
+.tag.act{background:var(--accent);color:#fff;border-color:var(--accent);box-shadow:0 2px 8px rgba(108,92,231,.3);}
 .tag .tdel{
 width:13px;height:13px;display:none;align-items:center;justify-content:center;
 font-size:9px;border-radius:50%;background:rgba(255,255,255,.2);cursor:pointer;
@@ -164,7 +165,7 @@ color:var(--text2);transition:all .3s;background:none;
 background:var(--card);border-radius:15px;padding:16px;
 border:1px solid var(--border);transition:all .3s;cursor:pointer;
 }
-.acard:active{transform:scale(.98);}
+.acard:active{transform:scale(.97);border-color:var(--accent);box-shadow:0 0 12px rgba(108,92,231,.15);}
 .acard-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
 .acard-t{font-size:15px;font-weight:700;line-height:1.4;flex:1;margin-right:10px;}
 .acard-badge{padding:3px 9px;border-radius:9px;font-size:9px;font-weight:600;flex-shrink:0;}
@@ -232,7 +233,8 @@ background-size:cover;background-position:center;
 opacity:.50;pointer-events:none;display:none;
 }
 .rd-hdr{
-position:sticky;top:0;z-index:10;background:var(--bg);
+position:sticky;top:0;z-index:10;
+background:rgba(15,15,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 padding:14px 18px;display:flex;justify-content:space-between;align-items:center;
 border-bottom:1px solid var(--border);
 }
@@ -375,6 +377,66 @@ user-select:none;
 }
 .star-rating span.filled{color:#f1c40f;}
 
+/* USER CARD */
+.ucard{
+margin:14px 18px;background:var(--card);border-radius:18px;
+border:1px solid var(--border);overflow:hidden;
+}
+.ucard-top{
+padding:20px 18px 14px;display:flex;align-items:center;gap:14px;
+}
+.ucard-avatar{
+width:56px;height:56px;border-radius:50%;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+display:flex;align-items:center;justify-content:center;
+font-size:24px;color:#fff;cursor:pointer;
+overflow:hidden;flex-shrink:0;position:relative;
+border:2px solid var(--border);transition:all .3s;
+}
+.ucard-avatar:active{transform:scale(.95);}
+.ucard-avatar img{width:100%;height:100%;object-fit:cover;}
+.ucard-avatar-hint{
+position:absolute;inset:0;background:rgba(0,0,0,.45);
+display:flex;align-items:center;justify-content:center;
+font-size:10px;color:#fff;opacity:0;transition:opacity .3s;
+}
+.ucard-avatar:active .ucard-avatar-hint{opacity:1;}
+.ucard-info{flex:1;min-width:0;}
+.ucard-name{
+font-size:16px;font-weight:700;margin-bottom:3px;
+display:flex;align-items:center;gap:6px;
+}
+.ucard-name span{
+overflow:hidden;text-overflow:ellipsis;white-space:nowrap;flex:1;
+}
+.ucard-name button{
+background:none;border:none;color:var(--text2);font-size:12px;
+cursor:pointer;padding:2px 6px;flex-shrink:0;
+}
+.ucard-bio{
+font-size:11px;color:var(--text2);line-height:1.5;
+display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;
+overflow:hidden;cursor:pointer;
+}
+.ucard-stats{
+padding:12px 18px 16px;border-top:1px solid var(--border);
+display:grid;grid-template-columns:repeat(4,1fr);gap:0;
+}
+.ucard-stat{
+text-align:center;padding:6px 0;
+position:relative;
+}
+.ucard-stat:not(:last-child)::after{
+content:'';position:absolute;right:0;top:20%;height:60%;
+width:1px;background:var(--border);
+}
+.ucard-stat-num{
+font-size:18px;font-weight:800;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;
+}
+.ucard-stat-label{font-size:9px;color:var(--text2);margin-top:2px;}
 /* SETTINGS */
 .set-sec{padding:14px 18px;}
 .set-grp{
@@ -575,21 +637,314 @@ cursor:pointer;padding:4px 8px;border-radius:8px;
 }
 .ch-panel-list{
 padding:12px 18px 20px;overflow-y:auto;flex:1;
-display:grid;grid-template-columns:repeat(4,1fr);gap:10px;
+display:flex;flex-direction:column;gap:0;
 }
 .ch-item{
-padding:12px 6px;border-radius:11px;border:1px solid var(--border);
-background:var(--bg);color:var(--text2);font-size:12px;
-text-align:center;cursor:pointer;transition:all .3s;
-display:flex;flex-direction:column;align-items:center;gap:3px;
+padding:13px 16px;border-radius:0;border:none;border-bottom:1px solid var(--border);
+background:var(--bg);color:var(--text2);font-size:13px;
+text-align:left;cursor:pointer;transition:all .3s;
+display:flex;flex-direction:row;align-items:center;gap:12px;
 }
+.ch-item:last-child{border-bottom:none;}
 .ch-item:active{transform:scale(.95);}
-.ch-item.act{background:var(--accent);color:#fff;border-color:var(--accent);}
+.ch-item.act{background:rgba(108,92,231,.1);color:var(--accent2);border-bottom-color:var(--border);}
 .ch-item .ch-item-num{font-size:14px;font-weight:700;}
 .ch-item .ch-item-wc{font-size:9px;opacity:.7;}
+/* CREATE PAGE */
+.cr-tabs{display:flex;padding:4px 18px;gap:0;}
+.cr-tab{
+flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;
+cursor:pointer;border:none;border-bottom:2px solid transparent;
+color:var(--text2);transition:all .3s;background:none;
+}
+.cr-tab.act{color:var(--accent2);border-bottom-color:var(--accent);}
+.cr-list{padding:8px 18px;display:flex;flex-direction:column;gap:11px;}
+.cr-card{
+background:var(--card);border-radius:13px;padding:14px;
+border:1px solid var(--border);transition:all .3s;cursor:pointer;
+}
+.cr-card:active{transform:scale(.98);}
+.cr-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.cr-card-t{font-size:14px;font-weight:700;flex:1;margin-right:8px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.cr-card-badge{padding:2px 8px;border-radius:7px;font-size:9px;font-weight:600;}
+.cr-card-badge.draft{background:rgba(255,165,0,.15);color:#f0a030;}
+.cr-card-badge.novel{background:rgba(108,92,231,.15);color:var(--accent2);}
+.cr-card-pv{font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:8px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.cr-card-ft{display:flex;justify-content:space-between;align-items:center;}
+.cr-card-info{font-size:9px;color:var(--text2);}
+.cr-card-acts{display:flex;gap:5px;}
+.cr-card-acts button{
+padding:4px 10px;border-radius:7px;border:1px solid var(--border);
+background:transparent;color:var(--text2);font-size:9px;cursor:pointer;
+transition:all .3s;
+}
+.cr-card-acts button.danger{border-color:rgba(255,107,107,.3);color:var(--danger);}
+.cr-new-bar{padding:8px 18px;display:flex;gap:8px;}
+.cr-new-bar button{
+flex:1;padding:10px;border-radius:11px;border:1px solid var(--border);
+background:var(--card);color:var(--text);font-size:12px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;gap:6px;
+transition:all .3s;
+}
+.cr-new-bar button:active{transform:scale(.97);}
+
+/* EDITOR MODAL */
+.ed-modal{
+display:none;position:fixed;inset:0;z-index:510;
+background:var(--bg);overflow-y:auto;
+}
+.ed-modal.show{display:block;animation:slideUp .3s ease;}
+.ed-hdr{
+position:sticky;top:0;z-index:10;background:var(--bg);
+padding:10px 14px;display:flex;align-items:center;
+border-bottom:none;gap:8px;
+}
+.ed-back{
+display:flex;align-items:center;gap:4px;background:none;
+border:none;color:var(--accent2);font-size:12px;cursor:pointer;padding:4px;flex-shrink:0;
+}
+.ed-back svg{width:16px;height:16px;}
+.ed-title-input{
+flex:1;padding:6px 10px;border-radius:8px;
+border:1px solid var(--border);background:var(--card);
+color:var(--text);font-size:13px;font-weight:700;outline:none;
+}
+.ed-title-input:focus{border-color:var(--accent);}
+.ed-acts{
+display:flex;gap:6px;padding:8px 14px;
+overflow-x:auto;-webkit-overflow-scrolling:touch;
+border-bottom:1px solid var(--border);
+background:var(--card);
+}
+.ed-acts::-webkit-scrollbar{display:none;}
+.ed-acts button{
+flex-shrink:0;padding:6px 12px;border-radius:8px;
+border:1px solid var(--border);background:var(--bg);
+color:var(--text2);font-size:11px;cursor:pointer;
+white-space:nowrap;display:flex;align-items:center;gap:4px;
+}
+.ed-acts button:active{transform:scale(.95);background:var(--accent);color:#fff;border-color:var(--accent);}
+.ed-ch-bar{
+padding:8px 14px;display:flex;gap:6px;align-items:center;
+border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:nowrap;
+}
+.ed-ch-bar::-webkit-scrollbar{display:none;}
+.ed-ch-btn{
+padding:5px 12px;border-radius:8px;border:1px solid var(--border);
+background:var(--card);color:var(--text2);font-size:11px;cursor:pointer;
+white-space:nowrap;flex-shrink:0;transition:all .3s;
+}
+.ed-ch-btn.act{background:var(--accent);color:#fff;border-color:var(--accent);}
+.ed-ch-add{
+padding:5px 10px;border-radius:8px;border:1px dashed var(--border);
+background:transparent;color:var(--accent2);font-size:11px;cursor:pointer;
+white-space:nowrap;flex-shrink:0;
+}
+.ed-body{padding:14px;}
+.ed-textarea{
+width:100%;min-height:calc(100vh - 200px);padding:16px;
+border-radius:12px;border:1px solid var(--border);
+background:var(--card);color:var(--text);
+font-size:var(--rd-fontsize,15px);line-height:var(--rd-lineheight,2);
+outline:none;resize:none;font-family:inherit;
+}
+.ed-textarea:focus{border-color:var(--accent);}
+.ed-textarea::placeholder{color:var(--text2);}
+.ed-footer{
+padding:10px 14px;border-top:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center;
+font-size:10px;color:var(--text2);
+}
+.ed-wc{font-weight:600;color:var(--accent2);}
+
+/* AI REVIEW PANEL */
+.ai-review-ov{
+display:none;position:fixed;inset:0;z-index:570;
+background:rgba(0,0,0,.5);align-items:center;justify-content:center;padding:20px;
+}
+.ai-review-ov.show{display:flex;}
+.ai-review-box{
+background:var(--card);border-radius:16px;padding:0;
+width:100%;max-width:400px;max-height:80vh;
+border:1px solid var(--border);overflow:hidden;
+display:flex;flex-direction:column;animation:fadeIn .25s ease;
+}
+.ai-review-hdr{
+padding:14px 16px;border-bottom:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+.ai-review-hdr h3{font-size:14px;font-weight:700;}
+.ai-review-body{
+padding:16px;overflow-y:auto;flex:1;
+font-size:13px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-wrap:break-word;
+}
+.ai-review-ft{
+padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;text-align:right;
+}
+.ai-review-ft button{
+padding:8px 20px;border-radius:10px;border:none;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:#fff;font-size:12px;font-weight:600;cursor:pointer;
+}
+/* RESOURCE PAGE */
+.res-bar{padding:10px 18px;display:flex;gap:8px;}
+.res-bar button{
+flex:1;padding:10px;border-radius:11px;border:1px solid var(--border);
+background:var(--card);color:var(--text);font-size:12px;cursor:pointer;
+display:flex;align-items:center;justify-content:center;gap:6px;
+transition:all .3s;
+}
+.res-bar button:active{transform:scale(.97);}
+.res-tabs{display:flex;padding:4px 18px;gap:0;}
+.res-tab{
+flex:1;padding:9px;text-align:center;font-size:13px;font-weight:600;
+cursor:pointer;border:none;border-bottom:2px solid transparent;
+color:var(--text2);transition:all .3s;background:none;
+}
+.res-tab.act{color:var(--accent2);border-bottom-color:var(--accent);}
+.res-list{padding:8px 18px;display:flex;flex-direction:column;gap:10px;}
+.res-card{
+background:var(--card);border-radius:13px;padding:14px;
+border:1px solid var(--border);transition:all .3s;
+}
+.res-card-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;}
+.res-card-t{font-size:14px;font-weight:700;flex:1;margin-right:8px;}
+.res-card-type{
+padding:2px 8px;border-radius:7px;font-size:9px;font-weight:600;
+}
+.res-card-type.char{background:rgba(108,92,231,.15);color:var(--accent2);}
+.res-card-type.world{background:rgba(39,174,96,.15);color:var(--success);}
+.res-card-type.style{background:rgba(230,126,34,.15);color:#e67e22;}
+.res-card-type.work{background:rgba(52,152,219,.15);color:#3498db;}
+.res-card-type.exp{background:rgba(241,196,15,.15);color:#f1c40f;}
+.res-card-pv{
+font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:8px;
+display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
+}
+.res-card-ft{display:flex;justify-content:space-between;align-items:center;}
+.res-card-info{font-size:9px;color:var(--text2);}
+.res-card-acts{display:flex;gap:5px;}
+.res-card-acts button{
+padding:4px 10px;border-radius:7px;border:1px solid var(--border);
+background:transparent;color:var(--text2);font-size:9px;cursor:pointer;
+transition:all .3s;
+}
+.res-card-acts button.use{color:var(--accent2);border-color:var(--accent);}
+.res-card-acts button.danger{border-color:rgba(255,107,107,.3);color:var(--danger);}
+
+/* RESOURCE EXPORT DIALOG */
+.res-exp-ov{
+display:none;position:fixed;inset:0;z-index:810;
+background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:20px;
+}
+.res-exp-ov.show{display:flex;}
+.res-exp-box{
+background:var(--card);border-radius:16px;padding:20px;
+width:100%;max-width:360px;border:1px solid var(--border);
+animation:fadeIn .25s ease;max-height:85vh;overflow-y:auto;
+}
+.res-exp-box h3{font-size:15px;margin-bottom:14px;}
+.res-chk-item{
+display:flex;align-items:center;gap:10px;padding:10px 12px;
+background:var(--bg);border-radius:9px;border:1px solid var(--border);
+margin-bottom:8px;cursor:pointer;transition:all .3s;
+}
+.res-chk-item.checked{border-color:var(--accent);background:rgba(108,92,231,.06);}
+.res-chk-box{
+width:18px;height:18px;border-radius:5px;border:2px solid var(--border);
+display:flex;align-items:center;justify-content:center;flex-shrink:0;
+font-size:11px;color:#fff;transition:all .3s;
+}
+.res-chk-item.checked .res-chk-box{background:var(--accent);border-color:var(--accent);}
+.res-chk-info{flex:1;}
+.res-chk-name{font-size:12px;font-weight:600;}
+.res-chk-desc{font-size:9px;color:var(--text2);margin-top:2px;}
+.res-exp-input{
+width:100%;padding:9px 13px;border-radius:9px;
+border:1px solid var(--border);background:var(--bg);
+color:var(--text);font-size:12px;outline:none;margin:10px 0;
+}
+.res-exp-input:focus{border-color:var(--accent);}
+.res-exp-btns{display:flex;gap:9px;margin-top:14px;}
+.res-exp-btns button{
+flex:1;padding:10px;border-radius:11px;border:none;
+font-size:12px;font-weight:600;cursor:pointer;
+}
+/* NOTE PANEL */
+.note-ov{
+display:none;position:fixed;inset:0;z-index:560;
+background:rgba(0,0,0,.45);
+}
+.note-ov.show{display:block;}
+.note-panel{
+position:fixed;top:0;right:-320px;bottom:0;z-index:561;
+width:300px;max-width:85vw;background:var(--card);
+border-left:1px solid var(--border);
+display:flex;flex-direction:column;
+transition:right .3s ease;
+box-shadow:-4px 0 20px rgba(0,0,0,.3);
+}
+.note-ov.show .note-panel{right:0;}
+.note-hdr{
+padding:14px 16px;border-bottom:1px solid var(--border);
+display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+}
+.note-hdr h3{font-size:14px;font-weight:700;}
+.note-hdr span{font-size:10px;color:var(--text2);}
+.note-close{
+background:none;border:none;color:var(--text2);font-size:18px;
+cursor:pointer;padding:4px 8px;
+}
+.note-list{
+flex:1;overflow-y:auto;padding:12px 16px;
+display:flex;flex-direction:column;gap:10px;
+}
+.note-empty{
+text-align:center;padding:40px 10px;color:var(--text2);font-size:12px;
+}
+.note-item{
+background:var(--bg);border-radius:10px;padding:11px 13px;
+border:1px solid var(--border);position:relative;
+}
+.note-item-text{font-size:12px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-wrap:break-word;}
+.note-item-ft{
+display:flex;justify-content:space-between;align-items:center;
+margin-top:7px;
+}
+.note-item-time{font-size:9px;color:var(--text2);}
+.note-item-del{
+background:none;border:none;color:var(--danger);font-size:9px;
+cursor:pointer;padding:2px 6px;border-radius:5px;
+border:1px solid rgba(255,107,107,.3);
+}
+.note-input-wrap{
+padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;
+}
+.note-input-row{display:flex;gap:8px;}
+.note-input-row textarea{
+flex:1;padding:9px 12px;border-radius:10px;
+border:1px solid var(--border);background:var(--bg);
+color:var(--text);font-size:12px;outline:none;
+resize:none;min-height:38px;max-height:100px;
+font-family:inherit;line-height:1.5;
+}
+.note-input-row textarea:focus{border-color:var(--accent);}
+.note-input-row textarea::placeholder{color:var(--text2);}
+.note-send{
+padding:8px 14px;border-radius:10px;border:none;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:#fff;font-size:12px;font-weight:600;cursor:pointer;
+align-self:flex-end;white-space:nowrap;
+}
+.note-send:active{transform:scale(.95);}
+.note-dot{
+display:inline-block;width:6px;height:6px;border-radius:50%;
+background:var(--accent2);margin-left:4px;vertical-align:middle;
+}
 ::-webkit-scrollbar{width:3px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.rd-para{transition:background .3s;border-radius:4px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y;}
 </style>
 </head>
 <body>
@@ -602,7 +957,7 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <div class="splash-spin" id="splashSpin"></div>
 <span id="splashTxt">正在加载...</span>
 </div>
-<div class="splash-ver">v2.1.0</div>
+<div class="splash-ver" id="splashVer">v2.3.0</div>
 </div>
 
 <!-- APP -->
@@ -628,8 +983,8 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <!-- WORKSHOP -->
 <div class="pg act" id="pg-workshop">
 <div class="sbar">
-<input type="text" id="searchInput" placeholder="描述你想要的故事内容...">
-<button class="btn-gen" id="btnGen" onclick="generateArticle()">生成</button>
+<input type="text" id="searchInput" placeholder="描述你想要的故事内容..." onkeydown="if(event.key==='Enter'){event.preventDefault();generateArticle();}">
+<button class="btn-gen" id="btnGen" onclick="handleGenBtn()">生成</button>
 </div>
 <div class="tags-sec">
 <div class="tags-wrap" id="tagsWrap"></div>
@@ -638,10 +993,16 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <button class="ttab act" onclick="switchType('long',this)">长篇连载</button>
 <button class="ttab" onclick="switchType('short',this)">短篇一发</button>
 </div>
+<div style="padding:2px 18px 6px;display:flex;align-items:center;gap:8px">
+<span style="font-size:10px;color:var(--text2);flex-shrink:0">创意度</span>
+<input type="range" min="0.3" max="1.5" step="0.1" value="0.8" id="quickTemp" style="flex:1;accent-color:var(--accent)" oninput="document.getElementById('qtVal').textContent=this.value;document.getElementById('apiTemp').value=this.value">
+<span style="font-size:10px;color:var(--accent2);width:24px;text-align:right" id="qtVal">0.8</span>
+<span style="font-size:9px;color:var(--text2)">稳定←→狂野</span>
+</div>
 <div class="alist" id="articleList">
 <div class="empty-st">
-<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6l4 2M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg>
-<p>输入描述或选择标签<br>点击「生成」开始创作</p>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+<p>输入描述或选择标签<br>点击「生成」开始创作吧 ✨</p>
 </div>
 </div>
 </div>
@@ -662,9 +1023,55 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <div class="slist" id="shortList"></div>
 </div>
 </div>
-
+<!-- CREATE -->
+<div class="pg" id="pg-create">
+<div class="cr-new-bar">
+<button onclick="newDraft()">📄 新建草稿</button>
+<button onclick="newNovel()">📖 新建小说</button>
+<button onclick="openOutlineGen()" style="border-color:var(--accent);color:var(--accent2)">🧠 AI大纲</button>
+</div>
+<div class="cr-tabs">
+<button class="cr-tab act" onclick="switchCrTab('draft',this)">草稿箱</button>
+<button class="cr-tab" onclick="switchCrTab('novel',this)">我的小说</button>
+</div>
+<div class="cr-list" id="crList"></div>
+</div>
 <!-- SETTINGS -->
 <div class="pg" id="pg-settings">
+<div class="ucard" id="ucard">
+<div class="ucard-top">
+<div class="ucard-avatar" id="ucAvatar" onclick="uploadAvatar()">
+<span id="ucAvatarPh">✦</span>
+<div class="ucard-avatar-hint">更换</div>
+</div>
+<div class="ucard-info">
+<div class="ucard-name">
+<span id="ucName">点击设置昵称</span>
+<button onclick="editUcName()" title="编辑昵称">✏️</button>
+</div>
+<div class="ucard-bio" id="ucBio" onclick="editUcBio()">点击添加个人简介...</div>
+</div>
+</div>
+<div class="ucard-stats">
+<div class="ucard-stat">
+<div class="ucard-stat-num" id="statTotal">0</div>
+<div class="ucard-stat-label">总字数</div>
+</div>
+<div class="ucard-stat">
+<div class="ucard-stat-num" id="statWorks">0</div>
+<div class="ucard-stat-label">作品数</div>
+</div>
+<div class="ucard-stat">
+<div class="ucard-stat-num" id="statCols">0</div>
+<div class="ucard-stat-label">收藏数</div>
+</div>
+<div class="ucard-stat">
+<div class="ucard-stat-num" id="statNotes">0</div>
+<div class="ucard-stat-label">笔记数</div>
+</div>
+</div>
+</div>
+<input type="file" id="avatarUp" accept="image/*" style="display:none" onchange="handleAvatarUpload(event)">
 <div class="set-sec">
 
 <!-- API -->
@@ -675,12 +1082,22 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 </div>
 <div class="set-grp-c show">
 <div class="fg"><label class="fl">API地址 (Base URL)</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
-<div class="fg"><label class="fl">API密钥 (Key)</label><input class="fi" id="apiKey" type="password" placeholder="sk-..."></div>
+<div class="fg"><label class="fl">API密钥 (Key)</label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password';this.textContent=k.type==='password'?'👁':'🙈'" style="width:auto;padding:6px 10px;margin:0;font-size:14px">👁</button></div></div>
 <div class="fg"><label class="fl">模型名称</label> <div style="display:flex;gap:6px"> <input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"> <datalist id="modelSuggest"></datalist> <button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0;white-space:nowrap;font-size:11px">拉取模型</button> </div> </div>
 <div class="frow">
 <div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div>
 <div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div>
 </div>
+<div class="fg" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
+<label class="fl" style="margin:0">流式输出（逐字显示）</label>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleStreamSwitch(this)">
+<input type="checkbox" id="streamOn" checked style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s;position:relative" id="streamTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="streamThumb"></div>
+</div>
+</div>
+</div>
+<p style="font-size:9px;color:var(--text2);margin-top:2px">关闭后将一次性返回完整内容，适合不支持流式的API或网络不稳定时使用</p>
 <button class="btn-s" onclick="testApiConnection()" id="btnTestApi" style="margin-bottom:5px">🔗 测试连接</button>
 <button class="btn-p" onclick="saveApiPreset()">💾 保存为预设</button>
 <div class="plist" id="apiPL"></div>
@@ -776,13 +1193,30 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
 <button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button>
 </div>
-<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">导出内容包含：API预设、人物设定、世界观预设、收藏内容、外观设置</p>
+<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">导出内容包含：API预设、人物设定、世界观预设、文风预设、收藏内容、创作内容、笔记、外观设置、卡片设置</p>
 </div>
 </div>
-
 </div>
 </div>
-
+<!-- RESOURCE -->
+<div class="pg" id="pg-resource">
+<div style="padding:14px 18px 4px"><h2>📦 资源广场</h2><p style="font-size:11px;color:var(--text2);margin-top:4px">打包分享你的设定和创作，导入别人的资源包</p></div>
+<div class="res-bar">
+<button onclick="openResExport()">📤 打包导出</button>
+<button onclick="document.getElementById('resImpFile').click()">📥 导入资源包</button>
+<button onclick="writeExpShare()">✍️ 写经验</button>
+<input type="file" id="resImpFile" accept=".json" style="display:none" onchange="importResPack(event)">
+</div>
+<div class="res-tabs">
+<button class="res-tab act" onclick="switchResTab('all',this)">全部</button>
+<button class="res-tab" onclick="switchResTab('char',this)">人物</button>
+<button class="res-tab" onclick="switchResTab('world',this)">世界观</button>
+<button class="res-tab" onclick="switchResTab('style',this)">文风</button>
+<button class="res-tab" onclick="switchResTab('work',this)">作品</button>
+<button class="res-tab" onclick="switchResTab('exp',this)">经验</button>
+</div>
+<div class="res-list" id="resList"></div>
+</div>
 </div><!-- end app -->
 
 <!-- READING MODAL -->
@@ -797,7 +1231,8 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <button onclick="toggleRdSettings()" title="阅读设置">⚙</button>
 <button onclick="toggleFullscreen()" id="btnFS">⛶</button>
 <button onclick="copyCurrentArticle()">📋</button>
-<button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
+<button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
+<button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button> <button onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
 </div>
 </div>
 <div class="rd-body">
@@ -840,13 +1275,29 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <p><strong>长篇连载</strong>：生成后可以不断续写新章节。需要先收藏才能使用「继续连载」功能。续写前可以输入方向提示引导AI。支持撤销上一章重新生成。章节较多时可点击「📑 目录」打开章节列表快速跳转。</p>
 <p><strong>短篇一发</strong>：一次性生成完整故事，适合灵感速写或短文创作。</p>
 <h3>四、流式输出</h3>
-<p>生成文章时采用流式输出技术，你可以实时看到AI逐字创作的过程，无需漫长等待。生成过程中会显示已生成字数和耗时。</p>
+<p>生成文章时采用流式输出技术，你可以实时看到AI逐字创作的过程，无需漫长等待。生成过程中会显示已生成字数和耗时。点击「停止」按钮或关闭阅读界面可随时中止生成。</p>
 <h3>五、收藏管理</h3>
 <p>点击♡按钮即可收藏。长篇可上传封面、设置状态（连载中/已完结/暂停）、给文章打星评分。支持一键复制纯文本（自动添加创作来源注释）。</p>
+<h3>五点五、创作页面</h3>
+<p>底部导航栏的「创作」页面是你的个人写作空间，支持两种模式：</p>
+<ul>
+<li><strong>草稿</strong>：单篇文档，适合随手记录灵感、写短文。</li>
+<li><strong>小说</strong>：多章节连载，可自由添加和删除章节，适合长篇创作。</li>
+</ul>
+<p>编辑器支持实时字数统计、2秒自动保存、一键复制全文。点击编辑器右上角的🤖按钮，可以让AI对当前章节进行专业评价，给出亮点分析和改进建议。</p>
 <h3>六、阅读体验</h3>
 <p>阅读时可调节字号和行高、切换全屏模式、设置背景图片，打造专属阅读空间。</p>
 <h3>七、个性化设置</h3>
 <p>五种主题风格（默认紫/暖橙/翠绿/深蓝/日间浅色）、自定义字体、阅读背景图片。支持独立的文风设置，内置7种快捷文风模板（轻松日常/沉郁文学/甜宠言情/悬疑紧张/古风典雅/幽默讽刺/硬核写实），也可自定义文风并保存为预设。</p>
+<h3>七点五、资源广场</h3>
+<p>底部导航栏的「资源」页面用于打包分享和导入设定资源。</p>
+<ul>
+<li><strong>打包导出</strong>：勾选你想分享的人物设定、世界观、文风、创作作品，打包成 .json 资源文件。把文件发给朋友或分享到社群即可。</li>
+<li><strong>导入资源包</strong>：收到别人的资源包文件后，点击导入即可查看和使用。</li>
+<li><strong>应用资源</strong>：点击资源卡片上的「应用」按钮，可以一键将人物/世界观/文风加载到你的设置中，作品会导入到创作页。</li>
+<li><strong>写经验</strong>：直接在资源页撰写创作心得，保存后也可以导出分享。</li>
+<li><strong>创作页分享</strong>：创作页的作品卡片上有「分享」按钮，可以快速将作品导出为资源包。</li>
+</ul>
 <h3>八、数据安全</h3>
 <p>所有数据保存在浏览器本地（localStorage），不上传到任何服务器。封面图片建议使用小尺寸图以节省存储空间。建议定期通过「数据管理」导出备份。</p>
 <div class="notice">
@@ -861,7 +1312,7 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <p>💬 微信：Aa9620520</p>
 <p>💬 QQ：962005530</p>
 </div>
-<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.1.0 · Created by 心田<br>让每一个灵感都值得被记录</p>
+<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.3.0 · Created by 心田<br>让每一个灵感都值得被记录</p>
 </div>
 </div>
 
@@ -887,6 +1338,88 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 </div>
 </div>
 </div>
+<!-- RESOURCE EXPORT DIALOG -->
+<div class="res-exp-ov" id="resExpOv" onclick="if(event.target===this)closeResExport()">
+<div class="res-exp-box" id="resExpBox">
+<h3>📤 打包资源</h3>
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px">勾选你想分享的内容，打包成资源文件发给别人</p>
+<div id="resExpList"></div>
+<input class="res-exp-input" id="resPackName" placeholder="给资源包起个名字（可选）">
+<textarea class="res-exp-input" id="resPackDesc" placeholder="资源包简介（可选）" style="min-height:50px;resize:vertical;font-family:inherit"></textarea>
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="closeResExport()">取消</button>
+<button class="dlg-ok" onclick="doResExport()">导出资源包</button>
+</div>
+</div>
+</div>
+<!-- EXP SHARE DIALOG -->
+<div class="res-exp-ov" id="expOv" onclick="if(event.target===this)closeExpDlg()">
+<div class="res-exp-box">
+<h3>✍️ 写经验分享</h3>
+<input class="res-exp-input" id="expTitle" placeholder="经验标题">
+<textarea class="res-exp-input" id="expContent" placeholder="分享你的创作心得、写作技巧、踩坑经验..." style="min-height:120px;resize:vertical;font-family:inherit;line-height:1.6"></textarea>
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="closeExpDlg()">取消</button>
+<button class="dlg-ok" onclick="saveExpShare()">保存</button>
+</div>
+</div>
+</div>
+<!-- EDITOR MODAL -->
+<div class="ed-modal" id="edModal">
+<div class="ed-hdr">
+<button class="ed-back" onclick="closeEditor()">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回
+</button>
+<input class="ed-title-input" id="edTitle" placeholder="输入标题...">
+</div>
+<div class="ed-acts">
+<button onclick="saveEditorContent()">💾 保存</button>
+<button onclick="formatEditorText()">¶ 排版</button>
+<button onclick="copyEditorContent()">📋 复制</button>
+<button onclick="requestAIReview()">🤖 AI评价</button> <button onclick="viewOutline()" id="edOutlineBtn" style="display:none">📋 大纲</button>
+<button onclick="aiRewriteChapter()">🔄 AI重写</button>
+<button onclick="deleteEdChapter()" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️ 删除本章</button>
+</div>
+<div class="ed-ch-bar" id="edChBar" style="display:none"></div>
+<div class="ed-body">
+<textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
+</div>
+<div class="ed-footer">
+<span>当前字数：<span class="ed-wc" id="edWc">0</span></span>
+<span id="edSaveStatus">未保存</span>
+</div>
+</div>
+
+<!-- AI REVIEW -->
+<div class="ai-review-ov" id="aiReviewOv" onclick="if(event.target===this)closeAIReview()">
+<div class="ai-review-box">
+<div class="ai-review-hdr">
+<h3>🤖 AI写作建议</h3>
+<button class="note-close" onclick="closeAIReview()">✕</button>
+</div>
+<div class="ai-review-body" id="aiReviewBody">
+<div class="note-empty">点击下方按钮获取AI评价</div>
+</div>
+<div class="ai-review-ft">
+<button onclick="closeAIReview()">关闭</button>
+</div>
+</div>
+</div>
+<div class="note-ov" id="noteOv" onclick="if(event.target===this)closeNotePanel()">
+<div class="note-panel">
+<div class="note-hdr">
+<div><h3>📝 章节笔记</h3><span id="noteChInfo"></span></div>
+<button class="note-close" onclick="closeNotePanel()">✕</button>
+</div>
+<div class="note-list" id="noteList"></div>
+<div class="note-input-wrap">
+<div class="note-input-row">
+<textarea id="noteInput" placeholder="写下你的想法..." rows="1" oninput="this.style.height='38px';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
+<button class="note-send" onclick="addNote()">记录</button>
+</div>
+</div>
+</div>
+</div>
 <div class="ch-ov" id="chOv" onclick="if(event.target===this)closeChapterList()">
 <div class="ch-panel">
 <div class="ch-panel-hdr">
@@ -894,6 +1427,36 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <button class="ch-panel-close" onclick="closeChapterList()">✕</button>
 </div>
 <div class="ch-panel-list" id="chPanelList"></div>
+</div>
+</div>
+<div class="res-exp-ov" id="outlineOv" onclick="if(event.target===this)closeOutlineGen()">
+<div class="res-exp-box" style="max-width:400px">
+<h3>🧠 AI大纲生成器</h3>
+<p style="font-size:11px;color:var(--text2);margin-bottom:10px">描述你想写的故事，AI会生成详细大纲，确认后自动创建小说</p>
+<input class="res-exp-input" id="outlineTitle" placeholder="小说标题（可选，AI也会帮你起）">
+<textarea class="res-exp-input" id="outlineDesc" placeholder="描述故事方向，比如：一个穿越到古代的程序员，利用现代知识在朝堂上步步高升..." style="min-height:80px;resize:vertical;font-family:inherit;line-height:1.6"></textarea>
+<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
+<span style="font-size:10px;color:var(--text2);width:100%">预设章节数：</span>
+<button class="tag" onclick="setOutlineCh(5,this)">5章</button>
+<button class="tag act" onclick="setOutlineCh(10,this)">10章</button>
+<button class="tag" onclick="setOutlineCh(15,this)">15章</button>
+<button class="tag" onclick="setOutlineCh(20,this)">20章</button>
+<button class="tag" onclick="setOutlineCh(30,this)">30章</button>
+</div>
+<div id="outlineResult" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;max-height:40vh;overflow-y:auto">
+<div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:8px">📋 生成的大纲</div>
+<div id="outlineContent" style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-wrap:break-word"></div>
+</div>
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="closeOutlineGen()">取消</button>
+<button class="dlg-ok" id="outlineGenBtn" onclick="doGenOutline()">🧠 生成大纲</button>
+</div>
+<div id="outlineActions" style="display:none;margin-top:8px">
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="doGenOutline()">🔄 重新生成</button>
+<button class="dlg-ok" onclick="applyOutline()">✅ 确认并创建小说</button>
+</div>
+</div>
 </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -908,16 +1471,24 @@ display:flex;flex-direction:column;align-items:center;gap:3px;
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 19.5A2.5 2.5 0 016.5 17H20M4 19.5V5a2 2 0 012-2h14v14H6.5A2.5 2.5 0 004 19.5z"/></svg>
 收藏
 </button>
+<button class="bnav-i" onclick="switchPage('create',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M11 4H4a2 2 0 00-2 2v14a2 2 0 002 2h14a2 2 0 002-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 013 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+创作
+</button>
 <button class="bnav-i" onclick="switchPage('settings',this)">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 01-2.83 2.83l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-4 0v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 010-4h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 012.83-2.83l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 014 0v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 010 4h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
 设置
+</button>
+<button class="bnav-i" onclick="switchPage('resource',this)">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 16V8a2 2 0 00-1-1.73l-7-4a2 2 0 00-2 0l-7 4A2 2 0 003 8v8a2 2 0 001 1.73l7 4a2 2 0 002 0l7-4A2 2 0 0021 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+资源
 </button>
 </nav>
 
 <input type="file" id="coverUp" accept="image/*" style="display:none">
 <script>
 // ==================== CONFIG ====================
-const APP_VER='v2.1.0';
+const APP_VER='v2.3.0';
 
 // ==================== STORAGE ====================
 const K={
@@ -948,6 +1519,15 @@ let curCh=0;// current chapter index
 let isGen=false;
 let isFS=false;
 let abortCtrl=null;// for aborting stream
+let crWorks=ld('bj_crWorks',[]);// 创作作品列表
+let crTab='draft';// 当前创作页tab
+let curEd=null;// 当前编辑的作品
+let curEdCh=0;// 当前编辑的章节
+let edAutoSaveTimer=null;
+let resPacks=ld('bj_resPacks',[]);// 已导入的资源包
+let resTab='all';
+let useStream=ld('bj_stream',true);
+let userCard=ld('bj_userCard',{name:'',bio:'',avatar:''});
 
 // ==================== TOAST ====================
 let toastTimer=null;
@@ -1000,7 +1580,9 @@ document.getElementById('pg-'+pg).classList.add('act');
 document.querySelectorAll('.bnav-i').forEach(n=>n.classList.remove('act'));
 el.classList.add('act');
 if(pg==='collection')renderCollections();
-if(pg==='settings'){renderAllPresets();renderCharCards();}
+if(pg==='create')renderCrList();
+if(pg==='resource')renderResList();
+if(pg==='settings'){renderAllPresets();renderCharCards();updateStats();}
 }
 
 // ==================== TAGS ====================
@@ -1036,7 +1618,7 @@ function renderArticles(){
 const list=document.getElementById('articleList');
 const filtered=ws.filter(a=>a.type===curType);
 if(filtered.length===0){
-list.innerHTML='<div class="empty-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 6v6l4 2M12 2a10 10 0 100 20 10 10 0 000-20z"/></svg><p>输入描述或选择标签<br>点击「生成」开始创作</p></div>';
+list.innerHTML='<div class="empty-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><p>输入描述或选择标签<br>点击「生成」开始创作吧 ✨</p></div>';
 return;
 }
 list.innerHTML='';
@@ -1050,16 +1632,19 @@ let text='';
 if(article.type==='long'&&article.chapters&&article.chapters.length>0)text=article.chapters[0];
 else if(article.content)text=article.content;
 const preview=(text||'').substring(0,120).replace(/\n/g,' ');
-const wc=countWords(text);
+const wc=getTotalWords(article); const chCount=article.chapters?article.chapters.length:0;
 const tagsHtml=(article.tags||[]).map(t=>'<span class="acard-tag">'+esc(t)+'</span>').join('');
 
 card.innerHTML=
 '<div class="acard-hd"><div class="acard-t">'+esc(article.title)+'</div>'+
 '<span class="acard-badge '+article.type+'">'+(article.type==='long'?'长篇':'短篇')+'</span></div>'+
 '<div class="acard-pv">'+esc(preview)+'</div>'+
-'<div class="acard-ft"><div class="acard-tags">'+tagsHtml+'</div>'+
-'<span class="acard-wc">'+wc+'字</span>'+
-'<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')">'+(liked?'❤️ 已收藏':'♡ 收藏')+'</button></div>';
+'<div class="acard-ft">'+
+'<span class="acard-wc">'+(chCount>0?chCount+'章 · ':'')+wc+'字 · '+new Date(article.createdAt).toLocaleDateString()+'</span>'+
+'<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')">'+(liked?'❤️ 已收藏':'♡ 收藏')+'</button>'+
+'<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️</button>'+
+'</div>'+
+'<div class="acard-tags" style="margin-top:8px">'+tagsHtml+'</div>';
 list.appendChild(card);
 });
 }
@@ -1198,6 +1783,9 @@ sv(K.ws,ws);
 sv(K.cols,cols);
 sv(K.tags,tags);
 sv(K.ap,ap);
+sv('bj_crWorks',crWorks);
+sv('bj_resPacks',resPacks);
+sv('bj_stream',useStream);
 }
 function saveCurSettings(){
 sv(K.curApi,getCurApi());
@@ -1208,6 +1796,7 @@ minWords:parseInt(document.getElementById('minWords').value)||800
 });
 const styleEl=document.getElementById('styleDesc');
 if(styleEl){ap.curStyle=styleEl.value;sv(K.ap,ap);}
+useStream=document.getElementById('streamOn').checked;sv('bj_stream',useStream);
 }
 
 // ==================== CHARACTER MANAGEMENT ====================
@@ -1257,53 +1846,71 @@ function buildSysPrompt(){
 const wD=(document.getElementById('worldDesc').value||'').trim();
 const mW=parseInt(document.getElementById('minWords').value)||800;
 
-let p='你是一位才华横溢、风格多变的文学创作者。你不是在完成任务，而是在享受创作本身。你拥有敏锐的感受力和独特的表达方式，善于捕捉生活中微妙的瞬间并将其转化为打动人心的文字。\n\n';
-p+='【核心创作原则】\n';
-p+='1. 语言要有温度和质感，像真人在讲述而非机器在输出。句子要有呼吸感，长短错落，避免每句都工整对仗\n';
-p+='2. 叙事节奏要像音乐一样有快有慢——紧张时短句急促，舒缓时长句绵延，不要匀速推进\n';
-p+='3. 人物要"活"起来：每个角色有自己的口头禅、小动作、思维方式。对话要像真人说话，可以有口误、打断、欲言又止\n';
-p+='4. 场景不要面面俱到地描写，抓住一两个最有感染力的细节深入刻画，比泛泛描述更有力量\n';
-p+='5. 情节推进要有意外感，避免读者能猜到下一步。善用日常中的反常、平静中的暗涌\n';
-p+='6. 情感表达要克制而真实——越是强烈的情感越要用冷静的笔触写，让读者自己去感受而非被告知\n';
-p+='7. 避免流水账式叙述，避免空洞无物的描写，每段文字都应有意义\n';
-p+='8. 每一章都需要在开头用自然的方式衔接上文，结尾留有余韵或悬念\n';
-p+='9. 【重要·反八股文要求】严禁使用以下套路化写法：\n';
-p+='   - 禁止滥用"不禁""竟然""居然""缓缓""淡淡""微微"等万能副词\n';
-p+='   - 禁止使用"殊不知""岂料""却说""话说"等说书腔开头\n';
-p+='   - 禁止出现"他的眼神深邃如海""她美得不可方物"等空洞形容\n';
-p+='   - 禁止每段都以角色名开头，要变化句式结构\n';
-p+='   - 禁止用排比句堆砌情绪，要用具体细节传递感受\n';
-p+='   - 禁止"金手指式"剧情推进（主角永远恰好遇到转机）\n';
-p+='   - 禁止千篇一律的外貌描写模板（剑眉星目、肤若凝脂等）\n';
-p+='   - 对话要口语化、有个性差异，不要每个角色都文绉绉地说话\n';
-p+='   - 用"展示"代替"告知"：不要写"她很伤心"，要写出让读者感受到伤心的具体行为和细节\n';
-p+='   - 每个场景至少融入两种以上感官描写，但要自然不刻意\n';
-p+='10. 追求文学性与可读性的平衡，语言要有节奏感和呼吸感，长短句交替使用\n\n';
-p+='【输出格式——必须严格遵守】\n';
-p+='你的输出必须且只能包含以下内容，不允许有任何额外文字：\n';
-p+='第一行：小说标题（纯文字，不加书名号、引号、#号、"标题："等任何前缀后缀）\n';
+let p='你是一位真正的小说家——不是AI助手在模拟写作，而是一个有血有肉、有审美偏好、有创作执念的作者。你写作时会忘记时间，会为笔下的角色心疼，会因为一个精妙的转折而兴奋。\n\n';
+
+p+='【你的创作信条】\n';
+p+='- 好故事的本质是"意料之外，情理之中"\n';
+p+='- 人物不是工具，每个角色都认为自己是主角\n';
+p+='- 最好的描写是让读者"看见"而不是"被告知"\n';
+p+='- 沉默比台词更有力，留白比铺陈更动人\n';
+p+='- 真实感大于戏剧性，生活细节大于宏大叙事\n\n';
+
+p+='【写作技法】\n';
+p+='叙述节奏：像呼吸一样自然交替——紧张时用短句、断句、甚至一个词独立成段；舒缓时让句子像河流一样蜿蜒。永远不要匀速行驶。\n\n';
+p+='人物塑造：通过"做什么"和"怎么做"来展现性格，而不是旁白解说。一个人紧张时是咬指甲还是反复整理衣领？生气时是摔门还是异常平静？这些细节比任何形容词都有力。每个角色说话的方式、用词习惯、思维逻辑都应该不同，遮住名字也能分辨是谁在说话。\n\n';
+p+='场景营造：不要全景描写，选择一两个最有感染力的感官细节深入刻画。写一个炎热的下午，不要说"烈日炎炎"，写柏油路上扭曲的热浪、写后背黏在塑料椅上撕开时的声音。至少融入两种感官（视觉之外的：听觉、触觉、嗅觉、味觉）。\n\n';
+p+='情感表达：越强烈的情感越要克制地写。不要写"她悲痛欲绝"，写她机械地叠着他的衣服，叠了又拆，拆了又叠。让读者自己心疼。\n\n';
+p+='对话写作：真人说话会打断、会跑题、会答非所问、会欲言又止。对话要有潜台词——嘴上说的和心里想的不一样才有张力。避免所有角色都用同一种语气说话。\n\n';
+p+='情节推进：每个场景都要有"变化"——进入场景时的状态和离开时不同（情感、关系、信息、处境）。如果一个场景删掉后故事不受影响，那它就不该存在。善用日常中的反常来制造悬念。\n\n';
+
+p+='【绝对避免的写法】\n';
+p+='以下是业余写作的典型标志，出现任何一条都会严重降低作品质量：\n';
+p+='- 万能副词轰炸："不禁""缓缓""淡淡""微微""默默"——删掉它们，句子反而更有力\n';
+p+='- 空洞形容词："深邃的眼眸""完美的侧脸""不可方物"——用具体细节替代\n';
+p+='- 说书腔："殊不知""岂料""却说""话说回来"——这不是评书\n';
+p+='- 排比堆砌：连续三个以上相同句式——克制，一个精准的比喻胜过十个排比\n';
+p+='- 心理旁白过多：大段内心独白解释感受——用行为和细节展示\n';
+p+='- 巧合推进：主角总是恰好遇到转机——让困境真实地困住角色\n';
+p+='- 模板外貌："剑眉星目""肤若凝脂""樱桃小嘴"——写只属于这个角色的特征\n';
+p+='- 每段都以角色名开头——变化句式，用动作、环境、对话开头\n';
+p+='- 情绪词直给："他很愤怒""她很开心"——展示愤怒和开心的具体表现\n\n';
+
+p+='【输出格式——严格遵守】\n';
+p+='第一行：小说标题（纯文字，不加任何符号前缀后缀）\n';
 p+='第二行：空行\n';
-p+='第三行起：正文内容\n\n';
-p+='正文规范：\n';
-p+='- 每章至少'+mW+'字，充分展开\n';
-p+='- 段落之间用一个空行分隔\n';
-p+='- 对话使用中文引号「」或""标注\n';
-p+='- 绝对禁止出现：作者按语、创作说明、章节标注、"以上是""希望你喜欢"等元叙述内容\n';
-p+='- 绝对禁止出现：markdown格式（#号、**加粗**、*斜体*等）\n';
-p+='- 从第一个字到最后一个字，全部都是小说本身的内容\n\n';
+p+='第三行起：正文\n';
+p+='- 每章至少'+mW+'字\n';
+p+='- 段落间用一个空行分隔\n';
+p+='- 对话用「」或""标注\n';
+p+='- 禁止出现：作者按语、创作说明、章节标注、markdown格式、"以上是""希望你喜欢"等\n';
+p+='- 从第一个字到最后一个字，全部是小说正文\n\n';
 
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
-p+='【人物设定】\n';
+p+='【人物设定——融入而非照搬】\n';
+p+='以下是角色的基础设定，请将这些信息自然地融入叙事中，通过情节和细节逐步展现，绝对不要在正文中直接罗列或复述设定原文：\n';
 validChars.forEach((c,i)=>{
 p+='角色'+(i+1)+'：';
-if(c.name)p+='名称：'+c.name+'；';
-if(c.desc)p+='设定：'+c.desc;
+if(c.name)p+=c.name+'——';
+if(c.desc)p+=c.desc;
 p+='\n';
 });
 p+='\n';
 }
-if(wD)p+='【世界观/背景设定】\n'+wD+'\n\n'; const styleD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||ap.curStyle||'').trim(); if(styleD)p+='【文风要求】\n请严格按照以下文风进行创作：'+styleD+'\n\n';
+
+if(wD){
+p+='【世界观——作为背景而非说明书】\n';
+p+='以下世界观设定应该像空气一样自然存在于故事中，通过角色的日常行为、对话、所见所闻来体现，不要用旁白解说的方式介绍世界观：\n';
+p+=wD+'\n\n';
+}
+
+const styleD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||ap.curStyle||'').trim();
+if(styleD){
+p+='【文风要求】\n';
+p+='请严格按照以下风格进行创作，这是最高优先级的要求：\n';
+p+=styleD+'\n\n';
+}
+
 return p;
 }
 
@@ -1389,6 +1996,17 @@ return data.choices[0].message.content;
 }
 
 // ==================== GENERATE ARTICLE ====================
+function handleGenBtn(){
+if(isGen&&abortCtrl){
+abortCtrl.abort();
+isGen=false;
+const btn=document.getElementById('btnGen');
+btn.disabled=false;btn.textContent='生成';
+showToast('已停止生成');
+return;
+}
+generateArticle();
+}
 async function generateArticle(){
 if(isGen)return;
 const searchText=(document.getElementById('searchInput').value||'').trim();
@@ -1397,24 +2015,64 @@ const type=curType;
 
 let userMsg='';
 if(type==='long'){
-userMsg='请创作一篇长篇小说的第一章。要求有清晰的故事线索，结尾留有悬念或转折，引导读者继续阅读。';
+userMsg='请创作一篇长篇小说的第一章。\n\n';
+userMsg+='第一章的使命：\n';
+userMsg+='- 用一个引人入胜的开场抓住读者（可以从一个悬念、一个反常的日常、一个关键时刻切入）\n';
+userMsg+='- 自然地建立故事世界和主要人物（通过事件展现，不要用说明文的方式介绍）\n';
+userMsg+='- 埋下至少一个让读者好奇的伏笔\n';
+userMsg+='- 结尾制造一个转折或悬念，让人迫不及待想看第二章\n';
 }else{
-userMsg='请创作一篇完整的短篇小说。要求结构完整（开端、发展、高潮、结局），故事精炼而富有韵味。';
+userMsg='请创作一篇完整的短篇小说。\n\n';
+userMsg+='短篇的精髓在于"以小见大"：\n';
+userMsg+='- 聚焦一个核心事件或一个决定性的瞬间\n';
+userMsg+='- 人物不需要多，但每个都要鲜活\n';
+userMsg+='- 结尾要有回味——可以是反转、可以是余韵、可以是开放式的留白\n';
+userMsg+='- 好的短篇读完后会让人沉默几秒\n';
 }
-if(searchText)userMsg+='\n故事内容方向：'+searchText;
-if(activeTags)userMsg+='\n关键标签：'+activeTags;
-if(!searchText&&!activeTags)userMsg+='\n请根据人设和世界观自由发挥，随机创作一个精彩的故事。';
-userMsg+='\n\n【输出格式提醒】第一行只写标题（纯文字，不加任何符号前缀），空一行后直接写正文。除了标题和正文，不要输出任何其他内容。';
+if(searchText)userMsg+='\n故事方向：'+searchText+'\n（这是灵感方向，不是必须照搬的大纲，请在此基础上自由发挥创意）';
+if(activeTags)userMsg+='\n氛围标签：'+activeTags;
+if(!searchText&&!activeTags)userMsg+='\n请根据人设和世界观自由发挥，创作一个让你自己也想继续读下去的故事。';
+userMsg+='\n\n【格式】第一行写标题（纯文字），空一行后直接写正文。只输出标题和正文，无其他内容。';
 
 isGen=true;
 const btn=document.getElementById('btnGen');
 btn.disabled=true;
-btn.innerHTML='<span class="ldots"><span></span><span></span><span></span></span>';
+btn.innerHTML='⏹ 停止';btn.disabled=false;
 
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 
-// Create streaming card
 const list=document.getElementById('articleList');
+
+if(!useStream){
+// 非流式模式
+const result=await callAPINonStream(messages);
+isGen=false;btn.disabled=false;btn.textContent='生成';
+if(!result){renderArticles();return;}
+let title2='',content2=result;
+const lines2=result.split(/\n/);
+for(let i=0;i<Math.min(5,lines2.length);i++){
+const l=lines2[i].trim();
+if(!l)continue;
+if(l.length>0&&l.length<40&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')){
+title2=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
+content2=lines2.slice(i+1).join('\n').trim();
+break;
+}
+}
+if(!title2||title2.length>35)title2=(searchText||activeTags||'随机故事').substring(0,20);
+const article2={
+id:uid(),title:title2,type,tags:[...selTags],
+createdAt:new Date().toISOString(),
+chapters:type==='long'?[content2]:undefined,
+content:type==='short'?content2:undefined,
+prompt:searchText
+};
+ws.unshift(article2);sv(K.ws,ws);
+renderArticles();showToast('创作完成！✨');
+return;
+}
+
+// 流式模式
 const streamCard=document.createElement('div');
 streamCard.className='stream-card';
 streamCard.id='streamCard';
@@ -1431,25 +2089,19 @@ if(el)el.textContent=((Date.now()-startTime)/1000).toFixed(0)+'s';
 },1000);
 
 await callAPIStream(messages,
-// onChunk
 (fullText,chunk)=>{
 const body=document.getElementById('streamBody');
 if(body)body.textContent=fullText;
 const wc=document.getElementById('streamWc');
 if(wc)wc.textContent=countWords(fullText)+' 字';
-// Auto scroll
 if(body)body.scrollTop=body.scrollHeight;
 },
-// onDone
 (fullText)=>{
 clearInterval(timeInterval);
 isGen=false;btn.disabled=false;btn.textContent='生成';
 const sc=document.getElementById('streamCard');
 if(sc)sc.remove();
-
 if(!fullText){renderArticles();return;}
-
-// Parse title
 let title='',content=fullText;
 const lines=fullText.split(/\n/);
 let titleLine='';
@@ -1464,7 +2116,6 @@ break;
 }
 title=titleLine.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
 if(!title||title.length>35)title=(searchText||activeTags||'随机故事').substring(0,20);
-
 const article={
 id:uid(),title,type,tags:[...selTags],
 createdAt:new Date().toISOString(),
@@ -1477,13 +2128,11 @@ sv(K.ws,ws);
 renderArticles();
 showToast('创作完成！✨');
 },
-// onError
 (errMsg)=>{
 clearInterval(timeInterval);
 isGen=false;btn.disabled=false;btn.textContent='生成';
 const sc=document.getElementById('streamCard');
 if(sc)sc.remove();
-// Fallback to non-stream
 showToast('流式输出失败，尝试普通模式...',2000);
 setTimeout(()=>generateNonStream(messages,type,searchText),500);
 }
@@ -1507,7 +2156,7 @@ const lines=result.split(/\n/);
 for(let i=0;i<Math.min(5,lines.length);i++){
 const l=lines[i].trim();
 if(!l)continue;
-if(l.length>0&&l.length<40&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')){
+if(l.length>0&&l.length<35&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')&&!l.startsWith('——')&&!l.startsWith('…')&&!l.includes('。')&&!l.includes('，')){
 title=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
 content=lines.slice(i+1).join('\n').trim();
 break;
@@ -1535,6 +2184,7 @@ if(article.type==='long')latestArticle=cols.books.find(b=>b.id===article.id);
 else latestArticle=cols.shorts.find(s=>s.id===article.id);
 }
 if(!latestArticle)latestArticle=article;
+if(!latestArticle){showToast('文章数据丢失');return;}
 
 curRd=latestArticle;curCh=0;
 
@@ -1586,12 +2236,13 @@ setRdLine(ap.rdLineHeight||2);
 
 document.getElementById('rdModal').classList.add('show');
 document.getElementById('rdModal').scrollTop=0;
+updateNoteBtn();
 }
 
 function getTotalWords(article){
 let total=0;
-if(article.type==='long'&&article.chapters){
-article.chapters.forEach(ch=>total+=countWords(ch));
+if(article.chapters&&Array.isArray(article.chapters)){
+article.chapters.forEach(ch=>total+=countWords(ch||''));
 }else if(article.content){
 total=countWords(article.content);
 }
@@ -1635,9 +2286,23 @@ if(curRd.type==='long'&&curRd.chapters)text=curRd.chapters[curCh]||'';
 else text=curRd.content||'';
 
 const paras=text.split(/\n+/).filter(p=>p.trim());
-cdiv.innerHTML=paras.map(p=>'<p>'+esc(p.trim())+'</p>').join('');
+cdiv.innerHTML=paras.map((p,pi)=>'<p data-pi="'+pi+'" class="rd-para">'+esc(p.trim())+'</p>').join(''); // 绑定长按引用 cdiv.querySelectorAll('.rd-para').forEach(el=>{ let lpTimer=null; let startX=0,startY=0,moved=false; el.addEventListener('touchstart',function(e){ moved=false; if(e.touches.length>0){startX=e.touches[0].clientX;startY=e.touches[0].clientY;} lpTimer=setTimeout(()=>{ if(moved)return; e.preventDefault(); const text=el.textContent.trim(); if(!text)return; // 震动反馈（如果手机支持） if(navigator.vibrate)navigator.vibrate(30); el.style.background='rgba(108,92,231,.18)'; el.style.boxShadow='inset 0 0 0 1px var(--accent)'; setTimeout(()=>{el.style.background='';el.style.boxShadow='';},1000); showQuoteNote(text); },500); },{passive:false}); el.addEventListener('touchmove',function(e){ if(e.touches.length>0){ const dx=Math.abs(e.touches[0].clientX-startX); const dy=Math.abs(e.touches[0].clientY-startY); if(dx>8||dy>8){moved=true;clearTimeout(lpTimer);} } },{passive:true}); el.addEventListener('touchend',()=>{clearTimeout(lpTimer);}); el.addEventListener('touchcancel',()=>{clearTimeout(lpTimer);}); }); updateNoteBtn();
 }
-
+function showQuoteNote(quoteText){
+if(!curRd)return;
+const short=quoteText.length>40?quoteText.substring(0,40)+'...':quoteText;
+// 直接打开笔记面板并预填引用
+openNotePanel();
+setTimeout(()=>{
+const inp=document.getElementById('noteInput');
+inp.value='「'+short+'」\n——我的想法：';
+inp.style.height='38px';
+inp.style.height=Math.min(inp.scrollHeight,100)+'px';
+inp.focus();
+// 光标放到末尾
+inp.setSelectionRange(inp.value.length,inp.value.length);
+},350);
+}
 function updateRdLikeBtn(){
 const btn=document.getElementById('rdLikeBtn');
 btn.innerHTML=isLiked(curRd)?'❤️':'♡';
@@ -1648,8 +2313,15 @@ if(!curRd)return;
 toggleLike(curRd.id);
 updateRdLikeBtn();
 const liked=isLiked(curRd);
-document.getElementById('contWrap').style.display=(curRd.type==='long'&&liked)?'block':'none';
-document.getElementById('dirInputWrap').style.display=(curRd.type==='long'&&liked)?'flex':'none';
+const cw2=document.getElementById('contWrap');
+const dw2=document.getElementById('dirInputWrap');
+const bc2=document.getElementById('btnCont');
+if(curRd.type==='long'){
+cw2.style.display='block';
+dw2.style.display='flex';
+if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';}
+else{bc2.disabled=true;bc2.textContent='❤️ 请先收藏后才能续写';}
+}else{cw2.style.display='none';dw2.style.display='none';}
 }
 function openChapterList(){
 if(!curRd||!curRd.chapters)return;
@@ -1661,21 +2333,111 @@ curRd.chapters.forEach((_,i)=>{
 const wc=countWords(curRd.chapters[i]);
 const item=document.createElement('div');
 item.className='ch-item'+(i===curCh?' act':'');
-item.innerHTML='<span class="ch-item-num">第'+(i+1)+'章</span><span class="ch-item-wc">'+wc+'字</span>';
+const chNotes=getArticleNotes(curRd.id).filter(n=>n.ch===i); const noteTag=chNotes.length>0?' · ✏️'+chNotes.length:''; item.innerHTML='<span class="ch-item-num" style="font-size:14px;font-weight:700;width:60px;flex-shrink:0">第'+(i+1)+'章</span><span style="flex:1;font-size:12px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc((curRd.chapters[i]||'').replace(/\n/g,' ').substring(0,30))+'</span><span class="ch-item-wc" style="flex-shrink:0;font-size:10px;opacity:.7">'+wc+'字'+noteTag+'</span>';
 item.onclick=()=>{curCh=i;renderChContent();closeChapterList();document.getElementById('rdModal').scrollTop=0;};
 list.appendChild(item);
 });
 document.getElementById('chOv').classList.add('show');
 }
+// ==================== NOTES ====================
+function getArticleNotes(articleId){
+if(!articleId)return[];
+return ld('bj_notes_'+articleId,[]);
+}
+function saveArticleNotes(articleId,notes){
+sv('bj_notes_'+articleId,notes);
+}
+function openNotePanel(){
+if(!curRd)return;
+const chLabel=curRd.type==='long'?'第'+(curCh+1)+'章':'全文';
+document.getElementById('noteChInfo').textContent=chLabel+'的笔记';
+renderNotes();
+document.getElementById('noteOv').classList.add('show');
+setTimeout(()=>{document.getElementById('noteInput').focus();},300);
+}
+function closeNotePanel(){
+document.getElementById('noteOv').classList.remove('show');
+}
+function renderNotes(){
+if(!curRd)return;
+const notes=getArticleNotes(curRd.id);
+const chNotes=notes.filter(n=>n.ch===curCh);
+const list=document.getElementById('noteList');
+if(chNotes.length===0){
+list.innerHTML='<div class="note-empty">还没有笔记<br>在下方输入框写下你的想法吧</div>';
+return;
+}
+list.innerHTML='';
+chNotes.forEach((n,idx)=>{
+const realIdx=notes.indexOf(n);
+const item=document.createElement('div');
+item.className='note-item';
+const time=n.time?new Date(n.time).toLocaleString():'';
+item.innerHTML=
+'<div class="note-item-text">'+esc(n.text)+'</div>'+
+'<div class="note-item-ft">'+
+'<span class="note-item-time">'+time+'</span>'+
+'<button class="note-item-del" onclick="deleteNote('+realIdx+')">删除</button>'+
+'</div>';
+list.appendChild(item);
+});
+list.scrollTop=list.scrollHeight;
+}
+function addNote(){
+if(!curRd)return;
+const input=document.getElementById('noteInput');
+const text=(input.value||'').trim();
+if(!text){showToast('请输入笔记内容');return;}
+const notes=getArticleNotes(curRd.id);
+notes.push({
+ch:curCh,
+text:text,
+time:new Date().toISOString()
+});
+saveArticleNotes(curRd.id,notes);
+input.value='';
+input.style.height='38px';
+renderNotes();
+updateNoteBtn();
+showToast('笔记已保存 ✏️');
+}
+function deleteNote(realIdx){
+if(!curRd)return;
+const notes=getArticleNotes(curRd.id);
+if(realIdx<0||realIdx>=notes.length)return;
+notes.splice(realIdx,1);
+saveArticleNotes(curRd.id,notes);
+renderNotes();
+updateNoteBtn();
+showToast('笔记已删除');
+}
+function updateNoteBtn(){
+if(!curRd)return;
+const btn=document.getElementById('rdNoteBtn');
+const notes=getArticleNotes(curRd.id);
+const chNotes=notes.filter(n=>n.ch===curCh);
+if(chNotes.length>0){
+btn.innerHTML='📝<span class="note-dot"></span>';
+}else{
+btn.innerHTML='📝';
+}
+}
+function getNoteCount(articleId){
+const notes=ld('bj_notes_'+articleId,[]);
+return notes.length;
+}
 function closeChapterList(){
 document.getElementById('chOv').classList.remove('show');
 }
 function closeReading(){
+if(abortCtrl){abortCtrl.abort();abortCtrl=null;isGen=false;}
 if(isFS)toggleFullscreen();
 document.getElementById('rdModal').classList.remove('show');
 document.getElementById('rdSettingsPanel').classList.remove('show');
+closeNotePanel();
 closeChapterList();
 curRd=null;
+curCh=0;
 renderArticles();
 renderCollections();
 }
@@ -1726,23 +2488,88 @@ btn.disabled=true;
 btn.innerHTML='正在创作 <span class="ldots"><span></span><span></span><span></span></span>';
 
 const chNum=curRd.chapters.length+1;
-const lastCh=curRd.chapters[curRd.chapters.length-1];
-const prevSummary=lastCh.substring(0,800);
 const direction=(document.getElementById('dirInput').value||'').trim();
 
-let userMsg='请继续创作《'+curRd.title+'》的第'+chNum+'章。\n\n上一章结尾内容：\n'+prevSummary+'\n\n请承接上文，继续发展剧情，保持人物性格一致，情节自然推进。';
-if(direction)userMsg+='\n\n本章方向提示：'+direction;
-userMsg+='\n\n【格式要求】直接输出正文内容，不要写标题、章节号、作者按语或任何非正文内容。不要使用markdown格式。';
+// 构建丰富的上下文
+let context='';
+const totalCh=curRd.chapters.length;
+
+// 如果章节较多，提供前面章节的摘要
+if(totalCh>=3){
+context+='【前情概要】\n';
+// 取前面章节的开头和结尾各一小段作为线索
+for(let i=Math.max(0,totalCh-3);i<totalCh-1;i++){
+const ch=curRd.chapters[i]||'';
+const opening=ch.substring(0,150).replace(/\n/g,' ').trim();
+const ending=ch.substring(Math.max(0,ch.length-150)).replace(/\n/g,' ').trim();
+context+='第'+(i+1)+'章片段：'+opening+'……'+ending+'\n';
+}
+context+='\n';
+}
+
+// 上一章完整结尾（多给一些）
+const lastCh=curRd.chapters[totalCh-1]||'';
+const lastChEnding=lastCh.substring(Math.max(0,lastCh.length-1200));
+context+='【上一章（第'+totalCh+'章）结尾】\n'+lastChEnding+'\n';
+
+// 如果有大纲，提供当前章节的大纲指引
+const wsArticle=ws.find(a=>a.id===curRd.id);
+const crArticle=crWorks.find(w=>w.id===curRd.id);
+const outline=(wsArticle&&wsArticle.outline)||(crArticle&&crArticle.outline)||'';
+let outlineHint='';
+if(outline){
+const outlineLines=outline.split('\n');
+for(let i=0;i<outlineLines.length;i++){
+const line=outlineLines[i].trim();
+if(line.includes('第'+chNum+'章')||line.includes('第'+chNum+'章')){
+outlineHint=line;
+// 也取下一行（通常是概要）
+if(i+1<outlineLines.length){
+const nextLine=outlineLines[i+1].trim();
+if(nextLine.startsWith('-')||nextLine.startsWith('—'))outlineHint+='\n'+nextLine;
+}
+break;
+}
+}
+}
+
+let userMsg='请创作《'+curRd.title+'》的第'+chNum+'章。\n\n';
+userMsg+=context+'\n';
+if(outlineHint)userMsg+='【本章大纲参考】\n'+outlineHint+'\n\n';
+if(direction)userMsg+='【作者对本章的方向提示】\n'+direction+'\n\n';
+userMsg+='【创作要求】\n';
+userMsg+='1. 自然承接上一章结尾，开头不要生硬地复述前情\n';
+userMsg+='2. 本章要有独立的小高潮或情感转折点\n';
+userMsg+='3. 结尾留有余韵或悬念，让读者想继续读\n';
+userMsg+='4. 人物的言行要与前文性格一致，但可以有合理的成长变化\n';
+userMsg+='5. 直接输出正文，不要标题、章节号、作者按语、markdown格式\n';
 
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 
-// Try stream first
 const rdContent=document.getElementById('rdContent');
 const startTime=Date.now();
-let streamSuccess=false;
+
+if(!useStream){
+const result=await callAPINonStream(messages);
+isGen=false;btn.disabled=false;btn.textContent='📝 继续连载下一章';
+if(!result)return;
+curRd.chapters.push(result);
+syncArticle(curRd);
+curCh=curRd.chapters.length-1;
+renderChContent();
+document.getElementById('rdMeta').innerHTML=
+'<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span>'+
+'<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
+document.getElementById('btnUndo').style.display='inline-block';
+document.getElementById('dirInput').value='';
+showToast('第'+chNum+'章创作完成！✨');
+return;
+}
 
 await callAPIStream(messages,
 (fullText)=>{
+const elapsed=((Date.now()-startTime)/1000).toFixed(0);
+const wc=countWords(fullText);
 const paras=fullText.split(/\n+/).filter(p=>p.trim());
 rdContent.innerHTML=paras.map(p=>'<p>'+esc(p.trim())+'</p>').join('');
 document.getElementById('rdModal').scrollTop=document.getElementById('rdModal').scrollHeight;
@@ -1750,16 +2577,13 @@ document.getElementById('rdModal').scrollTop=document.getElementById('rdModal').
 (fullText)=>{
 isGen=false;btn.disabled=false;btn.textContent='📝 继续连载下一章';
 if(!fullText)return;
-streamSuccess=true;
 curRd.chapters.push(fullText);
 syncArticle(curRd);
-
 curCh=curRd.chapters.length-1;
 renderChContent();
 document.getElementById('rdMeta').innerHTML=
 '<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span>'+
 '<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
-
 document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！✨');
@@ -2178,6 +3002,24 @@ showToast('阅读背景已清除');
 }
 
 // ==================== DATA IMPORT/EXPORT ====================
+function exportAllNotes(){
+const allNotes={};
+const allArticles=[...ws,...cols.books,...cols.shorts];
+const ids=[...new Set(allArticles.map(a=>a.id))];
+ids.forEach(id=>{
+const n=ld('bj_notes_'+id,[]);
+if(n.length>0)allNotes[id]=n;
+});
+return allNotes;
+}
+function importAllNotes(notesObj){
+if(!notesObj||typeof notesObj!=='object')return;
+Object.keys(notesObj).forEach(id=>{
+if(Array.isArray(notesObj[id])&&notesObj[id].length>0){
+sv('bj_notes_'+id,notesObj[id]);
+}
+});
+}
 function exportData(){
 saveCurSettings();
 const data={
@@ -2187,9 +3029,10 @@ stylePresets:styleP,
 curApi:ld(K.curApi,{}),
 curChars:characters,
 curWorld:ld(K.curWorld,{}),
-collections:cols,workshop:ws,tags,appearance:ap
+collections:cols,workshop:ws,crWorks:crWorks,resPacks:resPacks,tags,appearance:ap,userCard:userCard,notes:exportAllNotes()
 };
 const jsonStr=JSON.stringify(data,null,2);
+const sizeKB=(new Blob([jsonStr]).size/1024).toFixed(1);
 const fileName='笔记AI_备份_'+new Date().toLocaleDateString().replace(/\//g,'-')+'.json';
 
 // 方法1: 尝试使用File System Access API（现代浏览器）
@@ -2203,7 +3046,7 @@ types:[{description:'JSON文件',accept:{'application/json':['.json']}}]
 const writable=await handle.createWritable();
 await writable.write(jsonStr);
 await writable.close();
-showToast('数据已保存到本地 📤');
+showToast('数据已保存 ('+sizeKB+'KB) 📤');
 }catch(e){
 if(e.name!=='AbortError')fallbackExport(jsonStr,fileName);
 }
@@ -2257,7 +3100,7 @@ if(data.stylePresets){styleP=data.stylePresets;sv('bj_styleP',styleP);}
 if(data.curApi)sv(K.curApi,data.curApi);
 if(data.curChars){characters=data.curChars;sv(K.curChars,characters);}
 else if(data.currentChar){
-// v1/v2 compatibility
+// v1/ compatibility
 const cc=data.currentChar;
 characters=[{name:cc.aName||'',desc:cc.aDesc||''},{name:cc.bName||'',desc:cc.bDesc||''}];
 sv(K.curChars,characters);
@@ -2275,6 +3118,10 @@ sv(K.cols,cols);
 }
 if(data.tags){tags=data.tags;sv(K.tags,tags);}
 if(data.workshop){ws=data.workshop;sv(K.ws,ws);}
+if(data.crWorks){crWorks=data.crWorks;sv('bj_crWorks',crWorks);}
+if(data.resPacks){resPacks=data.resPacks;sv('bj_resPacks',resPacks);}
+if(data.notes)importAllNotes(data.notes);
+if(data.userCard){userCard=data.userCard;sv('bj_userCard',userCard);}
 if(data.appearance){
 ap={...{theme:'default',fontUrl:'',rdBg:'',rdFontSize:15,rdLineHeight:2},...data.appearance};
 sv(K.ap,ap);
@@ -2295,25 +3142,1003 @@ document.getElementById('minWords').value=world.minWords||800;
 renderTags();renderAllPresets();renderCollections();renderCharCards();
 applyAppearance();
 showToast('数据导入成功 📥');
-});
+});renderUserCard();
 }catch(err){showToast('文件解析失败: '+err.message,3000);}
 };
 reader.readAsText(file);e.target.value='';
 }
-
+function deleteWsArticle(id){
+const article=ws.find(a=>a.id===id);
+if(!article)return;
+showDlg('删除文章','确定要从作坊删除「'+article.title+'」吗？',()=>{
+ws=ws.filter(a=>a.id!==id);
+sv(K.ws,ws);renderArticles();showToast('已删除');
+},true);
+}
 function clearWorkshop(){
 showDlg('清空作坊','确定要清空作坊中的所有文章吗？已收藏的文章不受影响。',()=>{
 ws=[];sv(K.ws,ws);renderArticles();showToast('作坊已清空');
 },true);
 }
 
-// ==================== INSPIRATION ====================
+// ==================== CREATE PAGE ====================
+function switchCrTab(tab,el){
+crTab=tab;
+document.querySelectorAll('.cr-tab').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+renderCrList();
+}
+function renderCrList(){
+const list=document.getElementById('crList');
+const filtered=crWorks.filter(w=>w.type===crTab);
+if(filtered.length===0){
+list.innerHTML='<div class="empty-st"><p>'+(crTab==='draft'?'还没有草稿<br>点击上方「新建草稿」开始写作':'还没有小说<br>点击上方「新建小说」开始连载')+'</p></div>';
+return;
+}
+list.innerHTML='';
+filtered.forEach(work=>{
+const card=document.createElement('div');
+card.className='cr-card';
+let preview='';
+if(work.type==='draft'){
+preview=(work.content||'').replace(/\n/g,' ').substring(0,60);
+}else{
+const lastCh=work.chapters&&work.chapters.length>0?work.chapters[work.chapters.length-1]:'';
+preview=(lastCh||'').replace(/\n/g,' ').substring(0,60);
+}
+const wc=getCrWordCount(work);
+const time=work.updatedAt?new Date(work.updatedAt).toLocaleDateString():'';
+const chInfo=work.type==='novel'&&work.chapters?' · '+work.chapters.length+'章':'';
+card.innerHTML=
+'<div class="cr-card-hd">'+
+'<div class="cr-card-t">'+esc(work.title||'无标题')+'</div>'+
+'<span class="cr-card-badge '+work.type+'">'+(work.type==='draft'?'草稿':'小说')+'</span>'+
+'</div>'+
+'<div class="cr-card-pv">'+esc(preview||'暂无内容')+'</div>'+
+'<div class="cr-card-ft">'+
+'<span class="cr-card-info">'+wc+'字'+chInfo+' · '+time+'</span>'+
+'<div class="cr-card-acts">'+
+'<button onclick="event.stopPropagation();copyCrWork(\''+work.id+'\')">复制</button>'+
+'<button onclick="event.stopPropagation();shareCrToRes(\''+work.id+'\')">分享</button>'+ '<button class="danger" onclick="event.stopPropagation();deleteCrWork(\''+work.id+'\')">删除</button>'+
+'</div>'+
+'</div>';
+card.onclick=e=>{if(!e.target.closest('.cr-card-acts'))openEditor(work.id);};
+list.appendChild(card);
+});
+}
+function getCrWordCount(work){
+if(work.type==='draft')return countWords(work.content||'');
+let total=0;
+if(work.chapters)work.chapters.forEach(ch=>total+=countWords(ch));
+return total;
+}
+function newDraft(){
+const work={
+id:uid(),type:'draft',title:'',content:'',
+createdAt:new Date().toISOString(),
+updatedAt:new Date().toISOString()
+};
+crWorks.unshift(work);
+sv('bj_crWorks',crWorks);
+openEditor(work.id);
+}
+function newNovel(){
+showInp('新建小说','给小说起个名字',name=>{
+const work={
+id:uid(),type:'novel',title:name,chapters:[''],
+createdAt:new Date().toISOString(),
+updatedAt:new Date().toISOString()
+};
+crWorks.unshift(work);
+sv('bj_crWorks',crWorks);
+openEditor(work.id);
+});
+}
+function deleteCrWork(id){
+const work=crWorks.find(w=>w.id===id);
+if(!work)return;
+showDlg('删除确认','确定要删除「'+(work.title||'无标题')+'」吗？不可恢复。',()=>{
+crWorks=crWorks.filter(w=>w.id!==id);
+sv('bj_crWorks',crWorks);
+renderCrList();
+showToast('已删除');
+},true);
+}
+function copyCrWork(id){
+const work=crWorks.find(w=>w.id===id);
+if(!work)return;
+let text='';
+if(work.type==='draft'){
+text=work.content||'';
+}else if(work.chapters){
+work.chapters.forEach((ch,i)=>{
+text+='第'+(i+1)+'章\n\n'+ch+'\n\n';
+});
+}
+const header='════════════════════\n「'+(work.title||'无标题')+'」\n原创作品 · 笔记AI创作页\n════════════════════\n\n';
+const footer='\n\n════════════════════\n创作工具：笔记AI '+APP_VER+'\n════════════════════';
+doCopy(header+text.trim()+footer);
+}
+
+// ==================== EDITOR ====================
+function openEditor(id){
+const work=crWorks.find(w=>w.id===id);
+if(!work)return;
+curEd=work;
+curEdCh=0;
+document.getElementById('edTitle').value=work.title||'';
+if(work.type==='novel'){
+renderEdChBar();
+document.getElementById('edChBar').style.display='flex';
+document.getElementById('edTextarea').value=work.chapters[0]||'';
+}else{
+document.getElementById('edChBar').style.display='none';
+document.getElementById('edTextarea').value=work.content||'';
+}
+updateEdWc();
+document.getElementById('edSaveStatus').textContent='已保存';
+document.getElementById('edOutlineBtn').style.display=(work.outline?'':'none');
+document.getElementById('edModal').classList.add('show');
+document.getElementById('bnav').classList.add('hide');
+}
+function closeEditor(){
+saveEditorContent();
+document.getElementById('edModal').classList.remove('show');
+document.getElementById('bnav').classList.remove('hide');
+curEd=null;
+renderCrList();
+}
+function renderEdChBar(){
+if(!curEd||curEd.type!=='novel')return;
+const bar=document.getElementById('edChBar');
+bar.innerHTML='';
+curEd.chapters.forEach((_,i)=>{
+const btn=document.createElement('button');
+btn.className='ed-ch-btn'+(i===curEdCh?' act':'');
+btn.textContent='第'+(i+1)+'章';
+btn.onclick=()=>{
+saveEditorChapter();
+curEdCh=i;
+document.getElementById('edTextarea').value=curEd.chapters[i]||'';
+updateEdWc();
+renderEdChBar();
+};
+bar.appendChild(btn);
+});
+const addBtn=document.createElement('button');
+addBtn.className='ed-ch-add';
+addBtn.textContent='+ 新章节';
+addBtn.onclick=()=>{
+saveEditorChapter();
+curEd.chapters.push('');
+curEdCh=curEd.chapters.length-1;
+document.getElementById('edTextarea').value='';
+updateEdWc();
+renderEdChBar();
+saveEditorContent();
+showToast('已添加第'+curEd.chapters.length+'章');
+};
+bar.appendChild(addBtn);
+}
+function saveEditorChapter(){
+if(!curEd)return;
+const text=document.getElementById('edTextarea').value;
+if(curEd.type==='novel'){
+if(curEd.chapters[curEdCh]!==undefined)curEd.chapters[curEdCh]=text;
+}else{
+curEd.content=text;
+}
+}
+function saveEditorContent(){
+if(!curEd)return;
+saveEditorChapter();
+curEd.title=(document.getElementById('edTitle').value||'').trim();
+curEd.updatedAt=new Date().toISOString();
+const idx=crWorks.findIndex(w=>w.id===curEd.id);
+if(idx>-1)crWorks[idx]=curEd;
+sv('bj_crWorks',crWorks);
+document.getElementById('edSaveStatus').textContent='已保存 ✓';
+}
+function onEditorInput(){
+updateEdWc();
+document.getElementById('edSaveStatus').textContent='编辑中...';
+if(edAutoSaveTimer)clearTimeout(edAutoSaveTimer);
+edAutoSaveTimer=setTimeout(()=>{
+saveEditorContent();
+},2000);
+}
+function updateEdWc(){
+const text=document.getElementById('edTextarea').value||'';
+document.getElementById('edWc').textContent=countWords(text);
+}
+function copyEditorContent(){
+if(!curEd)return;
+saveEditorContent();
+copyCrWork(curEd.id);
+}
+function formatEditorText(){
+const ta=document.getElementById('edTextarea');
+let text=ta.value||'';
+// 先把多个连续空行合并成一个
+text=text.replace(/\n{3,}/g,'\n\n');
+// 把单个换行（没有空行分隔的段落）变成空行分隔
+const lines=text.split('\n');
+let result=[];
+for(let i=0;i<lines.length;i++){
+const line=lines[i];
+result.push(line);
+if(line.trim()&&i+1<lines.length&&lines[i+1].trim()){
+result.push('');
+}
+}
+text=result.join('\n');
+text=text.replace(/\n{3,}/g,'\n\n');
+text=text.trim();
+ta.value=text;
+onEditorInput();
+showToast('排版完成 ¶');
+}
+// ==================== AI REVIEW ====================
+async function requestAIReview(){
+if(!curEd)return;
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
+saveEditorContent();
+const text=document.getElementById('edTextarea').value||'';
+if(countWords(text)<20){showToast('内容太少，至少写20字再请AI评价');return;}
+const body=document.getElementById('aiReviewBody');
+body.innerHTML='<div style="text-align:center;padding:20px;color:var(--text2)"><span class="ldots"><span></span><span></span><span></span></span><br>AI正在阅读你的作品...</div>';
+document.getElementById('aiReviewOv').classList.add('show');
+const sysMsg='你是一位资深的文学编辑和写作导师。请对用户提交的文章进行专业评价，包括以下方面：\n1. 整体印象（简短总评）\n2. 亮点（写得好的地方，具体指出）\n3. 可改进之处（具体指出问题并给出修改建议）\n4. 文笔评分（1-10分）\n5. 一句话鼓励\n\n请用温和友善但专业的语气，像一位好老师那样给出建议。不要空泛，要结合文章具体内容来评价。';
+const chInfo=curEd.type==='novel'?'（这是第'+(curEdCh+1)+'章）':'';
+const userMsg='请评价以下作品'+chInfo+'：\n\n标题：'+(curEd.title||'无标题')+'\n\n正文：\n'+text.substring(0,3000);
+const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+let reviewText='';
+await callAPIStream(messages,
+(fullText)=>{
+reviewText=fullText;
+body.textContent=fullText;
+body.scrollTop=body.scrollHeight;
+},
+(fullText)=>{
+if(fullText){
+body.textContent=fullText;
+}else{
+body.innerHTML='<div style="color:var(--text2);text-align:center">评价已取消</div>';
+}
+},
+(errMsg)=>{
+body.textContent='获取评价失败：'+errMsg;
+}
+);
+}
+function closeAIReview(){
+document.getElementById('aiReviewOv').classList.remove('show');
+}
+function shareCrToRes(id){
+const work=crWorks.find(w=>w.id===id);
+if(!work)return;
+const wc=getCrWordCount(work);
+if(wc<10){showToast('内容太少，至少写10字再分享');return;}
+showDlg('分享到资源','将「'+(work.title||'无标题')+'」打包为资源包并导出？',()=>{
+const packData=JSON.parse(JSON.stringify(work));
+const pack={
+_app:'bijiAI_resource',
+_ver:APP_VER,
+id:uid(),
+name:(work.title||'无标题')+'_分享',
+desc:(work.type==='draft'?'草稿':'小说')+' · '+wc+'字',
+author:'笔记AI用户',
+createdAt:new Date().toISOString(),
+items:[{
+type:'work',
+name:(work.type==='draft'?'草稿':'小说')+'：'+(work.title||'无标题'),
+data:packData
+}]
+};
+const jsonStr=JSON.stringify(pack,null,2);
+const fileName='笔记AI_分享_'+(work.title||'作品')+'_'+new Date().toLocaleDateString().replace(/\//g,'-')+'.json';
+if(window.showSaveFilePicker){
+(async()=>{
+try{
+const handle=await window.showSaveFilePicker({
+suggestedName:fileName,
+types:[{description:'JSON文件',accept:{'application/json':['.json']}}]
+});
+const writable=await handle.createWritable();
+await writable.write(jsonStr);
+await writable.close();
+showToast('作品已导出为资源包 📤');
+}catch(e){
+if(e.name!=='AbortError')fallbackResExport(jsonStr,fileName);
+}
+})();
+return;
+}
+fallbackResExport(jsonStr,fileName);
+});
+}
+function deleteEdChapter(){
+if(!curEd||curEd.type!=='novel')return;
+if(curEd.chapters.length<=1){showToast('至少保留一章');return;}
+showDlg('删除章节','确定要删除第'+(curEdCh+1)+'章吗？不可恢复。',()=>{
+curEd.chapters.splice(curEdCh,1);
+if(curEdCh>=curEd.chapters.length)curEdCh=curEd.chapters.length-1;
+document.getElementById('edTextarea').value=curEd.chapters[curEdCh]||'';
+updateEdWc();
+renderEdChBar();
+saveEditorContent();
+showToast('已删除');
+},true);
+}
+// ==================== RESOURCE ====================
+function switchResTab(tab,el){
+resTab=tab;
+document.querySelectorAll('.res-tab').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+renderResList();
+}
+function renderResList(){
+const list=document.getElementById('resList');
+let items=[];
+resPacks.forEach(pack=>{
+if(pack.items&&Array.isArray(pack.items)){
+pack.items.forEach(item=>{
+item._packName=pack.name||'未命名资源包';
+item._packId=pack.id;
+items.push(item);
+});
+}
+});
+if(resTab!=='all')items=items.filter(it=>it.type===resTab);
+if(items.length===0){
+const tips={
+all:'还没有资源<br>点击「打包导出」分享你的设定，或「导入资源包」获取别人的',
+char:'没有人物设定资源',world:'没有世界观资源',
+style:'没有文风资源',work:'没有作品资源',exp:'没有经验分享'
+};
+list.innerHTML='<div class="empty-st"><p>'+(tips[resTab]||tips.all)+'</p></div>';
+return;
+}
+list.innerHTML='';
+items.forEach((item,idx)=>{
+const card=document.createElement('div');
+card.className='res-card';
+const typeLabels={char:'人物设定',world:'世界观',style:'文风',work:'作品',exp:'经验分享'};
+const preview=getResPreview(item);
+card.innerHTML=
+'<div class="res-card-hd">'+
+'<div class="res-card-t">'+esc(item.name||'未命名')+'</div>'+
+'<span class="res-card-type '+item.type+'">'+(typeLabels[item.type]||'其他')+'</span>'+
+'</div>'+
+'<div class="res-card-pv">'+esc(preview)+'</div>'+
+'<div class="res-card-ft">'+
+'<span class="res-card-info">来自：'+esc(item._packName)+'</span>'+
+'<div class="res-card-acts">'+
+'<button class="use" onclick="event.stopPropagation();applyResItem(\''+item._packId+'\','+idx+')">应用</button>'+
+'<button onclick="event.stopPropagation();copyResItem(\''+item._packId+'\','+idx+')">复制</button>'+
+'</div>'+
+'</div>';
+list.appendChild(card);
+});
+if(resPacks.length>0){
+const mgr=document.createElement('div');
+mgr.style.cssText='margin-top:16px;padding-top:14px;border-top:1px solid var(--border)';
+mgr.innerHTML='<div style="font-size:12px;font-weight:600;color:var(--text2);margin-bottom:10px">已导入的资源包</div>';
+resPacks.forEach(pack=>{
+const pDiv=document.createElement('div');
+pDiv.style.cssText='display:flex;justify-content:space-between;align-items:center;padding:9px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);margin-bottom:7px';
+const count=pack.items?pack.items.length:0;
+const time=pack.createdAt?new Date(pack.createdAt).toLocaleDateString():'';
+pDiv.innerHTML=
+'<div><div style="font-size:12px;font-weight:600">'+esc(pack.name||'未命名')+'</div>'+
+'<div style="font-size:9px;color:var(--text2);margin-top:2px">'+count+'项资源 · '+time+'</div></div>'+
+'<button style="padding:4px 10px;border-radius:7px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:9px;cursor:pointer" onclick="deleteResPack(\''+pack.id+'\')">删除</button>';
+mgr.appendChild(pDiv);
+});
+list.appendChild(mgr);
+}
+}
+function getResPreview(item){
+if(item.type==='char'){
+const chars=item.data||[];
+return chars.map(c=>(c.name||'未命名')+'：'+(c.desc||'').substring(0,30)).join('；');
+}
+if(item.type==='world')return (item.data||'').substring(0,80);
+if(item.type==='style')return (item.data||'').substring(0,80);
+if(item.type==='work'){
+const w=item.data||{};
+if(w.type==='draft')return (w.content||'').substring(0,80);
+if(w.chapters&&w.chapters.length>0)return (w.chapters[0]||'').substring(0,80);
+return '暂无内容';
+}
+if(item.type==='exp')return (item.data||'').substring(0,80);
+return '';
+}
+function applyResItem(packId,globalIdx){
+let items=[];
+resPacks.forEach(pack=>{
+if(pack.items)pack.items.forEach(item=>{
+item._packId=pack.id;
+items.push(item);
+});
+});
+if(resTab!=='all')items=items.filter(it=>it.type===resTab);
+const item=items[globalIdx];
+if(!item)return;
+if(item.type==='char'){
+showDlg('应用人物设定','将覆盖当前的人物设定，是否继续？',()=>{
+characters=JSON.parse(JSON.stringify(item.data||[{name:'',desc:''}]));
+sv(K.curChars,characters);
+showToast('人物设定已应用 ✅');
+});
+}else if(item.type==='world'){
+showDlg('应用世界观','将覆盖当前的世界观设定，是否继续？',()=>{
+document.getElementById('worldDesc').value=item.data||'';
+saveCurSettings();
+showToast('世界观已应用 ✅');
+});
+}else if(item.type==='style'){
+showDlg('应用文风','将覆盖当前的文风设置，是否继续？',()=>{
+document.getElementById('styleDesc').value=item.data||'';
+ap.curStyle=item.data||'';
+sv(K.ap,ap);
+showToast('文风已应用 ✅');
+});
+}else if(item.type==='work'){
+showDlg('导入作品','将添加到你的创作页面，是否继续？',()=>{
+const w=JSON.parse(JSON.stringify(item.data));
+w.id=uid();
+w.createdAt=new Date().toISOString();
+w.updatedAt=new Date().toISOString();
+crWorks.unshift(w);
+sv('bj_crWorks',crWorks);
+showToast('作品已导入到创作页 ✅');
+});
+}else if(item.type==='exp'){
+showDlg('查看经验','是否复制这条经验分享到剪贴板？',()=>{
+doCopy(item.data||'');
+});
+}
+}
+function copyResItem(packId,globalIdx){
+let items=[];
+resPacks.forEach(pack=>{
+if(pack.items)pack.items.forEach(item=>{
+item._packId=pack.id;
+items.push(item);
+});
+});
+if(resTab!=='all')items=items.filter(it=>it.type===resTab);
+const item=items[globalIdx];
+if(!item)return;
+let text='';
+if(item.type==='char'){
+const chars=item.data||[];
+text=chars.map(c=>'【'+c.name+'】\n'+c.desc).join('\n\n');
+}else if(item.type==='work'){
+const w=item.data||{};
+if(w.type==='draft')text=w.content||'';
+else if(w.chapters)text=w.chapters.map((ch,i)=>'第'+(i+1)+'章\n\n'+ch).join('\n\n');
+}else{
+text=item.data||'';
+}
+doCopy(text);
+}
+
+// ==================== RESOURCE EXPORT ====================
+function openResExport(){
+const box=document.getElementById('resExpList');
+box.innerHTML='';
+const exportItems=[];
+saveCharactersFromUI();
+const validChars=characters.filter(c=>c.name||c.desc);
+if(validChars.length>0){
+exportItems.push({id:'cur_char',type:'char',label:'当前人物设定',desc:validChars.map(c=>c.name).filter(Boolean).join('、')||'未命名角色',data:validChars});
+}
+charP.forEach((p,i)=>{
+exportItems.push({id:'charP_'+i,type:'char',label:'人物预设：'+p.name,desc:(p.characters||[]).map(c=>c.name).filter(Boolean).join('、'),data:p.characters});
+});
+const wD=(document.getElementById('worldDesc').value||'').trim();
+if(wD){
+exportItems.push({id:'cur_world',type:'world',label:'当前世界观',desc:wD.substring(0,40),data:wD});
+}
+worldP.forEach((p,i)=>{
+exportItems.push({id:'worldP_'+i,type:'world',label:'世界观预设：'+p.name,desc:(p.desc||'').substring(0,40),data:p.desc});
+});
+const sD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||'').trim();
+if(sD){
+exportItems.push({id:'cur_style',type:'style',label:'当前文风',desc:sD.substring(0,40),data:sD});
+}
+styleP.forEach((p,i)=>{
+exportItems.push({id:'styleP_'+i,type:'style',label:'文风预设：'+p.name,desc:(p.desc||'').substring(0,40),data:p.desc});
+});
+crWorks.forEach(w=>{
+exportItems.push({id:'work_'+w.id,type:'work',label:(w.type==='draft'?'草稿':'小说')+'：'+(w.title||'无标题'),desc:getCrWordCount(w)+'字',data:w});
+});
+if(exportItems.length===0){
+box.innerHTML='<p style="font-size:12px;color:var(--text2);text-align:center;padding:20px">没有可导出的内容<br>请先在设置中添加人物/世界观/文风，或在创作页写点东西</p>';
+document.getElementById('resExpOv').classList.add('show');
+return;
+}
+const typeLabels={char:'👤 人物',world:'🌍 世界观',style:'✒️ 文风',work:'📄 作品'};
+exportItems.forEach(item=>{
+const div=document.createElement('div');
+div.className='res-chk-item';
+div.dataset.resId=item.id;
+div.dataset.resType=item.type;
+div.dataset.resData=JSON.stringify(item.data);
+div.dataset.resLabel=item.label;
+div.onclick=()=>{div.classList.toggle('checked');};
+div.innerHTML=
+'<div class="res-chk-box">✓</div>'+
+'<div class="res-chk-info">'+
+'<div class="res-chk-name">'+(typeLabels[item.type]||'')+' '+esc(item.label)+'</div>'+
+'<div class="res-chk-desc">'+esc(item.desc)+'</div>'+
+'</div>';
+box.appendChild(div);
+});
+document.getElementById('resPackName').value='';
+document.getElementById('resPackDesc').value='';
+document.getElementById('resExpOv').classList.add('show');
+}
+function closeResExport(){
+document.getElementById('resExpOv').classList.remove('show');
+}
+function doResExport(){
+const checked=document.querySelectorAll('#resExpList .res-chk-item.checked');
+if(checked.length===0){showToast('请至少选择一项');return;}
+const items=[];
+checked.forEach(el=>{
+items.push({
+type:el.dataset.resType,
+name:el.dataset.resLabel,
+data:JSON.parse(el.dataset.resData)
+});
+});
+const packName=(document.getElementById('resPackName').value||'').trim()||'资源包';
+const packDesc=(document.getElementById('resPackDesc').value||'').trim();
+const pack={
+_app:'bijiAI_resource',
+_ver:APP_VER,
+id:uid(),
+name:packName,
+desc:packDesc,
+author:'笔记AI用户',
+createdAt:new Date().toISOString(),
+items:items
+};
+const jsonStr=JSON.stringify(pack,null,2);
+const fileName='笔记AI_资源_'+packName+'_'+new Date().toLocaleDateString().replace(/\//g,'-')+'.json';
+if(window.showSaveFilePicker){
+(async()=>{
+try{
+const handle=await window.showSaveFilePicker({
+suggestedName:fileName,
+types:[{description:'JSON文件',accept:{'application/json':['.json']}}]
+});
+const writable=await handle.createWritable();
+await writable.write(jsonStr);
+await writable.close();
+closeResExport();
+showToast('资源包已导出 📤');
+}catch(e){
+if(e.name!=='AbortError')fallbackResExport(jsonStr,fileName);
+}
+})();
+return;
+}
+fallbackResExport(jsonStr,fileName);
+}
+function fallbackResExport(jsonStr,fileName){
+const dataUri='data:application/json;charset=utf-8,'+encodeURIComponent(jsonStr);
+const a=document.createElement('a');
+a.href=dataUri;a.download=fileName;
+a.style.display='none';
+document.body.appendChild(a);a.click();
+setTimeout(()=>{document.body.removeChild(a);},500);
+closeResExport();
+showToast('资源包已导出 📤');
+}
+function writeExpShare(){
+document.getElementById('expTitle').value='';
+document.getElementById('expContent').value='';
+document.getElementById('expOv').classList.add('show');
+setTimeout(()=>document.getElementById('expTitle').focus(),100);
+}
+function closeExpDlg(){
+document.getElementById('expOv').classList.remove('show');
+}
+function saveExpShare(){
+const title=(document.getElementById('expTitle').value||'').trim();
+const content=(document.getElementById('expContent').value||'').trim();
+if(!title){showToast('请输入标题');return;}
+if(!content){showToast('请输入内容');return;}
+const pack={
+_app:'bijiAI_resource',
+_ver:APP_VER,
+id:uid(),
+name:title,
+desc:'经验分享',
+author:'笔记AI用户',
+createdAt:new Date().toISOString(),
+items:[{type:'exp',name:title,data:content}]
+};
+resPacks.unshift(pack);
+sv('bj_resPacks',resPacks);
+closeExpDlg();
+renderResList();
+showToast('经验已保存 ✅');
+}
+function deleteResPack(id){
+const pack=resPacks.find(p=>p.id===id);
+if(!pack)return;
+showDlg('删除资源包','确定要删除「'+(pack.name||'未命名')+'」吗？',()=>{
+resPacks=resPacks.filter(p=>p.id!==id);
+sv('bj_resPacks',resPacks);
+renderResList();
+showToast('资源包已删除');
+},true);
+}
+function importResPack(e){
+const file=e.target.files[0];if(!file)return;
+const reader=new FileReader();
+reader.onload=ev=>{
+try{
+const data=JSON.parse(ev.target.result);
+if(data._app!=='bijiAI_resource'||!data.items){
+showToast('这不是有效的资源包文件',3000);return;
+}
+const existing=resPacks.findIndex(p=>p.id===data.id);
+if(existing>-1){
+showDlg('重复资源包','已存在同名资源包「'+(data.name||'')+'」，是否覆盖？',()=>{
+resPacks[existing]=data;
+sv('bj_resPacks',resPacks);
+renderResList();
+showToast('资源包已更新 📥');
+});
+}else{
+resPacks.unshift(data);
+sv('bj_resPacks',resPacks);
+renderResList();
+const count=data.items.length;
+showToast('已导入「'+(data.name||'资源包')+'」('+count+'项) 📥');
+}
+}catch(err){showToast('文件解析失败: '+err.message,3000);}
+};
+reader.readAsText(file);
+e.target.value='';
+}
 // ==================== HANDBOOK ====================
 function openHandbook(){
 document.getElementById('hbOv').classList.add('show');
 }
 function closeHandbook(){
 document.getElementById('hbOv').classList.remove('show');
+}
+// ==================== USER CARD ====================
+function renderUserCard(){
+const uc=userCard;
+const nameEl=document.getElementById('ucName');
+const bioEl=document.getElementById('ucBio');
+const avatarEl=document.getElementById('ucAvatar');
+nameEl.textContent=uc.name||'点击设置昵称';
+bioEl.textContent=uc.bio||'点击添加个人简介...';
+if(uc.avatar){
+avatarEl.innerHTML='<img src="'+uc.avatar+'" alt="头像"><div class="ucard-avatar-hint">更换</div>';
+}else{
+avatarEl.innerHTML='<span id="ucAvatarPh">✦</span><div class="ucard-avatar-hint">更换</div>';
+}
+updateStats();
+}
+function updateStats(){
+let totalWords=0;
+let worksCount=0;
+// 作坊文章
+ws.forEach(a=>{totalWords+=getTotalWords(a);});
+worksCount+=ws.length;
+// 创作作品
+crWorks.forEach(w=>{totalWords+=getCrWordCount(w);});
+worksCount+=crWorks.length;
+// 收藏里独有的（不在作坊里的）
+cols.books.forEach(b=>{
+if(!ws.find(a=>a.id===b.id))totalWords+=getTotalWords(b);
+});
+cols.shorts.forEach(s=>{
+if(!ws.find(a=>a.id===s.id))totalWords+=getTotalWords(s);
+});
+const colsCount=cols.books.length+cols.shorts.length;
+// 笔记总数
+let notesCount=0;
+const allIds=new Set();
+[...ws,...cols.books,...cols.shorts].forEach(a=>allIds.add(a.id));
+allIds.forEach(id=>{
+const n=ld('bj_notes_'+id,[]);
+notesCount+=n.length;
+});
+document.getElementById('statTotal').textContent=formatNum(totalWords);
+document.getElementById('statWorks').textContent=worksCount;
+document.getElementById('statCols').textContent=colsCount;
+document.getElementById('statNotes').textContent=notesCount;
+}
+function formatNum(n){
+if(n>=10000)return (n/10000).toFixed(1)+'万';
+if(n>=1000)return (n/1000).toFixed(1)+'k';
+return n;
+}
+function uploadAvatar(){
+document.getElementById('avatarUp').click();
+}
+function handleAvatarUpload(e){
+const file=e.target.files[0];
+if(!file)return;
+const canvas=document.createElement('canvas');
+const img=new Image();
+img.onload=()=>{
+const size=120;
+canvas.width=size;canvas.height=size;
+const ctx=canvas.getContext('2d');
+const min=Math.min(img.width,img.height);
+const sx=(img.width-min)/2;
+const sy=(img.height-min)/2;
+ctx.drawImage(img,sx,sy,min,min,0,0,size,size);
+const dataUrl=canvas.toDataURL('image/jpeg',0.8);
+userCard.avatar=dataUrl;
+sv('bj_userCard',userCard);
+renderUserCard();
+showToast('头像已更新 🎨');
+};
+img.src=URL.createObjectURL(file);
+e.target.value='';
+}
+function editUcName(){
+showInp('设置昵称','输入你的昵称',name=>{
+userCard.name=name;
+sv('bj_userCard',userCard);
+renderUserCard();
+showToast('昵称已更新');
+});
+}
+function editUcBio(){
+const ov=document.getElementById('inpOv');
+document.getElementById('inpTitle').textContent='编辑简介';
+const f=document.getElementById('inpField');
+f.placeholder='写一句话介绍自己...';
+f.value=userCard.bio||'';
+document.getElementById('inpOkBtn').onclick=()=>{
+userCard.bio=f.value.trim();
+sv('bj_userCard',userCard);
+closeInp();
+renderUserCard();
+showToast('简介已更新');
+};
+ov.classList.add('show');
+setTimeout(()=>f.focus(),100);
+}
+// ==================== OUTLINE GENERATOR ====================
+let outlineChCount=10;
+let outlineText='';
+function openOutlineGen(){
+document.getElementById('outlineTitle').value='';
+document.getElementById('outlineDesc').value='';
+document.getElementById('outlineResult').style.display='none';
+document.getElementById('outlineActions').style.display='none';
+document.getElementById('outlineGenBtn').style.display='';
+document.getElementById('outlineGenBtn').disabled=false;
+document.getElementById('outlineGenBtn').textContent='🧠 生成大纲';
+outlineText='';
+document.getElementById('outlineOv').classList.add('show');
+setTimeout(()=>document.getElementById('outlineDesc').focus(),200);
+}
+function closeOutlineGen(){
+document.getElementById('outlineOv').classList.remove('show');
+if(abortCtrl){abortCtrl.abort();abortCtrl=null;}
+}
+function setOutlineCh(n,el){
+outlineChCount=n;
+el.parentElement.querySelectorAll('.tag').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+}
+async function doGenOutline(){
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
+const desc=(document.getElementById('outlineDesc').value||'').trim();
+const title=(document.getElementById('outlineTitle').value||'').trim();
+if(!desc){showToast('请描述一下你想写的故事');return;}
+const btn=document.getElementById('outlineGenBtn');
+btn.disabled=true;
+btn.innerHTML='生成中 <span class="ldots"><span></span><span></span><span></span></span>';
+document.getElementById('outlineResult').style.display='block';
+document.getElementById('outlineActions').style.display='none';
+document.getElementById('outlineContent').textContent='正在构思大纲...';
+let sysMsg='你是一位专业的小说策划编辑，擅长构建故事架构和章节大纲。\n';
+sysMsg+='请根据用户的描述，生成一份详细的小说大纲。\n\n';
+sysMsg+='【输出格式要求】\n';
+sysMsg+='第一行：小说标题（纯文字）\n';
+sysMsg+='第二行：空行\n';
+sysMsg+='第三行：一句话故事简介\n';
+sysMsg+='第四行：空行\n';
+sysMsg+='然后逐章列出大纲，格式如下：\n';
+sysMsg+='第X章：章节标题\n';
+sysMsg+='- 本章概要（2-3句话描述本章主要内容、关键事件、情感转折）\n\n';
+sysMsg+='要求：\n';
+sysMsg+='- 共'+outlineChCount+'章\n';
+sysMsg+='- 故事线要完整（开端→发展→高潮→结局）\n';
+sysMsg+='- 每章之间要有因果关系和递进\n';
+sysMsg+='- 注意伏笔和悬念的设置\n';
+sysMsg+='- 不要输出任何多余内容\n';
+const validChars=characters.filter(c=>c.name||c.desc);
+if(validChars.length>0){
+sysMsg+='\n【可用角色】\n';
+validChars.forEach((c,i)=>{
+sysMsg+='角色'+(i+1)+'：'+(c.name||'未命名');
+if(c.desc)sysMsg+='（'+c.desc.substring(0,60)+'）';
+sysMsg+='\n';
+});
+}
+const wD=(document.getElementById('worldDesc').value||'').trim();
+if(wD)sysMsg+='\n【世界观】\n'+wD.substring(0,300)+'\n';
+let userMsg='请为以下故事生成'+outlineChCount+'章的详细大纲：\n\n';
+if(title)userMsg+='标题方向：'+title+'\n';
+userMsg+='故事描述：'+desc;
+const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+const contentEl=document.getElementById('outlineContent');
+outlineText='';
+if(useStream){
+await callAPIStream(messages,
+(fullText)=>{
+outlineText=fullText;
+contentEl.textContent=fullText;
+contentEl.parentElement.scrollTop=contentEl.parentElement.scrollHeight;
+},
+(fullText)=>{
+btn.disabled=false;btn.textContent='🧠 生成大纲';
+if(fullText){
+outlineText=fullText;
+contentEl.textContent=fullText;
+btn.style.display='none';
+document.getElementById('outlineActions').style.display='block';
+}else{
+contentEl.textContent='生成已取消';
+}
+},
+(errMsg)=>{
+btn.disabled=false;btn.textContent='🧠 生成大纲';
+contentEl.textContent='生成失败：'+errMsg;
+}
+);
+}else{
+const result=await callAPINonStream(messages);
+btn.disabled=false;btn.textContent='🧠 生成大纲';
+if(result){
+outlineText=result;
+contentEl.textContent=result;
+btn.style.display='none';
+document.getElementById('outlineActions').style.display='block';
+}else{
+contentEl.textContent='生成失败，请检查API设置';
+}
+}
+}
+function applyOutline(){
+if(!outlineText){showToast('没有大纲内容');return;}
+let title='';
+const lines=outlineText.split('\n');
+for(let i=0;i<Math.min(3,lines.length);i++){
+const l=lines[i].trim();
+if(l&&l.length<40&&!l.startsWith('-')&&!l.startsWith('第')){
+title=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
+break;
+}
+}
+const inputTitle=(document.getElementById('outlineTitle').value||'').trim();
+if(inputTitle)title=inputTitle;
+if(!title)title='未命名小说';
+const work={
+id:uid(),type:'novel',title:title,
+chapters:[''],
+outline:outlineText,
+createdAt:new Date().toISOString(),
+updatedAt:new Date().toISOString()
+};
+crWorks.unshift(work);
+sv('bj_crWorks',crWorks);
+closeOutlineGen();
+openEditor(work.id);
+showToast('小说已创建，大纲已保存 📋');
+}
+// ==================== AI REWRITE ====================
+async function aiRewriteChapter(){
+if(!curEd)return;
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
+const text=document.getElementById('edTextarea').value||'';
+if(countWords(text)<10){showToast('当前章节内容太少，至少10字才能重写');return;}
+showDlg('AI重写确认','AI将重新改写当前章节内容，原内容会被替换。是否继续？',async()=>{
+const ta=document.getElementById('edTextarea');
+const statusEl=document.getElementById('edSaveStatus');
+statusEl.textContent='AI重写中...';
+ta.disabled=true;
+let sysMsg='你是一位经验丰富的文学编辑兼改稿人。你的工作是将一篇有潜力但粗糙的初稿，打磨成一篇让人读了会起鸡皮疙瘩的好文章。\n\n';
+sysMsg+='你的改稿原则：\n';
+sysMsg+='1. 剧情骨架不动——保留所有关键事件、人物关系、情节走向\n';
+sysMsg+='2. 血肉全部重塑——每一句话都用更精准、更有画面感的方式重新表达\n';
+sysMsg+='3. 补充原文缺失的：感官细节（气味、触感、声音）、微表情、环境氛围、潜台词\n';
+sysMsg+='4. 修复原文的问题：删除空洞形容词、消灭万能副词、打破重复句式、让对话更口语化\n';
+sysMsg+='5. 提升节奏感：紧张处加速（短句、断句），舒缓处减速（长句、细描）\n';
+sysMsg+='6. 字数应不少于原文，因为好的改写通常会更丰满\n';
+sysMsg+='7. 直接输出改写后的正文，不加任何说明、标题、章节号、markdown格式\n';
+const styleD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||ap.curStyle||'').trim();
+if(styleD)sysMsg+='\n【文风要求】'+styleD+'\n';
+const chInfo=curEd.type==='novel'?'这是「'+(curEd.title||'')+'」的第'+(curEdCh+1)+'章。':'';
+let contextInfo='';
+if(curEd.type==='novel'&&curEd.chapters&&curEdCh>0){
+const prevCh=curEd.chapters[curEdCh-1]||'';
+if(prevCh)contextInfo='\n\n【上一章结尾参考】\n'+prevCh.substring(prevCh.length-300)+'\n';
+}
+let outlineInfo='';
+if(curEd.outline){
+outlineInfo='\n\n【小说大纲参考】\n'+curEd.outline.substring(0,500)+'\n';
+}
+const userMsg=chInfo+contextInfo+outlineInfo+'\n\n请重写以下章节内容：\n\n'+text;
+const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+if(useStream){
+await callAPIStream(messages,
+(fullText)=>{
+ta.value=fullText;
+updateEdWc();
+},
+(fullText)=>{
+ta.disabled=false;
+if(fullText){
+ta.value=fullText;
+updateEdWc();
+saveEditorContent();
+statusEl.textContent='重写完成 ✓';
+showToast('章节已重写 ✨');
+}else{
+statusEl.textContent='重写已取消';
+}
+},
+(errMsg)=>{
+ta.disabled=false;
+statusEl.textContent='重写失败';
+showToast('重写失败：'+errMsg,3000);
+}
+);
+}else{
+const result=await callAPINonStream(messages);
+ta.disabled=false;
+if(result){
+ta.value=result;
+updateEdWc();
+saveEditorContent();
+statusEl.textContent='重写完成 ✓';
+showToast('章节已重写 ✨');
+}else{
+statusEl.textContent='重写失败';
+}
+}
+});
+}
+function toggleStreamSwitch(el){
+const cb=document.getElementById('streamOn');
+cb.checked=!cb.checked;
+useStream=cb.checked;
+sv('bj_stream',useStream);
+updateStreamUI();
+showToast(useStream?'已开启流式输出':'已关闭流式输出');
+}
+function updateStreamUI(){
+const track=document.getElementById('streamTrack');
+const thumb=document.getElementById('streamThumb');
+if(useStream){
+track.style.background='var(--accent)';
+thumb.style.left='22px';
+}else{
+track.style.background='var(--border)';
+thumb.style.left='2px';
+}
 }
 function openInspiration(){
 const subjects=[
@@ -2375,8 +4200,14 @@ const sWorld=ld(K.curWorld,{});
 if(sWorld.desc)document.getElementById('worldDesc').value=sWorld.desc;
 if(sWorld.minWords)document.getElementById('minWords').value=sWorld.minWords;
 if(ap.curStyle&&document.getElementById('styleDesc'))document.getElementById('styleDesc').value=ap.curStyle;
+document.getElementById('streamOn').checked=useStream;
+document.getElementById('quickTemp').value=document.getElementById('apiTemp').value;
+document.getElementById('qtVal').textContent=document.getElementById('apiTemp').value;
+updateStreamUI();
 
 renderTags();renderArticles();renderCharCards();applyAppearance();
+document.getElementById('splashVer').textContent=APP_VER;
+renderUserCard();
 }
 
 // 页面关闭/切换时自动保存所有数据
