@@ -80,19 +80,22 @@ animation:pulseGlow 4s ease-in-out infinite;
 }
 .splash-card{
 position:relative;z-index:10;
-background:rgba(26,26,40,.6);
-backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
-border:1px solid rgba(108,92,231,.2);
-border-radius:24px;padding:48px 56px;
-box-shadow:0 8px 32px rgba(0,0,0,.3),
-0 0 0 1px rgba(255,255,255,.05) inset,
-0 0 80px rgba(108,92,231,.1);
+background:linear-gradient(145deg,rgba(26,26,40,.7) 0%,rgba(40,35,60,.5) 100%);
+backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+border:1px solid rgba(108,92,231,.3);
+border-radius:28px;padding:52px 60px;
+box-shadow:0 12px 40px rgba(0,0,0,.4),
+0 0 0 1px rgba(255,255,255,.08) inset,
+0 0 100px rgba(108,92,231,.15),
+0 -20px 60px rgba(162,155,254,.05) inset;
 text-align:center;
-animation:cardFloat 6s ease-in-out infinite;
+animation:cardFloat 5s ease-in-out infinite;
 }
 @keyframes cardFloat{
-0%,100%{transform:translateY(0);}
-50%{transform:translateY(-8px);}
+0%,100%{transform:translateY(0) rotate(0deg);}
+25%{transform:translateY(-5px) rotate(0.5deg);}
+50%{transform:translateY(-10px) rotate(0deg);}
+75%{transform:translateY(-5px) rotate(-0.5deg);}
 }
 .splash-icon{
 width:88px;height:88px;margin:0 auto 20px;
@@ -121,10 +124,7 @@ animation:shimmer 3s ease-in-out infinite;
 background-size:200% 100%;
 text-shadow:0 0 40px rgba(108,92,231,.3);
 }
-@keyframes shimmer{
-0%,100%{background-position:0% 50%;}
-50%{background-position:100% 50%;}
-}
+@keyframes shimmer{ 0%{background-position:0% 50%;filter:brightness(1);} 25%{filter:brightness(1.1);} 50%{background-position:100% 50%;filter:brightness(1.2);} 75%{filter:brightness(1.1);} 100%{background-position:0% 50%;filter:brightness(1);} }
 .splash-sub{
 font-size:13px;color:rgba(255,255,255,.6);
 letter-spacing:2px;margin-bottom:32px;
@@ -256,7 +256,7 @@ color:#fff;font-size:13px;font-weight:600;cursor:pointer;
 white-space:nowrap;transition:all .3s;
 box-shadow:0 3px 12px rgba(108,92,231,.25);
 }
-.btn-gen:active{transform:scale(.93);}
+.btn-gen:active{transform:scale(.95);box-shadow:0 2px 8px rgba(108,92,231,.4);} .btn-gen::before{ content:'';position:absolute;inset:0; background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent); transform:translateX(-100%);transition:transform .5s; } .btn-gen:active::before{transform:translateX(100%);}
 .btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none;}
 
 /* TAGS */
@@ -293,9 +293,18 @@ color:var(--text2);transition:all .3s;background:none;
 /* ARTICLE CARDS */
 .alist{padding:8px 18px;display:flex;flex-direction:column;gap:11px;}
 .acard{
-background:var(--card);border-radius:15px;padding:16px;
+background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.03) 100%);
+border-radius:16px;padding:18px;
 border:1px solid var(--border);transition:all .3s;cursor:pointer;
+position:relative;overflow:hidden;
 }
+.acard::before{
+content:'';position:absolute;top:0;left:0;right:0;height:3px;
+background:linear-gradient(90deg,var(--accent),var(--accent2),var(--accent));
+background-size:200% 100%;
+opacity:0;transition:opacity .3s;
+}
+.acard:active::before{opacity:1;}
 .acard:active{transform:scale(.97);border-color:var(--accent);box-shadow:0 0 12px rgba(108,92,231,.15);}
 .acard-hd{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:9px;}
 .acard-t{font-size:15px;font-weight:700;line-height:1.4;flex:1;margin-right:10px;}
@@ -696,10 +705,13 @@ border:1px solid var(--border);margin-top:10px;
 .toast{
 position:fixed;top:50%;left:50%;
 transform:translate(-50%,-50%) scale(.9);
-background:var(--card2);color:var(--text);padding:13px 26px;
-border-radius:13px;font-size:12px;z-index:9999;opacity:0;
-transition:all .3s;pointer-events:none;text-align:center;
-border:1px solid var(--border);box-shadow:var(--shadow);max-width:270px;
+background:linear-gradient(135deg,var(--card2),var(--card));
+color:var(--text);padding:14px 28px;
+border-radius:14px;font-size:13px;z-index:9999;opacity:0;
+transition:all .3s cubic-bezier(.4,0,.2,1);pointer-events:none;text-align:center;
+border:1px solid var(--accent);
+box-shadow:0 8px 32px rgba(0,0,0,.3),0 0 20px rgba(108,92,231,.2);
+max-width:280px;font-weight:500;
 }
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .dlg-ov{
@@ -947,7 +959,13 @@ padding:2px 8px;border-radius:7px;font-size:9px;font-weight:600;
 .res-card-type.world{background:rgba(39,174,96,.15);color:var(--success);}
 .res-card-type.style{background:rgba(230,126,34,.15);color:#e67e22;}
 .res-card-type.work{background:rgba(52,152,219,.15);color:#3498db;}
-.res-card-type.exp{background:rgba(241,196,15,.15);color:#f1c40f;}
+.res-card-type.exp{background:rgba(241,196,15,.15);color:#f1c40f;} .res-card-type.rule{background:rgba(155,89,182,.15);color:#9b59b6;}
+.ch-outline-item{background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;}
+.ch-outline-item-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.ch-outline-item-hdr span{font-size:12px;font-weight:600;color:var(--accent2);}
+.ch-outline-item textarea{width:100%;padding:8px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;min-height:60px;resize:vertical;font-family:inherit;line-height:1.6;}
+.ch-outline-item textarea:focus{border-color:var(--accent);outline:none;}
+.ch-outline-item textarea::placeholder{color:var(--text2);}
 .res-card-pv{
 font-size:11px;color:var(--text2);line-height:1.6;margin-bottom:8px;
 display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
@@ -1097,7 +1115,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.3.0</div>
+<div class="splash-ver" id="splashVer">v2.4.0</div>
 </div>
 
 <!-- APP -->
@@ -1171,6 +1189,9 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <button onclick="openOutlineGen()" style="border-color:var(--accent);color:var(--accent2)">🧠 AI大纲</button>
 <button onclick="openNameGen()" style="border-color:var(--accent);color:var(--accent2)">✨ AI起名</button>
 </div>
+<div class="cr-new-bar" style="padding-top:0">
+<button onclick="exportCrToTxt()">📥 导出TXT</button>
+</div>
 <div class="cr-tabs">
 <button class="cr-tab act" onclick="switchCrTab('draft',this)">草稿箱</button>
 <button class="cr-tab" onclick="switchCrTab('novel',this)">我的小说</button>
@@ -1228,6 +1249,16 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <div class="frow">
 <div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div>
 <div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div>
+</div>
+<div class="fg">
+<label class="fl">场景预设（点击自动调整Temperature）</label>
+<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px">
+<button class="tag" onclick="setTempPreset(0.5,'严谨')">📐 严谨叙事</button>
+<button class="tag" onclick="setTempPreset(0.7,'平衡')">⚖️ 平衡</button>
+<button class="tag" onclick="setTempPreset(0.9,'创意')">💡 创意发散</button>
+<button class="tag" onclick="setTempPreset(1.1,'狂野')">🔥 狂野实验</button>
+</div>
+<p style="font-size:9px;color:var(--text2);margin-top:4px">严谨：适合推理/悬疑，逻辑严密；创意：适合奇幻/脑洞，天马行空</p>
 </div>
 <div class="fg" style="display:flex;align-items:center;justify-content:space-between;padding:4px 0">
 <label class="fl" style="margin:0">流式输出（逐字显示）</label>
@@ -1295,7 +1326,32 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <div class="plist" id="stylePL"></div>
 </div>
 </div>
-
+<!-- 规则设置 -->
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)">
+📜 规则设置
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+<div class="set-grp-c">
+<div class="fg"><label class="fl">当前规则（限制/提示AI的内容）</label><textarea class="fta" id="ruleDesc" placeholder="例如：&#10;- 禁止出现现代科技词汇&#10;- 对话必须使用古风语气&#10;- 每章必须有一个小悬念&#10;- 主角不能主动表白&#10;- 战斗场面要详细描写..." style="min-height:120px" oninput="curRule=this.value;sv('bj_curRule',curRule)"></textarea></div>
+<p style="font-size:10px;color:var(--text2);margin-bottom:10px;line-height:1.6">💡 规则会作为强制要求发送给AI，用于限制剧情走向、文风要求、禁止事项等。每条规则建议单独一行，以"-"开头更清晰。</p>
+<button class="btn-p" onclick="saveRulePreset()">💾 保存规则预设</button>
+<div class="plist" id="rulePL"></div>
+</div>
+</div>
+<!-- 禁用词设置 -->
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)">
+🚫 禁用词设置
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+</div>
+<div class="set-grp-c">
+<div class="fg"><label class="fl">禁用词列表（AI会避免使用这些词）</label><textarea class="fta" id="banWordsInput" placeholder="每行一个词，例如：&#10;系统&#10;穿越&#10;金手指&#10;开挂&#10;躺赢" style="min-height:100px" oninput="banWords=this.value;sv('bj_banWords',banWords)"></textarea></div>
+<p style="font-size:10px;color:var(--text2);margin-bottom:10px;line-height:1.6">💡 填写你不希望出现在文章中的词汇，AI生成时会尽量避免。每行写一个词。</p>
+<button class="btn-p" onclick="saveBanWordsPreset()">💾 保存禁用词预设</button>
+<div class="plist" id="banWordsPL"></div>
+</div>
+</div>
 <!-- Appearance -->
 <div class="set-grp">
 <div class="set-grp-t" onclick="toggleGrp(this)">
@@ -1334,7 +1390,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)">
 <button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button>
 </div>
-<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">导出内容包含：API预设、人物设定、世界观预设、文风预设、收藏内容、创作内容、笔记、外观设置、卡片设置</p>
+<p style="font-size:10px;color:var(--text2);margin-top:8px;line-height:1.5">导出内容包含：API预设、人物设定、世界观预设、文风预设、收藏内容、创作内容、笔记、外观设置、卡片设置</p> <div id="storageInfo" style="margin-top:10px;padding:10px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border)"> <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px"> <span style="font-size:11px;color:var(--text2)">存储空间使用</span> <span style="font-size:11px;font-weight:600;color:var(--accent2)" id="storagePercent">计算中...</span> </div> <div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"> <div id="storageBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px;transition:width .3s"></div> </div> <div style="font-size:9px;color:var(--text2);margin-top:4px" id="storageDetail">已用 0MB / 5MB</div> </div>
 </div>
 </div>
 </div>
@@ -1353,6 +1409,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <button class="res-tab" onclick="switchResTab('char',this)">人物</button>
 <button class="res-tab" onclick="switchResTab('world',this)">世界观</button>
 <button class="res-tab" onclick="switchResTab('style',this)">文风</button>
+<button class="res-tab" onclick="switchResTab('rule',this)">规则</button>
 <button class="res-tab" onclick="switchResTab('work',this)">作品</button>
 <button class="res-tab" onclick="switchResTab('exp',this)">经验</button>
 </div>
@@ -1404,7 +1461,11 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </div>
 <div class="hb-body">
 <h3>一、欢迎使用笔记AI</h3>
-<p>笔记AI是一款基于大语言模型的AI创作工坊，帮助你快速生成高质量的小说、散文、论文等文学作品。无论你是新手写作者还是资深创作人，这里都能成为你的灵感引擎。</p>
+<p>笔记AI是一款基于大语言模型的AI创作工坊，帮助你快速生成高质量的小说、散文等文学作品。无论你是新手写作者还是资深创作人，这里都能成为你的灵感引擎。</p>
+<div class="notice">
+<p>🎉 <strong>v2.4.0 更新内容</strong></p>
+<p>· 全新启动动画，更加流畅炫酷<br>· 优化卡片视觉效果<br>· 修复人物性格标签Bug<br>· 新增触觉反馈体验<br>· 手册增加使用技巧</p>
+</div>
 <h3>二、快速开始</h3>
 <ul>
 <li><strong>第1步：配置API</strong> — 进入「设置」→「API设置」，填写API地址、密钥和模型名称。支持官方OpenAI或兼容的第三方公益站。</li>
@@ -1441,11 +1502,22 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </ul>
 <h3>八、数据安全</h3>
 <p>所有数据保存在浏览器本地（localStorage），不上传到任何服务器。封面图片建议使用小尺寸图以节省存储空间。建议定期通过「数据管理」导出备份。</p>
+<h3>九、使用技巧</h3>
+<ul>
+<li><strong>提高生成质量</strong>：描述越具体，AI理解越准确。比如"校园甜文，女主是学霸，男主是体育生"比"写个恋爱故事"效果好得多。</li>
+<li><strong>善用方向提示</strong>：续写时在方向框输入"本章要有误会""加入新角色"等，AI会按你的意图发展。</li>
+<li><strong>调节创意度</strong>：Temperature低（0.5-0.7）适合逻辑严密的悬疑推理；高（0.9-1.2）适合天马行空的奇幻脑洞。</li>
+<li><strong>长按引用</strong>：阅读时长按任意段落，可以快速引用到笔记中，方便记录灵感。</li>
+<li><strong>批量管理</strong>：在创作页可以统一管理所有草稿和小说，支持一键导出TXT。</li>
+<li><strong>文风模板</strong>：不知道怎么描述文风？直接用设置里的7种快捷模板，一键应用。</li>
+<li><strong>章节大纲</strong>：写长篇时，先用「AI大纲」生成整体框架，再逐章填充，效率翻倍。</li>
+<li><strong>定期备份</strong>：每周导出一次数据，防止浏览器清理缓存导致数据丢失。</li>
+</ul>
 <div class="notice">
 <p>⚠️ <strong>诚信创作倡议</strong></p>
 <p>笔记AI鼓励创作者诚信使用AI辅助创作。请勿将AI生成的内容伪装为完全原创作品。在发布时请如实标注"本文由AI辅助创作"，尊重读者知情权。让我们共同维护良好的创作环境。</p>
 </div>
-<h3>九、联系作者</h3>
+<h3>十、联系作者</h3>
 <p>如遇问题或有建议反馈，欢迎联系：</p>
 <div class="contact">
 <p>📕 小红书：95567118758</p>
@@ -1453,7 +1525,7 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <p>💬 微信：Aa9620520</p>
 <p>💬 QQ：962005530</p>
 </div>
-<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.3.0 · Created by 心田<br>让每一个灵感都值得被记录</p>
+<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.4.0 · Created by 心田<br>让每一个灵感都值得被记录 ✨</p>
 </div>
 </div>
 
@@ -1516,12 +1588,16 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 <div class="ed-acts">
 <button onclick="saveEditorContent()">💾 保存</button>
 <button onclick="formatEditorText()">¶ 排版</button>
-<button onclick="copyEditorContent()">📋 复制</button>
-<button onclick="requestAIReview()">🤖 AI评价</button> <button onclick="viewOutline()" id="edOutlineBtn" style="display:none">📋 大纲</button>
+<button onclick="copyEditorContent()">📋 复制</button> <button onclick="exportEdToTxt()">📥 导出TXT</button>
+<button onclick="requestAIReview()">🤖 AI评价</button>
+<button onclick="viewOutline()" id="edOutlineBtn" style="display:none">📋 总大纲</button>
+<button onclick="openChOutline()" id="edChOutlineBtn" style="display:none">📝 章节大纲</button>
 <button onclick="aiRewriteChapter()">🔄 AI重写</button>
+<button onclick="openAiExpand()">📈 AI扩写</button>
+<button onclick="openAiShrink()">📉 AI缩写</button>
 <button onclick="deleteEdChapter()" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️ 删除本章</button>
 </div>
-<div class="ed-ch-bar" id="edChBar" style="display:none"></div>
+<div class="ed-ch-bar" id="edChBar" style="display:none"> <button class="ed-ch-btn act" id="edChCurrent" onclick="openEdChList()">第1章</button> <button class="ed-ch-btn" onclick="goEdPrevCh()" id="edPrevBtn" style="display:none">◀ 上一章</button> <button class="ed-ch-btn" onclick="goEdNextCh()" id="edNextBtn" style="display:none">下一章 ▶</button> <button class="ed-ch-btn" onclick="openEdChList()">📑 目录</button> </div>
 <div class="ed-body">
 <textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
 </div>
@@ -1630,6 +1706,58 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 </div>
 </div>
 </div>
+<!-- 编辑器章节列表弹窗 -->
+<div class="ch-ov" id="edChOv" onclick="if(event.target===this)closeEdChList()">
+<div class="ch-panel">
+<div class="ch-panel-hdr">
+<div><h3 id="edChPanelTitle">章节管理</h3><span id="edChPanelInfo"></span></div>
+<button class="ch-panel-close" onclick="closeEdChList()">✕</button>
+</div>
+<div class="ch-panel-list" id="edChPanelList"></div>
+<div style="padding:12px 18px;border-top:1px solid var(--border)">
+<button style="width:100%;padding:10px;border-radius:10px;border:1px dashed var(--accent);background:transparent;color:var(--accent2);font-size:12px;cursor:pointer" onclick="addEdChapter()">+ 添加新章节</button>
+</div>
+</div>
+</div>
+<!-- 章节大纲编辑弹窗 -->
+<div class="res-exp-ov" id="chOutlineOv" onclick="if(event.target===this)closeChOutline()">
+<div class="res-exp-box" style="max-width:420px;max-height:85vh;display:flex;flex-direction:column">
+<h3>📋 章节大纲管理</h3>
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px">为每章设置大纲，AI续写时会参考</p>
+<div id="chOutlineList" style="flex:1;overflow-y:auto;margin-bottom:12px"></div>
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="closeChOutline()">关闭</button>
+<button class="dlg-ok" onclick="saveChOutlines()">💾 保存大纲</button>
+</div>
+</div>
+</div>
+<!-- AI扩写/缩写弹窗 -->
+<div class="res-exp-ov" id="expandOv" onclick="if(event.target===this)closeExpandOv()">
+<div class="res-exp-box" style="max-width:420px;max-height:85vh;display:flex;flex-direction:column">
+<h3 id="expandTitle">📈 AI扩写</h3>
+<p style="font-size:11px;color:var(--text2);margin-bottom:10px" id="expandDesc">选择或粘贴要扩写的段落，AI会添加更多细节描写</p>
+<div class="fg">
+<label class="fl">原文内容</label>
+<textarea class="fta" id="expandInput" placeholder="粘贴或输入要处理的段落..." style="min-height:100px"></textarea>
+</div>
+<div class="fg">
+<label class="fl">扩写/缩写要求（可选）</label>
+<input class="fi" id="expandHint" placeholder="例如：增加环境描写、加入心理活动、精简对话...">
+</div>
+<div id="expandResult" style="display:none;margin-top:10px">
+<label class="fl">处理结果</label>
+<textarea class="fta" id="expandOutput" style="min-height:120px;background:var(--bg)" readonly></textarea>
+<div style="display:flex;gap:8px;margin-top:8px">
+<button class="btn-s" onclick="copyExpandResult()" style="flex:1">📋 复制结果</button>
+<button class="btn-p" onclick="applyExpandResult()" style="flex:1">✅ 替换原文</button>
+</div>
+</div>
+<div class="res-exp-btns" id="expandBtns">
+<button class="dlg-cancel" onclick="closeExpandOv()">取消</button>
+<button class="dlg-ok" id="expandDoBtn" onclick="doExpand()">开始处理</button>
+</div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
@@ -1658,8 +1786,127 @@ background:var(--accent2);margin-left:4px;vertical-align:middle;
 
 <input type="file" id="coverUp" accept="image/*" style="display:none">
 <script>
+// ==================== IndexedDB 存储系统 ====================
+const DB_NAME = 'BijiAI_DB';
+const DB_VERSION = 1;
+const STORE_NAME = 'data';
+let db = null;
+let dbReady = false;
+let dbCache = {}; // 内存缓存
+
+// 初始化数据库
+function initDB() {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, DB_VERSION);
+        
+        request.onerror = () => {
+            console.error('IndexedDB 打开失败');
+            reject(request.error);
+        };
+        
+        request.onsuccess = () => {
+            db = request.result;
+            dbReady = true;
+            console.log('IndexedDB 已连接，容量约50-100MB');
+            resolve(db);
+        };
+        
+        request.onupgradeneeded = (e) => {
+            const database = e.target.result;
+            if (!database.objectStoreNames.contains(STORE_NAME)) {
+                database.createObjectStore(STORE_NAME, { keyPath: 'key' });
+            }
+        };
+    });
+}
+
+// 从IndexedDB读取
+function dbGet(key) {
+    return new Promise((resolve) => {
+        if (!db) { resolve(null); return; }
+        try {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.get(key);
+            request.onsuccess = () => {
+                const result = request.result;
+                resolve(result ? result.value : null);
+            };
+            request.onerror = () => resolve(null);
+        } catch (e) {
+            resolve(null);
+        }
+    });
+}
+
+// 写入IndexedDB
+function dbSet(key, value) {
+    return new Promise((resolve) => {
+        if (!db) { resolve(false); return; }
+        try {
+            const tx = db.transaction(STORE_NAME, 'readwrite');
+            const store = tx.objectStore(STORE_NAME);
+            store.put({ key: key, value: value });
+            tx.oncomplete = () => resolve(true);
+            tx.onerror = () => resolve(false);
+        } catch (e) {
+            resolve(false);
+        }
+    });
+}
+
+// 从IndexedDB加载所有数据到缓存
+async function loadAllFromDB() {
+    if (!db) return;
+    return new Promise((resolve) => {
+        try {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.getAll();
+            request.onsuccess = () => {
+                const items = request.result || [];
+                items.forEach(item => {
+                    dbCache[item.key] = item.value;
+                });
+                console.log('已从IndexedDB加载 ' + items.length + ' 项数据');
+                resolve();
+            };
+            request.onerror = () => resolve();
+        } catch (e) {
+            resolve();
+        }
+    });
+}
+
+// 获取IndexedDB使用量
+async function getDBStorageUsage() {
+    if (!db) return { used: 0, usedMB: '0', percent: 0 };
+    return new Promise((resolve) => {
+        try {
+            const tx = db.transaction(STORE_NAME, 'readonly');
+            const store = tx.objectStore(STORE_NAME);
+            const request = store.getAll();
+            request.onsuccess = () => {
+                const items = request.result || [];
+                let total = 0;
+                items.forEach(item => {
+                    total += JSON.stringify(item).length * 2;
+                });
+                const maxSize = 50 * 1024 * 1024; // 50MB
+                resolve({
+                    used: total,
+                    usedMB: (total / 1024 / 1024).toFixed(2),
+                    percent: (total / maxSize * 100).toFixed(1)
+                });
+            };
+            request.onerror = () => resolve({ used: 0, usedMB: '0', percent: 0 });
+        } catch (e) {
+            resolve({ used: 0, usedMB: '0', percent: 0 });
+        }
+    });
+}
 // ==================== CONFIG ====================
-const APP_VER='v2.3.0';
+const APP_VER='v2.4.0';
 
 // ==================== STORAGE ====================
 const K={
@@ -1667,10 +1914,43 @@ tags:'bj_tags',apiP:'bj_apiP',charP:'bj_charP',worldP:'bj_worldP',
 curApi:'bj_curApi',curChars:'bj_curChars',curWorld:'bj_curWorld',
 cols:'bj_cols',ws:'bj_ws',ap:'bj_ap'
 };
-function ld(k,fb){try{const d=localStorage.getItem(k);return d?JSON.parse(d):fb;}catch{return fb;}}
-function sv(k,d){
-try{localStorage.setItem(k,JSON.stringify(d));}
-catch(e){showToast('⚠️ 存储空间不足，请导出备份后清理数据',3000);console.warn('Storage:',e);}
+function ld(k, fb) {
+    // 优先从内存缓存读取
+    if (dbCache.hasOwnProperty(k)) {
+        return dbCache[k];
+    }
+    // 回退到localStorage（兼容旧数据）
+    try {
+        const d = localStorage.getItem(k);
+        if (d) {
+            const parsed = JSON.parse(d);
+            dbCache[k] = parsed; // 存入缓存
+            return parsed;
+        }
+        return fb;
+    } catch {
+        return fb;
+    }
+}
+
+function sv(k, d) {
+    // 存入内存缓存
+    dbCache[k] = d;
+    
+    // 异步存入IndexedDB
+    if (dbReady) {
+        dbSet(k, d).catch(() => {});
+    }
+    
+    // 同时尝试存localStorage（作为备份，可能会失败）
+    try {
+        const str = JSON.stringify(d);
+        if (str.length < 500000) { // 小于500KB才存localStorage
+            localStorage.setItem(k, str);
+        }
+    } catch (e) {
+        // localStorage满了就忽略，IndexedDB会保存
+    }
 }
 
 // ==================== STATE ====================
@@ -1683,6 +1963,10 @@ let apiP=ld(K.apiP,[]);
 let charP=ld(K.charP,[]);
 let worldP=ld(K.worldP,[]);
 let styleP=ld('bj_styleP',[]);
+let ruleP=ld('bj_ruleP',[]);
+let curRule=ld('bj_curRule','');
+let banWords=ld('bj_banWords','');
+let banWordsP=ld('bj_banWordsP',[]);
 let ap=ld(K.ap,{theme:'default',fontUrl:'',rdBg:'',rdFontSize:15,rdLineHeight:2,curStyle:''});
 let characters=ld(K.curChars,[{name:'',desc:''},{name:'',desc:''}]);
 let curRd=null;// current reading article
@@ -1703,6 +1987,7 @@ let userCard=ld('bj_userCard',{name:'',bio:'',avatar:''});
 // ==================== TOAST ====================
 let toastTimer=null;
 function showToast(msg,dur=2000){
+if(navigator.vibrate)navigator.vibrate(10);
 const t=document.getElementById('toast');
 t.textContent=msg;t.classList.add('show');
 if(toastTimer)clearTimeout(toastTimer);
@@ -1735,7 +2020,13 @@ setTimeout(()=>f.focus(),100);
 function closeInp(){document.getElementById('inpOv').classList.remove('show');}
 
 // ==================== UTILITY ====================
-function esc(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function esc(s){
+if(s===null||s===undefined)return '';
+if(typeof s!=='string')s=String(s);
+const d=document.createElement('div');
+d.textContent=s;
+return d.innerHTML;
+}
 function uid(){return Date.now()+'_'+Math.random().toString(36).substr(2,8);}
 function countWords(text){return text.replace(/\s/g,'').length;}
 function debounce(fn,ms){let t;return function(...a){clearTimeout(t);t=setTimeout(()=>fn.apply(this,a),ms);};}
@@ -1753,7 +2044,7 @@ el.classList.add('act');
 if(pg==='collection')renderCollections();
 if(pg==='create')renderCrList();
 if(pg==='resource')renderResList();
-if(pg==='settings'){renderAllPresets();renderCharCards();updateStats();}
+if(pg==='settings'){renderAllPresets();renderCharCards();updateStats();updateStorageDisplay();}
 }
 
 // ==================== TAGS ====================
@@ -1787,7 +2078,10 @@ el.classList.add('act');renderArticles();
 // ==================== ARTICLES RENDER ====================
 function renderArticles(){
 const list=document.getElementById('articleList');
-const filtered=ws.filter(a=>a.type===curType);
+const filtered=ws.filter(a=>a&&a.type===curType).slice(0,50);// 限制显示50条
+if(ws.filter(a=>a&&a.type===curType).length>50){
+console.log('文章较多，仅显示最近50篇');
+}
 if(filtered.length===0){
 list.innerHTML='<div class="empty-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><p>输入描述或选择标签<br>点击「生成」开始创作吧 ✨</p></div>';
 return;
@@ -1850,6 +2144,13 @@ sv(K.cols,cols);renderArticles();
 // ==================== SYNC HELPER ====================
 // Sync article data across workshop and collections
 function syncArticle(article){
+if(!article||!article.id){
+console.error('syncArticle: 无效的文章数据');
+return;
+}
+// 备份当前数据以防同步失败
+const backup=JSON.stringify(ws);
+try{
 const wIdx=ws.findIndex(a=>a.id===article.id);
 if(wIdx>-1){
 ws[wIdx]=JSON.parse(JSON.stringify(article));
@@ -1877,6 +2178,11 @@ sv(K.cols,cols);
 }
 }
 autoSaveAll();
+}catch(e){
+console.error('同步失败，尝试恢复:',e);
+try{ws=JSON.parse(backup);}catch{}
+showToast('数据同步异常，请手动保存',3000);
+}
 }
 
 // ==================== API CONFIG ====================
@@ -1948,7 +2254,7 @@ showToast('❌ 连接失败('+resp.status+'): '+errText.substring(0,100),4000);
 }catch(e){showToast('❌ 连接失败: '+e.message,3000);}
 finally{btn.disabled=false;btn.textContent='🔗 测试连接';}
 }
-// 全局自动保存
+
 function autoSaveAll(){
 sv(K.ws,ws);
 sv(K.cols,cols);
@@ -1977,11 +2283,17 @@ wrap.innerHTML='';
 characters.forEach((c,i)=>{
 const card=document.createElement('div');
 card.className='char-card';
+const traits=c.traits||[];
+const traitBtns=['内向','外向','冷静','冲动','善良','腹黑','傲娇','温柔','毒舌','天然呆'];
 card.innerHTML=
 '<div class="char-card-hdr"><span>角色 '+(i+1)+'</span>'+
 (characters.length>1?'<button class="char-card-del" onclick="removeChar('+i+')">删除</button>':'')+'</div>'+
 '<div class="fg"><label class="fl">名称</label><input class="fi char-name" data-idx="'+i+'" value="'+esc(c.name||'')+'" placeholder="角色名" oninput="saveCharactersFromUI()"></div>'+
-'<div class="fg"><label class="fl">设定</label><textarea class="fta char-desc" data-idx="'+i+'" placeholder="外貌、性格、背景..." oninput="saveCharactersFromUI()">'+esc(c.desc||'')+'</textarea></div>';
+'<div class="fg"><label class="fl">性格标签（点击选择，AI会严格遵守）</label>'+
+'<div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px">'+
+traitBtns.map(t=>'<span class="tag'+(traits.includes(t)?' act':'')+'" style="font-size:10px;padding:3px 8px" onclick="toggleCharTrait('+i+',\''+t+'\',this)">'+t+'</span>').join('')+
+'</div></div>'+
+'<div class="fg"><label class="fl">详细设定</label><textarea class="fta char-desc" data-idx="'+i+'" placeholder="外貌、背景、说话方式、口头禅..." oninput="saveCharactersFromUI()">'+esc(c.desc||'')+'</textarea></div>';
 wrap.appendChild(card);
 });
 }
@@ -1992,7 +2304,18 @@ sv(K.curChars,characters);
 renderCharCards();
 showToast('已添加新角色');
 }
-
+function toggleCharTrait(charIdx,trait,el){
+if(!characters[charIdx].traits)characters[charIdx].traits=[];
+const idx=characters[charIdx].traits.indexOf(trait);
+if(idx>-1){
+characters[charIdx].traits.splice(idx,1);
+el.classList.remove('act');
+}else{
+characters[charIdx].traits.push(trait);
+el.classList.add('act');
+}
+sv(K.curChars,characters);
+}
 function removeChar(i){
 if(characters.length<=1){showToast('至少保留一个角色');return;}
 characters.splice(i,1);
@@ -2062,9 +2385,11 @@ p+='【人物设定——融入而非照搬】\n';
 p+='以下是角色的基础设定，请将这些信息自然地融入叙事中，通过情节和细节逐步展现，绝对不要在正文中直接罗列或复述设定原文：\n';
 validChars.forEach((c,i)=>{
 p+='角色'+(i+1)+'：';
-if(c.name)p+=c.name+'——';
-if(c.desc)p+=c.desc;
+if(c.name)p+=c.name;
+if(c.traits&&c.traits.length>0)p+='【性格：'+c.traits.join('/')+'】';
+if(c.desc)p+='——'+c.desc;
 p+='\n';
+p+='→ 写这个角色时，TA的言行必须100%符合上述性格，不能出现矛盾表现\n';
 });
 p+='\n';
 }
@@ -2077,9 +2402,34 @@ p+=wD+'\n\n';
 
 const styleD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||ap.curStyle||'').trim();
 if(styleD){
-p+='【文风要求】\n';
-p+='请严格按照以下风格进行创作，这是最高优先级的要求：\n';
+p+='【文风要求——铁律】\n';
+p+='以下文风要求是最高优先级，必须贯穿每一个句子：\n';
 p+=styleD+'\n\n';
+p+='【文风自检清单】\n';
+p+='写完每一段后，请在心中确认：\n';
+p+='□ 这段话符合上述文风吗？\n';
+p+='□ 有没有出现"不禁""缓缓""淡淡"等万能副词？\n';
+p+='□ 有没有空洞的形容词堆砌？\n';
+p+='□ 对话是否自然，像真人在说话？\n';
+p+='□ 是否有具体的感官细节？\n';
+p+='如果任何一项不通过，请重写该段。\n\n';
+}
+
+const ruleD=(document.getElementById('ruleDesc')&&document.getElementById('ruleDesc').value||curRule||'').trim();
+if(ruleD){
+p+='【创作规则——必须严格遵守】\n';
+p+='以下是作者设定的强制规则，违反任何一条都是不可接受的：\n';
+p+=ruleD+'\n\n';
+}
+
+const banD=(document.getElementById('banWordsInput')&&document.getElementById('banWordsInput').value||banWords||'').trim();
+if(banD){
+const words=banD.split('\n').map(w=>w.trim()).filter(w=>w);
+if(words.length>0){
+p+='【禁用词——绝对不能出现】\n';
+p+='以下词汇禁止在文章中出现，包括同义词和变体也要避免：\n';
+p+=words.join('、')+'\n\n';
+}
 }
 
 return p;
@@ -2088,7 +2438,16 @@ return p;
 // ==================== STREAM API CALL ====================
 async function callAPIStream(messages,onChunk,onDone,onError){
 const cfg=getCurApi();
-if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
+if(!cfg.url||!cfg.key){
+showToast('请先在设置中配置API');
+if(onError)onError('未配置API');
+return;
+}
+if(!cfg.url.startsWith('http')){
+showToast('API地址格式不正确');
+if(onError)onError('API地址格式错误');
+return;
+}
 saveCurSettings();
 const baseUrl=cfg.url.replace(/\/+$/,'');
 const endpoint=baseUrl+'/chat/completions';
@@ -2096,6 +2455,11 @@ const endpoint=baseUrl+'/chat/completions';
 abortCtrl=new AbortController();
 
 try{
+// 设置超时
+const timeoutId=setTimeout(()=>{
+if(abortCtrl)abortCtrl.abort();
+},120000);// 2分钟超时
+
 const resp=await fetch(endpoint,{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
@@ -2104,7 +2468,7 @@ model:cfg.model,messages,temperature:cfg.temp,
 max_tokens:cfg.maxTokens,stream:true
 }),
 signal:abortCtrl.signal
-});
+}).finally(()=>clearTimeout(timeoutId));
 
 if(!resp.ok){
 const errText=await resp.text();
@@ -2178,8 +2542,44 @@ return;
 }
 generateArticle();
 }
+// 快速质量检查
+function quickQualityCheck(text){
+const issues=[];
+if(!text||text.length<100)return issues;
+// 检查万能副词
+const badAdverbs=['不禁','缓缓','淡淡','微微','默默','静静','轻轻'];
+badAdverbs.forEach(w=>{
+const count=(text.match(new RegExp(w,'g'))||[]).length;
+if(count>=3)issues.push('「'+w+'」出现'+count+'次，建议减少');
+});
+// 检查重复句式
+const sentences=text.split(/[。！？]/);
+const starts={};
+sentences.forEach(s=>{
+const start=s.trim().substring(0,4);
+if(start.length>=2){
+starts[start]=(starts[start]||0)+1;
+}
+});
+Object.keys(starts).forEach(k=>{
+if(starts[k]>=4)issues.push('句首「'+k+'」重复'+starts[k]+'次');
+});
+// 检查空洞形容词
+const emptyAdj=['深邃的眼眸','完美的','绝美的','无与伦比','不可方物'];
+emptyAdj.forEach(w=>{
+if(text.includes(w))issues.push('发现空洞形容「'+w+'」');
+});
+// 检查对话占比（对话太少可能缺乏互动）
+const dialogCount=(text.match(/[「""][^「""」]+[」""]/g)||[]).length;
+const paraCount=text.split(/\n\n/).length;
+if(paraCount>5&&dialogCount<2)issues.push('对话较少，可能缺乏人物互动');
+return issues;
+}
 async function generateArticle(){
-if(isGen)return;
+if(isGen){
+showToast('正在生成中，请稍候...');
+return;
+}
 const searchText=(document.getElementById('searchInput').value||'').trim();
 const activeTags=selTags.join(' ');
 const type=curType;
@@ -2297,7 +2697,14 @@ prompt:searchText
 ws.unshift(article);
 sv(K.ws,ws);
 renderArticles();
+// 质量快速检查
+const qualityIssues=quickQualityCheck(content);
+if(qualityIssues.length>0){
+showToast('创作完成！⚠️ 检测到'+qualityIssues.length+'个潜在问题',3000);
+console.log('质量问题：',qualityIssues);
+}else{
 showToast('创作完成！✨');
+}
 },
 (errMsg)=>{
 clearInterval(timeInterval);
@@ -2585,12 +2992,15 @@ showToast('笔记已删除');
 function updateNoteBtn(){
 if(!curRd)return;
 const btn=document.getElementById('rdNoteBtn');
+if(!btn)return;
 const notes=getArticleNotes(curRd.id);
 const chNotes=notes.filter(n=>n.ch===curCh);
 if(chNotes.length>0){
 btn.innerHTML='📝<span class="note-dot"></span>';
+btn.title='本章有'+chNotes.length+'条笔记';
 }else{
 btn.innerHTML='📝';
+btn.title='添加笔记';
 }
 }
 function getNoteCount(articleId){
@@ -2649,10 +3059,69 @@ document.getElementById('rdContent').style.setProperty('--rd-lineheight',v);
 document.getElementById('rdLineVal').textContent=v.toFixed(1);
 ap.rdLineHeight=v;sv(K.ap,ap);
 }
+// 提取章节关键点
+function extractKeyPoints(chapterText,chNum){
+if(!chapterText)return '（空章节）';
+const text=chapterText.replace(/\n+/g,' ').trim();
+// 提取对话（通常包含关键信息）
+const dialogues=text.match(/[「""]([^「""」]+)[」""]/g)||[];
+const keyDialogue=dialogues.length>0?dialogues[Math.floor(dialogues.length/2)]:'';
+// 提取开头和结尾的关键句
+const sentences=text.split(/[。！？]/);
+const opening=sentences[0]||'';
+const ending=sentences[sentences.length-2]||'';
+let summary=opening.substring(0,40);
+if(keyDialogue)summary+='…'+keyDialogue.substring(0,30);
+summary+='…'+ending.substring(0,40);
+return summary;
+}
 
+// 提取故事状态（伏笔、悬念等）
+function extractStoryState(article){
+if(!article||!article.chapters||article.chapters.length<2)return '';
+const allText=article.chapters.join('\n');
+const states=[];
+// 检测未解决的问题/悬念（以问号结尾的句子）
+const questions=allText.match(/[^。！？]*[？?]/g)||[];
+if(questions.length>0){
+const lastQ=questions[questions.length-1].trim();
+if(lastQ.length>5&&lastQ.length<50)states.push('待解悬念：'+lastQ);
+}
+// 检测情感状态词
+const emotionWords=['愤怒','悲伤','喜悦','恐惧','期待','失望','震惊','怀疑'];
+const lastCh=article.chapters[article.chapters.length-1]||'';
+emotionWords.forEach(w=>{
+if(lastCh.includes(w))states.push('情绪基调：'+w);
+});
+return states.slice(0,3).join('；');
+}
+
+// 获取人物当前状态
+function getCharacterStates(article){
+if(!article||!article.chapters)return '';
+const lastCh=article.chapters[article.chapters.length-1]||'';
+const validChars=characters.filter(c=>c.name);
+if(validChars.length===0)return '';
+const states=[];
+validChars.forEach(c=>{
+if(!c.name)return;
+// 检查角色在最后一章的出现和状态
+if(lastCh.includes(c.name)){
+// 简单的状态推断
+const idx=lastCh.lastIndexOf(c.name);
+const context=lastCh.substring(Math.max(0,idx-20),Math.min(lastCh.length,idx+50));
+states.push(c.name+'：出现于最近场景');
+}
+});
+return states.join('；');
+}
 // ==================== CONTINUE CHAPTER ====================
 async function continueChapter(){
-if(isGen||!curRd||curRd.type!=='long')return;
+if(isGen){
+showToast('正在生成中，请稍候...');
+return;
+}
+if(!curRd||curRd.type!=='long')return;
 isGen=true;
 const btn=document.getElementById('btnCont');
 btn.disabled=true;
@@ -2661,32 +3130,48 @@ btn.innerHTML='正在创作 <span class="ldots"><span></span><span></span><span>
 const chNum=curRd.chapters.length+1;
 const direction=(document.getElementById('dirInput').value||'').trim();
 
-// 构建丰富的上下文
+// 构建智能上下文
 let context='';
 const totalCh=curRd.chapters.length;
 
-// 如果章节较多，提供前面章节的摘要
+// 提取全书关键信息
+const storyState=extractStoryState(curRd);
+if(storyState){
+context+='【故事状态追踪】\n'+storyState+'\n\n';
+}
+
+// 如果章节较多，提供智能摘要
 if(totalCh>=3){
-context+='【前情概要】\n';
-// 取前面章节的开头和结尾各一小段作为线索
-for(let i=Math.max(0,totalCh-3);i<totalCh-1;i++){
+context+='【前情脉络】\n';
+for(let i=Math.max(0,totalCh-4);i<totalCh-1;i++){
 const ch=curRd.chapters[i]||'';
-const opening=ch.substring(0,150).replace(/\n/g,' ').trim();
-const ending=ch.substring(Math.max(0,ch.length-150)).replace(/\n/g,' ').trim();
-context+='第'+(i+1)+'章片段：'+opening+'……'+ending+'\n';
+const keyPoints=extractKeyPoints(ch,i+1);
+context+='第'+(i+1)+'章：'+keyPoints+'\n';
 }
 context+='\n';
 }
 
-// 上一章完整结尾（多给一些）
+// 上一章完整结尾
 const lastCh=curRd.chapters[totalCh-1]||'';
-const lastChEnding=lastCh.substring(Math.max(0,lastCh.length-1200));
+const lastChEnding=lastCh.substring(Math.max(0,lastCh.length-1500));
 context+='【上一章（第'+totalCh+'章）结尾】\n'+lastChEnding+'\n';
+
+// 人物当前状态
+const charStates=getCharacterStates(curRd);
+if(charStates){
+context+='\n【人物当前状态】\n'+charStates+'\n';
+}
 
 // 如果有大纲，提供当前章节的大纲指引
 const wsArticle=ws.find(a=>a.id===curRd.id);
 const crArticle=crWorks.find(w=>w.id===curRd.id);
 const outline=(wsArticle&&wsArticle.outline)||(crArticle&&crArticle.outline)||'';
+// 章节大纲
+let chOutlineHint='';
+if(curRd.chOutlines&&curRd.chOutlines[chNum-1]){
+chOutlineHint=curRd.chOutlines[chNum-1];
+}
+
 let outlineHint='';
 if(outline){
 const outlineLines=outline.split('\n');
@@ -2706,14 +3191,23 @@ break;
 
 let userMsg='请创作《'+curRd.title+'》的第'+chNum+'章。\n\n';
 userMsg+=context+'\n';
-if(outlineHint)userMsg+='【本章大纲参考】\n'+outlineHint+'\n\n';
+if(chOutlineHint)userMsg+='【本章详细大纲】\n'+chOutlineHint+'\n\n';
+else if(outlineHint)userMsg+='【本章大纲参考】\n'+outlineHint+'\n\n';
 if(direction)userMsg+='【作者对本章的方向提示】\n'+direction+'\n\n';
-userMsg+='【创作要求】\n';
-userMsg+='1. 自然承接上一章结尾，开头不要生硬地复述前情\n';
-userMsg+='2. 本章要有独立的小高潮或情感转折点\n';
-userMsg+='3. 结尾留有余韵或悬念，让读者想继续读\n';
-userMsg+='4. 人物的言行要与前文性格一致，但可以有合理的成长变化\n';
-userMsg+='5. 直接输出正文，不要标题、章节号、作者按语、markdown格式\n';
+userMsg+='【创作要求——逐条检查】\n';
+userMsg+='□ 开头：自然承接，不复述前情，用一个动作或对话直接切入\n';
+userMsg+='□ 节奏：本章要有起伏，不能平铺直叙，至少一个小高潮或转折\n';
+userMsg+='□ 人物：每个角色说话做事必须符合TA的性格设定，不能OOC\n';
+userMsg+='□ 细节：至少3处感官描写（视觉之外的：声音/气味/触感/温度）\n';
+userMsg+='□ 对话：对话要有潜台词，不能太直白，要像真人说话\n';
+userMsg+='□ 结尾：留悬念或情感钩子，让人想看下一章\n';
+userMsg+='□ 格式：直接输出正文，无标题、章节号、作者按语、markdown\n\n';
+userMsg+='【质量红线——出现以下任何一条都是失败】\n';
+userMsg+='✗ 使用"不禁""缓缓""淡淡"等万能副词超过2次\n';
+userMsg+='✗ 出现"深邃的眼眸""完美的侧脸"等空洞形容\n';
+userMsg+='✗ 连续3个段落以同一个字/词开头\n';
+userMsg+='✗ 角色性格与前文矛盾\n';
+userMsg+='✗ 情节与前文脱节，出现逻辑漏洞\n';
 
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 
@@ -2860,6 +3354,7 @@ renderStarHTML(book.rating||0,realId)+
 '<button class="bact" onclick="event.stopPropagation();uploadCover(\''+realId+'\')">封面</button>'+
 '<button class="bact" onclick="event.stopPropagation();cycleStatus(\''+realId+'\')">状态</button>'+
 '<button class="bact" onclick="event.stopPropagation();copyBook(\''+realId+'\')">复制</button>'+
+'<button class="bact" onclick="event.stopPropagation();exportBookToTxt(\''+realId+'\')">导出</button>'+
 '<button class="bact danger" onclick="event.stopPropagation();deleteBook(\''+realId+'\')">删除</button>'+
 '</div>';
 grid.appendChild(card);
@@ -2932,16 +3427,30 @@ function uploadCover(id){
 const input=document.getElementById('coverUp');
 input.onchange=e=>{
 const file=e.target.files[0];if(!file)return;
-// Compress cover: resize to max 300px width
+// 检查文件大小
+if(file.size>5*1024*1024){
+showToast('图片太大，请选择5MB以内的图片',3000);
+return;
+}
+// Compress cover: resize to max 200px width
 const canvas=document.createElement('canvas');
 const img=new Image();
+img.onerror=()=>{showToast('图片加载失败，请换一张');};
 img.onload=()=>{
-const maxW=300;
+const maxW=200;
 let w=img.width,h=img.height;
 if(w>maxW){h=h*(maxW/w);w=maxW;}
 canvas.width=w;canvas.height=h;
 canvas.getContext('2d').drawImage(img,0,0,w,h);
-const dataUrl=canvas.toDataURL('image/jpeg',0.7);
+const dataUrl=canvas.toDataURL('image/jpeg',0.5);
+// 检查压缩后大小
+if(dataUrl.length>100*1024){
+showToast('图片仍然较大，已自动降低质量',2000);
+const dataUrl2=canvas.toDataURL('image/jpeg',0.3);
+const book=cols.books.find(b=>b.id===id);
+if(book){book.cover=dataUrl2;sv(K.cols,cols);renderCollections();showToast('封面已更新 🎨');}
+return;
+}
 const book=cols.books.find(b=>b.id===id);
 if(book){book.cover=dataUrl;sv(K.cols,cols);renderCollections();showToast('封面已更新 🎨');}
 };
@@ -3086,7 +3595,55 @@ ap.curStyle=p.desc;sv(K.ap,ap);
 showToast('已加载文风: '+p.name);
 }
 function delStyleP(i){styleP.splice(i,1);sv('bj_styleP',styleP);renderStylePresets();}
-
+// 规则预设
+function saveRulePreset(){
+const desc=(document.getElementById('ruleDesc').value||'').trim();
+if(!desc){showToast('请先填写规则内容');return;}
+showInp('保存规则预设','为这组规则起个名字',name=>{
+ruleP.push({name,desc});
+sv('bj_ruleP',ruleP);renderRulePresets();showToast('规则预设已保存');
+});
+}
+function renderRulePresets(){
+const l=document.getElementById('rulePL');if(!l)return;l.innerHTML='';
+ruleP.forEach((p,i)=>{
+const it=document.createElement('div');it.className='pitem';
+it.innerHTML='<span class="pitem-n">'+esc(p.name)+' <span style="font-size:9px;color:var(--text2)">('+esc((p.desc||'').substring(0,20))+'...)</span></span><div class="pitem-a"><button class="btn-use" onclick="useRuleP('+i+')">使用</button><button class="btn-del" onclick="delRuleP('+i+')">删除</button></div>';
+l.appendChild(it);
+});
+}
+function useRuleP(i){
+const p=ruleP[i];
+document.getElementById('ruleDesc').value=p.desc||'';
+curRule=p.desc||'';sv('bj_curRule',curRule);
+showToast('已加载规则: '+p.name);
+}
+function delRuleP(i){ruleP.splice(i,1);sv('bj_ruleP',ruleP);renderRulePresets();}
+// 禁用词预设
+function saveBanWordsPreset(){
+const desc=(document.getElementById('banWordsInput').value||'').trim();
+if(!desc){showToast('请先填写禁用词');return;}
+showInp('保存禁用词预设','为这组禁用词起个名字',name=>{
+banWordsP.push({name,desc});
+sv('bj_banWordsP',banWordsP);renderBanWordsPresets();showToast('禁用词预设已保存');
+});
+}
+function renderBanWordsPresets(){
+const l=document.getElementById('banWordsPL');if(!l)return;l.innerHTML='';
+banWordsP.forEach((p,i)=>{
+const wordCount=(p.desc||'').split('\n').filter(w=>w.trim()).length;
+const it=document.createElement('div');it.className='pitem';
+it.innerHTML='<span class="pitem-n">'+esc(p.name)+' <span style="font-size:9px;color:var(--text2)">('+wordCount+'个词)</span></span><div class="pitem-a"><button class="btn-use" onclick="useBanWordsP('+i+')">使用</button><button class="btn-del" onclick="delBanWordsP('+i+')">删除</button></div>';
+l.appendChild(it);
+});
+}
+function useBanWordsP(i){
+const p=banWordsP[i];
+document.getElementById('banWordsInput').value=p.desc||'';
+banWords=p.desc||'';sv('bj_banWords',banWords);
+showToast('已加载禁用词: '+p.name);
+}
+function delBanWordsP(i){banWordsP.splice(i,1);sv('bj_banWordsP',banWordsP);renderBanWordsPresets();}
 function applyStyleTemplate(name){
 const templates={
 '轻松日常':'语言轻松自然，像朋友聊天一样亲切。多用短句和口语化表达，节奏明快，适当加入生活化的比喻和小幽默。情绪基调温暖舒适，即使写矛盾也不要太沉重。',
@@ -3102,7 +3659,7 @@ document.getElementById('styleDesc').value=desc;
 ap.curStyle=desc;sv(K.ap,ap);
 showToast('已应用文风: '+name);
 }
-function renderAllPresets(){renderApiPresets();renderCharPresets();renderWorldPresets();renderStylePresets();}
+function renderAllPresets(){renderApiPresets();renderCharPresets();renderWorldPresets();renderStylePresets();renderRulePresets();renderBanWordsPresets();}
 
 // ==================== APPEARANCE ====================
 function setTheme(theme,el){
@@ -3193,10 +3750,11 @@ sv('bj_notes_'+id,notesObj[id]);
 }
 function exportData(){
 saveCurSettings();
+markBackupDone();// 标记已备份
 const data={
 _app:'bijiAI',_version:3,_ver:APP_VER,_exportedAt:new Date().toISOString(),
 apiPresets:apiP,charPresets:charP,worldPresets:worldP,
-stylePresets:styleP,
+stylePresets:styleP,rulePresets:ruleP,curRule:curRule,banWords:banWords,banWordsPresets:banWordsP,
 curApi:ld(K.curApi,{}),
 curChars:characters,
 curWorld:ld(K.curWorld,{}),
@@ -3268,6 +3826,10 @@ if(data.apiPresets){apiP=data.apiPresets;sv(K.apiP,apiP);}
 if(data.charPresets){charP=data.charPresets;sv(K.charP,charP);}
 if(data.worldPresets){worldP=data.worldPresets;sv(K.worldP,worldP);}
 if(data.stylePresets){styleP=data.stylePresets;sv('bj_styleP',styleP);}
+if(data.rulePresets){ruleP=data.rulePresets;sv('bj_ruleP',ruleP);}
+if(data.curRule){curRule=data.curRule;sv('bj_curRule',curRule);}
+if(data.banWords){banWords=data.banWords;sv('bj_banWords',banWords);}
+if(data.banWordsPresets){banWordsP=data.banWordsPresets;sv('bj_banWordsP',banWordsP);}
 if(data.curApi)sv(K.curApi,data.curApi);
 if(data.curChars){characters=data.curChars;sv(K.curChars,characters);}
 else if(data.currentChar){
@@ -3327,8 +3889,15 @@ sv(K.ws,ws);renderArticles();showToast('已删除');
 },true);
 }
 function clearWorkshop(){
-showDlg('清空作坊','确定要清空作坊中的所有文章吗？已收藏的文章不受影响。',()=>{
+const count=ws.length;
+if(count===0){showToast('作坊已经是空的');return;}
+showDlg('清空作坊（'+count+'篇）','⚠️ 确定要清空作坊中的所有 '+count+' 篇文章吗？\n\n已收藏的文章不受影响，但建议先导出备份！',()=>{
+// 二次确认
+setTimeout(()=>{
+showDlg('再次确认','真的要删除这 '+count+' 篇文章吗？此操作不可恢复！',()=>{
 ws=[];sv(K.ws,ws);renderArticles();showToast('作坊已清空');
+},true);
+},300);
 },true);
 }
 
@@ -3370,7 +3939,7 @@ card.innerHTML=
 '<span class="cr-card-info">'+wc+'字'+chInfo+' · '+time+'</span>'+
 '<div class="cr-card-acts">'+
 '<button onclick="event.stopPropagation();copyCrWork(\''+work.id+'\')">复制</button>'+
-'<button onclick="event.stopPropagation();shareCrToRes(\''+work.id+'\')">分享</button>'+ '<button class="danger" onclick="event.stopPropagation();deleteCrWork(\''+work.id+'\')">删除</button>'+
+'<button onclick="event.stopPropagation();exportSingleCrWork(\''+work.id+'\')">导出</button>'+ '<button onclick="event.stopPropagation();shareCrToRes(\''+work.id+'\')">分享</button>'+ '<button class="danger" onclick="event.stopPropagation();deleteCrWork(\''+work.id+'\')">删除</button>'+
 '</div>'+
 '</div>';
 card.onclick=e=>{if(!e.target.closest('.cr-card-acts'))openEditor(work.id);};
@@ -3439,9 +4008,9 @@ curEd=work;
 curEdCh=0;
 document.getElementById('edTitle').value=work.title||'';
 if(work.type==='novel'){
-renderEdChBar();
 document.getElementById('edChBar').style.display='flex';
-document.getElementById('edTextarea').value=work.chapters[0]||'';
+document.getElementById('edTextarea').value=work.chapters[curEdCh]||'';
+renderEdChBar();
 }else{
 document.getElementById('edChBar').style.display='none';
 document.getElementById('edTextarea').value=work.content||'';
@@ -3449,6 +4018,7 @@ document.getElementById('edTextarea').value=work.content||'';
 updateEdWc();
 document.getElementById('edSaveStatus').textContent='已保存';
 document.getElementById('edOutlineBtn').style.display=(work.outline?'':'none');
+document.getElementById('edChOutlineBtn').style.display=(work.type==='novel'?'':'none');
 document.getElementById('edModal').classList.add('show');
 document.getElementById('bnav').classList.add('hide');
 }
@@ -3461,35 +4031,74 @@ renderCrList();
 }
 function renderEdChBar(){
 if(!curEd||curEd.type!=='novel')return;
-const bar=document.getElementById('edChBar');
-bar.innerHTML='';
-curEd.chapters.forEach((_,i)=>{
-const btn=document.createElement('button');
-btn.className='ed-ch-btn'+(i===curEdCh?' act':'');
-btn.textContent='第'+(i+1)+'章';
-btn.onclick=()=>{
+const total=curEd.chapters.length;
+document.getElementById('edChCurrent').textContent='第'+(curEdCh+1)+'章 / 共'+total+'章';
+document.getElementById('edPrevBtn').style.display=curEdCh>0?'':'none';
+document.getElementById('edNextBtn').style.display=curEdCh<total-1?'':'none';
+}
+function openEdChList(){
+if(!curEd||curEd.type!=='novel')return;
 saveEditorChapter();
+const total=curEd.chapters.length;
+let totalWords=0;
+curEd.chapters.forEach(ch=>totalWords+=countWords(ch||''));
+document.getElementById('edChPanelTitle').textContent='「'+(curEd.title||'未命名')+'」';
+document.getElementById('edChPanelInfo').textContent='共 '+total+' 章 · '+totalWords+' 字';
+const list=document.getElementById('edChPanelList');
+list.innerHTML='';
+curEd.chapters.forEach((ch,i)=>{
+const wc=countWords(ch||'');
+const preview=(ch||'').replace(/\n/g,' ').substring(0,30);
+const hasOutline=curEd.chOutlines&&curEd.chOutlines[i];
+const item=document.createElement('div');
+item.className='ch-item'+(i===curEdCh?' act':'');
+item.innerHTML=
+'<span class="ch-item-num" style="width:55px;flex-shrink:0">第'+(i+1)+'章</span>'+
+'<span style="flex:1;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(preview||'空白章节')+'</span>'+
+'<span class="ch-item-wc" style="flex-shrink:0">'+wc+'字'+(hasOutline?' 📋':'')+'</span>';
+item.onclick=()=>{
 curEdCh=i;
 document.getElementById('edTextarea').value=curEd.chapters[i]||'';
 updateEdWc();
 renderEdChBar();
+closeEdChList();
 };
-bar.appendChild(btn);
+list.appendChild(item);
 });
-const addBtn=document.createElement('button');
-addBtn.className='ed-ch-add';
-addBtn.textContent='+ 新章节';
-addBtn.onclick=()=>{
+document.getElementById('edChOv').classList.add('show');
+}
+function closeEdChList(){
+document.getElementById('edChOv').classList.remove('show');
+}
+function goEdPrevCh(){
+if(!curEd||curEdCh<=0)return;
+saveEditorChapter();
+curEdCh--;
+document.getElementById('edTextarea').value=curEd.chapters[curEdCh]||'';
+updateEdWc();
+renderEdChBar();
+}
+function goEdNextCh(){
+if(!curEd||curEdCh>=curEd.chapters.length-1)return;
+saveEditorChapter();
+curEdCh++;
+document.getElementById('edTextarea').value=curEd.chapters[curEdCh]||'';
+updateEdWc();
+renderEdChBar();
+}
+function addEdChapter(){
+if(!curEd)return;
 saveEditorChapter();
 curEd.chapters.push('');
+if(!curEd.chOutlines)curEd.chOutlines=[];
+curEd.chOutlines.push('');
 curEdCh=curEd.chapters.length-1;
 document.getElementById('edTextarea').value='';
 updateEdWc();
 renderEdChBar();
 saveEditorContent();
+closeEdChList();
 showToast('已添加第'+curEd.chapters.length+'章');
-};
-bar.appendChild(addBtn);
 }
 function saveEditorChapter(){
 if(!curEd)return;
@@ -3629,6 +4238,38 @@ return;
 fallbackResExport(jsonStr,fileName);
 });
 }
+// 章节大纲管理
+function openChOutline(){
+if(!curEd||curEd.type!=='novel')return;
+if(!curEd.chOutlines)curEd.chOutlines=[];
+const list=document.getElementById('chOutlineList');
+list.innerHTML='';
+curEd.chapters.forEach((_,i)=>{
+const outline=curEd.chOutlines[i]||'';
+const preview=(curEd.chapters[i]||'').replace(/\n/g,' ').substring(0,30);
+const item=document.createElement('div');
+item.className='ch-outline-item';
+item.innerHTML=
+'<div class="ch-outline-item-hdr"><span>第'+(i+1)+'章</span><span style="font-size:10px;color:var(--text2);font-weight:400">'+esc(preview)+'...</span></div>'+
+'<textarea data-ch="'+i+'" placeholder="本章大纲：主要事件、情感转折、关键信息...">'+esc(outline)+'</textarea>';
+list.appendChild(item);
+});
+document.getElementById('chOutlineOv').classList.add('show');
+}
+function closeChOutline(){
+document.getElementById('chOutlineOv').classList.remove('show');
+}
+function saveChOutlines(){
+if(!curEd)return;
+if(!curEd.chOutlines)curEd.chOutlines=[];
+document.querySelectorAll('#chOutlineList textarea').forEach(ta=>{
+const ch=parseInt(ta.dataset.ch);
+curEd.chOutlines[ch]=ta.value;
+});
+saveEditorContent();
+closeChOutline();
+showToast('章节大纲已保存 📋');
+}
 function deleteEdChapter(){
 if(!curEd||curEd.type!=='novel')return;
 if(curEd.chapters.length<=1){showToast('至少保留一章');return;}
@@ -3666,7 +4307,7 @@ if(items.length===0){
 const tips={
 all:'还没有资源<br>点击「打包导出」分享你的设定，或「导入资源包」获取别人的',
 char:'没有人物设定资源',world:'没有世界观资源',
-style:'没有文风资源',work:'没有作品资源',exp:'没有经验分享'
+style:'没有文风资源',rule:'没有规则资源',work:'没有作品资源',exp:'没有经验分享'
 };
 list.innerHTML='<div class="empty-st"><p>'+(tips[resTab]||tips.all)+'</p></div>';
 return;
@@ -3675,7 +4316,7 @@ list.innerHTML='';
 items.forEach((item,idx)=>{
 const card=document.createElement('div');
 card.className='res-card';
-const typeLabels={char:'人物设定',world:'世界观',style:'文风',work:'作品',exp:'经验分享'};
+const typeLabels={char:'人物设定',world:'世界观',style:'文风',rule:'规则',work:'作品',exp:'经验分享'};
 const preview=getResPreview(item);
 card.innerHTML=
 '<div class="res-card-hd">'+
@@ -3717,6 +4358,7 @@ return chars.map(c=>(c.name||'未命名')+'：'+(c.desc||'').substring(0,30)).jo
 }
 if(item.type==='world')return (item.data||'').substring(0,80);
 if(item.type==='style')return (item.data||'').substring(0,80);
+if(item.type==='rule')return (item.data||'').substring(0,80);
 if(item.type==='work'){
 const w=item.data||{};
 if(w.type==='draft')return (w.content||'').substring(0,80);
@@ -3756,6 +4398,13 @@ ap.curStyle=item.data||'';
 sv(K.ap,ap);
 showToast('文风已应用 ✅');
 });
+}else if(item.type==='rule'){
+showDlg('应用规则','将覆盖当前的规则设置，是否继续？',()=>{
+document.getElementById('ruleDesc').value=item.data||'';
+curRule=item.data||'';
+sv('bj_curRule',curRule);
+showToast('规则已应用 ✅');
+});
 }else if(item.type==='work'){
 showDlg('导入作品','将添加到你的创作页面，是否继续？',()=>{
 const w=JSON.parse(JSON.stringify(item.data));
@@ -3787,6 +4436,8 @@ let text='';
 if(item.type==='char'){
 const chars=item.data||[];
 text=chars.map(c=>'【'+c.name+'】\n'+c.desc).join('\n\n');
+}else if(item.type==='rule'){
+text=item.data||'';
 }else if(item.type==='work'){
 const w=item.data||{};
 if(w.type==='draft')text=w.content||'';
@@ -3824,6 +4475,13 @@ exportItems.push({id:'cur_style',type:'style',label:'当前文风',desc:sD.subst
 styleP.forEach((p,i)=>{
 exportItems.push({id:'styleP_'+i,type:'style',label:'文风预设：'+p.name,desc:(p.desc||'').substring(0,40),data:p.desc});
 });
+const rD=(document.getElementById('ruleDesc')&&document.getElementById('ruleDesc').value||'').trim();
+if(rD){
+exportItems.push({id:'cur_rule',type:'rule',label:'当前规则',desc:rD.substring(0,40),data:rD});
+}
+ruleP.forEach((p,i)=>{
+exportItems.push({id:'ruleP_'+i,type:'rule',label:'规则预设：'+p.name,desc:(p.desc||'').substring(0,40),data:p.desc});
+});
 crWorks.forEach(w=>{
 exportItems.push({id:'work_'+w.id,type:'work',label:(w.type==='draft'?'草稿':'小说')+'：'+(w.title||'无标题'),desc:getCrWordCount(w)+'字',data:w});
 });
@@ -3832,7 +4490,7 @@ box.innerHTML='<p style="font-size:12px;color:var(--text2);text-align:center;pad
 document.getElementById('resExpOv').classList.add('show');
 return;
 }
-const typeLabels={char:'👤 人物',world:'🌍 世界观',style:'✒️ 文风',work:'📄 作品'};
+const typeLabels={char:'👤 人物',world:'🌍 世界观',style:'✒️ 文风',rule:'📜 规则',work:'📄 作品'};
 exportItems.forEach(item=>{
 const div=document.createElement('div');
 div.className='res-chk-item';
@@ -4002,6 +4660,36 @@ avatarEl.innerHTML='<span id="ucAvatarPh">✦</span><div class="ucard-avatar-hin
 }
 updateStats();
 }
+function getStorageUsage(){
+let total=0;
+for(let key in localStorage){
+if(localStorage.hasOwnProperty(key)){
+total+=localStorage[key].length*2;
+}
+}
+return total;
+}
+
+function getStorageUsage(){
+let total=0;
+for(let key in localStorage){
+if(localStorage.hasOwnProperty(key)){
+total+=localStorage[key].length*2;
+}
+}
+return total;
+}
+
+function checkStorageHealth(){
+const used=getStorageUsage();
+const usedMB=(used/1024/1024).toFixed(2);
+const percent=(used/(5*1024*1024)*100).toFixed(1);
+if(percent>80){
+showToast('⚠️ 存储已用'+percent+'%，建议导出备份',4000);
+}
+return {used,usedMB,percent};
+}
+
 function updateStats(){
 let totalWords=0;
 let worksCount=0;
@@ -4031,6 +4719,21 @@ document.getElementById('statTotal').textContent=formatNum(totalWords);
 document.getElementById('statWorks').textContent=worksCount;
 document.getElementById('statCols').textContent=colsCount;
 document.getElementById('statNotes').textContent=notesCount;
+}
+async function updateStorageDisplay(){
+    try{
+        const info = await getDBStorageUsage();
+        document.getElementById('storagePercent').textContent = info.percent + '%';
+        document.getElementById('storageBar').style.width = Math.min(info.percent, 100) + '%';
+        document.getElementById('storageDetail').textContent = '已用 ' + info.usedMB + 'MB / 50MB (IndexedDB)';
+        // 根据使用量变色
+        const bar = document.getElementById('storageBar');
+        if (info.percent > 90) bar.style.background = 'var(--danger)';
+        else if (info.percent > 70) bar.style.background = '#f0a030';
+        else bar.style.background = 'linear-gradient(90deg,var(--accent),var(--accent2))';
+    } catch(e) {
+        console.warn('存储信息获取失败:', e);
+    }
 }
 function formatNum(n){
 if(n>=10000)return (n/10000).toFixed(1)+'万';
@@ -4292,6 +4995,321 @@ statusEl.textContent='重写失败';
 }
 });
 }
+// AI扩写/缩写
+let expandMode='expand';// expand or shrink
+function openAiExpand(){
+if(!curEd){showToast('请先打开一篇文章');return;}
+expandMode='expand';
+document.getElementById('expandTitle').textContent='📈 AI扩写';
+document.getElementById('expandDesc').textContent='选择或粘贴要扩写的段落，AI会添加更多细节、感官描写、心理活动等';
+document.getElementById('expandDoBtn').textContent='🚀 开始扩写';
+document.getElementById('expandInput').value='';
+document.getElementById('expandHint').value='';
+document.getElementById('expandOutput').value='';
+document.getElementById('expandResult').style.display='none';
+document.getElementById('expandBtns').style.display='flex';
+document.getElementById('expandOv').classList.add('show');
+setTimeout(()=>document.getElementById('expandInput').focus(),200);
+}
+function openAiShrink(){
+if(!curEd){showToast('请先打开一篇文章');return;}
+expandMode='shrink';
+document.getElementById('expandTitle').textContent='📉 AI缩写';
+document.getElementById('expandDesc').textContent='选择或粘贴要缩写的段落，AI会精简内容、保留核心信息';
+document.getElementById('expandDoBtn').textContent='🚀 开始缩写';
+document.getElementById('expandInput').value='';
+document.getElementById('expandHint').value='';
+document.getElementById('expandOutput').value='';
+document.getElementById('expandResult').style.display='none';
+document.getElementById('expandBtns').style.display='flex';
+document.getElementById('expandOv').classList.add('show');
+setTimeout(()=>document.getElementById('expandInput').focus(),200);
+}
+function closeExpandOv(){
+document.getElementById('expandOv').classList.remove('show');
+if(abortCtrl){abortCtrl.abort();abortCtrl=null;}
+}
+async function doExpand(){
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
+const input=(document.getElementById('expandInput').value||'').trim();
+if(!input){showToast('请输入要处理的内容');return;}
+if(countWords(input)<5){showToast('内容太少，至少5个字');return;}
+const hint=(document.getElementById('expandHint').value||'').trim();
+const btn=document.getElementById('expandDoBtn');
+btn.disabled=true;
+btn.innerHTML='处理中 <span class="ldots"><span></span><span></span><span></span></span>';
+document.getElementById('expandResult').style.display='block';
+document.getElementById('expandOutput').value='正在处理...';
+let sysMsg='';
+if(expandMode==='expand'){
+sysMsg='你是一位专业的文学润色师，擅长扩写文章段落。\n\n';
+sysMsg+='【扩写原则】\n';
+sysMsg+='1. 保持原文的核心情节和人物关系不变\n';
+sysMsg+='2. 增加感官细节（视觉、听觉、触觉、嗅觉、味觉）\n';
+sysMsg+='3. 丰富人物的微表情、小动作、心理活动\n';
+sysMsg+='4. 补充环境氛围描写\n';
+sysMsg+='5. 让对话更自然，可以加入停顿、语气词\n';
+sysMsg+='6. 扩写后字数应为原文的1.5-2.5倍\n';
+sysMsg+='7. 直接输出扩写后的内容，不加任何说明\n';
+}else{
+sysMsg='你是一位专业的文学编辑，擅长精简文章。\n\n';
+sysMsg+='【缩写原则】\n';
+sysMsg+='1. 保留核心情节和关键信息\n';
+sysMsg+='2. 删除冗余的形容词和副词\n';
+sysMsg+='3. 合并重复表达的内容\n';
+sysMsg+='4. 简化过长的对话，保留关键台词\n';
+sysMsg+='5. 去掉不影响理解的环境描写\n';
+sysMsg+='6. 缩写后字数应为原文的40%-70%\n';
+sysMsg+='7. 直接输出缩写后的内容，不加任何说明\n';
+}
+const styleD=(document.getElementById('styleDesc')&&document.getElementById('styleDesc').value||ap.curStyle||'').trim();
+if(styleD)sysMsg+='\n【保持文风】\n'+styleD+'\n';
+let userMsg=expandMode==='expand'?'请扩写以下段落：\n\n':'请缩写以下段落：\n\n';
+userMsg+=input;
+if(hint)userMsg+='\n\n【特别要求】'+hint;
+const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+const outputEl=document.getElementById('expandOutput');
+if(useStream){
+await callAPIStream(messages,
+(fullText)=>{
+outputEl.value=fullText;
+},
+(fullText)=>{
+btn.disabled=false;
+btn.textContent=expandMode==='expand'?'🚀 开始扩写':'🚀 开始缩写';
+if(fullText){
+outputEl.value=fullText;
+const oldWc=countWords(input);
+const newWc=countWords(fullText);
+const ratio=((newWc/oldWc)*100).toFixed(0);
+showToast((expandMode==='expand'?'扩写':'缩写')+'完成！原文'+oldWc+'字→'+newWc+'字('+ratio+'%)');
+}
+},
+(errMsg)=>{
+btn.disabled=false;
+btn.textContent=expandMode==='expand'?'🚀 开始扩写':'🚀 开始缩写';
+outputEl.value='处理失败：'+errMsg;
+}
+);
+}else{
+const result=await callAPINonStream(messages);
+btn.disabled=false;
+btn.textContent=expandMode==='expand'?'🚀 开始扩写':'🚀 开始缩写';
+if(result){
+outputEl.value=result;
+const oldWc=countWords(input);
+const newWc=countWords(result);
+const ratio=((newWc/oldWc)*100).toFixed(0);
+showToast((expandMode==='expand'?'扩写':'缩写')+'完成！原文'+oldWc+'字→'+newWc+'字('+ratio+'%)');
+}else{
+outputEl.value='处理失败，请检查API设置';
+}
+}
+}
+// 导出TXT文件
+function exportToTxtFile(filename,content){
+const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
+if(window.showSaveFilePicker){
+(async()=>{
+try{
+const handle=await window.showSaveFilePicker({
+suggestedName:filename,
+types:[{description:'文本文件',accept:{'text/plain':['.txt']}}]
+});
+const writable=await handle.createWritable();
+await writable.write(blob);
+await writable.close();
+showToast('文件已保存 📥');
+}catch(e){
+if(e.name!=='AbortError')fallbackTxtExport(filename,blob);
+}
+})();
+return;
+}
+fallbackTxtExport(filename,blob);
+}
+function fallbackTxtExport(filename,blob){
+const url=URL.createObjectURL(blob);
+const a=document.createElement('a');
+a.href=url;a.download=filename;
+a.style.display='none';
+document.body.appendChild(a);
+a.click();
+setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
+showToast('文件已导出 📥');
+}
+function buildTxtContent(title,chapters,isAI){
+let content='';
+if(isAI){
+content+='════════════════════════════════════════\n';
+content+='　　　　　　「'+title+'」\n';
+content+='════════════════════════════════════════\n\n';
+content+='【声明】\n';
+content+='本文由「笔记AI」辅助创作生成\n';
+content+='创作工具：笔记AI · AI创作工坊\n';
+content+='工具作者：心田\n';
+content+='导出时间：'+new Date().toLocaleString()+'\n\n';
+content+='【AI创作提示】\n';
+content+='本文内容由AI辅助生成，仅供参考和娱乐。\n';
+content+='AI生成的内容可能存在事实错误或不当表述，\n';
+content+='请读者自行甄别，切勿作为专业依据。\n';
+content+='如需转载或发布，请注明AI辅助创作。\n\n';
+content+='════════════════════════════════════════\n';
+content+='　　　　　　　正　文　开　始\n';
+content+='════════════════════════════════════════\n\n\n';
+}else{
+content+='════════════════════════════════════════\n';
+content+='　　　　　　「'+title+'」\n';
+content+='════════════════════════════════════════\n\n';
+content+='导出时间：'+new Date().toLocaleString()+'\n';
+content+='创作工具：笔记AI\n\n';
+content+='════════════════════════════════════════\n\n\n';
+}
+// 正文
+if(Array.isArray(chapters)){
+chapters.forEach((ch,i)=>{
+content+='【第'+(i+1)+'章】\n\n';
+content+=(ch||'').trim()+'\n\n\n';
+});
+}else{
+content+=(chapters||'').trim()+'\n\n';
+}
+// 结尾
+if(isAI){
+content+='\n════════════════════════════════════════\n';
+content+='　　　　　　　正　文　结　束\n';
+content+='════════════════════════════════════════\n\n';
+content+='【关于笔记AI】\n';
+content+='笔记AI是一款基于大语言模型的AI创作工坊，\n';
+content+='帮助创作者快速生成高质量的小说、散文等文学作品。\n\n';
+content+='功能特色：\n';
+content+='· 长篇连载 & 短篇一发\n';
+content+='· 自定义人物、世界观、文风、规则\n';
+content+='· AI续写、扩写、缩写、重写\n';
+content+='· 章节大纲管理\n';
+content+='· 多主题界面美化\n\n';
+content+='工具作者：心田\n';
+content+='联系方式：\n';
+content+='· 小红书：95567118758\n';
+content+='· 小红书：27418565861\n';
+content+='· 微信：Aa9620520\n';
+content+='· QQ：962005530\n\n';
+content+='════════════════════════════════════════\n';
+content+='感谢使用笔记AI，祝创作愉快！\n';
+content+='════════════════════════════════════════\n';
+}else{
+content+='\n════════════════════════════════════════\n';
+content+='导出自：笔记AI · 创作工具\n';
+content+='════════════════════════════════════════\n';
+}
+return content;
+}
+// 从创作页导出
+function exportCrToTxt(){
+if(crWorks.length===0){showToast('没有可导出的作品');return;}
+// 如果只有一个作品，直接导出
+if(crWorks.length===1){
+const w=crWorks[0];
+doExportWork(w,false);
+return;
+}
+// 多个作品，让用户选择
+const items=crWorks.map((w,i)=>({
+id:w.id,
+label:(w.type==='draft'?'[草稿] ':'[小说] ')+(w.title||'无标题'),
+wc:getCrWordCount(w)
+}));
+showSelectDlg('选择要导出的作品',items,(id)=>{
+const w=crWorks.find(x=>x.id===id);
+if(w)doExportWork(w,false);
+});
+}
+// 从编辑器导出
+function exportEdToTxt(){
+if(!curEd){showToast('没有打开的作品');return;}
+saveEditorContent();
+doExportWork(curEd,false);
+}
+// 从收藏导出
+function exportBookToTxt(id){
+const book=cols.books.find(b=>b.id===id);
+if(!book){showToast('找不到该书籍');return;}
+doExportWork(book,true);
+}
+// 执行导出
+function exportSingleCrWork(id){
+const w=crWorks.find(x=>x.id===id);
+if(!w){showToast('找不到该作品');return;}
+doExportWork(w,false);
+}
+function doExportWork(work,isAI){
+const title=work.title||'未命名';
+let chapters;
+if(work.type==='novel'||work.chapters){
+chapters=work.chapters||[];
+}else{
+chapters=work.content||'';
+}
+const content=buildTxtContent(title,chapters,isAI);
+const filename=title.replace(/[\\/:*?"<>|]/g,'_')+'_'+new Date().toLocaleDateString().replace(/\//g,'-')+'.txt';
+exportToTxtFile(filename,content);
+}
+// 选择弹窗
+function showSelectDlg(title,items,onSelect){
+document.getElementById('dlgTitle').textContent=title;
+const listHtml=items.map(it=>
+'<div style="padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:9px;margin-bottom:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center" onclick="selectDlgItem(\''+it.id+'\')">'+
+'<span style="font-size:12px">'+esc(it.label)+'</span>'+
+'<span style="font-size:10px;color:var(--text2)">'+it.wc+'字</span>'+
+'</div>'
+).join('');
+document.getElementById('dlgMsg').innerHTML=listHtml;
+document.getElementById('dlgOkBtn').style.display='none';
+window._selectDlgCallback=onSelect;
+document.getElementById('dlgOv').classList.add('show');
+}
+function selectDlgItem(id){
+closeDlg();
+document.getElementById('dlgOkBtn').style.display='';
+if(window._selectDlgCallback){
+window._selectDlgCallback(id);
+window._selectDlgCallback=null;
+}
+}
+function copyExpandResult(){
+const text=document.getElementById('expandOutput').value;
+if(!text){showToast('没有内容可复制');return;}
+doCopy(text);
+}
+function applyExpandResult(){
+const text=document.getElementById('expandOutput').value;
+if(!text||text.startsWith('处理失败')||text==='正在处理...'){showToast('没有有效结果');return;}
+const ta=document.getElementById('edTextarea');
+const original=document.getElementById('expandInput').value;
+// 尝试替换原文
+const currentText=ta.value;
+if(currentText.includes(original)){
+ta.value=currentText.replace(original,text);
+onEditorInput();
+closeExpandOv();
+showToast('已替换原文 ✅');
+}else{
+// 原文不在当前章节，追加到末尾
+showDlg('无法定位原文','原文不在当前章节中，是否将结果追加到章节末尾？',()=>{
+ta.value=currentText+'\n\n'+text;
+onEditorInput();
+closeExpandOv();
+showToast('已追加到末尾 ✅');
+});
+}
+}
+function setTempPreset(temp,name){
+document.getElementById('apiTemp').value=temp;
+document.getElementById('quickTemp').value=temp;
+document.getElementById('qtVal').textContent=temp;
+showToast('已切换为「'+name+'」模式 (T='+temp+')');
+}
 function toggleStreamSwitch(el){
 const cb=document.getElementById('streamOn');
 cb.checked=!cb.checked;
@@ -4526,8 +5544,46 @@ function copyName(name){
 doCopy(name);
 showToast('已复制：'+name+' 📋');
 }
+// ==================== AUTO BACKUP ====================
+function autoBackup(){
+const lastBackup=localStorage.getItem('bj_lastBackup');
+const now=Date.now();
+const oneWeek=7*24*60*60*1000;
+if(!lastBackup||now-parseInt(lastBackup)>oneWeek){
+// 超过一周没备份，提醒用户
+const usage=getStorageUsage();
+if(usage>1024*1024){// 超过1MB数据才提醒
+setTimeout(()=>{
+showToast('💾 已有一周未备份，建议导出数据',4000);
+},3000);
+}
+}
+}
+
+function markBackupDone(){
+localStorage.setItem('bj_lastBackup',Date.now().toString());
+}
 // ==================== SPLASH & INIT ====================
 function initApp(){
+// 数据完整性检查
+try{
+if(!Array.isArray(ws))ws=[];
+if(!cols||typeof cols!=='object')cols={books:[],shorts:[]};
+if(!Array.isArray(cols.books))cols.books=[];
+if(!Array.isArray(cols.shorts))cols.shorts=[];
+if(!Array.isArray(tags))tags=['#日常','#bg','#穿越','#奇幻','#校园'];
+if(!Array.isArray(characters))characters=[{name:'',desc:''}];
+if(!Array.isArray(crWorks))crWorks=[];
+if(!Array.isArray(resPacks))resPacks=[];
+// 清理无效数据
+ws=ws.filter(a=>a&&a.id);
+cols.books=cols.books.filter(b=>b&&b.id);
+cols.shorts=cols.shorts.filter(s=>s&&s.id);
+crWorks=crWorks.filter(w=>w&&w.id);
+}catch(e){
+console.error('数据检查失败:',e);
+showToast('数据异常，部分功能可能受影响',3000);
+}
 // Load saved settings
 const sApi=ld(K.curApi,{});
 if(sApi.url)document.getElementById('apiUrl').value=sApi.url;
@@ -4540,6 +5596,8 @@ const sWorld=ld(K.curWorld,{});
 if(sWorld.desc)document.getElementById('worldDesc').value=sWorld.desc;
 if(sWorld.minWords)document.getElementById('minWords').value=sWorld.minWords;
 if(ap.curStyle&&document.getElementById('styleDesc'))document.getElementById('styleDesc').value=ap.curStyle;
+if(curRule&&document.getElementById('ruleDesc'))document.getElementById('ruleDesc').value=curRule;
+if(banWords&&document.getElementById('banWordsInput'))document.getElementById('banWordsInput').value=banWords;
 document.getElementById('streamOn').checked=useStream;
 document.getElementById('quickTemp').value=document.getElementById('apiTemp').value;
 document.getElementById('qtVal').textContent=document.getElementById('apiTemp').value;
@@ -4561,57 +5619,89 @@ saveCurSettings();
 autoSaveAll();
 }
 });
-document.addEventListener('DOMContentLoaded',()=>{
-initApp();
+// 全局错误捕获
+window.onerror=function(msg,url,line,col,error){
+console.error('全局错误:',msg,url,line);
+// 不弹窗打扰用户，只记录
+return false;
+};
+window.onunhandledrejection=function(e){
+console.error('未处理的Promise错误:',e.reason);
+};
 
-const splash=document.getElementById('splash');
-const app=document.getElementById('app');
-const txt=document.getElementById('splashTxt');
-const spin=document.getElementById('splashSpin');
+document.addEventListener('DOMContentLoaded', async () => {
+    const splash = document.getElementById('splash');
+    const app = document.getElementById('app');
+    const txt = document.getElementById('splashTxt');
+    const bar = document.getElementById('splashBar');
 
-// 生成粒子
-const particlesContainer=document.getElementById('splashParticles');
-for(let i=0;i<20;i++){
-const p=document.createElement('div');
-p.className='splash-particle';
-p.style.left=Math.random()*100+'%';
-p.style.animationDelay=Math.random()*8+'s';
-p.style.animationDuration=(6+Math.random()*4)+'s';
-particlesContainer.appendChild(p);
-}
+    // 生成粒子
+    const particlesContainer = document.getElementById('splashParticles');
+    for (let i = 0; i < 20; i++) {
+        const p = document.createElement('div');
+        p.className = 'splash-particle';
+        p.style.left = Math.random() * 100 + '%';
+        p.style.animationDelay = Math.random() * 8 + 's';
+        p.style.animationDuration = (6 + Math.random() * 4) + 's';
+        particlesContainer.appendChild(p);
+    }
 
-const bar=document.getElementById('splashBar');
-const steps=[
-{text:'正在初始化组件...',progress:20},
-{text:'正在加载数据...',progress:50},
-{text:'正在渲染界面...',progress:80},
-{text:'准备就绪',progress:100}
-];
-let step=0;
-const stepInterval=setInterval(()=>{
-if(step<steps.length){
-txt.textContent=steps[step].text;
-bar.style.width=steps[step].progress+'%';
-step++;
-}else{
-clearInterval(stepInterval);
-setTimeout(()=>{
-splash.classList.add('hide');
-app.classList.add('show');
-},300);
-setTimeout(()=>{splash.style.display='none';},1100);
-}
-},400);
+    // 初始化步骤
+    txt.textContent = '正在连接数据库...';
+    bar.style.width = '10%';
 
-// Auto-save on input changes
-const autoSaveIds=['apiUrl','apiKey','apiModel','apiTemp','apiMaxTokens','worldDesc','minWords','styleDesc'];
-autoSaveIds.forEach(id=>{
-const el=document.getElementById(id);
-if(el){
-el.addEventListener('input',debounce(saveCurSettings,600));
-el.addEventListener('change',saveCurSettings);
-}
-});
+    try {
+        // 初始化IndexedDB
+        await initDB();
+        txt.textContent = '正在加载数据...';
+        bar.style.width = '30%';
+
+        // 从IndexedDB加载所有数据
+        await loadAllFromDB();
+        txt.textContent = '正在初始化组件...';
+        bar.style.width = '60%';
+
+        // 初始化应用
+        initApp();
+        txt.textContent = '正在渲染界面...';
+        bar.style.width = '80%';
+
+        setTimeout(() => {
+            txt.textContent = '准备就绪';
+            bar.style.width = '100%';
+        }, 200);
+
+        setTimeout(() => {
+            splash.classList.add('hide');
+            app.classList.add('show');
+        }, 600);
+
+        setTimeout(() => {
+            splash.style.display = 'none';
+        }, 1400);
+
+        setTimeout(autoBackup, 5000);
+
+    } catch (e) {
+        console.error('初始化失败:', e);
+        txt.textContent = '初始化失败，使用备用模式...';
+        // 即使IndexedDB失败，也尝试用localStorage启动
+        setTimeout(() => {
+            try { initApp(); } catch (e2) { console.error(e2); }
+            splash.classList.add('hide');
+            app.classList.add('show');
+        }, 1000);
+    }
+
+    // Auto-save on input changes
+    const autoSaveIds = ['apiUrl', 'apiKey', 'apiModel', 'apiTemp', 'apiMaxTokens', 'worldDesc', 'minWords', 'styleDesc'];
+    autoSaveIds.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+            el.addEventListener('input', debounce(saveCurSettings, 600));
+            el.addEventListener('change', saveCurSettings);
+        }
+    });
 });
 </script>
 </body>
