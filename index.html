@@ -1324,7 +1324,7 @@ flex-direction:column;
 .xj-modal.show{display:flex;}
 .xj-bg{
 position:absolute;inset:0;z-index:0;
-background-image:url('https://i.postimg.cc/2ym2Dbyk/Image-1771991337486-786.jpg');
+background-size:cover;background-position:center;
 background-size:cover;background-position:center;
 opacity:.3;pointer-events:none;
 }
@@ -2424,7 +2424,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 <!-- 星笺聊天页面 -->
 <div class="xj-modal" id="xjModal">
-<div class="xj-bg"></div>
+<div class="xj-bg" id="xjBg"></div>
 <div class="xj-hdr">
 <button class="xj-back" onclick="closeXingJian()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -2435,7 +2435,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="xj-name">星笺 <span>✨</span></div>
 <div class="xj-status">在线 · 随时为你提供灵感</div>
 </div>
-<button class="xj-clear" onclick="clearXjChat()">清空记录</button>
+<button class="xj-clear" onclick="uploadXjBg()">换背景</button> <button class="xj-clear" onclick="clearXjChat()">清空记录</button> <input type="file" id="xjBgUp" accept="image/*" style="display:none" onchange="handleXjBgUpload(event)">
 </div>
 <div class="xj-body" id="xjBody">
 <div class="xj-welcome">
@@ -7016,6 +7016,7 @@ const XJ_SYSTEM_PROMPT=`【核心身份锁定】
 function openXingJian(){
 document.getElementById('xjModal').classList.add('show');
 document.getElementById('bnav').classList.add('hide');
+applyXjBg();
 renderXjMessages();
 setTimeout(()=>{
 document.getElementById('xjInput').focus();
@@ -7161,7 +7162,50 @@ xjMessages=xjMessages.slice(-XJ_MAX_CONTEXT*2);
 sv('bj_xjMessages',xjMessages);
 renderXjMessages();
 }
+let xjBgImg=ld('bj_xjBg','');
 
+function uploadXjBg(){
+document.getElementById('xjBgUp').click();
+}
+
+function handleXjBgUpload(e){
+const file=e.target.files[0];
+if(!file)return;
+if(file.size>5*1024*1024){
+showToast('图片太大了，选5MB以内的吧～');
+return;
+}
+const canvas=document.createElement('canvas');
+const img=new Image();
+img.onload=()=>{
+const maxW=800;
+let w=img.width,h=img.height;
+if(w>maxW){h=h*(maxW/w);w=maxW;}
+canvas.width=w;canvas.height=h;
+canvas.getContext('2d').drawImage(img,0,0,w,h);
+const dataUrl=canvas.toDataURL('image/jpeg',0.6);
+xjBgImg=dataUrl;
+sv('bj_xjBg',xjBgImg);
+applyXjBg();
+showToast('背景换好啦～✨');
+};
+img.onerror=()=>{showToast('图片加载失败，换一张试试？');};
+img.src=URL.createObjectURL(file);
+e.target.value='';
+}
+
+function applyXjBg(){
+const bg=document.getElementById('xjBg');
+if(bg){
+if(xjBgImg){
+bg.style.backgroundImage='url('+xjBgImg+')';
+bg.style.display='block';
+}else{
+bg.style.backgroundImage='';
+bg.style.display='none';
+}
+}
+}
 function clearXjChat(){
 showDlg('清空聊天记录','确定要清空和星笺的所有聊天记录吗？',()=>{
 xjMessages=[];
