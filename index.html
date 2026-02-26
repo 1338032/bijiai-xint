@@ -2995,13 +2995,16 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p style="font-size:11px;color:var(--text2);margin-bottom:10px">描述你想写的故事，AI会生成详细大纲，确认后自动创建小说</p>
 <input class="res-exp-input" id="outlineTitle" placeholder="小说标题（可选，AI也会帮你起）">
 <textarea class="res-exp-input" id="outlineDesc" placeholder="描述故事方向，比如：一个穿越到古代的程序员，利用现代知识在朝堂上步步高升..." style="min-height:80px;resize:vertical;font-family:inherit;line-height:1.6"></textarea>
-<div style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px">
-<span style="font-size:10px;color:var(--text2);width:100%">预设章节数：</span>
-<button class="tag" onclick="setOutlineCh(5,this)">5章</button>
-<button class="tag act" onclick="setOutlineCh(10,this)">10章</button>
-<button class="tag" onclick="setOutlineCh(15,this)">15章</button>
-<button class="tag" onclick="setOutlineCh(20,this)">20章</button>
-<button class="tag" onclick="setOutlineCh(30,this)">30章</button>
+<div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+<span style="font-size:10px;color:var(--text2);flex-shrink:0">章节数：</span>
+<input type="number" id="outlineChInput" min="1" max="100" value="10" style="width:70px;padding:8px 12px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;text-align:center;outline:none" oninput="outlineChCount=parseInt(this.value)||10" onfocus="this.style.borderColor='var(--accent)'" onblur="this.style.borderColor='var(--border)'">
+<span style="font-size:10px;color:var(--text2)">章</span>
+<div style="display:flex;gap:4px;margin-left:auto">
+<button class="tag" onclick="document.getElementById('outlineChInput').value=5;outlineChCount=5" style="padding:4px 8px;font-size:10px">5</button>
+<button class="tag" onclick="document.getElementById('outlineChInput').value=10;outlineChCount=10" style="padding:4px 8px;font-size:10px">10</button>
+<button class="tag" onclick="document.getElementById('outlineChInput').value=20;outlineChCount=20" style="padding:4px 8px;font-size:10px">20</button>
+<button class="tag" onclick="document.getElementById('outlineChInput').value=50;outlineChCount=50" style="padding:4px 8px;font-size:10px">50</button>
+</div>
 </div>
 <div id="outlineResult" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;max-height:40vh;overflow-y:auto">
 <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:8px">📋 生成的大纲</div>
@@ -4448,7 +4451,7 @@ p+='3. 禁用说书腔：殊不知、岂料、却说、话说（这不是评书�
 p+='【格式要求】\n';
 p+='• 第一行：标题（纯文字）\n';
 p+='• 空一行后：正文开始\n';
-p+='• 每章至少'+mW+'字\n';
+p+='• 每章字数严格不少于'+mW+'字，这是硬性要求，低于此字数视为不合格，必须写够\n'; p+='• 字数计算方式：所有中文字符+标点+数字都算一个字\n'; p+='• 宁可多写也绝对不能少写，建议写到'+(mW+500)+'字以上确保达标\n';
 p+='• 段落间空一行\n';
 p+='• 对话用「」标注\n';
 p+='• 只输出小说正文，无任何说明、章节号、作者按语\n\n';
@@ -4718,7 +4721,7 @@ userMsg+='【氛围标签】'+activeTags+'\n\n';
 if(!searchText&&!activeTags){
 userMsg+='请根据人设和世界观自由发挥，写一个让你自己也想继续读下去的故事。\n\n';
 }
-userMsg+='\n\n【格式】第一行写标题（纯文字），空一行后直接写正文。只输出标题和正文，无其他内容。';
+const mW2=parseInt(document.getElementById('minWords').value)||800; userMsg+='\n\n【格式】第一行写标题（纯文字），空一行后直接写正文。只输出标题和正文，无其他内容。'; userMsg+='\n\n【字数硬性要求】本次创作正文字数必须不少于'+mW2+'字！这是最低要求，低于此字数的作品不合格。请确保写够字数，宁多勿少。建议写到'+(mW2+500)+'字以上。';
 
 isGen=true;
 const btn=document.getElementById('btnGen');
@@ -4809,22 +4812,48 @@ chapters:type==='long'?[content]:undefined,
 content:type==='short'?content:undefined,
 prompt:searchText
 };
+// 字数不足自动补写
+const mWCheck=parseInt(document.getElementById('minWords').value)||800;
+const actualWc=countWords(content);
+if(actualWc<mWCheck&&actualWc>100){
+showToast('字数不足('+actualWc+'/'+mWCheck+')，正在自动补写...',3000);
+const extendMsg=[
+{role:'system',content:buildSysPrompt()},
+{role:'user',content:'以下是一篇未完成的文章，字数只有'+actualWc+'字，距离要求的'+mWCheck+'字还差'+(mWCheck-actualWc)+'字。请直接续写下去，不要重复已有内容，不要加任何标题或说明，直接输出续写的正文部分：\n\n'+content}
+];
+callAPINonStream(extendMsg).then(function(extResult){
+if(extResult){
+content=content+'\n\n'+extResult;
+if(type==='long'){article.chapters=[content];}
+else{article.content=content;}
+}
 ws.unshift(article);
 sv(K.ws,ws);
 renderArticles();
-// 质量快速检查
 const qc=quickQualityCheck(content);
 if(qc.issues.length>0||qc.suggestions.length>0){
 const scoreEmoji=qc.score>=80?'✨':qc.score>=60?'👍':'💪';
-showToast('创作完成！质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
-// 低分时在toast中给出简短建议，不用弹窗打断
+showToast('创作完成！'+countWords(content)+'字 · 质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
+}else{
+showToast('创作完成！'+countWords(content)+'字 ✨',2500);
+}
+});
+}else{
+ws.unshift(article);
+sv(K.ws,ws);
+renderArticles();
+const qc=quickQualityCheck(content);
+if(qc.issues.length>0||qc.suggestions.length>0){
+const scoreEmoji=qc.score>=80?'✨':qc.score>=60?'👍':'💪';
+showToast('创作完成！'+countWords(content)+'字 · 质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
 if(qc.score<70&&qc.suggestions.length>0){
 setTimeout(()=>{
 showToast('💡 建议：'+qc.suggestions[0],4000);
 },1500);
 }
 }else{
-showToast('创作完成！质量检测通过 ✨',2500);
+showToast('创作完成！'+countWords(content)+'字 ✨',2500);
+}
 }
 },
 (errMsg)=>{
@@ -5661,7 +5690,7 @@ userMsg+='【本章要求】\n';
 userMsg+='• 开头直接承接上文，用动作或对话切入，不要复述前情\n';
 userMsg+='• 本章要有起伏，至少一个情感转折或情节推进\n';
 userMsg+='• 结尾留下钩子，让人想看下一章\n';
-userMsg+='• 直接输出正文，无标题无章节号\n';
+userMsg+='• 直接输出正文，无标题无章节号\n'; const mW3=parseInt(document.getElementById('minWords').value)||800; userMsg+='• 【字数硬性要求】本章正文必须不少于'+mW3+'字！低于此字数不合格，宁多勿少，建议写到'+(mW3+500)+'字以上\n';
 
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 
@@ -7741,6 +7770,7 @@ document.getElementById('outlineActions').style.display='none';
 document.getElementById('outlineGenBtn').style.display='';
 document.getElementById('outlineGenBtn').disabled=false;
 document.getElementById('outlineGenBtn').textContent='🧠 生成大纲';
+document.getElementById('outlineChInput').value=outlineChCount;
 outlineText='';
 document.getElementById('outlineOv').classList.add('show');
 setTimeout(()=>document.getElementById('outlineDesc').focus(),200);
@@ -7751,8 +7781,8 @@ if(abortCtrl){abortCtrl.abort();abortCtrl=null;}
 }
 function setOutlineCh(n,el){
 outlineChCount=n;
-el.parentElement.querySelectorAll('.tag').forEach(t=>t.classList.remove('act'));
-el.classList.add('act');
+const inp=document.getElementById('outlineChInput');
+if(inp)inp.value=n;
 }
 async function doGenOutline(){
 const cfg=getCurApi();
@@ -9783,7 +9813,7 @@ const lastCh=novel.chapters[novel.chapters.length-1];
 userMsg+='\n【上一章结尾】\n'+lastCh.substring(Math.max(0,lastCh.length-800))+'\n\n';
 }
 userMsg+='【创作要求】\n';
-userMsg+='- 字数不少于'+wordsPerCh+'字，宁多勿少\n';
+userMsg+='- 【字数硬性要求】正文字数严格不少于'+wordsPerCh+'字！这是铁律，低于此字数视为创作失败。建议写到'+(wordsPerCh+500)+'字以上确保达标\n';
 userMsg+='- 直接输出正文，无标题无章节号无作者按语\n';
 if(novel.chapters.length>0){
 userMsg+='- 开头必须直接承接上一章结尾，用动作或对话切入，禁止用"话说""却说"等说书腔开头，禁止复述前情\n';
@@ -10051,7 +10081,7 @@ userMsg+='- 开头直接承接上文，用动作或对话切入，禁止复述�
 userMsg+='- 本章要有明确的情绪起伏和情节推进\n';
 userMsg+='- 如果有大纲，严格按大纲写；如果没有，自由发挥但要合理\n';
 userMsg+='- 结尾在悬念或情感高点收尾\n';
-userMsg+='- 直接输出正文，无标题无章节号\n';
+userMsg+='- 直接输出正文，无标题无章节号\n'; const mW4=parseInt(document.getElementById('minWords').value)||800; userMsg+='- 【字数硬性要求】本章正文必须不少于'+mW4+'字！低于此字数不合格，宁多勿少，建议写到'+(mW4+500)+'字以上\n';
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 const rdContent=document.getElementById('rdContent');
 if(!useStream){
@@ -10076,13 +10106,41 @@ document.getElementById('rdModal').scrollTop=document.getElementById('rdModal').
 (fullText)=>{
 isGen=false;btn.disabled=false;btn.textContent='📝 继续连载下一章';
 if(!fullText)return;
-curRd.chapters.push(fullText);
+// 续写字数不足自动补写
+let finalText=fullText;
+const mWCh=parseInt(document.getElementById('minWords').value)||800;
+const chWc=countWords(fullText);
+if(chWc<mWCh&&chWc>100){
+showToast('字数不足('+chWc+'/'+mWCh+')，正在补写...',3000);
+const extMsg2=[
+{role:'system',content:buildSysPrompt()},
+{role:'user',content:'以下是一个章节的内容，只有'+chWc+'字，需要至少'+mWCh+'字。请直接续写下去，不要重复已有内容，不要加标题说明，直接输出续写部分：\n\n'+fullText}
+];
+callAPINonStream(extMsg2).then(function(extR2){
+if(extR2)finalText=fullText+'\n\n'+extR2;
+curRd.chapters.push(finalText);
 syncArticle(curRd);
 curCh=curRd.chapters.length-1;
 renderChContent();
-document.getElementById('rdMeta').innerHTML='<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span><span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
+document.getElementById('rdMeta').innerHTML=
+'<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span>'+
+'<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
 document.getElementById('btnUndo').style.display='inline-block';
-showToast('第'+chNum+'章创作完成！✨');
+document.getElementById('dirInput').value='';
+showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
+});
+}else{
+curRd.chapters.push(finalText);
+syncArticle(curRd);
+curCh=curRd.chapters.length-1;
+renderChContent();
+document.getElementById('rdMeta').innerHTML=
+'<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span>'+
+'<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
+document.getElementById('btnUndo').style.display='inline-block';
+document.getElementById('dirInput').value='';
+showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
+}
 },
 (errMsg)=>{
 isGen=false;btn.disabled=false;btn.textContent='📝 继续连载下一章';
