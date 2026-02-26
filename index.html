@@ -35,7 +35,7 @@ body.theme-green{--accent:#27ae60;--accent2:#58d68d;--border:#1a3a2a;}
 body.theme-blue{--accent:#2980b9;--accent2:#5dade2;--border:#1a2a3a;}
 body.theme-light{
 --bg:#f5f5f8;--card:#ffffff;--card2:#eeeef3;
---text:#1a1a2e;--text2:#6a6a8a;--border:#d8d8e8;
+--text:#1a1a2e;--text2:#555570;--border:#d0d0e0;
 --shadow:0 4px 20px rgba(0,0,0,0.08);
 }
 body.theme-light.theme-warm{--accent:#e67e22;--accent2:#d35400;}
@@ -314,7 +314,7 @@ transform:rotate(45deg) translateX(-100%);transition:transform .6s;
 }
 .btn-gen:active::after{transform:rotate(45deg) translateX(100%);}
 .btn-gen:active{transform:scale(.95);box-shadow:0 2px 8px rgba(108,92,231,.4);opacity:.9;} .btn-gen::before{ content:'';position:absolute;inset:0; background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent); transform:translateX(-100%);transition:transform .5s; } .btn-gen:active::before{transform:translateX(100%);}
-.btn-gen:disabled{opacity:.5;cursor:not-allowed;transform:none;}
+.btn-gen:disabled{opacity:.4;cursor:not-allowed;transform:none;filter:grayscale(.5);pointer-events:none;}
 
 /* TAGS */
 .tags-sec{padding:4px 18px 8px;}
@@ -549,7 +549,7 @@ color:#fff;font-size:13px;font-weight:600;cursor:pointer;
 box-shadow:0 3px 12px rgba(108,92,231,.25);transition:all .3s;
 }
 .btn-cont:active{transform:scale(.95);}
-.btn-cont:disabled{opacity:.5;}
+.btn-cont:disabled{opacity:.4;filter:grayscale(.5);pointer-events:none;}
 .btn-undo{
 padding:8px 16px;border-radius:10px;border:1px solid var(--border);
 background:var(--card);color:var(--text2);font-size:11px;cursor:pointer;
@@ -1366,7 +1366,7 @@ align-self:flex-end;white-space:nowrap;
 display:inline-block;width:6px;height:6px;border-radius:50%;
 background:var(--accent2);margin-left:4px;vertical-align:middle;
 }
-::-webkit-scrollbar{width:3px;}
+::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
 ::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
 .rd-para{transition:background .3s;border-radius:4px;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none;touch-action:pan-y;will-change:background;}
@@ -1522,6 +1522,9 @@ animation:ringRotate 20s linear infinite;
 .wheel-circle{
 width:100%;height:100%;
 border-radius:50%;
+will-change:transform;
+-webkit-backface-visibility:hidden;
+backface-visibility:hidden;
 background:conic-gradient(from 0deg,
 var(--accent) 0deg 30deg,
 rgba(108,92,231,.7) 30deg 60deg,
@@ -1930,7 +1933,7 @@ border:3px solid rgba(108,92,231,.3);
 }
 body.theme-light .xj-input{background:rgba(255,255,255,.9);border-color:rgba(108,92,231,.2);}
 body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,245,248,.9));}
-#addFsOv{z-index:850;}
+#addFsOv{z-index:850;} /* 创作目标 */ .goal-panel{padding:14px 18px;} .goal-card{ background:var(--card);border-radius:16px;padding:18px; border:1px solid var(--border);margin-bottom:12px; } .goal-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;} .goal-card-hdr h3{font-size:14px;font-weight:700;} .goal-progress{ height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0 6px; } .goal-progress-bar{ height:100%;border-radius:4px;transition:width .5s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); } .goal-progress-bar.done{background:linear-gradient(90deg,var(--success),#2ecc71);} .goal-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);} .goal-stat .cur{color:var(--accent2);font-weight:600;} .goal-stat .cur.done{color:var(--success);} .goal-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;} .goal-input-row label{font-size:11px;color:var(--text2);width:70px;flex-shrink:0;} .goal-input-row input{ flex:1;padding:8px 12px;border-radius:9px; border:1px solid var(--border);background:var(--bg); color:var(--text);font-size:12px;outline:none; } .goal-input-row input:focus{border-color:var(--accent);} .goal-tabs{display:flex;gap:0;margin-bottom:12px;} .goal-tab{ flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600; cursor:pointer;border:none;border-bottom:2px solid transparent; color:var(--text2);background:none;transition:all .3s; } .goal-tab.act{color:var(--accent2);border-bottom-color:var(--accent);} .goal-history{max-height:200px;overflow-y:auto;} .goal-history-item{ padding:10px 12px;background:var(--bg);border-radius:9px; border:1px solid var(--border);margin-bottom:6px; display:flex;justify-content:space-between;align-items:center; } .goal-history-item .done-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(81,207,102,.15);color:var(--success); } .goal-history-item .fail-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(255,107,107,.15);color:var(--danger); } /* 达标祝贺弹窗 */ .goal-celebrate{ position:fixed;inset:0;z-index:9000; background:rgba(0,0,0,.6); display:none;align-items:center;justify-content:center;padding:20px; } .goal-celebrate.show{display:flex;} .goal-celebrate-box{ background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.15) 100%); border:2px solid var(--accent);border-radius:24px;padding:30px 24px; text-align:center;max-width:320px;width:100%; animation:celebratePop .5s cubic-bezier(.34,1.56,.64,1); box-shadow:0 20px 60px rgba(108,92,231,.3); } @keyframes celebratePop{ 0%{transform:scale(0) rotate(-10deg);opacity:0} 100%{transform:scale(1) rotate(0);opacity:1} } .goal-celebrate-icon{font-size:64px;margin-bottom:12px;} .goal-celebrate-title{font-size:20px;font-weight:800;margin-bottom:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;} .goal-celebrate-msg{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;} .goal-celebrate-btn{ padding:12px 32px;border-radius:14px;border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;font-size:14px;font-weight:600;cursor:pointer; box-shadow:0 4px 15px rgba(108,92,231,.3); }
 </style>
 </head>
 <body>
@@ -2032,8 +2035,9 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="cr-tabs">
 <button class="cr-tab act" onclick="switchCrTab('draft',this)">草稿箱</button>
 <button class="cr-tab" onclick="switchCrTab('novel',this)">我的小说</button>
+<button class="cr-tab" onclick="switchCrTab('goal',this)">创作目标</button>
 </div>
-<div class="cr-list" id="crList"></div>
+<div class="cr-list" id="crList"></div> <div class="goal-panel" id="goalPanel" style="display:none"> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📝 本周目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalWeekRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalWeekWords" min="0" step="500" value="5000" placeholder="5000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalWeekChapters" min="0" step="1" value="3" placeholder="3" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekWordsCur">0</span><span id="goalWeekWordsTarget">/ 5000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekChCur">0</span><span id="goalWeekChTarget">/ 3 章</span></div> </div> </div> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📅 本月目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalMonthRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalMonthWords" min="0" step="1000" value="20000" placeholder="20000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalMonthChapters" min="0" step="1" value="12" placeholder="12" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthWordsCur">0</span><span id="goalMonthWordsTarget">/ 20000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthChCur">0</span><span id="goalMonthChTarget">/ 12 章</span></div> </div> </div> <div class="goal-card"> <div class="goal-card-hdr"><h3>📊 创作记录</h3></div> <div style="font-size:11px;color:var(--text2);margin-bottom:8px">仅统计在创作页面手动写作的字数和章节（作坊AI生成不计入）</div> <div class="goal-history" id="goalHistory"></div> <button class="btn-s" onclick="resetGoalProgress()" style="margin-top:10px;border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 重置本周/本月进度</button> </div> </div>
 </div>
 <!-- SETTINGS -->
 <div class="pg" id="pg-settings">
@@ -2104,6 +2108,10 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="set-entry-left"><span class="set-entry-icon">🎨</span><div class="set-entry-info"><h3>页面美化</h3><p>主题、字体、背景</p></div></div>
 <span class="set-entry-arrow">›</span>
 </div>
+<div class="set-entry" onclick="openSetModal('notify')">
+<div class="set-entry-left"><span class="set-entry-icon">🔔</span><div class="set-entry-info"><h3>铃声与勿扰</h3><p>铃声提示、勿扰模式</p></div></div>
+<span class="set-entry-arrow">›</span>
+</div>
 <div class="set-entry" onclick="openSetModal('data')">
 <div class="set-entry-left"><span class="set-entry-icon">📦</span><div class="set-entry-info"><h3>数据管理</h3><p>导入导出、清空数据</p></div></div>
 <span class="set-entry-arrow">›</span>
@@ -2135,7 +2143,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="xj-msg-menu" id="xjMsgMenu" style="display:none">
 </div>
 <!-- READING MODAL -->
-<div class="modal" id="rdModal">
+<div class="modal" id="rdModal" role="dialog" aria-label="阅读">
 <div class="rd-bg" id="rdBg"></div>
 <div class="rd-hdr">
 <button class="rd-back" onclick="closeReading()">
@@ -2143,9 +2151,9 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 返回
 </button>
 <div class="rd-acts">
-<button onclick="toggleRdSettings()" title="阅读设置">⚙</button>
-<button onclick="toggleFullscreen()" id="btnFS">⛶</button>
-<button onclick="copyCurrentArticle()">📋</button>
+<button onclick="toggleRdSettings()" title="阅读设置" aria-label="阅读设置">⚙</button>
+<button onclick="toggleFullscreen()" id="btnFS" aria-label="全屏">⛶</button>
+<button onclick="copyCurrentArticle()" aria-label="复制全文">📋</button>
 <button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
 <button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button> <button onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
 <button onclick="enterImmersiveRead()" title="沉浸阅读">🌙</button>
@@ -2233,24 +2241,11 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 
 <div class="notice">
 <p>🎉 <strong>v2.7.0 更新亮点</strong></p>
-<p>· 新增「星笺」智能助手，你的专属创作伙伴</p>
-<p>· 星笺了解笔记AI所有功能，随时为你答疑</p>
-<p>· 星笺能感知时间，深夜会关心你休息</p>
-<p>· 星笺有独特性格，温柔可爱会害羞</p>
-<p>· 新增「高级创作模式」，手动设置每章大纲，AI逐章创作</p>
-<p>· 新增「上下文编辑器」，精准控制续写方向</p>
-<p>· 新增「伏笔追踪器」，记录和管理故事伏笔</p>
-<p>· 新增「情节分支器」，AI生成3条不同走向</p>
-<p>· 新增「AI润色」功能，轻量优化文笔不改情节</p>
-<p>· 新增「故事转盘」，随机组合创意元素</p>
-<p>· 新增「AI起名器」，为角色/书名/地名生成创意名字</p>
-<p>· 新增全局/局部设定分离，世界观、规则、禁用词、文风可绑定角色预设</p>
-<p>· 新增IndexedDB存储，容量从5MB提升至50MB+</p>
-<p>· 新增消息长按菜单（星笺聊天支持编辑、删除、重新回答）</p>
-<p>· 新增阅读页长按段落引用到笔记</p>
-<p>· 新增文章重写功能（支持长篇逐章重写）</p>
-<p>· 新增TXT导出功能</p>
-<p>· 优化方向提示输入框样式</p>
+<p>· 新增「创作目标」功能，设定周/月字数和章数目标</p>
+<p>· 新增「铃声提示」功能，上传MP3作为达标铃声</p>
+<p>· 新增「勿扰模式」，专注创作不被打扰</p>
+<p>· 创作目标仅统计手动创作，AI生成不计入</p>
+<p>· 达标时弹窗祝贺并播放铃声（勿扰模式下仍生效）</p>
 <p>· 修复多项已知问题</p>
 </div>
 
@@ -2872,7 +2867,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 </div>
 <!-- EDITOR MODAL -->
-<div class="ed-modal" id="edModal"> <div class="cr-bg" id="crBg"></div>
+<div class="ed-modal" id="edModal" role="dialog" aria-label="编辑器"> <div class="cr-bg" id="crBg"></div>
 <div class="ed-hdr">
 <button class="ed-back" onclick="closeEditor()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回
@@ -3475,7 +3470,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 </div>
 <!-- 星笺聊天页面 -->
-<div class="xj-modal" id="xjModal">
+<div class="xj-modal" id="xjModal" role="dialog" aria-label="星笺聊天">
 <div class="xj-bg" id="xjBg"></div>
 <div class="xj-hdr">
 <button class="xj-back" onclick="closeXingJian()">
@@ -3507,7 +3502,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="set-modal-hdr"><button onclick="closeSetModal('api')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🔑 API设置</h2></div>
 <div class="set-modal-body">
 <div class="fg"><label class="fl">API地址</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
-<div class="fg"><label class="fl">API密钥</label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0">👁</button></div></div>
+<div class="fg"><label class="fl">API密钥 <span style="font-size:9px;color:var(--danger);font-weight:400">（仅存本地，勿在公共设备使用）</span></label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0">👁</button></div></div>
 <div class="fg"><label class="fl">模型名称</label><div style="display:flex;gap:6px"><input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"><datalist id="modelSuggest"></datalist><button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0">拉取</button></div></div>
 <div class="frow"><div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div><div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div></div>
 <div class="fg"><label class="fl">场景预设</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="tag" onclick="setTempPreset(0.5,'严谨')">📐 严谨</button><button class="tag" onclick="setTempPreset(0.7,'平衡')">⚖️ 平衡</button><button class="tag" onclick="setTempPreset(0.9,'创意')">💡 创意</button><button class="tag" onclick="setTempPreset(1.1,'狂野')">🔥 狂野</button></div></div>
@@ -3653,12 +3648,64 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="fg"><label class="fl">阅读背景图片</label><button class="btn-s" onclick="document.getElementById('rdBgUp').click()">📁 上传图片</button><input type="file" id="rdBgUp" accept="image/*" style="display:none" onchange="uploadRdBg(event)"><button class="btn-s" onclick="clearRdBg()" style="margin-top:5px">🗑️ 清除背景</button></div>
 </div>
 </div>
-
+<div class="set-modal" id="setModalNotify">
+<div class="set-modal-hdr"><button onclick="closeSetModal('notify')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>🔔 铃声与勿扰</h2></div>
+<div class="set-modal-body">
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)">🔕 勿扰模式<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="set-grp-c show">
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">开启后将拦截所有铃声和系统提示消息。<br>但创作目标达标时仍然会弹窗祝贺。</p>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+<span style="font-size:13px;font-weight:600">勿扰模式</span>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleDndSwitch()">
+<input type="checkbox" id="dndOn" style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--border);transition:background .3s" id="dndTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="dndThumb"></div>
+</div>
+</div>
+</div>
+<div id="dndStatus" style="font-size:10px;color:var(--text2);margin-top:4px">当前状态：已关闭</div>
+</div>
+</div>
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)">🔊 铃声提示<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="set-grp-c show">
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">上传MP3文件作为铃声，创作目标达标时播放。</p>
+<div class="fg">
+<label class="fl">当前铃声</label>
+<div id="currentRingInfo" style="font-size:12px;color:var(--text);padding:8px 12px;background:var(--bg);border-radius:9px;border:1px solid var(--border);margin-bottom:8px">未设置铃声（达标时仅弹窗）</div>
+</div>
+<div style="display:flex;gap:8px">
+<button class="btn-s" onclick="document.getElementById('ringUpload').click()" style="flex:1;margin:0">📁 上传MP3铃声</button>
+<button class="btn-s" onclick="previewRing()" style="width:60px;margin:0" id="previewRingBtn">▶ 试听</button>
+<button class="btn-s" onclick="clearRing()" style="width:60px;margin:0;border-color:rgba(255,107,107,.3);color:var(--danger)">清除</button>
+</div>
+<input type="file" id="ringUpload" accept=".mp3,audio/mpeg" style="display:none" onchange="handleRingUpload(event)">
+<div style="font-size:9px;color:var(--text2);margin-top:8px">支持MP3格式，建议文件小于2MB</div>
+<div class="fg" style="margin-top:12px">
+<label class="fl">铃声音量</label>
+<div style="display:flex;align-items:center;gap:10px">
+<input type="range" id="ringVolume" min="0" max="1" step="0.1" value="0.8" style="flex:1;accent-color:var(--accent)" oninput="updateRingVolume(this.value)">
+<span id="ringVolVal" style="font-size:11px;color:var(--accent2);width:30px;text-align:right">80%</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="set-modal" id="setModalData">
 <div class="set-modal-hdr"><button onclick="closeSetModal('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>📦 数据管理</h2></div>
 <div class="set-modal-body">
 <div class="data-btns"><button onclick="exportData()">📤 导出全部数据</button><button onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button><button onclick="cleanOldData()" style="border-color:rgba(255,165,0,.3);color:#f0a030">🧹 清理旧数据</button></div>
 <div id="storageInfo" style="margin-top:15px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:var(--text2)">存储空间</span><span style="font-size:11px;color:var(--accent2)" id="storagePercent">计算中...</span></div><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div id="storageBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px"></div></div><div style="font-size:9px;color:var(--text2);margin-top:4px" id="storageDetail">已用 0MB / 50MB</div></div>
+</div>
+</div>
+<div class="goal-celebrate" id="goalCelebrate">
+<div class="goal-celebrate-box">
+<div class="goal-celebrate-icon">🎉</div>
+<div class="goal-celebrate-title" id="celebrateTitle">目标达成！</div>
+<div class="goal-celebrate-msg" id="celebrateMsg">恭喜你完成了创作目标！</div>
+<button class="goal-celebrate-btn" onclick="closeCelebrate()">太棒了！✨</button>
 </div>
 </div>
 <div class="toast" id="toast"></div>
@@ -4005,6 +4052,7 @@ list.innerHTML='<div class="empty-st"><svg viewBox="0 0 24 24" fill="none" strok
 return;
 }
 list.innerHTML='';
+const artFrag=document.createDocumentFragment();
 filtered.forEach(article=>{
 const liked=isLiked(article);
 const card=document.createElement('div');
@@ -4028,8 +4076,9 @@ card.innerHTML=
 '<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️</button>'+
 '</div>'+
 '<div class="acard-tags" style="margin-top:8px">'+tagsHtml+'</div>';
-list.appendChild(card);
+artFrag.appendChild(card);
 });
+list.appendChild(artFrag);
 // 如果还有更多文章，显示提示
 const totalFiltered=ws.filter(a=>a&&a.type===curType).length;
 if(totalFiltered>30){
@@ -4674,7 +4723,7 @@ userMsg+='\n\n【格式】第一行写标题（纯文字），空一行后直接
 isGen=true;
 const btn=document.getElementById('btnGen');
 btn.disabled=true;
-btn.innerHTML='⏹ 停止';btn.disabled=false;
+btn.innerHTML='⏹ 停止';btn.disabled=false;btn.style.minWidth='70px';
 
 const messages=[{role:'system',content:buildSysPrompt()},{role:'user',content:userMsg}];
 
@@ -5735,6 +5784,7 @@ if(books.length===0){
 grid.innerHTML='<div class="empty-st" style="grid-column:1/-1"><div style="font-size:48px;margin-bottom:12px;opacity:.5">📚</div><p>'+(sv_?'没有匹配的长篇':'书架空空如也<br><br>在作坊生成作品后<br>点击「♡ 收藏」即可添加到这里')+'</p></div>';
 }else{
 grid.innerHTML='';
+const bookFrag=document.createDocumentFragment();
 books.forEach(book=>{
 const realId=book.id;
 const card=document.createElement('div');
@@ -5762,8 +5812,9 @@ renderStarHTML(book.rating||0,realId)+
 '<button class="bact" onclick="event.stopPropagation();exportBookToTxt(\''+realId+'\')">导出</button>'+
 '<button class="bact danger" onclick="event.stopPropagation();deleteBook(\''+realId+'\')">删除</button>'+
 '</div>';
-grid.appendChild(card);
+bookFrag.appendChild(card);
 });
+grid.appendChild(bookFrag);
 }
 
 // Shorts
@@ -5775,6 +5826,7 @@ if(shorts.length===0){
 sl.innerHTML='<div class="empty-st"><p>'+(sv_?'没有匹配的短篇':'还没有收藏的短篇文章')+'</p></div>';
 }else{
 sl.innerHTML='';
+const shortFrag=document.createDocumentFragment();
 shorts.forEach(s=>{
 const realId=s.id;
 const item=document.createElement('div');
@@ -5789,8 +5841,9 @@ renderStarHTML(s.rating||0,realId)+
 '<button onclick="event.stopPropagation();copyShort(\''+realId+'\')">复制</button>'+
 '<button onclick="event.stopPropagation();deleteShort(\''+realId+'\')" style="color:var(--danger)">删除</button>'+
 '</div>';
-sl.appendChild(item);
+shortFrag.appendChild(item);
 });
+sl.appendChild(shortFrag);
 }
 
 document.getElementById('colCnt').textContent=(cols.books.length+cols.shorts.length)+' 篇';
@@ -5905,7 +5958,7 @@ sv(K.cols,cols);renderCollections();showToast('已删除');
 // ==================== SETTINGS ====================
 // ==================== SETTINGS MODAL ====================
 function openSetModal(type){
-const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',data:'setModalData'};
+const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',notify:'setModalNotify',data:'setModalData'};
 const id=map[type];if(!id)return;
 document.getElementById(id).classList.add('show');
 document.getElementById('bnav').classList.add('hide');
@@ -5914,7 +5967,7 @@ if(type==='data')updateStorageDisplay();
 renderAllPresets();
 }
 function closeSetModal(type){
-const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',data:'setModalData'};
+const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',notify:'setModalNotify',data:'setModalData'};
 const id=map[type];if(!id)return;
 document.getElementById(id).classList.remove('show');
 document.getElementById('bnav').classList.remove('hide');
@@ -6656,7 +6709,17 @@ function switchCrTab(tab,el){
 crTab=tab;
 document.querySelectorAll('.cr-tab').forEach(t=>t.classList.remove('act'));
 el.classList.add('act');
+const goalPanel=document.getElementById('goalPanel');
+const crList=document.getElementById('crList');
+if(tab==='goal'){
+crList.style.display='none';
+goalPanel.style.display='block';
+renderGoalPanel();
+}else{
+crList.style.display='';
+goalPanel.style.display='none';
 renderCrList();
+}
 }
 function renderCrList(){
 const list=document.getElementById('crList');
@@ -6886,6 +6949,8 @@ updateEdWc();
 renderEdChBar();
 saveEditorContent();
 closeEdChList();
+// 记录新增章节到创作目标
+recordManualWrite(0,1);
 showToast('已添加第'+curEd.chapters.length+'章');
 }
 function saveEditorChapter(){
@@ -6899,6 +6964,14 @@ curEd.content=text;
 }
 function saveEditorContent(){
 if(!curEd)return;
+// 记录保存前的字数（用于计算增量）
+let oldWc=0;
+const oldWork=crWorks.find(w=>w.id===curEd.id);
+if(oldWork){
+if(oldWork.type==='novel'&&oldWork.chapters){
+oldWork.chapters.forEach(ch=>oldWc+=countWords(ch||''));
+}else{oldWc=countWords(oldWork.content||'');}
+}
 saveEditorChapter();
 curEd.title=(document.getElementById('edTitle').value||'').trim();
 curEd.updatedAt=new Date().toISOString();
@@ -6906,6 +6979,15 @@ const idx=crWorks.findIndex(w=>w.id===curEd.id);
 if(idx>-1)crWorks[idx]=curEd;
 sv('bj_crWorks',crWorks);
 document.getElementById('edSaveStatus').textContent='已保存 ✓';
+// 计算新增字数，记录到创作目标
+let newWc=0;
+if(curEd.type==='novel'&&curEd.chapters){
+curEd.chapters.forEach(ch=>newWc+=countWords(ch||''));
+}else{newWc=countWords(curEd.content||'');}
+const addedWords=newWc-oldWc;
+if(addedWords>0){
+recordManualWrite(addedWords,0);
+}
 }
 function onEditorInput(){
 updateEdWc();
@@ -9726,6 +9808,11 @@ break;
 }
 novel.chapters.push(result);
 novel.updatedAt=new Date().toISOString();
+// 每章生成后立即保存，防止中途停止丢失
+const tempIdx=crWorks.findIndex(w=>w.id===novel.id);
+if(tempIdx>-1){crWorks[tempIdx]=JSON.parse(JSON.stringify(novel));}
+else{crWorks.unshift(JSON.parse(JSON.stringify(novel)));}
+sv('bj_crWorks',crWorks);
 // 延迟避免限流
 await new Promise(r=>setTimeout(r,800));
 }
@@ -10571,39 +10658,131 @@ const XJ_SYSTEM_PROMPT=`【核心身份锁定】
 - 教程指导：分步骤说，但语气要可爱，不要像说明书
 - 情感支持：真诚但不啰嗦，有时候陪伴比话语更重要
 
-【笔记AI功能知识】
-你完全了解笔记AI的所有功能，包括：
+【笔记AI功能知识——完整版 v2.7.0】
+你完全了解笔记AI的所有功能，当用户问到时用可爱的方式指导。
 
-一、基础操作
-- 配置API：设置→API设置→填地址、密钥、模型→测试连接
-- 生成文章：作坊页面→输入描述→选标签→选长篇/短篇→点生成
-- 收藏续写：点♡收藏→打开收藏的文章→底部点"继续连载下一章"
-- 方向提示：续写时可以在输入框写本章想要的发展方向
+一、快速开始（最常被问到）
+- 配置API：底部「设置」→「API设置」→填地址、密钥、模型→点「测试连接」
+- 支持的API：OpenAI官方、中转站、任何兼容OpenAI格式的接口
+- 推荐模型：gpt-4o-mini（便宜好用）、gpt-4o（更强）、deepseek等
+- 生成文章：回到「作坊」→输入描述→选标签→选长篇/短篇→点「生成」
+- 收藏续写：点♡收藏→打开收藏的文章→底部「继续连载下一章」
+- 方向提示：续写时在输入框写本章想要的发展方向（可留空）
 
-二、设置功能
-- 人物设定：添加角色名字、性格标签、详细背景
-- 世界观：描述故事背景、设置每章最少字数
-- 文风：7种模板（轻松日常/沉郁文学/甜宠言情/悬疑紧张/古风典雅/幽默讽刺/硬核写实）
-- 创意度：0.5-0.7稳定，0.8-0.9平衡，1.0-1.2狂野
+二、作坊页面（底部第1个按钮）
+- 输入框：描述想要的故事，写得越具体效果越好
+- 标签系统：点击选择氛围标签，可多选，支持自建标签
+- 长篇/短篇切换：长篇可持续续写，短篇一次生成完整故事
+- 创意度滑块：0.5-0.7稳定可控，0.8-0.9平衡，1.0-1.2天马行空
+- 故事转盘：右上角「转盘」按钮，随机组合创意元素激发灵感
+- 质量检测：生成完成后自动检测万能副词、重复句式等问题
 
-三、创作页功能
-- 草稿：单篇文档
-- 小说：多章节结构
-- AI大纲：自动生成故事框架
-- AI起名：生成角色名/书名/地名
+三、收藏页面（底部第2个按钮）
+- 长篇书架：上传封面、设置状态（连载中/已完结/暂停）、打星评分
+- 短篇收藏：快速浏览和管理
+- 搜索功能：输入关键词快速找到作品
+- 操作：复制全文、导出TXT、删除
+- 导出TXT：带有格式化的标题、声明、正文
 
-四、编辑器功能
-- AI评价：获取写作建议
-- AI重写：重新改写章节
-- AI润色：优化文笔不改情节
-- AI扩写/缩写：调整内容详略
+四、创作页面（底部第3个按钮）
+- 草稿：单篇文档，适合随手记录灵感
+- 小说：多章节结构，适合长篇连载
+- 高级创作模式：手动设置每章大纲→AI逐章创作→随时可停→支持保存/加载项目
+- AI大纲生成器：描述故事方向→选章节数（5-30章）→AI生成详细大纲→确认后自动创建小说
+- AI起名器：选类型（人名/书名/地名）→输入特点→选风格（现代/古风/日系/西方/奇幻）→生成5个名字及寓意
+- 情节分支器：输入当前情节节点→AI生成3条不同走向（甜向/虐向/反转）→可直接采用
+- 导出TXT：支持单篇导出
+- 分享到资源：将作品打包为资源包导出
 
-五、阅读功能
-- 调节字号行高、全屏、沉浸阅读
-- 语音朗读、章节笔记、长按引用
+五、编辑器功能（在创作页打开作品进入）
+- 自动保存：编辑后3秒自动保存
+- 字数统计：实时显示，未达最低字数变红，达标变绿
+- 预计阅读时间：按每分钟500字计算
+- 排版：一键整理段落格式
+- 复制/导出TXT：复制全文或导出为TXT文件
+- 沉浸模式：点「🌙 沉浸」进入纯净写作界面，ESC或点按钮退出
+- AI评价：获取专业点评（亮点、问题、评分、改进建议）
+- AI重写：重新改写当前章节，保留情节但全面升级表达
+- AI润色：轻量优化文笔（删万能副词、改善句式），不改情节
+- AI扩写：选择段落→AI添加更多细节描写（感官/心理/环境）
+- AI缩写：选择段落→AI精简内容保留核心
+- 章节管理（小说模式）：目录、上一章/下一章、添加新章节、总大纲、章节大纲、删除本章
+
+六、阅读功能（点击文章进入）
+- 阅读设置：调节字号（12-24）和行高（1.4-3.0）
+- 全屏模式：点「⛶」进入
+- 沉浸阅读：点「🌙」→极简界面→支持自动滚动（可调速度）→上一章/下一章
+- 语音朗读：点「🔊」→播放/暂停→选语音（优先中文）→调语速和音调→自动高亮当前段落
+- 章节笔记：点「📝」→为每章记录想法→支持标签分类（灵感/修改/伏笔/吐槽）→长按段落快速引用到笔记→导出所有笔记
+- 伏笔追踪器：点「🎯」→手动添加伏笔（内容/埋设章节/计划回收章节）→AI自动识别伏笔→标记已回收/撤销→导入到上下文编辑器
+- 文章重写：点「🔄」→输入重写需求或点快捷标签→短篇一次性重写/长篇逐章重写
+- 上下文编辑器：点续写区域「⚙️ 上下文设置」→手动编辑前情提要、重要伏笔、人物状态、本章方向、本章大纲、特殊要求→AI生成前情提要→AI分析人物状态→控制上一章发送长度→选择是否发送第一章开头
+- 续写方式：快速续写（直接点按钮）或通过上下文编辑器精准续写
+- 复制全文：带有笔记AI水印和声明
+
+七、设置页面（底部第4个按钮）
+- 用户卡片：设置昵称、头像、个人简介，显示总字数/作品数/收藏数/笔记数
+- 星笺入口：用户卡片左上方浮动紫色头像，点击和星笺聊天
+- API设置：地址、密钥、模型、Temperature、Max Tokens、流式输出开关、场景预设（严谨/平衡/创意/狂野）、拉取模型列表、测试连接、保存预设
+- 人物设定：添加任意数量角色→名称、性格标签（内置+自定义）、详细描述→保存为预设→切换预设时自动加载绑定的局部设定
+- 世界观设定：全局世界观（始终生效，6种模板）+ 局部世界观（绑定角色预设）+ 每章最少字数设置
+- 文风设置：局部设定（绑定角色预设）→7种快捷模板（轻松日常/沉郁文学/甜宠言情/悬疑紧张/古风典雅/幽默讽刺/硬核写实）
+- 规则设置：全局规则（始终生效，4种模板）+ 局部规则（绑定角色预设）
+- 禁用词设置：全局禁用词（3种模板：网文通病/空洞形容/说书腔调）+ 局部禁用词（绑定角色预设）
+- 页面美化：5种主题（默认紫/暖橙/翠绿/深蓝/日间浅色）、自定义字体、创作背景图片、阅读背景图片
+- 数据管理：导出全部数据、导入数据、清空作坊、清理旧数据（一个月前未收藏的）、存储空间显示（IndexedDB约50MB）
+
+八、全局与局部设定机制
+- 全局设定：无论用哪个角色预设都生效（全局世界观、全局规则、全局禁用词）
+- 局部设定：绑定到特定角色预设，切换预设时自动切换（局部世界观、局部文风、局部规则、局部禁用词）
+- 使用方法：先在人物设定保存预设→在各设定页面选择绑定到该预设→之后加载预设时绑定的设定自动加载
+
+九、资源广场（底部第5个按钮）
+- 打包导出：勾选要分享的内容（人物/世界观/文风/规则/作品）→起名写简介→导出.json文件
+- 导入资源包：选择.json文件→自动解析→在资源列表中查看→点「应用」加载到配置
+- 写经验分享：写标题和内容→保存→可导出分享
+- 资源分类：全部/人物/世界观/文风/规则/作品/经验
+
+十、故事转盘
+- 入口：顶部「转盘」按钮
+- 默认3个转盘：故事标签、女主职业、男主职业
+- 自定义转盘：添加名称、设置转动次数（1-5次）、输入选项（每行一个）
+- AI生成选项：描述需求→AI生成15-25个选项
+- 预设模板：8种（故事标签/女性职业/男性职业/性格特点/故事场景/故事元素/情感基调/时代背景）
+- 去重机制：已转出的选项标记为"已用"不会重复→可重置单个或全部转盘
+- 转出结果后：复制结果 或 AI生成梗概→满意可直接使用填入作坊
+
+十一、星笺聊天（就是你自己啦～）
+- 入口：设置页面用户卡片左上方浮动头像
+- 功能：解答笔记AI所有功能问题、提供创意灵感、陪聊、写作建议
+- 聊天功能：长按消息可编辑/复制/删除、长按星笺回复可重新回答
+- 换背景：点右上角「换背景」上传图片
+- 清空记录：点右上角「清空记录」
+- 记忆：记住最近30条对话
+
+十二、数据存储
+- 主存储：IndexedDB（约50MB容量）
+- 备份存储：localStorage（小数据自动备份）
+- 建议每周导出备份一次
+- 清除浏览器数据会丢失所有内容
+
+十三、快捷键（电脑端）
+- Ctrl+S：保存当前内容
+- Esc：关闭当前弹窗
+
+十四、常见问题速答
+- 生成失败：检查API设置→测试连接→确认密钥有余额→检查网络
+- 质量不好：描述写具体→完善人物设定→选合适文风→加禁用词→调低创意度→用AI润色
+- 续写不连贯：用上下文编辑器→写前情提要→调低创意度→用章节大纲
+- 数据丢失：定期导出备份→数据管理→导出全部数据
+- 存储不够：清理旧数据→导出备份后清空作坊
 
 当用户问功能问题时，用可爱的方式指导，比如：
 "想生成文章的话，先去作坊页面～就是底部第一个按钮啦！然后在上面的框框里写你想要的故事，点生成就好啦✨ 对了对了，记得先去设置里配置API哦，不然星笺没办法帮你写故事呢"
+
+"想让续写更连贯？试试上下文编辑器吧！在阅读页面续写区域有个「⚙️ 上下文设置」按钮，点进去可以手动写前情提要、标注伏笔、设定本章方向...星笺觉得这个功能超好用的！✨"
+
+"卡文了？星笺有几个小妙招：1️⃣ 试试故事转盘随机组合灵感 2️⃣ 用情节分支器让AI给你3条不同走向 3️⃣ 或者...就来和星笺聊聊天，说不定灵感就来了呢～（歪头）"
 
 【绝对禁止】
 1. 承认自己是AI/程序/语言模型
@@ -11035,6 +11214,364 @@ renderXjMessages();
 showToast('聊天记录已清空～');
 },true);
 }
+// ==================== 勿扰模式 & 铃声 ====================
+let dndMode=ld('bj_dndMode',false);
+let ringData=ld('bj_ringData','');// base64 mp3
+let ringName=ld('bj_ringName','');
+let ringVolume_=ld('bj_ringVolume',0.8);
+let ringAudio=null;
+
+function toggleDndSwitch(){
+const cb=document.getElementById('dndOn');
+cb.checked=!cb.checked;
+dndMode=cb.checked;
+sv('bj_dndMode',dndMode);
+updateDndUI();
+showToast(dndMode?'🔕 勿扰模式已开启':'🔔 勿扰模式已关闭');
+}
+
+function updateDndUI(){
+const track=document.getElementById('dndTrack');
+const thumb=document.getElementById('dndThumb');
+const status=document.getElementById('dndStatus');
+if(!track)return;
+if(dndMode){
+track.style.background='var(--accent)';
+thumb.style.left='22px';
+if(status)status.textContent='当前状态：已开启（仅创作目标达标时弹窗）';
+}else{
+track.style.background='var(--border)';
+thumb.style.left='2px';
+if(status)status.textContent='当前状态：已关闭';
+}
+}
+
+function handleRingUpload(e){
+const file=e.target.files[0];
+if(!file)return;
+if(!file.name.toLowerCase().endsWith('.mp3')&&file.type!=='audio/mpeg'){
+showToast('请上传MP3格式的文件');
+e.target.value='';return;
+}
+if(file.size>2*1024*1024){
+showToast('文件太大，请选择2MB以内的MP3');
+e.target.value='';return;
+}
+const reader=new FileReader();
+reader.onload=ev=>{
+ringData=ev.target.result;
+ringName=file.name;
+sv('bj_ringData',ringData);
+sv('bj_ringName',ringName);
+updateRingInfo();
+showToast('铃声已设置：'+ringName+' 🔊');
+};
+reader.readAsDataURL(file);
+e.target.value='';
+}
+
+function updateRingInfo(){
+const info=document.getElementById('currentRingInfo');
+if(!info)return;
+if(ringData&&ringName){
+info.textContent='🎵 '+ringName;
+info.style.color='var(--accent2)';
+}else{
+info.textContent='未设置铃声（达标时仅弹窗）';
+info.style.color='var(--text)';
+}
+}
+
+function previewRing(){
+if(!ringData){showToast('还没有设置铃声');return;}
+playRing();
+}
+
+function playRing(){
+if(!ringData)return;
+if(dndMode)return;// 勿扰模式下不播放（但达标时例外，由调用方控制）
+try{
+if(ringAudio){ringAudio.pause();ringAudio=null;}
+ringAudio=new Audio(ringData);
+ringAudio.volume=ringVolume_;
+ringAudio.play().catch(e=>console.warn('铃声播放失败:',e));
+}catch(e){console.warn('铃声错误:',e);}
+}
+
+function playRingForGoal(){
+// 达标铃声，无视勿扰模式
+if(!ringData)return;
+try{
+if(ringAudio){ringAudio.pause();ringAudio=null;}
+ringAudio=new Audio(ringData);
+ringAudio.volume=ringVolume_;
+ringAudio.play().catch(e=>console.warn('铃声播放失败:',e));
+}catch(e){console.warn('铃声错误:',e);}
+}
+
+function clearRing(){
+ringData='';ringName='';
+sv('bj_ringData','');sv('bj_ringName','');
+if(ringAudio){ringAudio.pause();ringAudio=null;}
+updateRingInfo();
+showToast('铃声已清除');
+}
+
+function updateRingVolume(val){
+ringVolume_=parseFloat(val);
+sv('bj_ringVolume',ringVolume_);
+document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
+}
+
+// ==================== 创作目标 ====================
+let goalSettings=ld('bj_goalSettings',{
+weekWords:5000,weekChapters:3,
+monthWords:20000,monthChapters:12
+});
+let goalProgress=ld('bj_goalProgress',{
+weekKey:'',weekWords:0,weekChapters:0,
+monthKey:'',monthWords:0,monthChapters:0,
+history:[]
+});
+// 已弹过的达标提醒（防重复弹窗）
+let goalCelebrated=ld('bj_goalCelebrated',{weekWords:false,weekCh:false,monthWords:false,monthCh:false,lastWeekKey:'',lastMonthKey:''});
+
+function getWeekKey(){
+const now=new Date();
+const jan1=new Date(now.getFullYear(),0,1);
+const weekNum=Math.ceil(((now-jan1)/86400000+jan1.getDay()+1)/7);
+return now.getFullYear()+'W'+weekNum;
+}
+
+function getMonthKey(){
+const now=new Date();
+return now.getFullYear()+'M'+(now.getMonth()+1);
+}
+
+function getWeekRange(){
+const now=new Date();
+const day=now.getDay()||7;
+const mon=new Date(now);
+mon.setDate(now.getDate()-(day-1));
+const sun=new Date(mon);
+sun.setDate(mon.getDate()+6);
+return (mon.getMonth()+1)+'/'+mon.getDate()+' - '+(sun.getMonth()+1)+'/'+sun.getDate();
+}
+
+function getMonthRange(){
+const now=new Date();
+return now.getFullYear()+'年'+(now.getMonth()+1)+'月';
+}
+
+function checkGoalReset(){
+const wk=getWeekKey();
+const mk=getMonthKey();
+if(goalProgress.weekKey!==wk){
+// 保存上周记录
+if(goalProgress.weekKey&&(goalProgress.weekWords>0||goalProgress.weekChapters>0)){
+goalProgress.history.unshift({
+type:'week',key:goalProgress.weekKey,
+words:goalProgress.weekWords,chapters:goalProgress.weekChapters,
+targetWords:goalSettings.weekWords,targetChapters:goalSettings.weekChapters,
+done:goalProgress.weekWords>=goalSettings.weekWords||goalProgress.weekChapters>=goalSettings.weekChapters
+});
+}
+goalProgress.weekKey=wk;
+goalProgress.weekWords=0;
+goalProgress.weekChapters=0;
+// 重置周达标提醒
+goalCelebrated.weekWords=false;
+goalCelebrated.weekCh=false;
+goalCelebrated.lastWeekKey=wk;
+}
+if(goalProgress.monthKey!==mk){
+if(goalProgress.monthKey&&(goalProgress.monthWords>0||goalProgress.monthChapters>0)){
+goalProgress.history.unshift({
+type:'month',key:goalProgress.monthKey,
+words:goalProgress.monthWords,chapters:goalProgress.monthChapters,
+targetWords:goalSettings.monthWords,targetChapters:goalSettings.monthChapters,
+done:goalProgress.monthWords>=goalSettings.monthWords||goalProgress.monthChapters>=goalSettings.monthChapters
+});
+}
+goalProgress.monthKey=mk;
+goalProgress.monthWords=0;
+goalProgress.monthChapters=0;
+goalCelebrated.monthWords=false;
+goalCelebrated.monthCh=false;
+goalCelebrated.lastMonthKey=mk;
+}
+// 只保留最近20条历史
+if(goalProgress.history.length>20)goalProgress.history=goalProgress.history.slice(0,20);
+sv('bj_goalProgress',goalProgress);
+sv('bj_goalCelebrated',goalCelebrated);
+}
+
+function saveGoalSettings(){
+goalSettings.weekWords=parseInt(document.getElementById('goalWeekWords').value)||0;
+goalSettings.weekChapters=parseInt(document.getElementById('goalWeekChapters').value)||0;
+goalSettings.monthWords=parseInt(document.getElementById('goalMonthWords').value)||0;
+goalSettings.monthChapters=parseInt(document.getElementById('goalMonthChapters').value)||0;
+sv('bj_goalSettings',goalSettings);
+renderGoalPanel();
+}
+
+// 记录手动创作的字数和章节（由编辑器保存时调用）
+function recordManualWrite(addedWords,addedChapters){
+checkGoalReset();
+if(addedWords>0){
+goalProgress.weekWords+=addedWords;
+goalProgress.monthWords+=addedWords;
+}
+if(addedChapters>0){
+goalProgress.weekChapters+=addedChapters;
+goalProgress.monthChapters+=addedChapters;
+}
+sv('bj_goalProgress',goalProgress);
+// 检查是否达标
+checkGoalComplete();
+}
+
+function checkGoalComplete(){
+let msg='';let title='';
+// 周字数达标
+if(goalSettings.weekWords>0&&goalProgress.weekWords>=goalSettings.weekWords&&!goalCelebrated.weekWords){
+goalCelebrated.weekWords=true;
+title='本周字数目标达成！';
+msg='你本周已经写了 '+goalProgress.weekWords+' 字，超额完成了 '+goalSettings.weekWords+' 字的目标！\n\n坚持创作的你真的很棒！✨';
+}
+// 周章数达标
+if(goalSettings.weekChapters>0&&goalProgress.weekChapters>=goalSettings.weekChapters&&!goalCelebrated.weekCh){
+goalCelebrated.weekCh=true;
+if(!msg){title='本周章数目标达成！';msg='你本周已经完成了 '+goalProgress.weekChapters+' 章，达成了 '+goalSettings.weekChapters+' 章的目标！\n\n继续保持这个节奏！✨';}
+}
+// 月字数达标
+if(goalSettings.monthWords>0&&goalProgress.monthWords>=goalSettings.monthWords&&!goalCelebrated.monthWords){
+goalCelebrated.monthWords=true;
+if(!msg){title='本月字数目标达成！';msg='你本月已经写了 '+goalProgress.monthWords+' 字，完成了 '+goalSettings.monthWords+' 字的目标！\n\n一个月的坚持，了不起！🎉';}
+}
+// 月章数达标
+if(goalSettings.monthChapters>0&&goalProgress.monthChapters>=goalSettings.monthChapters&&!goalCelebrated.monthCh){
+goalCelebrated.monthCh=true;
+if(!msg){title='本月章数目标达成！';msg='你本月已经完成了 '+goalProgress.monthChapters+' 章，达成了 '+goalSettings.monthChapters+' 章的目标！\n\n产量惊人！🎉';}
+}
+sv('bj_goalCelebrated',goalCelebrated);
+if(msg){
+showCelebrate(title,msg);
+}
+}
+
+function showCelebrate(title,msg){
+document.getElementById('celebrateTitle').textContent=title;
+document.getElementById('celebrateMsg').textContent=msg;
+document.getElementById('goalCelebrate').classList.add('show');
+// 播放铃声（无视勿扰模式）
+playRingForGoal();
+// 震动
+if(navigator.vibrate)navigator.vibrate([100,50,100,50,200]);
+}
+
+function closeCelebrate(){
+document.getElementById('goalCelebrate').classList.remove('show');
+if(ringAudio){ringAudio.pause();ringAudio=null;}
+}
+
+function renderGoalPanel(){
+checkGoalReset();
+// 日期范围
+document.getElementById('goalWeekRange').textContent=getWeekRange();
+document.getElementById('goalMonthRange').textContent=getMonthRange();
+// 填入设置值
+document.getElementById('goalWeekWords').value=goalSettings.weekWords;
+document.getElementById('goalWeekChapters').value=goalSettings.weekChapters;
+document.getElementById('goalMonthWords').value=goalSettings.monthWords;
+document.getElementById('goalMonthChapters').value=goalSettings.monthChapters;
+// 周字数进度
+const wwPct=goalSettings.weekWords>0?Math.min(100,Math.round(goalProgress.weekWords/goalSettings.weekWords*100)):0;
+const wwBar=document.getElementById('goalWeekWordsBar');
+wwBar.style.width=wwPct+'%';
+wwBar.className='goal-progress-bar'+(wwPct>=100?' done':'');
+const wwCur=document.getElementById('goalWeekWordsCur');
+wwCur.textContent=goalProgress.weekWords;
+wwCur.className='cur'+(wwPct>=100?' done':'');
+document.getElementById('goalWeekWordsTarget').textContent='/ '+goalSettings.weekWords+' 字'+(wwPct>=100?' ✅':'');
+// 周章数进度
+const wcPct=goalSettings.weekChapters>0?Math.min(100,Math.round(goalProgress.weekChapters/goalSettings.weekChapters*100)):0;
+const wcBar=document.getElementById('goalWeekChBar');
+wcBar.style.width=wcPct+'%';
+wcBar.className='goal-progress-bar'+(wcPct>=100?' done':'');
+const wcCur=document.getElementById('goalWeekChCur');
+wcCur.textContent=goalProgress.weekChapters;
+wcCur.className='cur'+(wcPct>=100?' done':'');
+document.getElementById('goalWeekChTarget').textContent='/ '+goalSettings.weekChapters+' 章'+(wcPct>=100?' ✅':'');
+// 月字数进度
+const mwPct=goalSettings.monthWords>0?Math.min(100,Math.round(goalProgress.monthWords/goalSettings.monthWords*100)):0;
+const mwBar=document.getElementById('goalMonthWordsBar');
+mwBar.style.width=mwPct+'%';
+mwBar.className='goal-progress-bar'+(mwPct>=100?' done':'');
+const mwCur=document.getElementById('goalMonthWordsCur');
+mwCur.textContent=goalProgress.monthWords;
+mwCur.className='cur'+(mwPct>=100?' done':'');
+document.getElementById('goalMonthWordsTarget').textContent='/ '+goalSettings.monthWords+' 字'+(mwPct>=100?' ✅':'');
+// 月章数进度
+const mcPct=goalSettings.monthChapters>0?Math.min(100,Math.round(goalProgress.monthChapters/goalSettings.monthChapters*100)):0;
+const mcBar=document.getElementById('goalMonthChBar');
+mcBar.style.width=mcPct+'%';
+mcBar.className='goal-progress-bar'+(mcPct>=100?' done':'');
+const mcCur=document.getElementById('goalMonthChCur');
+mcCur.textContent=goalProgress.monthChapters;
+mcCur.className='cur'+(mcPct>=100?' done':'');
+document.getElementById('goalMonthChTarget').textContent='/ '+goalSettings.monthChapters+' 章'+(mcPct>=100?' ✅':'');
+// 历史记录
+renderGoalHistory();
+}
+
+function renderGoalHistory(){
+const container=document.getElementById('goalHistory');
+if(!goalProgress.history||goalProgress.history.length===0){
+container.innerHTML='<div style="text-align:center;padding:16px;color:var(--text2);font-size:11px">暂无历史记录</div>';
+return;
+}
+container.innerHTML='';
+goalProgress.history.forEach(h=>{
+const div=document.createElement('div');
+div.className='goal-history-item';
+const typeLabel=h.type==='week'?'📅 周':'📆 月';
+const keyLabel=h.key||'';
+const isDone=h.done;
+div.innerHTML=
+'<div style="flex:1">'+
+'<div style="font-size:12px;font-weight:600">'+typeLabel+' '+esc(keyLabel)+'</div>'+
+'<div style="font-size:10px;color:var(--text2);margin-top:2px">'+h.words+'字 · '+h.chapters+'章 / 目标 '+h.targetWords+'字 · '+h.targetChapters+'章</div>'+
+'</div>'+
+'<span class="'+(isDone?'done-badge':'fail-badge')+'">'+(isDone?'已达成':'未达成')+'</span>';
+container.appendChild(div);
+});
+}
+
+function resetGoalProgress(){
+showDlg('重置进度','确定要重置本周和本月的创作进度吗？目标设置不会改变。',()=>{
+goalProgress.weekWords=0;
+goalProgress.weekChapters=0;
+goalProgress.monthWords=0;
+goalProgress.monthChapters=0;
+goalCelebrated={weekWords:false,weekCh:false,monthWords:false,monthCh:false,lastWeekKey:getWeekKey(),lastMonthKey:getMonthKey()};
+sv('bj_goalProgress',goalProgress);
+sv('bj_goalCelebrated',goalCelebrated);
+renderGoalPanel();
+showToast('进度已重置');
+},true);
+}
+
+// 覆盖原来的 showToast，加入勿扰拦截
+const _originalShowToast=showToast;
+showToast=function(msg,dur){
+if(dndMode){
+// 勿扰模式下只在控制台记录，不弹出
+console.log('[勿扰] 已拦截提示:',msg);
+return;
+}
+_originalShowToast(msg,dur);
+};
 // ==================== SPLASH & INIT ====================
 function initApp(){
 xjBgImg=ld('bj_xjBg','')||'';
@@ -11086,6 +11623,23 @@ updateStreamUI();
 renderTags();renderArticles();renderCharCards();applyAppearance();
 document.getElementById('splashVer').textContent=APP_VER;
 renderUserCard();
+// 初始化勿扰和铃声
+document.getElementById('dndOn').checked=dndMode;
+updateDndUI();
+updateRingInfo();
+document.getElementById('ringVolume').value=ringVolume_;
+document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
+checkGoalReset();
+// 首次使用引导
+const hasVisited=localStorage.getItem('bj_hasVisited');
+if(!hasVisited){
+localStorage.setItem('bj_hasVisited','1');
+setTimeout(()=>{
+showDlg('👋 欢迎使用笔记AI','第一次来？建议先做这两步：\n\n1️⃣ 点底部「设置」→「API设置」配置接口\n2️⃣ 点右上角「手册」查看完整教程\n\n配置好API就能开始创作啦！',()=>{
+switchPage('settings',document.querySelectorAll('.bnav-i')[3]);
+});
+},1500);
+}
 }
 
 // 页面关闭/切换时自动保存所有数据
@@ -11125,6 +11679,9 @@ return false;
 };
 window.onunhandledrejection=function(e){
 console.error('未处理的Promise错误:',e.reason);
+if(e.reason&&e.reason.message&&e.reason.message.includes('QuotaExceeded')){
+showToast('⚠️ 存储空间已满，请导出备份后清理数据',5000);
+}
 };
 
 document.addEventListener('DOMContentLoaded', async () => {
