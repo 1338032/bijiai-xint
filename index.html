@@ -9066,26 +9066,30 @@ outputEl.value='处理失败，请检查API设置';
 }
 }
 // 导出TXT文件
-function exportToTxtFile(filename,content){
-const blob=new Blob([content],{type:'text/plain;charset=utf-8'});
-if(window.showSaveFilePicker){
-(async()=>{
-try{
-const handle=await window.showSaveFilePicker({
-suggestedName:filename,
-types:[{description:'文本文件',accept:{'text/plain':['.txt']}}]
-});
-const writable=await handle.createWritable();
-await writable.write(blob);
-await writable.close();
-showToast('文件已保存 📥');
-}catch(e){
-if(e.name!=='AbortError')fallbackTxtExport(filename,blob);
-}
-})();
-return;
-}
-fallbackTxtExport(filename,blob);
+function exportToTxtFile(filename, content) {
+    try {
+        const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        // 延迟撤销URL，兼容手机浏览器
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+        }, 2000);
+        
+        showToast('TXT已导出：' + filename + ' 📥');
+    } catch (e) {
+        console.error('导出失败:', e);
+        showToast('导出失败，请尝试刷新页面后重试', 4000);
+    }
 }
 function fallbackTxtExport(filename,blob){
 const url=URL.createObjectURL(blob);
