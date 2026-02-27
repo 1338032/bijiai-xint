@@ -143,17 +143,45 @@ font-size:13px;color:rgba(255,255,255,.6);
 letter-spacing:2px;margin-bottom:32px;
 }
 .splash-progress{
-width:200px;height:3px;
-background:rgba(255,255,255,.1);
-border-radius:3px;overflow:hidden;
-margin-bottom:16px;
+width:240px;height:8px;
+background:rgba(255,255,255,.08);
+border-radius:4px;overflow:hidden;
+margin:24px auto 0;
+border:1px solid rgba(108,92,231,.3);
+box-shadow:0 0 12px rgba(108,92,231,.15),inset 0 1px 2px rgba(0,0,0,.3);
+position:relative;
+}
+.splash-progress::before{
+content:'';position:absolute;inset:0;
+background:repeating-linear-gradient(
+90deg,
+transparent 0px,
+transparent 8px,
+rgba(255,255,255,.03) 8px,
+rgba(255,255,255,.03) 9px
+);
+z-index:1;
 }
 .splash-progress-bar{
-height:100%;width:0%;
-background:linear-gradient(90deg,var(--accent),var(--accent2));
-border-radius:3px;
-transition:width .3s ease;
-box-shadow:0 0 10px var(--accent);
+height:100%;width:0;
+background:linear-gradient(90deg,var(--accent),var(--accent2),#00d2ff,var(--accent));
+background-size:300% 100%;
+border-radius:4px;
+transition:width .4s ease;
+animation:progressShine 2s linear infinite;
+box-shadow:0 0 10px rgba(108,92,231,.6),0 0 20px rgba(108,92,231,.3);
+position:relative;
+}
+.splash-progress-bar::after{
+content:'';position:absolute;
+top:0;right:0;width:20px;height:100%;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.6));
+border-radius:0 4px 4px 0;
+filter:blur(2px);
+}
+@keyframes progressShine{
+0%{background-position:0% 50%}
+100%{background-position:300% 50%}
 }
 .splash-status{
 font-size:11px;color:rgba(255,255,255,.4);
@@ -906,7 +934,54 @@ border:1px solid var(--border);position:relative;
 background:none;border:none;color:var(--danger);font-size:10px;cursor:pointer;
 padding:3px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);
 }
-
+/* 人物关系图 */
+.rel-graph{padding:14px;background:var(--bg);border-radius:12px;border:1px solid var(--border);margin-top:12px;}
+.rel-graph-title{font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
+.rel-list{display:flex;flex-direction:column;gap:8px;}
+.rel-item{
+display:flex;align-items:center;gap:8px;padding:10px 12px;
+background:var(--card);border-radius:10px;border:1px solid var(--border);
+transition:all .2s;
+}
+.rel-item:active{transform:scale(.98);border-color:var(--accent);}
+.rel-item-names{display:flex;align-items:center;gap:6px;flex:1;min-width:0;}
+.rel-item-name{
+font-size:12px;font-weight:600;color:var(--text);
+padding:3px 8px;background:rgba(108,92,231,.1);border-radius:8px;
+white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:80px;
+}
+.rel-item-arrow{font-size:10px;color:var(--text2);}
+.rel-item-type{
+font-size:10px;padding:2px 8px;border-radius:10px;
+white-space:nowrap;flex-shrink:0;
+}
+.rel-type-love{background:rgba(255,107,107,.15);color:#ff6b6b;}
+.rel-type-friend{background:rgba(81,207,102,.15);color:#51cf66;}
+.rel-type-enemy{background:rgba(230,126,34,.15);color:#e67e22;}
+.rel-type-family{background:rgba(162,155,254,.15);color:#a29bfe;}
+.rel-type-master{background:rgba(241,196,15,.15);color:#f1c40f;}
+.rel-type-colleague{background:rgba(52,152,219,.15);color:#3498db;}
+.rel-type-other{background:rgba(144,144,168,.15);color:#9090a8;}
+.rel-item-desc{font-size:10px;color:var(--text2);flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rel-item-acts{display:flex;gap:4px;flex-shrink:0;}
+.rel-item-acts button{
+padding:3px 7px;border-radius:6px;border:1px solid var(--border);
+background:transparent;color:var(--text2);font-size:9px;cursor:pointer;
+}
+.rel-item-acts button.del{border-color:rgba(255,107,107,.3);color:var(--danger);}
+.rel-empty{text-align:center;padding:16px;color:var(--text2);font-size:11px;}
+/* NPC设定 */
+.npc-section{margin-top:15px;padding-top:15px;border-top:1px solid var(--border);}
+.npc-card{
+background:var(--bg);border-radius:12px;padding:14px;
+border:1px solid var(--border);margin-bottom:8px;position:relative;
+}
+.npc-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.npc-card-hdr span{font-size:12px;font-weight:600;color:var(--success);}
+.npc-badge{
+display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;
+background:rgba(81,207,102,.15);color:var(--success);margin-left:6px;
+}
 /* HANDBOOK */
 .hb-ov{
 display:none;position:fixed;inset:0;z-index:600;
@@ -1303,16 +1378,24 @@ background:rgba(0,0,0,.45);
 .note-ov.show{display:block;}
 .note-panel{
 position:fixed;top:0;right:-320px;bottom:0;z-index:561;
-width:300px;max-width:85vw;background:var(--card);
-border-left:1px solid var(--border);
+width:300px;max-width:85vw;
+background:linear-gradient(180deg,var(--card) 0%,rgba(108,92,231,.03) 100%);
+border-left:1px solid rgba(108,92,231,.2);
 display:flex;flex-direction:column;
-transition:right .3s ease;
-box-shadow:-4px 0 20px rgba(0,0,0,.3);
+transition:right .35s cubic-bezier(.4,0,.2,1);
+box-shadow:-8px 0 30px rgba(0,0,0,.35),-2px 0 10px rgba(108,92,231,.1);
 }
 .note-ov.show .note-panel{right:0;}
 .note-hdr{
-padding:14px 16px;border-bottom:1px solid var(--border);
+padding:16px 18px;
+border-bottom:1px solid rgba(108,92,231,.15);
 display:flex;justify-content:space-between;align-items:center;flex-shrink:0;
+background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(162,155,254,.04));
+}
+.note-hdr h3{
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+-webkit-background-clip:text;-webkit-text-fill-color:transparent;
+background-clip:text;
 }
 .note-hdr h3{font-size:14px;font-weight:700;}
 .note-hdr span{font-size:10px;color:var(--text2);}
@@ -1325,13 +1408,26 @@ flex:1;overflow-y:auto;padding:12px 16px;
 display:flex;flex-direction:column;gap:10px;
 }
 .note-empty{
-text-align:center;padding:40px 10px;color:var(--text2);font-size:12px;
+text-align:center;padding:50px 20px;color:var(--text2);font-size:13px;
+line-height:1.8;
+}
+.note-empty::before{
+content:'📝';display:block;font-size:36px;margin-bottom:12px;
+opacity:.4;
 }
 .note-item{
-background:var(--bg);border-radius:10px;padding:11px 13px;
+background:linear-gradient(135deg,var(--bg) 0%,rgba(108,92,231,.03) 100%);
+border-radius:14px;padding:14px 16px;
 border:1px solid var(--border);position:relative;
+transition:all .3s cubic-bezier(.4,0,.2,1);
+box-shadow:0 2px 8px rgba(0,0,0,.05);
 }
-.note-item-text{font-size:12px;line-height:1.7;color:var(--text);white-space:pre-wrap;word-wrap:break-word;}
+.note-item:active{
+transform:scale(.98);
+border-color:var(--accent);
+box-shadow:0 2px 12px rgba(108,92,231,.15);
+}
+.note-item-text{ font-size:13px;line-height:1.8;color:var(--text); white-space:pre-wrap;word-wrap:break-word; letter-spacing:.02em; } .note-item-text::first-line{ font-weight:500; }
 .note-item-ft{
 display:flex;justify-content:space-between;align-items:center;
 margin-top:7px;
@@ -1343,7 +1439,10 @@ cursor:pointer;padding:2px 6px;border-radius:5px;
 border:1px solid rgba(255,107,107,.3);
 }
 .note-input-wrap{
-padding:12px 16px;border-top:1px solid var(--border);flex-shrink:0;
+padding:14px 16px 18px;
+border-top:1px solid rgba(108,92,231,.15);
+flex-shrink:0;
+background:linear-gradient(180deg,transparent,rgba(108,92,231,.03));
 }
 .note-input-row{display:flex;gap:8px;}
 .note-input-row textarea{
@@ -1356,15 +1455,37 @@ font-family:inherit;line-height:1.5;
 .note-input-row textarea:focus{border-color:var(--accent);}
 .note-input-row textarea::placeholder{color:var(--text2);}
 .note-send{
-padding:8px 14px;border-radius:10px;border:none;
-background:linear-gradient(135deg,var(--accent),var(--accent2));
+padding:10px 18px;border-radius:12px;border:none;
+background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--accent) 100%);
+background-size:200% 100%;
 color:#fff;font-size:12px;font-weight:600;cursor:pointer;
 align-self:flex-end;white-space:nowrap;
+box-shadow:0 3px 10px rgba(108,92,231,.3);
+transition:all .3s;
 }
-.note-send:active{transform:scale(.95);}
+.note-send:active{
+transform:scale(.92);
+box-shadow:0 1px 4px rgba(108,92,231,.3);
+}
+@keyframes noteSlideIn{
+from{opacity:0;transform:translateX(30px);}
+to{opacity:1;transform:translateX(0);}
+}
 .note-dot{
 display:inline-block;width:6px;height:6px;border-radius:50%;
 background:var(--accent2);margin-left:4px;vertical-align:middle;
+}
+.note-tag-btn{
+transition:all .25s cubic-bezier(.4,0,.2,1)!important;
+}
+.note-tag-btn:active{
+transform:scale(.92);
+}
+.note-sel-tag{
+transition:all .25s cubic-bezier(.4,0,.2,1)!important;
+}
+.note-sel-tag:active{
+transform:scale(.9);
 }
 ::-webkit-scrollbar{width:6px;}
 ::-webkit-scrollbar-track{background:transparent;}
@@ -1955,7 +2076,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.7.0</div>
+<div class="splash-ver" id="splashVer">v2.8.0</div>
 </div>
 
 <!-- APP -->
@@ -1975,6 +2096,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2zM22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
 手册
 </button>
+<button class="hdr-btn" onclick="quickThemeSwitch()" title="快速切换主题">🎨</button>
 </div>
 </div>
 
@@ -1996,6 +2118,9 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <input type="range" min="0.3" max="1.5" step="0.1" value="0.8" id="quickTemp" style="flex:1;accent-color:var(--accent)" oninput="document.getElementById('qtVal').textContent=this.value;document.getElementById('apiTemp').value=this.value">
 <span style="font-size:10px;color:var(--accent2);width:24px;text-align:right" id="qtVal">0.8</span>
 <span style="font-size:9px;color:var(--text2)">稳定←→狂野</span>
+</div>
+<div style="padding:2px 18px 8px">
+<button onclick="showSettingPreview()" style="width:100%;padding:8px;border-radius:9px;border:1px dashed var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer;transition:all .2s" onmouseenter="this.style.borderColor='var(--accent)';this.style.color='var(--accent2)'" onmouseleave="this.style.borderColor='var(--border)';this.style.color='var(--text2)'">📋 查看当前生效设定</button>
 </div>
 <div class="alist" id="articleList">
 <div class="empty-st">
@@ -2154,6 +2279,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <button onclick="toggleRdSettings()" title="阅读设置" aria-label="阅读设置">⚙</button>
 <button onclick="toggleFullscreen()" id="btnFS" aria-label="全屏">⛶</button>
 <button onclick="copyCurrentArticle()" aria-label="复制全文">📋</button>
+<button onclick="copyCurChapter()" title="复制当前章节">📄</button>
 <button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
 <button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button> <button onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
 <button onclick="enterImmersiveRead()" title="沉浸阅读">🌙</button>
@@ -2240,13 +2366,12 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p>笔记AI是一款基于大语言模型的AI创作工坊，帮助你快速生成高质量的小说、散文等文学作品。无论你是新手写作者还是资深创作人，这里都能成为你的灵感引擎和创作伙伴。</p>
 
 <div class="notice">
-<p>🎉 <strong>v2.7.0 更新亮点</strong></p>
-<p>· 新增「创作目标」功能，设定周/月字数和章数目标</p>
-<p>· 新增「铃声提示」功能，上传MP3作为达标铃声</p>
-<p>· 新增「勿扰模式」，专注创作不被打扰</p>
-<p>· 创作目标仅统计手动创作，AI生成不计入</p>
-<p>· 达标时弹窗祝贺并播放铃声（勿扰模式下仍生效）</p>
-<p>· 修复多项已知问题</p>
+<p>🎉 <strong>.8.0 更新亮点</strong></p>
+<p>· 新增编辑器自动保存草稿（每5秒自动保存）</p>
+<p>· 星笺聊天大幅优化（增加时间感知、更自然可爱）</p>
+<p>· 右上角新增快速切换主题按钮</p>
+<p>· 优化续写逻辑和提示</p>
+<p>· 修复若干小问题，提升稳定性</p>
 </div>
 
 <h3>二、快速开始（5分钟上手）</h3>
@@ -2767,7 +2892,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 
 <p><strong>Q：存储空间不够用？</strong></p>
 <ul>
-<li>v2.7.0已升级为IndexedDB存储，容量约50MB</li>
+<li>v2.6.0已升级为IndexedDB存储，容量约50MB</li>
 <li>使用「清理旧数据」删除一个月前的未收藏文章</li>
 <li>定期导出备份后清空作坊</li>
 </ul>
@@ -2814,7 +2939,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p>💬 QQ：962005530</p>
 </div>
 
-<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.7.0 · Created by 心田<br>让每一个灵感都值得被记录 ✨</p>
+<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">笔记AI v2.8.0 · Created by 心田<br>让每一个灵感都值得被记录 ✨</p>
 </div>
 </div>
 
@@ -2951,9 +3076,13 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="note-hdr">
 <div><h3>📝 章节笔记</h3><span id="noteChInfo"></span></div>
 <div style="display:flex;gap:6px;align-items:center">
+<button style="background:none;border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer" onclick="toggleNoteSearch()" title="搜索笔记">🔍</button>
 <button style="background:none;border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer" onclick="exportArticleNotes()" title="导出所有笔记">📤</button>
 <button class="note-close" onclick="closeNotePanel()">✕</button>
 </div>
+</div>
+<div id="noteSearchWrap" style="display:none;padding:8px 16px 0">
+<input type="text" id="noteSearchInput" placeholder="🔍 搜索笔记内容..." style="width:100%;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none" oninput="searchNotes(this.value)">
 </div>
 <div class="note-list" id="noteList"></div>
 <div class="note-input-wrap">
@@ -3344,7 +3473,95 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 </div>
 </div>
+<!-- 添加/编辑关系弹窗 -->
+<div class="inp-ov" id="addRelOv">
+<div class="inp-box" style="max-width:360px;max-height:85vh;overflow-y:auto">
+<h3 id="addRelTitle">添加人物关系</h3>
+<div class="fg">
+<label class="fl">人物A</label>
+<select class="fi" id="relCharA" style="padding:9px 13px"></select>
+</div>
+<div class="fg">
+<label class="fl">人物B</label>
+<select class="fi" id="relCharB" style="padding:9px 13px"></select>
+</div>
+<div class="fg">
+<label class="fl">关系类型</label>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+<span class="tag" onclick="setRelType('恋人',this)" data-rel="恋人">❤️ 恋人</span>
+<span class="tag" onclick="setRelType('朋友',this)" data-rel="朋友">🤝 朋友</span>
+<span class="tag" onclick="setRelType('敌对',this)" data-rel="敌对">⚔️ 敌对</span>
+<span class="tag" onclick="setRelType('亲属',this)" data-rel="亲属">👨‍👩‍👧 亲属</span>
+<span class="tag" onclick="setRelType('师徒',this)" data-rel="师徒">📖 师徒</span>
+<span class="tag" onclick="setRelType('同事',this)" data-rel="同事">💼 同事</span>
+<span class="tag" onclick="setRelType('暗恋',this)" data-rel="暗恋">💗 暗恋</span>
+<span class="tag" onclick="setRelType('宿敌',this)" data-rel="宿敌">🔥 宿敌</span>
+<span class="tag" onclick="setRelType('青梅竹马',this)" data-rel="青梅竹马">🌸 青梅竹马</span>
+<span class="tag" onclick="setRelType('主仆',this)" data-rel="主仆">👑 主仆</span>
+</div>
+<input class="fi" id="relTypeCustom" placeholder="或输入自定义关系..." style="margin-top:6px" oninput="currentRelType=this.value">
+</div>
+<div class="fg">
+<label class="fl">关系描述（可选）</label>
+<textarea class="fta" id="relDesc" placeholder="描述这段关系的细节，比如：从小一起长大，后因误会决裂..." style="min-height:50px"></textarea>
+</div>
+<div class="fg">
+<label class="fl">关系方向</label>
+<div style="display:flex;gap:6px;margin-top:4px">
+<span class="tag act" onclick="setRelDir('双向',this)" id="relDirBoth">↔ 双向</span>
+<span class="tag" onclick="setRelDir('A→B',this)" id="relDirAB">→ A对B</span>
+<span class="tag" onclick="setRelDir('B→A',this)" id="relDirBA">← B对A</span>
+</div>
+</div>
+<div class="inp-btns">
+<button class="dlg-cancel" onclick="closeAddRel()">取消</button>
+<button class="dlg-ok" id="addRelBtn" onclick="saveRel()">保存</button>
+</div>
+</div>
+</div>
 
+<!-- 添加NPC弹窗 -->
+<div class="inp-ov" id="addNpcOv">
+<div class="inp-box" style="max-width:380px;max-height:85vh;overflow-y:auto">
+<h3 id="addNpcTitle">添加NPC</h3>
+<div class="fg">
+<label class="fl">NPC名称</label>
+<input class="fi" id="npcName" placeholder="NPC角色名">
+</div>
+<div class="fg">
+<label class="fl">角色定位</label>
+<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:4px">
+<span class="tag" onclick="setNpcRole('路人',this)">路人</span>
+<span class="tag" onclick="setNpcRole('配角',this)">配角</span>
+<span class="tag" onclick="setNpcRole('反派',this)">反派</span>
+<span class="tag" onclick="setNpcRole('导师',this)">导师</span>
+<span class="tag" onclick="setNpcRole('线索人物',this)">线索人物</span>
+<span class="tag" onclick="setNpcRole('工具人',this)">工具人</span>
+</div>
+<input class="fi" id="npcRoleCustom" placeholder="或输入自定义定位..." style="margin-top:6px">
+</div>
+<div class="fg">
+<label class="fl">性格标签</label>
+<input class="fi" id="npcTraits" placeholder="用逗号分隔，如：冷漠,话少,心软">
+</div>
+<div class="fg">
+<label class="fl">外貌/特征</label>
+<input class="fi" id="npcAppearance" placeholder="简要描述外貌或标志性特征">
+</div>
+<div class="fg">
+<label class="fl">详细设定</label>
+<textarea class="fta" id="npcDesc" placeholder="背景故事、说话方式、口头禅、与主角的关系..." style="min-height:70px"></textarea>
+</div>
+<div class="fg">
+<label class="fl">出场章节（可选）</label>
+<input class="fi" id="npcChapter" placeholder="如：第3章开始出场">
+</div>
+<div class="inp-btns">
+<button class="dlg-cancel" onclick="closeAddNpc()">取消</button>
+<button class="dlg-ok" id="addNpcBtn" onclick="saveNpc()">保存</button>
+</div>
+</div>
+</div>
 <!-- ADD FORESHADOW DIALOG -->
 <div class="inp-ov" id="addFsOv">
 <div class="inp-box" style="max-width:360px">
@@ -3521,6 +3738,30 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="set-modal-body">
 <div class="char-cards" id="charCards"></div>
 <button class="btn-s" onclick="addCharacter()" style="margin-top:10px">＋ 添加角色</button>
+<!-- 人物关系图 -->
+<div class="rel-graph" id="relGraphSection">
+<div class="rel-graph-title">
+<span>🔗 人物关系图</span>
+<div style="display:flex;gap:6px">
+<button class="btn-s" onclick="addRelation()" style="margin:0;padding:5px 10px;font-size:10px">➕ 添加关系</button>
+<button class="btn-s" onclick="aiGenRelations()" style="margin:0;padding:5px 10px;font-size:10px">🤖 AI生成</button>
+</div>
+</div>
+<div class="rel-list" id="relList">
+<div class="rel-empty">还没有人物关系<br>添加角色后点击「添加关系」建立联系</div>
+</div>
+</div>
+
+<!-- NPC设定 -->
+<div class="npc-section">
+<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+<label class="fl" style="margin:0;font-size:13px;font-weight:600">🎭 NPC / 配角设定</label>
+<button class="btn-s" onclick="addNpc()" style="margin:0;padding:5px 10px;font-size:10px">➕ 添加NPC</button>
+</div>
+<div id="npcCards">
+<div class="rel-empty">还没有NPC<br>点击上方按钮添加配角和路人</div>
+</div>
+</div>
 <div class="fg" style="margin-top:15px;padding-top:15px;border-top:1px solid var(--border)">
 <label class="fl">自定义性格标签管理</label>
 <div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:6px" id="customTraitList"></div>
@@ -3699,7 +3940,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="set-modal" id="setModalData">
 <div class="set-modal-hdr"><button onclick="closeSetModal('data')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2>📦 数据管理</h2></div>
 <div class="set-modal-body">
-<div class="data-btns"><button onclick="exportData()">📤 导出全部数据</button><button onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button><button onclick="cleanOldData()" style="border-color:rgba(255,165,0,.3);color:#f0a030">🧹 清理旧数据</button></div>
+<div class="data-btns"><button onclick="exportData()">📤 导出全部数据</button><button onclick="document.getElementById('importFile').click()">📥 导入数据</button><input type="file" id="importFile" accept=".json" style="display:none" onchange="importData(event)"><button onclick="clearWorkshop()" style="border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 清空作坊</button><button onclick="cleanOldData()" style="border-color:rgba(255,165,0,.3);color:#f0a030">🧹 清理旧数据</button><button onclick="exportAllCrWorks()" style="border-color:var(--accent);color:var(--accent2)">📤 导出全部创作数据</button></div>
 <div id="storageInfo" style="margin-top:15px;padding:12px;background:var(--bg);border-radius:10px;border:1px solid var(--border)"><div style="display:flex;justify-content:space-between;margin-bottom:6px"><span style="font-size:11px;color:var(--text2)">存储空间</span><span style="font-size:11px;color:var(--accent2)" id="storagePercent">计算中...</span></div><div style="height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div id="storageBar" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px"></div></div><div style="font-size:9px;color:var(--text2);margin-top:4px" id="storageDetail">已用 0MB / 50MB</div></div>
 </div>
 </div>
@@ -3859,7 +4100,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v2.7.0';
+const APP_VER='v2.8.0';
 
 // ==================== STORAGE ====================
 const K={
@@ -3952,6 +4193,8 @@ let crTab='draft';// 当前创作页tab
 let curEd=null;// 当前编辑的作品
 let curEdCh=0;// 当前编辑的章节
 let edAutoSaveTimer=null;
+// 自动保存草稿定时器（新增）
+let autoSaveInterval = null;
 let resPacks=ld('bj_resPacks',[]);// 已导入的资源包
 let resTab='all';
 let useStream=ld('bj_stream',true);
@@ -4303,6 +4546,7 @@ card.className='char-card';
 const traits=c.traits||[];
 const defaultTraits=['内向','外向','冷静','冲动','善良','腹黑','傲娇','温柔','毒舌','天然呆'];
 const allTraits=[...defaultTraits,...customTraits];
+const curPri=c.priority||'普通';
 const traitBtnsHtml=allTraits.map(t=>
 '<span class="tag'+(traits.includes(t)?' act':'')+'" style="font-size:10px;padding:3px 8px" onclick="toggleCharTrait('+i+',\''+t+'\',this)">'+t+'</span>'
 ).join('');
@@ -4315,11 +4559,349 @@ card.innerHTML=
 traitBtnsHtml+
 '<span class="tag" style="font-size:10px;padding:3px 8px;border-style:dashed;color:var(--accent2)" onclick="addCustomTrait('+i+')">+ 自定义</span>'+
 '</div></div>'+
+'<div class="fg"><label class="fl">重要度</label>'+
+'<div style="display:flex;gap:5px;margin-top:4px">'+
+'<span class="tag'+(curPri==='核心'?' act':'')+'" onclick="setCharPriority('+i+',\'核心\',this)" style="font-size:10px;padding:3px 8px">🔴 核心</span>'+
+'<span class="tag'+(curPri==='普通'?' act':'')+'" onclick="setCharPriority('+i+',\'普通\',this)" style="font-size:10px;padding:3px 8px">🟡 普通</span>'+
+'<span class="tag'+(curPri==='参考'?' act':'')+'" onclick="setCharPriority('+i+',\'参考\',this)" style="font-size:10px;padding:3px 8px">🟢 参考</span>'+
+'</div></div>'+
 '<div class="fg"><label class="fl">详细设定</label><textarea class="fta char-desc" data-idx="'+i+'" placeholder="外貌、背景、说话方式、口头禅..." oninput="saveCharactersFromUI()">'+esc(c.desc||'')+'</textarea></div>';
 wrap.appendChild(card);
 });
 }
+// ==================== 人物关系图 ====================
+let charRelations=ld('bj_charRelations',[]);
+let currentRelType='';
+let currentRelDir='双向';
+let editingRelIdx=-1;
+let npcList=ld('bj_npcList',[]);
+let editingNpcIdx=-1;
+let currentNpcRole='';
 
+// 关系类型对应的CSS类
+function getRelTypeClass(type){
+const map={'恋人':'love','暗恋':'love','朋友':'friend','青梅竹马':'friend','敌对':'enemy','宿敌':'enemy','亲属':'family','师徒':'master','主仆':'master','同事':'colleague'};
+return map[type]||'other';
+}
+
+// 渲染关系列表
+function renderRelList(){
+const container=document.getElementById('relList');
+if(!container)return;
+if(charRelations.length===0){
+container.innerHTML='<div class="rel-empty">还没有人物关系<br>添加角色后点击「添加关系」建立联系</div>';
+return;
+}
+container.innerHTML='';
+charRelations.forEach((rel,i)=>{
+const item=document.createElement('div');
+item.className='rel-item';
+const typeClass=getRelTypeClass(rel.type);
+const dirSymbol=rel.direction==='A→B'?'→':rel.direction==='B→A'?'←':'↔';
+item.innerHTML=
+'<div class="rel-item-names">'+
+'<span class="rel-item-name">'+esc(rel.charA||'?')+'</span>'+
+'<span class="rel-item-arrow">'+dirSymbol+'</span>'+
+'<span class="rel-item-name">'+esc(rel.charB||'?')+'</span>'+
+'</div>'+
+'<span class="rel-item-type rel-type-'+typeClass+'">'+esc(rel.type||'未知')+'</span>'+
+(rel.desc?'<span class="rel-item-desc" title="'+esc(rel.desc)+'">'+esc(rel.desc)+'</span>':'')+
+'<div class="rel-item-acts">'+
+'<button onclick="editRelation('+i+')">✏️</button>'+
+'<button class="del" onclick="deleteRelation('+i+')">✕</button>'+
+'</div>';
+container.appendChild(item);
+});
+}
+
+// 获取所有角色名（主角+NPC）
+function getAllCharNames(){
+const names=[];
+characters.forEach(c=>{if(c.name)names.push(c.name);});
+npcList.forEach(n=>{if(n.name)names.push(n.name);});
+return names;
+}
+
+// 填充角色下拉框
+function fillRelCharSelects(){
+const names=getAllCharNames();
+const selA=document.getElementById('relCharA');
+const selB=document.getElementById('relCharB');
+selA.innerHTML='<option value="">-- 选择人物 --</option>';
+selB.innerHTML='<option value="">-- 选择人物 --</option>';
+names.forEach(n=>{
+selA.innerHTML+='<option value="'+esc(n)+'">'+esc(n)+'</option>';
+selB.innerHTML+='<option value="'+esc(n)+'">'+esc(n)+'</option>';
+});
+}
+
+function addRelation(){
+editingRelIdx=-1;
+document.getElementById('addRelTitle').textContent='添加人物关系';
+fillRelCharSelects();
+document.getElementById('relCharA').value='';
+document.getElementById('relCharB').value='';
+document.getElementById('relTypeCustom').value='';
+document.getElementById('relDesc').value='';
+currentRelType='';
+currentRelDir='双向';
+document.querySelectorAll('#addRelOv .tag').forEach(t=>t.classList.remove('act'));
+document.getElementById('relDirBoth').classList.add('act');
+document.getElementById('addRelBtn').textContent='保存';
+document.getElementById('addRelOv').classList.add('show');
+}
+
+function editRelation(idx){
+if(idx<0||idx>=charRelations.length)return;
+editingRelIdx=idx;
+const rel=charRelations[idx];
+document.getElementById('addRelTitle').textContent='编辑人物关系';
+fillRelCharSelects();
+document.getElementById('relCharA').value=rel.charA||'';
+document.getElementById('relCharB').value=rel.charB||'';
+document.getElementById('relTypeCustom').value='';
+document.getElementById('relDesc').value=rel.desc||'';
+currentRelType=rel.type||'';
+currentRelDir=rel.direction||'双向';
+// 高亮对应的关系类型标签
+document.querySelectorAll('#addRelOv .tag[data-rel]').forEach(t=>{
+t.classList.toggle('act',t.dataset.rel===rel.type);
+});
+// 高亮方向
+document.getElementById('relDirBoth').classList.toggle('act',currentRelDir==='双向');
+document.getElementById('relDirAB').classList.toggle('act',currentRelDir==='A→B');
+document.getElementById('relDirBA').classList.toggle('act',currentRelDir==='B→A');
+document.getElementById('addRelBtn').textContent='更新';
+document.getElementById('addRelOv').classList.add('show');
+}
+
+function closeAddRel(){
+document.getElementById('addRelOv').classList.remove('show');
+editingRelIdx=-1;
+}
+
+function setRelType(type,el){
+currentRelType=type;
+document.getElementById('relTypeCustom').value='';
+document.querySelectorAll('#addRelOv .tag[data-rel]').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+}
+
+function setRelDir(dir,el){
+currentRelDir=dir;
+document.getElementById('relDirBoth').classList.remove('act');
+document.getElementById('relDirAB').classList.remove('act');
+document.getElementById('relDirBA').classList.remove('act');
+el.classList.add('act');
+}
+
+function saveRel(){
+const charA=document.getElementById('relCharA').value;
+const charB=document.getElementById('relCharB').value;
+const customType=document.getElementById('relTypeCustom').value.trim();
+const type=customType||currentRelType;
+const desc=document.getElementById('relDesc').value.trim();
+if(!charA||!charB){showToast('请选择两个人物');return;}
+if(charA===charB){showToast('不能选择同一个人物');return;}
+if(!type){showToast('请选择或输入关系类型');return;}
+const rel={charA,charB,type,direction:currentRelDir,desc};
+if(editingRelIdx>=0&&editingRelIdx<charRelations.length){
+charRelations[editingRelIdx]=rel;
+showToast('关系已更新');
+}else{
+charRelations.push(rel);
+showToast('关系已添加 🔗');
+}
+sv('bj_charRelations',charRelations);
+closeAddRel();
+renderRelList();
+}
+
+function deleteRelation(idx){
+if(idx<0||idx>=charRelations.length)return;
+const rel=charRelations[idx];
+showDlg('删除关系','确定要删除 '+rel.charA+' 和 '+rel.charB+' 的关系吗？',()=>{
+charRelations.splice(idx,1);
+sv('bj_charRelations',charRelations);
+renderRelList();
+showToast('关系已删除');
+},true);
+}
+
+// AI生成人物关系
+async function aiGenRelations(){
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先配置API');return;}
+const names=getAllCharNames();
+if(names.length<2){showToast('至少需要2个角色（主角或NPC）才能生成关系');return;}
+showToast('AI正在分析人物关系...',3000);
+let charInfo='';
+characters.forEach(c=>{
+if(c.name){
+charInfo+=c.name;
+if(c.traits&&c.traits.length>0)charInfo+='（'+c.traits.join('、')+'）';
+if(c.desc)charInfo+='：'+c.desc.substring(0,80);
+charInfo+='\n';
+}
+});
+npcList.forEach(n=>{
+if(n.name){
+charInfo+=n.name+'[NPC-'+n.role+']';
+if(n.desc)charInfo+='：'+n.desc.substring(0,60);
+charInfo+='\n';
+}
+});
+const sysMsg='根据角色设定，分析所有人物之间可能的关系，包括主角之间、主角与配角(NPC)之间、配角(NPC)与配角(NPC)之间的关系，形成完整的关系网。\n输出格式（每行一条）：\n人物A|人物B|关系类型|方向(双向/A→B/B→A)|简短描述\n\n关系类型可选：恋人、暗恋、朋友、青梅竹马、敌对、宿敌、亲属、师徒、主仆、同事、上下级、竞争对手、邻居、陌生人\n尽可能为每对有交集的人物都建立关系，不要遗漏配角之间的关系。\n只输出关系列表，不要其他内容。';
+const userMsg='请分析以下所有角色之间的关系（包括配角与配角之间），构建完整关系网：\n\n'+charInfo;
+const result=await callAPINonStream([{role:'system',content:sysMsg},{role:'user',content:userMsg}]);
+if(!result){showToast('生成失败');return;}
+const lines=result.split('\n').filter(l=>l.includes('|'));
+let addCount=0;
+lines.forEach(line=>{
+const parts=line.split('|').map(p=>p.trim());
+if(parts.length>=3){
+const exists=charRelations.some(r=>
+(r.charA===parts[0]&&r.charB===parts[1])||(r.charA===parts[1]&&r.charB===parts[0])
+);
+if(!exists){
+charRelations.push({
+charA:parts[0],charB:parts[1],
+type:parts[2],
+direction:parts[3]||'双向',
+desc:parts[4]||''
+});
+addCount++;
+}
+}
+});
+sv('bj_charRelations',charRelations);
+renderRelList();
+showToast('AI生成了'+addCount+'条关系 🔗');
+}
+
+// ==================== NPC设定 ====================
+function renderNpcCards(){
+const container=document.getElementById('npcCards');
+if(!container)return;
+if(npcList.length===0){
+container.innerHTML='<div class="rel-empty">还没有NPC<br>点击上方按钮添加配角和路人</div>';
+return;
+}
+container.innerHTML='';
+npcList.forEach((npc,i)=>{
+const card=document.createElement('div');
+card.className='npc-card';
+const traitsHtml=(npc.traits||[]).map(t=>'<span style="font-size:9px;padding:2px 6px;border-radius:6px;background:rgba(81,207,102,.1);color:var(--success)">'+esc(t)+'</span>').join(' ');
+card.innerHTML=
+'<div class="npc-card-hdr">'+
+'<span>'+esc(npc.name||'未命名')+'<span class="npc-badge">'+esc(npc.role||'NPC')+'</span></span>'+
+'<div style="display:flex;gap:4px">'+
+'<button style="padding:3px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:9px;cursor:pointer" onclick="editNpc('+i+')">编辑</button>'+
+'<button style="padding:3px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:9px;cursor:pointer" onclick="deleteNpc('+i+')">删除</button>'+
+'</div>'+
+'</div>'+
+(npc.appearance?'<div style="font-size:10px;color:var(--text2);margin-bottom:4px">👤 '+esc(npc.appearance)+'</div>':'')+
+(traitsHtml?'<div style="display:flex;flex-wrap:wrap;gap:3px;margin-bottom:6px">'+traitsHtml+'</div>':'')+
+(npc.desc?'<div style="font-size:11px;color:var(--text);line-height:1.6;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">'+esc(npc.desc)+'</div>':'')+
+(npc.chapter?'<div style="font-size:9px;color:var(--text2);margin-top:6px">📍 '+esc(npc.chapter)+'</div>':'');
+container.appendChild(card);
+});
+}
+
+function addNpc(){
+editingNpcIdx=-1;
+document.getElementById('addNpcTitle').textContent='添加NPC';
+document.getElementById('npcName').value='';
+document.getElementById('npcRoleCustom').value='';
+document.getElementById('npcTraits').value='';
+document.getElementById('npcAppearance').value='';
+document.getElementById('npcDesc').value='';
+document.getElementById('npcChapter').value='';
+currentNpcRole='';
+document.querySelectorAll('#addNpcOv .tag').forEach(t=>t.classList.remove('act'));
+document.getElementById('addNpcBtn').textContent='保存';
+document.getElementById('addNpcOv').classList.add('show');
+}
+
+function editNpc(idx){
+if(idx<0||idx>=npcList.length)return;
+editingNpcIdx=idx;
+const npc=npcList[idx];
+document.getElementById('addNpcTitle').textContent='编辑NPC';
+document.getElementById('npcName').value=npc.name||'';
+document.getElementById('npcRoleCustom').value='';
+document.getElementById('npcTraits').value=(npc.traits||[]).join(',');
+document.getElementById('npcAppearance').value=npc.appearance||'';
+document.getElementById('npcDesc').value=npc.desc||'';
+document.getElementById('npcChapter').value=npc.chapter||'';
+currentNpcRole=npc.role||'';
+document.querySelectorAll('#addNpcOv .tag').forEach(t=>{
+t.classList.toggle('act',t.textContent===npc.role);
+});
+document.getElementById('addNpcBtn').textContent='更新';
+document.getElementById('addNpcOv').classList.add('show');
+}
+
+function closeAddNpc(){
+document.getElementById('addNpcOv').classList.remove('show');
+editingNpcIdx=-1;
+}
+
+function setNpcRole(role,el){
+currentNpcRole=role;
+document.getElementById('npcRoleCustom').value='';
+document.querySelectorAll('#addNpcOv .tag').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+}
+
+function saveNpc(){
+const name=document.getElementById('npcName').value.trim();
+if(!name){showToast('请输入NPC名称');return;}
+const customRole=document.getElementById('npcRoleCustom').value.trim();
+const role=customRole||currentNpcRole||'NPC';
+const traitsStr=document.getElementById('npcTraits').value.trim();
+const traits=traitsStr?traitsStr.split(/[,，、]/).map(t=>t.trim()).filter(t=>t):[];
+const npc={
+name,
+role,
+traits,
+appearance:document.getElementById('npcAppearance').value.trim(),
+desc:document.getElementById('npcDesc').value.trim(),
+chapter:document.getElementById('npcChapter').value.trim()
+};
+if(editingNpcIdx>=0&&editingNpcIdx<npcList.length){
+npcList[editingNpcIdx]=npc;
+showToast('NPC已更新');
+}else{
+npcList.push(npc);
+showToast('NPC已添加 🎭');
+}
+sv('bj_npcList',npcList);
+closeAddNpc();
+renderNpcCards();
+renderRelList();
+}
+
+function deleteNpc(idx){
+if(idx<0||idx>=npcList.length)return;
+showDlg('删除NPC','确定要删除「'+npcList[idx].name+'」吗？',()=>{
+const name=npcList[idx].name;
+npcList.splice(idx,1);
+charRelations=charRelations.filter(r=>r.charA!==name&&r.charB!==name);
+sv('bj_npcList',npcList);
+sv('bj_charRelations',charRelations);
+renderNpcCards();
+renderRelList();
+showToast('NPC已删除');
+},true);
+}
+function setCharPriority(idx,pri,el){
+if(!characters[idx])return;
+characters[idx].priority=pri;
+sv(K.curChars,characters);
+el.parentElement.querySelectorAll('.tag').forEach(t=>t.classList.remove('act'));
+el.classList.add('act');
+}
 function renderCustomTraitList(){
 const wrap=document.getElementById('customTraitList');
 if(!wrap)return;
@@ -4419,13 +5001,18 @@ p+='• 好对话的标准：遮住名字也能分辨是谁在说话\n';
 p+='• 最动人的情感往往藏在最克制的文字里\n\n';
 
 // 感官写作指南（正面引导）
-p+='【让文字有温度】\n';
-p+='写一个炎热的下午，不要说"烈日炎炎"，而是写：\n';
-p+='　"柏油路面泛着油光，热浪扭曲了远处的景物。她后背的T恤湿透了，黏在皮肤上。"\n\n';
-p+='写一个人紧张，不要说"他很紧张"，而是写：\n';
-p+='　"他的手指无意识地转着笔，笔尖在纸上戳出一个个小洞。"\n\n';
-p+='写心动的瞬间，不要说"她心动了"，而是写：\n';
-p+='　"她忽然觉得耳朵有点热，低头假装整理书包，手却不知道该放哪里。"\n\n';
+p+='【让文字有温度——五感写作法】\n';
+p+='✦ 视觉不是唯一：每500字至少出现一次非视觉描写（声音/气味/触感/温度/味道）\n\n';
+p+='✦ 情绪要用身体说话，永远不要直说"他很紧张/她很开心"：\n';
+p+='　紧张 → "他的手指无意识地转着笔，笔尖在纸上戳出一个个小洞。"\n';
+p+='　心动 → "她忽然觉得耳朵有点热，低头假装整理书包，手却不知道该放哪里。"\n';
+p+='　愤怒 → "他的指节捏得发白，下颌线绷成一条直线。"\n';
+p+='　悲伤 → "她盯着杯子里的水面看了很久，直到倒影模糊。"\n';
+p+='　尴尬 → "他咳了一声，目光飘向天花板的某个角落，好像那里有什么很有趣的东西。"\n\n';
+p+='✦ 环境要有功能——每一处环境描写都要服务于情绪或暗示：\n';
+p+='　热 → "柏油路面泛着油光，热浪扭曲了远处的景物。她后背的T恤湿透了。"\n';
+p+='　冷 → "呼出的白气在路灯下短暂地亮了一下，她把手缩进袖子里。"\n';
+p+='　孤独 → "走廊尽头的日光灯闪了两下，发出细微的嗡嗡声。"\n\n';
 
 // 对话写作（正面示范）
 p+='【对话的艺术】\n';
@@ -4459,22 +5046,93 @@ p+='• 只输出小说正文，无任何说明、章节号、作者按语\n\n';
 // 人物设定（优化呈现方式）
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
-p+='【你笔下的人物】\n';
-validChars.forEach((c,i)=>{
+// 按优先级分组
+const coreChars=validChars.filter(c=>c.priority==='核心');
+const normalChars=validChars.filter(c=>c.priority!=='核心'&&c.priority!=='参考');
+const refChars=validChars.filter(c=>c.priority==='参考');
+
+if(coreChars.length>0){
+p+='【核心人物（绝对不能违反以下设定）】\n';
+coreChars.forEach(c=>{
+if(c.name){
+p+='◆ '+c.name;
+if(c.traits&&c.traits.length>0)p+='（'+c.traits.join('·')+'）';
+p+='\n';
+if(c.desc)p+='　'+c.desc.substring(0,500)+(c.desc.length>500?'...':'')+'\n';
+}
+});
+p+='\n';
+}
+
+if(normalChars.length>0){
+p+='【主要人物】\n';
+normalChars.forEach(c=>{
 if(c.name){
 p+='◆ '+c.name;
 if(c.traits&&c.traits.length>0)p+='（'+c.traits.slice(0,4).join('·')+'）';
 p+='\n';
-if(c.desc)p+='　'+c.desc.substring(0,150)+(c.desc.length>150?'...':'')+'\n';
+if(c.desc)p+='　'+c.desc.substring(0,500)+(c.desc.length>500?'...':'')+'\n';
 }
 });
-p+='※ 让人物的言行举止自然流露性格，不要刻意强调\n\n';
+p+='\n';
 }
 
+if(refChars.length>0){
+p+='【参考人物（可灵活处理）】\n';
+refChars.forEach(c=>{
+if(c.name){
+p+='◇ '+c.name;
+if(c.traits&&c.traits.length>0)p+='（'+c.traits.slice(0,3).join('·')+'）';
+p+='\n';
+if(c.desc)p+='　'+c.desc.substring(0,200)+'\n';
+}
+});
+p+='\n';
+}
+
+p+='※ 核心人物的设定是铁律，普通人物要保持一致，参考人物可以适当发挥\n\n';
+}
+// NPC信息
+if(npcList.length>0){
+p+='【配角/NPC设定】\n';
+npcList.forEach(n=>{
+if(n.name){
+p+='◇ '+n.name+' ['+( n.role||'NPC')+']';
+if(n.traits&&n.traits.length>0)p+='（'+n.traits.join('·')+'）';
+p+='\n';
+if(n.appearance)p+='　外貌：'+n.appearance+'\n';
+if(n.desc)p+='　设定：'+n.desc.substring(0,150)+'\n';
+if(n.chapter)p+='　出场：'+n.chapter+'\n';
+}
+});
+p+='\n【NPC使用原则】\n';
+p+='• NPC是为主线服务的，出场要有目的，不要喧宾夺主\n';
+p+='• NPC的言行要符合其角色定位和性格标签\n';
+p+='• 路人型NPC可以一笔带过，配角型NPC需要适当刻画\n';
+p+='• 反派型NPC要有自己的逻辑和动机，不要脸谱化\n\n';
+}
+
+// 人物关系
+if(charRelations.length>0){
+p+='【人物关系网（铁律，不可违反）】\n';
+charRelations.forEach(r=>{
+const dir=r.direction==='A→B'?'→':r.direction==='B→A'?'←':'↔';
+p+='• '+r.charA+' '+dir+' '+r.charB+'：'+r.type;
+if(r.desc)p+='（'+r.desc.substring(0,80)+'）';
+p+='\n';
+});
+p+='\n【关系如何影响写作】\n';
+p+='• 恋人/暗恋：注意眼神、微动作、呼吸变化，不要直白说"喜欢"\n';
+p+='• 敌对/宿敌：对话要有火药味，但不是无脑骂街，要有智商在线的交锋\n';
+p+='• 朋友：说话可以随意，但每个人的随意方式不同\n';
+p+='• 亲属：注意辈分和家庭角色带来的说话方式差异\n';
+p+='• 师徒/主仆：注意权力关系对语气和行为的影响\n';
+p+='• 关系是动态的，但变化必须有事件驱动，不能突然转变\n\n';
+}
 // 世界观（简化）
 if(wD){
 p+='【故事发生的世界】\n';
-p+=wD.substring(0,400)+(wD.length>400?'...':'')+'\n';
+p+=wD.substring(0,1500)+(wD.length>1500?'...':'')+'\n';
 p+='※ 世界观是背景，不是说明书，通过人物的日常自然呈现\n\n';
 }
 
@@ -4504,6 +5162,16 @@ p+='【避免使用】'+words.join('、')+'\n\n';
 }
 
 // 最后的激励（重要！）
+// 设定复杂度检测
+const totalSettingLen=p.length;
+if(totalSettingLen>3000){
+p+='【重要提醒】以上设定信息较多，请特别注意：\n';
+p+='1. 核心人物的性格和关系是最高优先级，任何情况下不能违反\n';
+p+='2. 世界观规则是第二优先级，所有情节必须在世界观框架内\n';
+p+='3. 文风和禁用词是第三优先级\n';
+p+='4. 如果设定之间有冲突，以核心人物设定为准\n';
+p+='5. 不确定的地方宁可保守也不要乱发挥\n\n';
+}
 p+='现在，深呼吸，让故事在你脑海中活过来。写出让你自己也想继续读下去的文字。\n';
 
 return p;
@@ -4605,6 +5273,68 @@ return data.choices[0].message.content;
 }
 
 // ==================== GENERATE ARTICLE ====================
+// 设定冲突检测
+function checkSettingConflicts(){
+const issues=[];
+const validChars=characters.filter(c=>c.name);
+// 检查重名
+const names=validChars.map(c=>c.name);
+const npcNames=npcList.map(n=>n.name).filter(Boolean);
+const allNames=[...names,...npcNames];
+const dupNames=allNames.filter((n,i)=>allNames.indexOf(n)!==i);
+if(dupNames.length>0)issues.push('⚠️ 发现重名角色：'+dupNames.join('、'));
+
+// 检查关系中引用了不存在的角色
+charRelations.forEach(r=>{
+if(!allNames.includes(r.charA))issues.push('⚠️ 关系中的「'+r.charA+'」不在角色列表中');
+if(!allNames.includes(r.charB))issues.push('⚠️ 关系中的「'+r.charB+'」不在角色列表中');
+});
+
+// 检查矛盾关系（同两人既是恋人又是敌对）
+const relMap={};
+charRelations.forEach(r=>{
+const key=[r.charA,r.charB].sort().join('|');
+if(!relMap[key])relMap[key]=[];
+relMap[key].push(r.type);
+});
+Object.keys(relMap).forEach(key=>{
+const types=relMap[key];
+if(types.includes('恋人')&&(types.includes('敌对')||types.includes('宿敌'))){
+issues.push('⚠️ '+key.replace('|',' 和 ')+' 同时是恋人和敌对，请确认是否有意为之');
+}
+});
+
+// 检查世界观和规则是否矛盾
+const worldText=(document.getElementById('worldDesc')&&document.getElementById('worldDesc').value||'')+(document.getElementById('globalWorldDesc')&&document.getElementById('globalWorldDesc').value||'');
+const ruleText=(document.getElementById('ruleDesc')&&document.getElementById('ruleDesc').value||'')+(document.getElementById('globalRuleDesc')&&document.getElementById('globalRuleDesc').value||'');
+if(worldText.includes('古代')&&ruleText.includes('现代限定'))issues.push('⚠️ 世界观是古代但规则要求现代限定');
+if(worldText.includes('现代')&&ruleText.includes('古风限定'))issues.push('⚠️ 世界观是现代但规则要求古风限定');
+
+return issues;
+}
+
+function showSettingPreview(){
+    let info = '📋 当前生效设定\n\n';
+    
+    // 人物
+    const validChars = characters.filter(c => c.name);
+    if(validChars.length > 0){
+        info += '👤 人物 (' + validChars.length + '个)：' + 
+                validChars.map(c => c.name).join('、') + '\n\n';
+    }
+    
+    // 世界观
+    const worldText = (document.getElementById('worldDesc') && 
+                      document.getElementById('worldDesc').value || '').trim();
+    if(worldText) info += '🌍 世界观：' + worldText.substring(0,50) + '...\n\n';
+    
+    // 文风
+    const styleText = (document.getElementById('styleDesc') && 
+                      document.getElementById('styleDesc').value || '').trim();
+    if(styleText) info += '✒️ 文风：' + styleText.substring(0,50) + '...\n\n';
+    
+    showDlg('当前设定', info, ()=>{});
+}
 function handleGenBtn(){
 if(isGen&&abortCtrl){
 if(confirm('确定要停止当前生成吗？')){
@@ -4619,11 +5349,52 @@ return;
 generateArticle();
 }
 // 快速质量检查
+// 设定一致性检查
+function checkSettingConsistency(text){
+const issues=[];
+if(!text||text.length<50)return issues;
+
+// 检查核心角色名字是否出现
+const coreChars=characters.filter(c=>c.name&&c.priority==='核心');
+coreChars.forEach(c=>{
+if(!text.includes(c.name)){
+issues.push('核心角色「'+c.name+'」未在本章出现');
+}
+});
+
+// 检查禁用词是否出现
+const globalBD=(document.getElementById('globalBanWordsInput')&&document.getElementById('globalBanWordsInput').value||globalBanWords||'').trim();
+const localBD=(document.getElementById('banWordsInput')&&document.getElementById('banWordsInput').value||banWords||'').trim();
+const allBan=[globalBD,localBD].filter(Boolean).join('\n');
+if(allBan){
+const banList=allBan.split('\n').map(w=>w.trim()).filter(w=>w);
+banList.forEach(w=>{
+const count=(text.match(new RegExp(w,'g'))||[]).length;
+if(count>0)issues.push('禁用词「'+w+'」出现了'+count+'次');
+});
+}
+
+// 检查世界观关键词冲突
+const worldText=(document.getElementById('worldDesc')&&document.getElementById('worldDesc').value||'')+(document.getElementById('globalWorldDesc')&&document.getElementById('globalWorldDesc').value||'');
+if(worldText.includes('古代')||worldText.includes('宫廷')||worldText.includes('王朝')){
+const modernWords=['手机','电脑','汽车','地铁','网络','微信','APP','WiFi'];
+modernWords.forEach(w=>{
+if(text.includes(w))issues.push('古代背景出现现代词汇「'+w+'」');
+});
+}
+if(worldText.includes('现代')||worldText.includes('都市')){
+const ancientWords=['本宫','皇上','奴婢','微臣','圣旨'];
+ancientWords.forEach(w=>{
+if(text.includes(w))issues.push('现代背景出现古代词汇「'+w+'」');
+});
+}
+
+return issues;
+}
 function quickQualityCheck(text){
 const issues=[];
 const suggestions=[];
 if(!text||text.length<100)return {issues,suggestions,score:100};
-
 // 检查万能副词
 const badAdverbs={'不禁':0,'缓缓':0,'淡淡':0,'微微':0,'默默':0,'静静':0,'轻轻':0};
 Object.keys(badAdverbs).forEach(w=>{
@@ -4683,6 +5454,11 @@ score=Math.max(0,Math.min(100,score));
 return {issues,suggestions,score};
 }
 async function generateArticle(){
+// 生成前检查设定冲突
+const conflicts=checkSettingConflicts();
+if(conflicts.length>0){
+showToast('⚠️ 检测到设定问题：'+conflicts[0],4000);
+}
 if(isGen){
 showToast('正在生成中，请稍候...');
 return;
@@ -4757,6 +5533,7 @@ content:type==='short'?content2:undefined,
 prompt:searchText
 };
 ws.unshift(article2);sv(K.ws,ws);
+try{recordManualWrite(countWords(result),1);}catch(e){}
 renderArticles();showToast('创作完成！✨');
 return;
 }
@@ -4831,6 +5608,17 @@ ws.unshift(article);
 sv(K.ws,ws);
 renderArticles();
 const qc=quickQualityCheck(content);
+const sc=checkSettingConsistency(content);
+if(sc.length>0){
+setTimeout(()=>{
+showToast('⚠️ 设定问题：'+sc[0],4000);
+},2000);
+if(sc.length>1){
+setTimeout(()=>{
+showToast('⚠️ 还有：'+sc.slice(1).join('、'),4000);
+},4500);
+}
+}
 if(qc.issues.length>0||qc.suggestions.length>0){
 const scoreEmoji=qc.score>=80?'✨':qc.score>=60?'👍':'💪';
 showToast('创作完成！'+countWords(content)+'字 · 质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
@@ -4843,6 +5631,18 @@ ws.unshift(article);
 sv(K.ws,ws);
 renderArticles();
 const qc=quickQualityCheck(content);
+
+const sc=checkSettingConsistency(content);
+if(sc.length>0){
+setTimeout(()=>{
+showToast('⚠️ 设定问题：'+sc[0],4000);
+},2000);
+if(sc.length>1){
+setTimeout(()=>{
+showToast('⚠️ 还有：'+sc.slice(1).join('、'),4000);
+},4500);
+}
+}
 if(qc.issues.length>0||qc.suggestions.length>0){
 const scoreEmoji=qc.score>=80?'✨':qc.score>=60?'👍':'💪';
 showToast('创作完成！'+countWords(content)+'字 · 质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
@@ -4904,6 +5704,34 @@ renderArticles();showToast('创作完成！✨');
 }
 
 // ==================== READING ====================
+function showChapterWordStats(){
+if(!curRd||!curRd.chapters)return;
+let html='<div style="max-height:60vh;overflow-y:auto">';
+html+='<table style="width:100%;border-collapse:collapse;font-size:12px">';
+html+='<tr style="border-bottom:2px solid var(--border)"><th style="padding:8px;text-align:left">章节</th><th style="padding:8px;text-align:right">字数</th><th style="padding:8px;text-align:right">占比</th></tr>';
+const total=curRd.chapters.reduce((s,ch)=>s+countWords(ch),0);
+let min=Infinity,max=0,minIdx=0,maxIdx=0;
+curRd.chapters.forEach((ch,i)=>{
+const wc=countWords(ch);
+if(wc<min){min=wc;minIdx=i;}
+if(wc>max){max=wc;maxIdx=i;}
+const pct=total>0?(wc/total*100).toFixed(1):'0';
+const barW=max>0?(wc/Math.max(...curRd.chapters.map(c=>countWords(c)))*100):0;
+const isShort=wc<800;
+html+='<tr style="border-bottom:1px solid var(--border);'+(i===curCh?'background:rgba(108,92,231,.1)':'')+'">'+
+'<td style="padding:8px">'+(i===curCh?'👉 ':'')+'第'+(i+1)+'章</td>'+
+'<td style="padding:8px;text-align:right;'+(isShort?'color:var(--danger)':'')+'">'+wc+'</td>'+
+'<td style="padding:8px;text-align:right"><div style="display:flex;align-items:center;justify-content:flex-end;gap:6px"><div style="width:60px;height:6px;background:var(--border);border-radius:3px;overflow:hidden"><div style="width:'+barW+'%;height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));border-radius:3px"></div></div><span>'+pct+'%</span></div></td></tr>';
+});
+html+='</table>';
+const avg=curRd.chapters.length>0?Math.round(total/curRd.chapters.length):0;
+html+='<div style="margin-top:12px;padding:10px;background:var(--card2);border-radius:10px;font-size:11px;line-height:1.8">'+
+'📊 <b>统计</b><br>'+
+'总字数：<b>'+total+'</b> · 平均每章：<b>'+avg+'</b> 字<br>'+
+'最长：第'+(maxIdx+1)+'章 ('+max+'字) · 最短：第'+(minIdx+1)+'章 ('+min+'字)'+
+'</div></div>';
+showDlg('📊 各章字数统计',html,null,false);
+}
 function openReading(article){
 // Always use the latest version: check workshop first, then collections
 let latestArticle=ws.find(a=>a.id===article.id);
@@ -4914,7 +5742,9 @@ else latestArticle=cols.shorts.find(s=>s.id===article.id);
 if(!latestArticle)latestArticle=article;
 if(!latestArticle){showToast('文章数据丢失');return;}
 
-curRd=latestArticle;curCh=0;
+curRd=latestArticle;
+const savedCh=parseInt(localStorage.getItem('bj_lastCh_'+article.id))||0;
+curCh=Math.min(savedCh,article.chapters?article.chapters.length-1:0);
 
 document.getElementById('rdTitle').textContent=curRd.title;
 // 显示笔记数量
@@ -5029,6 +5859,7 @@ else text=curRd.content||'';
 
 const paras=text.split(/\n+/).filter(p=>p.trim());
 cdiv.innerHTML=paras.map((p,pi)=>'<p data-pi="'+pi+'" class="rd-para">'+esc(p.trim())+'</p>').join(''); // 绑定长按引用 cdiv.querySelectorAll('.rd-para').forEach(el=>{ let lpTimer=null; let startX=0,startY=0,moved=false; el.addEventListener('touchstart',function(e){ moved=false; if(e.touches.length>0){startX=e.touches[0].clientX;startY=e.touches[0].clientY;} lpTimer=setTimeout(()=>{ if(moved)return; e.preventDefault(); const text=el.textContent.trim(); if(!text)return; // 震动反馈（如果手机支持） if(navigator.vibrate)navigator.vibrate(30); el.style.background='rgba(108,92,231,.18)'; el.style.boxShadow='inset 0 0 0 1px var(--accent)'; setTimeout(()=>{el.style.background='';el.style.boxShadow='';},1000); showQuoteNote(text); },500); },{passive:false}); el.addEventListener('touchmove',function(e){ if(e.touches.length>0){ const dx=Math.abs(e.touches[0].clientX-startX); const dy=Math.abs(e.touches[0].clientY-startY); if(dx>8||dy>8){moved=true;clearTimeout(lpTimer);} } },{passive:true}); el.addEventListener('touchend',()=>{clearTimeout(lpTimer);}); el.addEventListener('touchcancel',()=>{clearTimeout(lpTimer);}); }); updateNoteBtn();
+if(curRd&&curRd.id)localStorage.setItem('bj_lastCh_'+curRd.id,curCh);
 }
 function showQuoteNote(quoteText){
 if(!curRd)return;
@@ -5183,7 +6014,7 @@ tagHtml='<span style="display:inline-block;padding:1px 6px;border-radius:6px;fon
 const isQuote=n.text.startsWith('「');
 let noteStyle='';
 if(isQuote){
-noteStyle='border-left:3px solid var(--accent);padding-left:10px;';
+noteStyle='border-left:3px solid var(--accent);padding-left:12px;background:rgba(108,92,231,.04);border-radius:0 8px 8px 0;padding:10px 12px 10px 14px;margin:-4px -8px;';
 }
 item.innerHTML=
 tagHtml+
@@ -5233,6 +6064,15 @@ input.style.height='38px';
 renderNotes();
 updateNoteBtn();
 showToast('笔记已保存 ✏️');
+// 新笔记滚入视觉反馈
+setTimeout(()=>{
+const list=document.getElementById('noteList');
+const lastItem=list.querySelector('.note-item:last-child');
+if(lastItem){
+lastItem.style.animation='noteSlideIn .4s ease';
+lastItem.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+},50);
 }
 
 function editNote(realIdx){
@@ -5308,7 +6148,47 @@ inp.focus();
 inp.setSelectionRange(inp.value.length,inp.value.length);
 },350);
 }
-
+function toggleNoteSearch(){
+const wrap=document.getElementById('noteSearchWrap');
+if(wrap.style.display==='none'){
+wrap.style.display='block';
+document.getElementById('noteSearchInput').focus();
+}else{
+wrap.style.display='none';
+document.getElementById('noteSearchInput').value='';
+renderNotes();
+}
+}
+function searchNotes(keyword){
+if(!curRd)return;
+const kw=keyword.trim().toLowerCase();
+if(!kw){renderNotes();return;}
+const notes=getArticleNotes(curRd.id);
+let filtered=notes.filter(n=>n.ch===curCh);
+if(noteFilterTag&&noteFilterTag!=='全部'){
+filtered=filtered.filter(n=>(n.tag||'')===noteFilterTag);
+}
+filtered=filtered.filter(n=>n.text.toLowerCase().includes(kw));
+const list=document.getElementById('noteList');
+if(filtered.length===0){
+list.innerHTML='<div class="note-empty" style="padding:20px">没有找到匹配的笔记</div>';
+return;
+}
+list.innerHTML='';
+filtered.forEach(n=>{
+const realIdx=notes.indexOf(n);
+const item=document.createElement('div');
+item.className='note-item';
+const time=n.time?new Date(n.time).toLocaleString():'';
+const tagColors={'灵感':'#f1c40f','修改':'#3498db','伏笔':'#e67e22','吐槽':'#2ecc71'};
+const tagEmoji={'灵感':'💡','修改':'✏️','伏笔':'🎯','吐槽':'😂'};
+let tagHtml='';
+if(n.tag){tagHtml='<span style="display:inline-block;padding:1px 6px;border-radius:6px;font-size:9px;background:'+(tagColors[n.tag]||'var(--accent)')+'22;color:'+(tagColors[n.tag]||'var(--accent2)')+';margin-bottom:4px">'+(tagEmoji[n.tag]||'')+' '+n.tag+'</span>';}
+const highlightedText=esc(n.text).replace(new RegExp('('+kw.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark style="background:rgba(108,92,231,.3);color:var(--text);border-radius:2px;padding:0 2px">$1</mark>');
+item.innerHTML=tagHtml+'<div class="note-item-text">'+highlightedText+'</div><div class="note-item-ft"><span class="note-item-time">'+time+'</span><button class="note-item-del" onclick="deleteNote('+realIdx+')">删除</button></div>';
+list.appendChild(item);
+});
+}
 function exportArticleNotes(){
 if(!curRd)return;
 const notes=getArticleNotes(curRd.id);
@@ -5544,15 +6424,15 @@ return states.join('；');
 // ==================== CONTINUE CHAPTER ====================
 // 快速续写（使用已保存的上下文设置）
 function quickContinue(){
-if(!curRd)return;
-// 同步方向输入框到上下文设置
-const dirInput=document.getElementById('dirInput').value.trim();
-if(dirInput){
-if(!articleContexts[curRd.id])articleContexts[curRd.id]={};
-articleContexts[curRd.id].direction=dirInput;
-sv('bj_articleContexts',articleContexts);
-}
-continueChapterWithContext();
+    if(!curRd) return;
+    
+    const liked = isLiked(curRd);
+    if(!liked){
+        showToast('请先点击 ❤️ 收藏后才能续写哦～');
+        return;
+    }
+    
+    continueChapterWithContext();
 }
 async function continueChapter(){
 if(isGen){
@@ -5762,6 +6642,18 @@ showToast('已撤销最后一章');
 }
 
 // ==================== COPY ====================
+function copyCurChapter(){
+if(!curRd)return;
+let text='';
+if(curRd.type==='long'&&curRd.chapters){
+text=curRd.chapters[curCh]||'';
+text='《'+curRd.title+'》第'+(curCh+1)+'章\n\n'+text;
+}else{
+text=curRd.content||'';
+}
+doCopy(text);
+showToast('已复制第'+(curCh+1)+'章 📄');
+}
 function copyCurrentArticle(){
 if(!curRd)return;
 let text='';
@@ -5991,7 +6883,7 @@ const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'se
 const id=map[type];if(!id)return;
 document.getElementById(id).classList.add('show');
 document.getElementById('bnav').classList.add('hide');
-if(type==='char'){renderCharCards();renderCustomTraitList();}
+if(type==='char'){renderCharCards();renderCustomTraitList();renderRelList();renderNpcCards();}
 if(type==='data')updateStorageDisplay();
 renderAllPresets();
 }
@@ -6034,7 +6926,7 @@ function delApiP(i){apiP.splice(i,1);sv(K.apiP,apiP);renderApiPresets();}
 function saveCharPreset(){
 saveCharactersFromUI();
 showInp('保存人物预设','为这组人物起个名字',name=>{
-charP.push({name,characters:JSON.parse(JSON.stringify(characters))});
+charP.push({name,characters:JSON.parse(JSON.stringify(characters)),relations:JSON.parse(JSON.stringify(charRelations)),npcs:JSON.parse(JSON.stringify(npcList))});
 sv(K.charP,charP);renderCharPresets();showToast('人物预设已保存');
 });
 }
@@ -6051,7 +6943,13 @@ function useCharP(i){
 const p=charP[i];
 characters=JSON.parse(JSON.stringify(p.characters||[{name:'',desc:''}]));
 sv(K.curChars,characters);
+charRelations=JSON.parse(JSON.stringify(p.relations||[]));
+sv('bj_charRelations',charRelations);
+npcList=JSON.parse(JSON.stringify(p.npcs||[]));
+sv('bj_npcList',npcList);
 renderCharCards();
+renderRelList();
+renderNpcCards();
 // 加载绑定的局部设定
 loadLocalSettingsForPreset(p.name);
 showToast('已加载人物: '+p.name);
@@ -6538,6 +7436,8 @@ apiPresets:apiP,charPresets:charP,worldPresets:worldP,
 stylePresets:styleP,rulePresets:ruleP,curRule:curRule,banWords:banWords,banWordsPresets:banWordsP,
 curApi:ld(K.curApi,{}),
 curChars:characters,
+charRelations:charRelations,
+npcList:npcList,
 curWorld:ld(K.curWorld,{}),
 collections:cols,workshop:ws,crWorks:crWorks,resPacks:resPacks,tags,appearance:ap,userCard:userCard,globalWorld:globalWorld,
 globalRule:globalRule,
@@ -6620,6 +7520,8 @@ if(data.banWords){banWords=data.banWords;sv('bj_banWords',banWords);}
 if(data.banWordsPresets){banWordsP=data.banWordsPresets;sv('bj_banWordsP',banWordsP);}
 if(data.curApi)sv(K.curApi,data.curApi);
 if(data.curChars){characters=data.curChars;sv(K.curChars,characters);}
+if(data.charRelations){charRelations=data.charRelations;sv('bj_charRelations',charRelations);}
+if(data.npcList){npcList=data.npcList;sv('bj_npcList',npcList);}
 else if(data.currentChar){
 // v1/ compatibility
 const cc=data.currentChar;
@@ -6878,9 +7780,19 @@ document.getElementById('edOutlineBtn').style.display=(work.outline?'':'none');
 document.getElementById('edChOutlineBtn').style.display=(work.type==='novel'?'':'none');
 applyCrBg();
 document.getElementById('edModal').classList.add('show');
+// 启动自动保存
+   if(autoSaveInterval) clearInterval(autoSaveInterval);
+   autoSaveInterval = setInterval(() => {
+       if(curEd) saveEditorContent();
+   }, 5000); // 每5秒自动保存一次
 document.getElementById('bnav').classList.add('hide');
 }
 function closeEditor(){
+// 关闭自动保存
+   if(autoSaveInterval) {
+       clearInterval(autoSaveInterval);
+       autoSaveInterval = null;
+   }
 // 检查是否有未保存的修改
 const currentText=document.getElementById('edTextarea').value||'';
 let savedText='';
@@ -7328,12 +8240,20 @@ if(resTab!=='all')items=items.filter(it=>it.type===resTab);
 const item=items[globalIdx];
 if(!item)return;
 if(item.type==='char'){
-showDlg('应用人物设定','将覆盖当前的人物设定，是否继续？',()=>{
-characters=JSON.parse(JSON.stringify(item.data||[{name:'',desc:''}]));
+showDlg('应用人物设定','将覆盖当前的人物设定（含关系和NPC），是否继续？',()=>{
+const d=item.data||{};
+if(Array.isArray(d)){
+characters=JSON.parse(JSON.stringify(d));
+}else{
+characters=JSON.parse(JSON.stringify(d.characters||[{name:'',desc:''}]));
+if(d.relations){charRelations=JSON.parse(JSON.stringify(d.relations));sv('bj_charRelations',charRelations);}
+if(d.npcs){npcList=JSON.parse(JSON.stringify(d.npcs));sv('bj_npcList',npcList);}
+}
 sv(K.curChars,characters);
 showToast('人物设定已应用 ✅');
 });
-}else if(item.type==='world'){
+}
+else if(item.type==='world'){
 showDlg('应用世界观','将覆盖当前的世界观设定，是否继续？',()=>{
 document.getElementById('worldDesc').value=item.data||'';
 saveCurSettings();
@@ -7404,7 +8324,7 @@ const exportItems=[];
 saveCharactersFromUI();
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
-exportItems.push({id:'cur_char',type:'char',label:'当前人物设定',desc:validChars.map(c=>c.name).filter(Boolean).join('、')||'未命名角色',data:validChars});
+exportItems.push({id:'cur_char',type:'char',label:'当前人物设定',desc:validChars.map(c=>c.name).filter(Boolean).join('、')||'未命名角色',data:{characters:validChars,relations:charRelations,npcs:npcList}});
 }
 charP.forEach((p,i)=>{
 exportItems.push({id:'charP_'+i,type:'char',label:'人物预设：'+p.name,desc:(p.characters||[]).map(c=>c.name).filter(Boolean).join('、'),data:p.characters});
@@ -7677,32 +8597,15 @@ const todayKey='bj_today_'+today;
 const current=ld(todayKey,0);
 sv(todayKey,current+addWords);
 }
-async function updateStorageDisplay(){
-    try{
+async function updateStorageDisplay() {
+    try {
         const info = await getDBStorageUsage();
         document.getElementById('storagePercent').textContent = info.percent + '%';
         document.getElementById('storageBar').style.width = Math.min(info.percent, 100) + '%';
-        document.getElementById('storageDetail').textContent = '已用 ' + info.usedMB + 'MB / 50MB (IndexedDB)';
-        
-        // 根据使用量变色
-        const bar = document.getElementById('storageBar');
-        if (parseFloat(info.percent) > 90) {
-            bar.style.background = 'var(--danger)';
-        } else if (parseFloat(info.percent) > 70) {
-            bar.style.background = '#f0a030';
-        } else {
-            bar.style.background = 'linear-gradient(90deg,var(--accent),var(--accent2))';
-        }
-        
-        // 存储空间预警（放在 try 块内部）
-        if(parseFloat(info.percent) > 85){
-            showToast('⚠️ 存储空间即将用完('+info.percent+'%)，请导出备份并清理旧数据',5000);
-        }
+        document.getElementById('storageDetail').textContent = '已用 ' + info.usedMB + 'MB / 50MB';
     } catch(e) {
-        console.warn('存储信息获取失败:', e);
-        // 失败时显示默认值
-        document.getElementById('storagePercent').textContent = '计算中...';
-        document.getElementById('storageDetail').textContent = '无法获取存储信息';
+        document.getElementById('storagePercent').textContent = '计算失败';
+        document.getElementById('storageDetail').textContent = '请刷新页面重试';
     }
 }
 function formatNum(n){
@@ -9880,7 +10783,7 @@ openReading(colCopy);
 }
 }
 // ==================== 上下文编辑器 ====================
-let articleContexts=ld('bj_articleContexts',{});// 存储每篇文章的上下文设置
+// ==================== 全局变量定义区 ==================== let articleContexts = ld('bj_articleContexts', {}); let xjAbortCtrl = null; let ttsUtterance = null; let ringAudio = null; let isGen = false; let abortCtrl = null;// 存储每篇文章的上下文设置
 
 function openContextEditor(){
 if(!curRd||curRd.type!=='long'){showToast('请先打开一篇长篇文章');return;}
@@ -10092,7 +10995,7 @@ curRd.chapters.push(result);
 syncArticle(curRd);
 curCh=curRd.chapters.length-1;
 renderChContent();
-document.getElementById('rdMeta').innerHTML='<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span><span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
+document.getElementById('rdMeta').innerHTML='<span>📖 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span><span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span><span onclick="showChapterWordStats()" style="cursor:pointer;color:var(--accent2)">📊 字数详情</span>';
 document.getElementById('btnUndo').style.display='inline-block';
 showToast('第'+chNum+'章创作完成！✨');
 return;
@@ -10127,6 +11030,7 @@ document.getElementById('rdMeta').innerHTML=
 '<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
 document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
+try{recordManualWrite(countWords(finalText),1);}catch(e){}
 showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
 });
 }else{
@@ -10139,6 +11043,7 @@ document.getElementById('rdMeta').innerHTML=
 '<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
 document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
+try{recordManualWrite(countWords(finalText),1);}catch(e){}
 showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
 }
 },
@@ -10450,6 +11355,10 @@ select.value=cnVoices[0].voiceURI;
 }
 
 function toggleTtsBar(){
+if (typeof speechSynthesis === 'undefined') {
+    showToast('你的浏览器不支持语音朗读功能');
+    return;
+}
 const bar=document.getElementById('ttsBar');
 bar.classList.toggle('show');
 if(bar.classList.contains('show')){
@@ -10716,7 +11625,7 @@ const XJ_SYSTEM_PROMPT=`【核心身份锁定】
 - 教程指导：分步骤说，但语气要可爱，不要像说明书
 - 情感支持：真诚但不啰嗦，有时候陪伴比话语更重要
 
-【笔记AI功能知识——完整版 v2.7.0】
+【笔记AI功能知识——完整版 v2.8.0】
 你完全了解笔记AI的所有功能，当用户问到时用可爱的方式指导。
 
 一、快速开始（最常被问到）
@@ -11490,6 +12399,9 @@ checkGoalComplete();
 }
 
 function checkGoalComplete(){
+// 防止重复弹窗
+if (goalCelebrated.weekWords && goalCelebrated.weekCh && 
+    goalCelebrated.monthWords && goalCelebrated.monthCh) return;
 let msg='';let title='';
 // 周字数达标
 if(goalSettings.weekWords>0&&goalProgress.weekWords>=goalSettings.weekWords&&!goalCelebrated.weekWords){
@@ -11681,6 +12593,12 @@ updateStreamUI();
 renderTags();renderArticles();renderCharCards();applyAppearance();
 document.getElementById('splashVer').textContent=APP_VER;
 renderUserCard();
+// 夜间模式友好提示
+   if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+       setTimeout(() => {
+           showToast('检测到你使用深色模式，已为你自动适配～', 2800);
+       }, 1200);
+   }
 // 初始化勿扰和铃声
 document.getElementById('dndOn').checked=dndMode;
 updateDndUI();
@@ -11816,6 +12734,33 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     });
 });
+function exportAllCrWorks(){
+    const data = {crWorks: crWorks, cols: cols};
+    const str = JSON.stringify(data, null, 2);
+    const blob = new Blob([str], {type: 'application/json'});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = '我的全部创作_' + new Date().toLocaleDateString() + '.json';
+    a.click();
+    showToast('已导出全部创作数据 📤');
+}
+function quickThemeSwitch(){
+    const themes = ['default','warm','green','blue','light'];
+    let current = ap.theme || 'default';
+    let index = themes.indexOf(current);
+    index = (index + 1) % themes.length;
+    const newTheme = themes[index];
+    
+    document.body.className = '';
+    if(newTheme === 'light') document.body.classList.add('theme-light');
+    else if(newTheme !== 'default') document.body.classList.add('theme-' + newTheme);
+    
+    ap.theme = newTheme;
+    sv(K.ap, ap);
+    
+    showToast('已切换为 ' + (newTheme==='default'?'默认紫色':newTheme==='warm'?'暖橙':newTheme==='green'?'翠绿':newTheme==='blue'?'深蓝':'浅色') + '主题 🎨');
+}
 </script>
 </body>
 </html>
