@@ -7428,67 +7428,80 @@ sv('bj_notes_'+id,notesObj[id]);
 });
 }
 function exportData(){
-saveCurSettings();
-markBackupDone();// 标记已备份
-const data={
-_app:'bijiAI',_version:3,_ver:APP_VER,_exportedAt:new Date().toISOString(),
-apiPresets:apiP,charPresets:charP,worldPresets:worldP,
-stylePresets:styleP,rulePresets:ruleP,curRule:curRule,banWords:banWords,banWordsPresets:banWordsP,
-curApi:ld(K.curApi,{}),
-curChars:characters,
-charRelations:charRelations,
-npcList:npcList,
-curWorld:ld(K.curWorld,{}),
-collections:cols,workshop:ws,crWorks:crWorks,resPacks:resPacks,tags,appearance:ap,userCard:userCard,globalWorld:globalWorld,
-globalRule:globalRule,
-globalBanWords:globalBanWords,
-localWorldBindings:localWorldBindings,
-localRuleBindings:localRuleBindings,
-localBanWordsBindings:localBanWordsBindings,
-localStyleBindings:localStyleBindings,
-currentCharPresetName:currentCharPresetName,notes:exportAllNotes()
-};
-const jsonStr=JSON.stringify(data,null,2);
-const sizeKB=(new Blob([jsonStr]).size/1024).toFixed(1);
-const fileName='笔记AI_备份_'+new Date().toLocaleDateString().replace(/\//g,'-')+'.json';
+    saveCurSettings();
+    markBackupDone();
+    
+    const data = {
+        _app: 'bijiAI',
+        _version: 3,
+        _ver: APP_VER,
+        _exportedAt: new Date().toISOString(),
+        apiPresets: apiP,
+        charPresets: charP,
+        worldPresets: worldP,
+        stylePresets: styleP,
+        rulePresets: ruleP,
+        curRule: curRule,
+        banWords: banWords,
+        banWordsPresets: banWordsP,
+        curApi: ld(K.curApi, {}),
+        curChars: characters,
+        charRelations: charRelations,
+        npcList: npcList,
+        curWorld: ld(K.curWorld, {}),
+        collections: cols,
+        workshop: ws,
+        crWorks: crWorks,
+        resPacks: resPacks,
+        tags: tags,
+        appearance: ap,
+        userCard: userCard,
+        globalWorld: globalWorld,
+        globalRule: globalRule,
+        globalBanWords: globalBanWords,
+        localWorldBindings: localWorldBindings,
+        localRuleBindings: localRuleBindings,
+        localBanWordsBindings: localBanWordsBindings,
+        localStyleBindings: localStyleBindings,
+        currentCharPresetName: currentCharPresetName,
+        notes: exportAllNotes()
+    };
 
-// 方法1: 尝试使用File System Access API（现代浏览器）
-if(window.showSaveFilePicker){
-(async()=>{
-try{
-const handle=await window.showSaveFilePicker({
-suggestedName:fileName,
-types:[{description:'JSON文件',accept:{'application/json':['.json']}}]
-});
-const writable=await handle.createWritable();
-await writable.write(jsonStr);
-await writable.close();
-showToast('数据已保存 ('+sizeKB+'KB) 📤');
-}catch(e){
-if(e.name!=='AbortError')fallbackExport(jsonStr,fileName);
-}
-})();
-return;
-}
+    const jsonStr = JSON.stringify(data, null, 2);
+    const filename = '笔记AI_完整备份_' + new Date().toLocaleDateString().replace(/\//g, '-') + '.json';
 
-// 方法2: 尝试Android WebView的下载方式
-if(/android/i.test(navigator.userAgent)){
-try{
-const blob=new Blob([jsonStr],{type:'application/json'});
-const url=URL.createObjectURL(blob);
-const a=document.createElement('a');
-a.href=url;a.download=fileName;
-a.style.display='none';
-document.body.appendChild(a);
-a.click();
-setTimeout(()=>{document.body.removeChild(a);URL.revokeObjectURL(url);},1000);
-showToast('数据已导出，请查看下载目录 📤');
-return;
-}catch(e){}
-}
-
-// 方法3: 通用回退
-fallbackExport(jsonStr,fileName);
+    try {
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        a.style.display = 'none';
+        
+        document.body.appendChild(a);
+        a.click();
+        
+        setTimeout(() => {
+            URL.revokeObjectURL(url);
+            document.body.removeChild(a);
+            showToast('数据备份已导出 📥');
+        }, 1000);
+        
+    } catch (e) {
+        // 下载失败时自动fallback到复制
+        console.log('直接下载失败，切换到复制模式');
+        navigator.clipboard.writeText(jsonStr).then(() => {
+            showDlg('导出失败，但内容已复制', 
+                `无法直接下载备份文件（可能是APK限制）\n\n` +
+                `请按以下步骤保存：\n\n` +
+                `1. 打开「文件管理器」\n` +
+                `2. 进入Downloads文件夹\n` +
+                `3. 新建文本文件，命名为：\n   ${filename}\n` +
+                `4. 打开文件 → 长按 → 粘贴 → 保存`, 
+                () => {});
+        });
+    }
 }
 
 function fallbackExport(jsonStr,fileName){
@@ -9079,17 +9092,51 @@ function exportToTxtFile(filename, content) {
         document.body.appendChild(a);
         a.click();
         
-        // 延迟撤销URL，兼容手机浏览器
         setTimeout(() => {
             URL.revokeObjectURL(url);
             document.body.removeChild(a);
-        }, 2000);
+            showToast('TXT已导出：' + filename + ' 📥');
+        }, 1000);
         
-        showToast('TXT已导出：' + filename + ' 📥');
     } catch (e) {
-        console.error('导出失败:', e);
-        showToast('导出失败，请尝试刷新页面后重试', 4000);
+        // 下载失败时自动fallback到复制
+        console.log('直接下载失败，切换到复制模式');
+        navigator.clipboard.writeText(content).then(() => {
+            showDlg('导出失败，但内容已复制', 
+                `无法直接下载文件（可能是APK限制）\n\n` +
+                `请按以下步骤保存：\n\n` +
+                `1. 打开「文件管理器」\n` +
+                `2. 进入Downloads文件夹\n` +
+                `3. 新建文本文件，命名为：\n   ${filename}\n` +
+                `4. 打开文件 → 长按 → 粘贴 → 保存`, 
+                () => {});
+        });
     }
+}
+
+// 备用保存方式
+function fallbackSave(blob, filename) {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    a.style.display = 'none';
+    document.body.appendChild(a);
+    a.click();
+    
+    setTimeout(() => {
+        URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+        showToast('已尝试下载，如果没弹出，请长按下方内容 → 复制 → 新建TXT粘贴保存');
+        
+        // 额外显示内容让用户复制
+        showDlg('手动保存提示', 
+            '导出失败？请长按下面内容 → 复制\n\n' + 
+            content.substring(0, 300) + '...\n\n（完整内容已复制到剪贴板）', 
+            () => {
+                navigator.clipboard.writeText(content);
+            });
+    }, 800);
 }
 function fallbackTxtExport(filename,blob){
 const url=URL.createObjectURL(blob);
