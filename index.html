@@ -4199,7 +4199,7 @@ let resPacks=ld('bj_resPacks',[]);// 已导入的资源包
 let resTab='all';
 let useStream=ld('bj_stream',true);
 let userCard=ld('bj_userCard',{name:'',bio:'',avatar:''});
-
+let articleContexts = ld('bj_articleContexts', {}); let xjAbortCtrl = null; let ttsUtterance = null; let ringAudio = null; isGen = false; abortCtrl = null;// 存储每篇文章的上下文设置
 // ==================== TOAST ====================
 let toastTimer=null;
 function showToast(msg,dur=2000){
@@ -10834,8 +10834,7 @@ openReading(colCopy);
 }
 }
 // ==================== 上下文编辑器 ====================
-// ==================== 全局变量定义区 ==================== let articleContexts = ld('bj_articleContexts', {}); let xjAbortCtrl = null; let ttsUtterance = null; let ringAudio = null; let isGen = false; let abortCtrl = null;// 存储每篇文章的上下文设置
-
+// ==================== 全局变量定义区 ====================
 function openContextEditor(){
 if(!curRd||curRd.type!=='long'){showToast('请先打开一篇长篇文章');return;}
 // 加载已保存的上下文设置
@@ -11376,7 +11375,7 @@ function markBackupDone(){
 localStorage.setItem('bj_lastBackup',Date.now().toString());
 }
 // ==================== TTS 语音朗读 ====================
-let ttsUtterance=null;
+ttsUtterance=null;
 let ttsPlaying=false;
 let ttsPaused=false;
 let ttsParas=[];
@@ -12040,7 +12039,7 @@ bg.style.display='none';
 }
 // 消息菜单相关
 let xjMenuTargetIdx=-1;
-let xjAbortCtrl=null;
+xjAbortCtrl=null;
 
 function showXjMsgMenu(idx,x,y){
 xjMenuTargetIdx=idx;
@@ -12237,7 +12236,7 @@ let dndMode=ld('bj_dndMode',false);
 let ringData=ld('bj_ringData','');// base64 mp3
 let ringName=ld('bj_ringName','');
 let ringVolume_=ld('bj_ringVolume',0.8);
-let ringAudio=null;
+ringAudio=null;
 
 function toggleDndSwitch(){
 const cb=document.getElementById('dndOn');
