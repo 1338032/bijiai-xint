@@ -2462,6 +2462,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <ul>
 <li><strong>输入框</strong>：描述你想要的故事方向，写得越具体效果越好</li>
 <li><strong>标签</strong>：点击选择氛围标签，可以多选，也可以自建标签</li>
+<li><strong>查看当前生效设定</strong>：点击输入框下方的「📋 查看当前生效设定」，可快速确认当前人物/世界观/文风/规则/禁用词等是否已生效（弹窗内每项仅展示开头内容，便于快速核对）。</li>
 <li><strong>长篇/短篇切换</strong>：长篇可以持续续写，短篇一次生成完整故事</li>
 <li><strong>创意度滑块</strong>：左边（0.5）更稳定可控，右边（1.2）更天马行空</li>
 <li><strong>故事转盘</strong>：点击右上角「转盘」随机组合创意元素</li>
@@ -4401,7 +4402,18 @@ btn.textContent='确认';
 btn.onclick=()=>{closeDlg();onOk();};
 document.getElementById('dlgOv').classList.add('show');
 }
-function closeDlg(){document.getElementById('dlgOv').classList.remove('show');}
+function closeDlg(){
+  document.getElementById('dlgOv').classList.remove('show');
+
+  // 关闭时恢复 dlgMsg 的滚动样式（避免影响其他弹窗）
+  const p=document.getElementById('dlgMsg');
+  if(p){
+    p.style.maxHeight='';
+    p.style.overflowY='';
+    p.style.paddingRight='';
+    p.style.webkitOverflowScrolling='';
+  }
+}
 
 // ==================== INPUT DIALOG ====================
 function showInp(title,ph,onOk){
@@ -5495,26 +5507,75 @@ return issues;
 }
 
 function showSettingPreview(){
-    let info = '📋 当前生效设定\n\n';
-    
-    // 人物
-    const validChars = characters.filter(c => c.name);
-    if(validChars.length > 0){
-        info += '👤 人物 (' + validChars.length + '个)：' + 
-                validChars.map(c => c.name).join('、') + '\n\n';
-    }
-    
-    // 世界观
-    const worldText = (document.getElementById('worldDesc') && 
-                      document.getElementById('worldDesc').value || '').trim();
-    if(worldText) info += '🌍 世界观：' + worldText.substring(0,50) + '...\n\n';
-    
-    // 文风
-    const styleText = (document.getElementById('styleDesc') && 
-                      document.getElementById('styleDesc').value || '').trim();
-    if(styleText) info += '✒️ 文风：' + styleText.substring(0,50) + '...\n\n';
-    
-    showDlg('当前设定', info, ()=>{});
+  const short10 = (s)=>{
+    s = (s||'').toString().trim().replace(/\s+/g,' ');
+    return s ? (s.length>10 ? s.slice(0,10)+'…' : s) : '（未设置）';
+  };
+  const shortName10 = (s)=>{
+    s = (s||'').toString().trim();
+    return s ? (s.length>10 ? s.slice(0,10)+'…' : s) : '（未命名）';
+  };
+
+  // 读取：优先取输入框（实时），再回退到变量
+  const getVal = (id, fb='')=>{
+    const el = document.getElementById(id);
+    return (el && typeof el.value==='string') ? el.value : fb;
+  };
+
+  const gWorld = (getVal('globalWorldDesc', globalWorld)||'').trim();
+  const lWorld = (getVal('worldDesc', '')||'').trim();
+
+  const gRule  = (getVal('globalRuleDesc', globalRule)||'').trim();
+  const lRule  = (getVal('ruleDesc', curRule)||'').trim();
+
+  const lStyle = (getVal('styleDesc', ap.curStyle||'')||'').trim();
+
+  const gBan = (getVal('globalBanWordsInput', globalBanWords)||'').trim();
+  const lBan = (getVal('banWordsInput', banWords)||'').trim();
+
+  const minW = parseInt(getVal('minWords', 0), 10) || 0;
+
+  const validChars = (characters||[]).filter(c=>c && (c.name||c.desc));
+  const charNames = validChars.map(c=>shortName10(c.name)).join('、') || '（暂无角色）';
+
+  let info = '';
+  info += '📋 当前生效设定（仅展示每项前10字）\n\n';
+
+  info += '👤 人物（'+validChars.length+'个）\n';
+  info += '名称：'+charNames+'\n\n';
+
+  info += '🌍 世界观\n';
+  info += '全局：'+short10(gWorld)+'\n';
+  info += '局部：'+short10(lWorld)+'\n';
+  info += '每章最少字数：'+(minW?minW+'字':'（未设置）')+'\n\n';
+
+  info += '✒️ 文风（局部）\n';
+  info += short10(lStyle)+'\n\n';
+
+  info += '📜 规则\n';
+  info += '全局：'+short10(gRule)+'\n';
+  info += '局部：'+short10(lRule)+'\n\n';
+
+  info += '🚫 禁用词\n';
+  info += '全局：'+short10(gBan)+'\n';
+  info += '局部：'+short10(lBan)+'\n\n';
+
+  // 绑定信息（如果你没绑定过，会显示空）
+  info += '🔗 当前局部绑定对象（角色预设名）\n';
+  info += '世界观绑定：'+(currentWorldBinding||'（未绑定）')+'\n';
+  info += '文风绑定：'+(currentStyleBinding||'（未绑定）')+'\n';
+  info += '规则绑定：'+(currentRuleBinding||'（未绑定）')+'\n';
+  info += '禁用词绑定：'+(currentBanBinding||'（未绑定）')+'\n';
+
+  showDlg('当前设定', info, ()=>{});
+// 仅“当前设定”弹窗启用竖向滚动
+  const p=document.getElementById('dlgMsg');
+  if(p){
+    p.style.maxHeight='60vh';
+    p.style.overflowY='auto';
+    p.style.paddingRight='6px';
+    p.style.webkitOverflowScrolling='touch';
+  }
 }
 function handleGenBtn(){
 if(isGen&&abortCtrl){
