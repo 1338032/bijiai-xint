@@ -8624,7 +8624,7 @@ async function updateStorageDisplay() {
     const pct = (est.usage / est.quota * 100).toFixed(1);
     // 直接更新显示，跳过下面的估算逻辑
     document.getElementById('storageBar').style.width = pct + '%';
-    document.getElementById('storageText').textContent = usedMB + 'MB / ' + totalMB + 'MB (' + pct + '%)';
+    const fixedPct = Math.min((est.usage / (50 * 1024 * 1024) * 100), 100).toFixed(1); document.getElementById('storagePercent').textContent = fixedPct + '%'; document.getElementById('storageBar').style.width = fixedPct + '%'; document.getElementById('storageDetail').textContent = '已用 ' + usedMB + 'MB / 50MB';
   });
   return; // 用真实数据就够了
 }
