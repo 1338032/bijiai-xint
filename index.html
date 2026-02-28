@@ -41,7 +41,13 @@ body.theme-light{
 body.theme-light.theme-warm{--accent:#e67e22;--accent2:#d35400;}
 body.theme-light.theme-green{--accent:#27ae60;--accent2:#1e8449;}
 body.theme-light.theme-blue{--accent:#2980b9;--accent2:#1a5276;}
+body.theme-light .toast{
+background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(240,240,248,.97));
+color:#1a1a2e;border-color:rgba(108,92,231,.3);
+box-shadow:0 10px 40px rgba(0,0,0,.15),0 0 20px rgba(108,92,231,.1);
+}
 body.theme-light .bnav{background:rgba(245,245,248,.92);}
+
 body.theme-light .rd-hdr{background:rgba(245,245,248,.88);}
 /* LOGO FONT - 不受自定义字体影响 */
 .logo-text{
@@ -273,6 +279,8 @@ border-color:rgba(0,0,0,.1);
 color:var(--text2);
 }
 /* BOTTOM NAV */
+body.theme-light .tts-bar{background:rgba(245,245,248,.97);border-top-color:rgba(0,0,0,.1);}
+body.theme-light .tts-bar-btns button{background:var(--card2);color:var(--text);}
 .bnav{
 position:fixed;bottom:0;left:0;right:0;z-index:200;
 background:linear-gradient(180deg,rgba(26,26,36,.85) 0%,rgba(20,20,28,.98) 100%);
@@ -324,7 +332,6 @@ border-color:var(--accent);
 box-shadow:0 0 0 3px rgba(108,92,231,.15),0 2px 10px rgba(0,0,0,.05) inset;
 }
 .sbar input::placeholder{color:var(--text2);opacity:.7;}
-.sbar input::placeholder{color:var(--text2);}
 .btn-gen{
 padding:12px 22px;border-radius:14px;border:none;
 background:linear-gradient(135deg,var(--accent) 0%,var(--accent2) 50%,var(--accent) 100%);
@@ -360,6 +367,8 @@ background:linear-gradient(135deg,var(--accent),var(--accent2));
 opacity:0;transition:opacity .3s;z-index:-1;
 }
 .tag.act{color:#fff;border-color:var(--accent);box-shadow:0 3px 12px rgba(108,92,231,.35);}
+body.theme-light .tag.act{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.2);}
+body.theme-light .tag{color:var(--text2);}
 .tag.act::before{opacity:1;}
 .tag:active{transform:scale(.95);}
 .tag .tdel{
@@ -560,13 +569,7 @@ transition:background .3s,box-shadow .3s;
 padding:4px 8px;margin-left:-8px;margin-right:-8px;
 border-radius:6px;
 }
-.rd-content p:hover{background:rgba(108,92,231,.03);}
-.rd-content p{
-margin-bottom:16px;text-indent:2em;
-transition:background .3s,box-shadow .3s;
-padding:4px 8px;margin-left:-8px;margin-right:-8px;
-border-radius:6px;
-}
+@media (hover: hover) {   .rd-content p:hover{background:rgba(108,92,231,.03);} }
 .rd-content p:hover{background:rgba(108,92,231,.03);}
 .rd-dir-input{margin-bottom:12px;} .rd-dir-input input{ width:100%;padding:12px 16px;border-radius:12px; border:1px solid var(--border);background:var(--card); color:var(--text);font-size:13px;outline:none; transition:border-color .3s; } .rd-dir-input input:focus{border-color:var(--accent);} .rd-dir-input input::placeholder{color:var(--text2);}
 .cont-wrap{padding:16px 0;text-align:center;}
@@ -1034,7 +1037,6 @@ max-width:300px;font-weight:500;
 letter-spacing:.5px;
 }
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
-.toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .dlg-ov{
 display:none;position:fixed;inset:0;z-index:800;
 background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:28px;
@@ -1046,6 +1048,7 @@ max-width:310px;border:1px solid var(--border);animation:fadeIn .25s ease;
 }
 .dlg-box h3{font-size:15px;margin-bottom:9px;}
 .dlg-box p{font-size:12px;color:var(--text2);line-height:1.6;margin-bottom:18px;}
+.dlg-box p{white-space:pre-wrap;}
 .dlg-btns{display:flex;gap:9px;}
 .dlg-btns button{
 flex:1;padding:9px;border-radius:11px;border:none;
@@ -1190,6 +1193,7 @@ opacity:.35;pointer-events:none;display:none;
 .ed-modal.show{display:block;animation:slideUp .3s ease;}
 .ed-hdr{
 position:sticky;top:0;z-index:10;background:rgba(15,15,20,.9);
+body.theme-light .ed-hdr{background:rgba(245,245,248,.95);}
 padding:10px 14px;display:flex;align-items:center;
 border-bottom:none;gap:8px;
 }
@@ -5337,13 +5341,14 @@ function showSettingPreview(){
 }
 function handleGenBtn(){
 if(isGen&&abortCtrl){
-if(confirm('确定要停止当前生成吗？')){
-abortCtrl.abort();
-isGen=false;
-const btn=document.getElementById('btnGen');
-btn.disabled=false;btn.textContent='生成';
-showToast('已停止生成');
-}
+showDlg('停止生成', '确定要停止当前生成吗？', () => {
+  abortCtrl.abort();
+  isGen = false;
+  const btn = document.getElementById('btnGen');
+  btn.disabled = false; btn.textContent = '生成';
+  showToast('已停止生成');
+}, true);
+return;
 return;
 }
 generateArticle();
@@ -8612,6 +8617,17 @@ sv(todayKey,current+addWords);
 }
 async function updateStorageDisplay() {
     try {
+      if (navigator.storage && navigator.storage.estimate) {
+  navigator.storage.estimate().then(est => {
+    const usedMB = (est.usage / 1024 / 1024).toFixed(2);
+    const totalMB = (est.quota / 1024 / 1024).toFixed(0);
+    const pct = (est.usage / est.quota * 100).toFixed(1);
+    // 直接更新显示，跳过下面的估算逻辑
+    document.getElementById('storageBar').style.width = pct + '%';
+    document.getElementById('storageText').textContent = usedMB + 'MB / ' + totalMB + 'MB (' + pct + '%)';
+  });
+  return; // 用真实数据就够了
+}
         const info = await getDBStorageUsage();
         document.getElementById('storagePercent').textContent = info.percent + '%';
         document.getElementById('storageBar').style.width = Math.min(info.percent, 100) + '%';
@@ -12645,10 +12661,13 @@ document.getElementById('splashVer').textContent=APP_VER;
 renderUserCard();
 // 夜间模式友好提示
    if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
-       setTimeout(() => {
-           showToast('检测到你使用深色模式，已为你自动适配～', 2800);
-       }, 1200);
-   }
+  if (!localStorage.getItem('bj_darkTipShown')) {
+    localStorage.setItem('bj_darkTipShown', '1');
+    setTimeout(() => {
+      _originalShowToast('检测到你使用深色模式，已为你自动适配～', 2800);
+    }, 1200);
+  }
+}
 // 初始化勿扰和铃声
 document.getElementById('dndOn').checked=dndMode;
 updateDndUI();
@@ -12762,7 +12781,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 1400);
 
         setTimeout(autoBackup, 5000);
-
+// 每30分钟自动备份一次
+setInterval(autoBackup, 30 * 60 * 1000);
     } catch (e) {
         console.error('初始化失败:', e);
         txt.textContent = '初始化失败，使用备用模式...';
