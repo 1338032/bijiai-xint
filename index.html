@@ -47,7 +47,10 @@ color:#1a1a2e;border-color:rgba(108,92,231,.3);
 box-shadow:0 10px 40px rgba(0,0,0,.15),0 0 20px rgba(108,92,231,.1);
 }
 body.theme-light .bnav{background:rgba(245,245,248,.92);}
-
+.bnav.hide{
+  transform:translateY(120%);
+  pointer-events:none;
+}
 body.theme-light .rd-hdr{background:rgba(245,245,248,.88);}
 /* LOGO FONT - 不受自定义字体影响 */
 .logo-text{
@@ -281,14 +284,20 @@ color:var(--text2);
 /* BOTTOM NAV */
 body.theme-light .tts-bar{background:rgba(245,245,248,.97);border-top-color:rgba(0,0,0,.1);}
 body.theme-light .tts-bar-btns button{background:var(--card2);color:var(--text);}
+
 .bnav{
-position:fixed;bottom:0;left:0;right:0;z-index:200;
-background:linear-gradient(180deg,rgba(26,26,36,.85) 0%,rgba(20,20,28,.98) 100%);
-backdrop-filter:blur(20px) saturate(180%);-webkit-backdrop-filter:blur(20px) saturate(180%);
-border-top:1px solid rgba(108,92,231,.2);
-display:flex;justify-content:space-around;padding:8px 0 12px;
-transition:transform .3s;
-box-shadow:0 -4px 30px rgba(0,0,0,.3);
+  position:fixed;
+  bottom:0;left:0;right:0;
+  z-index:200;
+  background:linear-gradient(180deg,rgba(26,26,36,.85) 0%,rgba(20,20,28,.98) 100%);
+  backdrop-filter:blur(20px) saturate(180%);
+  -webkit-backdrop-filter:blur(20px) saturate(180%);
+  border-top:1px solid rgba(108,92,231,.2);
+  display:flex;
+  justify-content:space-around;
+  padding:8px 0 12px;
+  transition:transform .3s;
+  box-shadow:0 -4px 30px rgba(0,0,0,.3);
 }
 .bnav::before{
 content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
@@ -4275,7 +4284,9 @@ let resPage = 1;
 let userCard=ld('bj_userCard',{name:'',bio:'',avatar:''});
 let lockSettings = ld('bj_lockSettings', { enabled:false, passHash:'', q:'', aHash:'' });
 let _unlocked = false;
-let articleContexts = ld('bj_articleContexts', {}); let xjAbortCtrl = null; let ttsUtterance = null; let ringAudio = null; isGen = false; abortCtrl = null;// 存储每篇文章的上下文设置
+let articleContexts = ld('bj_articleContexts', {}); // 存储每篇文章的上下文设置
+let xjAbortCtrl = null; // 星笺聊天中止控制
+let ringAudio = null; // 铃声播放器
 // ==================== TOAST ====================
 let toastTimer=null;
 function showToast(msg,dur=2000){
@@ -4293,6 +4304,7 @@ function showDlg(title,msg,onOk,danger=false,asHtml=false){
   if(asHtml){ p.innerHTML=msg; } else { p.textContent=msg; }
 
   const btn=document.getElementById('dlgOkBtn');
+  btn.style.display='';
   btn.className=danger?'dlg-danger':'dlg-ok';
   btn.textContent='确认';
 
@@ -4304,6 +4316,7 @@ function showDlg(title,msg,onOk,danger=false,asHtml=false){
   document.getElementById('dlgOv').classList.add('show');
 }
 function closeDlg(){
+  document.getElementById('dlgOkBtn').style.display='';
   document.getElementById('dlgOv').classList.remove('show');
 
   // 关闭时恢复 dlgMsg 的滚动样式（避免影响其他弹窗）
@@ -5606,28 +5619,95 @@ const reader=resp.body.getReader();
 const decoder=new TextDecoder();
 let buffer='';
 let fullText='';
-
+let sseCarry = '';   // 用来拼接被切碎的 JSON
+let sseDone = false; // 收到 [DONE] 就结束
 while(true){
 const{done,value}=await reader.read();
 if(done)break;
 buffer+=decoder.decode(value,{stream:true});
 
-const lines=buffer.split('\n');
-buffer=lines.pop()||'';
+// === 稳健 SSE 解析：按事件块 \n\n 切分，支持 JSON 被分片 ===
+buffer = buffer.replace(/\r\n/g, '\n');
 
-for(const line of lines){
-const trimmed=line.trim();
-if(!trimmed||trimmed==='data: [DONE]')continue;
-if(!trimmed.startsWith('data: '))continue;
-try{
-const json=JSON.parse(trimmed.slice(6));
-const delta=json.choices&&json.choices[0]&&json.choices[0].delta;
-if(delta&&delta.content){
-fullText+=delta.content;
-onChunk(fullText,delta.content);
+const handleOneJson = (jsonText) => {
+  try {
+    const json = JSON.parse(jsonText);
+
+    // 兼容不同接口的增量字段
+    const choice = json && json.choices && json.choices[0];
+    const delta = choice && (choice.delta || choice.message || {});
+    const chunk =
+      (delta && (delta.content ?? delta.text ?? delta.reasoning_content)) ||
+      '';
+
+    if (chunk) {
+      fullText += chunk;
+      onChunk(fullText, chunk);
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
+};
+
+let sepIdx;
+while ((sepIdx = buffer.indexOf('\n\n')) !== -1) {
+  const rawEvent = buffer.slice(0, sepIdx);
+  buffer = buffer.slice(sepIdx + 2);
+
+  // 提取 data: 行（一个事件可能有多行 data:）
+  const dataLines = rawEvent
+    .split('\n')
+    .filter(l => l.startsWith('data:'))
+    .map(l => l.slice(5).trimStart());
+
+  if (dataLines.length === 0) continue;
+
+  let dataStr = dataLines.join('\n').trim();
+  if (!dataStr) continue;
+
+  if (dataStr === '[DONE]') {
+    sseDone = true;
+    break;
+  }
+
+  // 1) 先把上一次残片拼上
+  if (sseCarry) {
+    dataStr = sseCarry + dataStr;
+    sseCarry = '';
+  }
+
+  // 2) 优先当作一个整体 JSON 解析
+  if (handleOneJson(dataStr)) continue;
+
+  // 3) 不行就按行尝试（有些服务端会把多个 JSON 用换行拼一起）
+  const pieces = dataStr.split('\n').filter(Boolean);
+  let anyOk = false;
+
+  for (let i = 0; i < pieces.length; i++) {
+    const piece = pieces[i].trim();
+    if (!piece) continue;
+
+    const ok = handleOneJson(piece);
+    if (ok) {
+      anyOk = true;
+      continue;
+    }
+
+    // 最后一段很可能是“被切碎的 JSON”，留到下次拼
+    if (i === pieces.length - 1) {
+      sseCarry = piece;
+    }
+  }
+
+  // 如果一段都没成功且看起来像 JSON 开头，也先缓存，等待下次补齐
+  if (!anyOk && dataStr.trim().startsWith('{')) {
+    sseCarry = dataStr;
+  }
 }
-}catch{}
-}
+// === 稳健 SSE 解析结束 ===
+
+if (sseDone) break;
 }
 onDone(fullText);
 }catch(err){
@@ -6408,7 +6488,6 @@ toggleLike(curRd.id);
 // 重新从收藏中获取最新状态
 const inBooks=cols.books.some(b=>b.id===curRd.id);
 const inShorts=cols.shorts.some(s=>s.id===curRd.id);
-updateRdLikeBtn();
 updateRdLikeBtn();
 const liked=isLiked(curRd);
 const cw2=document.getElementById('contWrap');
@@ -9223,26 +9302,32 @@ const current=ld(todayKey,0);
 sv(todayKey,current+addWords);
 }
 async function updateStorageDisplay() {
-    try {
-      if (navigator.storage && navigator.storage.estimate) {
-  navigator.storage.estimate().then(est => {
-    const usedMB = (est.usage / 1024 / 1024).toFixed(2);
-    const totalMB = (est.quota / 1024 / 1024).toFixed(0);
-    const pct = (est.usage / est.quota * 100).toFixed(1);
-    // 直接更新显示，跳过下面的估算逻辑
-    document.getElementById('storageBar').style.width = pct + '%';
-    const fixedPct = Math.min((est.usage / (50 * 1024 * 1024) * 100), 100).toFixed(1); document.getElementById('storagePercent').textContent = fixedPct + '%'; document.getElementById('storageBar').style.width = fixedPct + '%'; document.getElementById('storageDetail').textContent = '已用 ' + usedMB + 'MB / 50MB';
-  });
-  return; // 用真实数据就够了
-}
-        const info = await getDBStorageUsage();
-        document.getElementById('storagePercent').textContent = info.percent + '%';
-        document.getElementById('storageBar').style.width = Math.min(info.percent, 100) + '%';
-        document.getElementById('storageDetail').textContent = '已用 ' + info.usedMB + 'MB / 50MB';
-    } catch(e) {
-        document.getElementById('storagePercent').textContent = '计算失败';
-        document.getElementById('storageDetail').textContent = '请刷新页面重试';
+  try {
+    // 优先用浏览器真实 estimate（更准确）
+    if (navigator.storage && navigator.storage.estimate) {
+      const est = await navigator.storage.estimate();
+      const used = est.usage || 0;
+      const usedMB = (used / 1024 / 1024).toFixed(2);
+
+      // UI 按 50MB 目标展示（你原本的设计）
+      const maxSize = 50 * 1024 * 1024;
+      const fixedPct = Math.min(used / maxSize * 100, 100).toFixed(1);
+
+      document.getElementById('storagePercent').textContent = fixedPct + '%';
+      document.getElementById('storageBar').style.width = fixedPct + '%';
+      document.getElementById('storageDetail').textContent = '已用 ' + usedMB + 'MB / 50MB';
+      return;
     }
+
+    // 没有 estimate 就用 IndexedDB 估算
+    const info = await getDBStorageUsage();
+    document.getElementById('storagePercent').textContent = info.percent + '%';
+    document.getElementById('storageBar').style.width = Math.min(info.percent, 100) + '%';
+    document.getElementById('storageDetail').textContent = '已用 ' + info.usedMB + 'MB / 50MB';
+  } catch (e) {
+    document.getElementById('storagePercent').textContent = '计算失败';
+    document.getElementById('storageDetail').textContent = '请刷新页面重试';
+  }
 }
 function formatNum(n){
 if(n>=10000)return (n/10000).toFixed(1)+'万';
@@ -10103,6 +10188,7 @@ function exportToTxtFile(filename, content) {
 
 // 备用保存方式
 function fallbackSave(blob, filename) {
+  try{
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -10110,20 +10196,15 @@ function fallbackSave(blob, filename) {
     a.style.display = 'none';
     document.body.appendChild(a);
     a.click();
-    
+
     setTimeout(() => {
-        URL.revokeObjectURL(url);
-        document.body.removeChild(a);
-        showToast('已尝试下载，如果没弹出，请长按下方内容 → 复制 → 新建TXT粘贴保存');
-        
-        // 额外显示内容让用户复制
-        showDlg('手动保存提示', 
-            '导出失败？请长按下面内容 → 复制\n\n' + 
-            content.substring(0, 300) + '...\n\n（完整内容已复制到剪贴板）', 
-            () => {
-                navigator.clipboard.writeText(content);
-            });
+      URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+      showToast('已尝试下载文件，如未弹出请在浏览器下载记录中查找', 3000);
     }, 800);
+  }catch(e){
+    showToast('备用导出失败：'+e.message, 3500);
+  }
 }
 function fallbackTxtExport(filename,blob){
 const url=URL.createObjectURL(blob);
