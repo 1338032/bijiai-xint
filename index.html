@@ -2527,7 +2527,8 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p><strong>当前版本：v2.9.0</strong></p>
 <p>增加了简洁模式，可隐藏部分复杂按键，在页面美化开启</p>
 <p>修复了资源无法导出的问题</p>
-<p>优化了各方面的体验，完善了手册，更多示例和使用技巧正在下方</p>
+<p>优化了各方面的体验，着重优化了精华压缩器，现在基本可以正常使用</p>
+<p>完善了手册，更多示例和使用技巧正在下方</p>
 </div>
 
 <h3>二、5分钟快速上手（必做三步）</h3>
@@ -4272,11 +4273,19 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
         <option value="hard">重度：极简提要、最省上下文</option>
       </select>
     </div>
-
-    <div style="display:flex;gap:8px;margin-bottom:10px">
-      <button class="btn-p" onclick="doCompress()" id="cmpDoBtn" style="flex:1;margin:0">🚀 开始压缩</button>
-      <button class="btn-s" onclick="copyCmpResult()" style="flex:1;margin:0">📋 复制结果</button>
+    <div style="display:flex;gap:8px;align-items:center;margin-bottom:10px">
+      <span style="font-size:11px;color:var(--text2);flex-shrink:0">输出格式</span>
+      <select id="cmpOutputMode" style="flex:1;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px">
+        <option value="json">JSON结构（用于自动写回）</option>
+        <option value="text">纯文本（易读，适合手动复制）</option>
+      </select>
     </div>
+    <div style="display:flex;gap:8px;margin-bottom:10px">
+  <button class="btn-p" onclick="doCompress()" id="cmpDoBtn" style="flex:1;margin:0">🚀 开始压缩</button>
+  <!-- ✅ 新增：停止压缩按钮，默认隐藏 -->
+  <button class="btn-s" onclick="stopCompress()" id="cmpStopBtn" style="flex:1;margin:0;display:none">⏹ 停止压缩</button>
+  <button class="btn-s" onclick="copyCmpResult()" style="flex:1;margin:0">📋 复制结果</button>
+</div>
 
     <div style="display:flex;gap:8px;margin-bottom:10px">
       <button class="btn-s" onclick="applyCmpResult()" id="cmpApplyBtn" style="flex:1;margin:0;border-color:var(--success);color:var(--success)">💾 保存为预设</button>
@@ -4749,6 +4758,9 @@ w.appendChild(ab);
 }
 function rmTag(i){selTags=selTags.filter(t=>t!==tags[i]);tags.splice(i,1);sv(K.tags,tags);renderTags();}
 let cmpParts = { char:true, rel:true, npc:true, world:true, rule:true, style:true, ban:true, extra:false };
+// ✅ 新增：标记是否在压缩 & 中止控制器
+let cmpIsRunning = false;
+let cmpAbortCtrl = null;
 let cmpLastResult = null;
 function _cmpExtractJson(text){
   let t = (text||'').trim();
@@ -9866,159 +9878,243 @@ contentEl.textContent='生成失败，请检查API设置';
 }
 async function doCompress(){
   const cfg = getCurApi();
-  if (!cfg.url || !cfg.key) {
+  if(!cfg.url || !cfg.key){
     showToast('请先配置API');
     return;
   }
 
-  // 先整理要压缩的内容
-  const raw   = _gatherCmpRaw();
-  const level = document.getElementById('cmpLevel').value;
-
-  const parts = {};
-  Object.keys(cmpParts).forEach(k=>{
-    if (cmpParts[k]) parts[k] = raw[k] || '';
-  });
-
-  // 判断有没有实际内容
-  const anySelected = Object.keys(parts).some(k => (parts[k] || '').trim().length > 0);
-  if (!anySelected) {
-    showToast('没有可压缩内容（或你没勾选模块）');
+  if(cmpIsRunning){
+    showToast('压缩已经在进行中，如需停止请点“停止压缩”');
     return;
   }
 
   const btn = document.getElementById('cmpDoBtn');
-  btn.disabled = true;
-  btn.innerHTML = '压缩中 <span class="ldots"><span></span><span></span><span></span></span>';
+  const stopBtn = document.getElementById('cmpStopBtn');
 
-  const levelRule = {
-    lite : '轻度：保留更多细节，减少重复啰嗦。',
-    mid  : '中度：高密度要点，适合提示词。',
-    hard : '重度：极简提要，最大化省上下文。'
-  }[level] || '中度：高密度要点，适合提示词。';
+  const raw = _gatherCmpRaw();
+  const levelEl = document.getElementById('cmpLevel');
+  const level = levelEl ? levelEl.value : 'mid';
 
-  // 直接用一个 system + 一个 user 提示词，要求返回 JSON
-  const sysMsg =
-`你是一名“提示词精华压缩器”。目标是：在尽量不丢信息的前提下，把设定改写成更适合放进系统提示词的高密度版本（更规整、更少重复、更好读）。
+  const outSel = document.getElementById('cmpOutputMode');
+  const outMode = outSel ? outSel.value : 'json';
 
-压缩强度：${levelRule}
+  const parts = {};
+  Object.keys(cmpParts).forEach(function(k){
+    if(cmpParts[k]) parts[k] = raw[k] || '';
+  });
 
-【只允许输出严格 JSON】
-- 不能有任何多余文字（不要解释，不要说明）
-- 不能使用 Markdown 代码块（不要 \`\`\`json 之类）
-- JSON 必须包含这些键（没有就给空字符串）：
-  char, rel, npc, world, rule, style, ban, extra
-
-【各字段内容要求】
-- char：每行一个角色，格式：姓名：一句话精华设定（可用分号补充）
-- rel ：每行一个关系，格式：A ↔ B：关系类型（可选描述） / A → B：关系类型（可选描述） / A ← B：关系类型（可选描述）
-- npc ：每行一个NPC，格式：姓名[定位](标签1,标签2)：一句话设定
-- world/rule/style：尽量用要点短句换行
-- ban ：每行一个词
-- extra：用要点化短句压缩，尽量保留结构与标题，便于复制粘贴`;
-
-  const userMsg =
-`需要压缩的内容如下（可能为空）：
-
-【人物 char】
-${parts.char || ''}
-
-【关系 rel】
-${parts.rel || ''}
-
-【NPC npc】
-${parts.npc || ''}
-
-【世界观 world】
-${parts.world || ''}
-
-【规则 rule】
-${parts.rule || ''}
-
-【文风 style】
-${parts.style || ''}
-
-【禁用词 ban】
-${parts.ban || ''}
-
-【额外设定 extra】
-${parts.extra || ''}`;
-
-  const messages = [
-    { role:'system', content: sysMsg },
-    { role:'user',   content: userMsg }
-  ];
-
-  // 只调用一次普通接口
-  const result = await callAPINonStream(messages);
-
-  btn.disabled  = false;
-  btn.textContent = '🚀 开始压缩';
-
-  if (!result) return;
-
-  // 尝试把返回内容解析为 JSON
-  let obj = null;
-  try {
-    obj = safeJsonParse(result);
-  } catch(e) {
-    obj = null;
-  }
-
-  // 如果解析失败，就直接把原文塞到结果框，不再死磕
-  if (!obj || typeof obj !== 'object') {
-    cmpLastResult = null;
-    refreshCmpStats();
-    document.getElementById('cmpOut').value = result;
-    showToast('压缩已完成，但模型未按 JSON 返回。已将原始结果放入结果框，可手动复制使用。', 5000);
+  var anySelected = false;
+  Object.keys(parts).forEach(function(k){
+    if((parts[k] || '').trim().length > 0) anySelected = true;
+  });
+  if(!anySelected){
+    showToast('没有可压缩内容（或者你没有勾选任何模块）');
     return;
   }
 
-  // 标准化字段（确保都是字符串）
+  var levelRuleText;
+  if(level === 'lite'){
+    levelRuleText = '轻度：保留更多细节，减少重复啰嗦。';
+  }else if(level === 'hard'){
+    levelRuleText = '重度：极简提要，最大化节省上下文。';
+  }else{
+    levelRuleText = '中度：高密度要点，适合提示词。';
+  }
+
+  var sysMsg = '';
+
+  if(outMode === 'json'){
+    // JSON 模式：要求模型返回一个 JSON 对象
+    sysMsg += '你是一名“提示词精华压缩器”。目标是：在尽量不丢信息的前提下，把设定改写成更适合放进系统提示词的高密度版本。\\n\\n';
+    sysMsg += '压缩强度：'+levelRuleText+'\\n\\n';
+    sysMsg += '【输出要求】\\n';
+    sysMsg += '- 只输出一个 JSON 对象，不要任何多余文字\\n';
+    sysMsg += '- 不要使用代码块（不要使用 Markdown 的三个反引号）\\n';
+    sysMsg += '- JSON 必须包含这些键（没有就给空字符串）：char, rel, npc, world, rule, style, ban, extra\\n\\n';
+    sysMsg += '【各字段内容格式】\\n';
+    sysMsg += '- char：每行一个角色，格式：姓名：一句话精华设定\\n';
+    sysMsg += '- rel：每行一个关系，格式：A ↔ B：关系类型（可选说明）\\n';
+    sysMsg += '- npc：每行一个NPC，格式：姓名[定位](标签1,标签2)：一句话设定\\n';
+    sysMsg += '- world/rule/style：用要点短句换行\\n';
+    sysMsg += '- ban：每行一个需要避免的词或短语\\n';
+    sysMsg += '- extra：用条目记录其它重要设定（不会自动写回，只供参考）';
+  } else {
+    // 纯文本模式：只输出干净中文文本，方便阅读和复制
+    sysMsg += '你是一名“提示词精华提炼师”。目标是：在尽量不丢信息的前提下，把设定改写成高密度、易阅读的中文文本。\\n\\n';
+    sysMsg += '压缩强度：'+levelRuleText+'\\n\\n';
+    sysMsg += '【输出格式】严格按照下面模板输出，并保留所有标题：\\n';
+    sysMsg += '【人物精华】\\n- 角色名：一句话精华设定\\n\\n';
+    sysMsg += '【关系精华】\\n- A ↔ B：关系类型（可选说明）\\n\\n';
+    sysMsg += '【NPC精华】\\n- 姓名[定位](标签1,标签2)：一句话设定\\n\\n';
+    sysMsg += '【世界观精华】\\n- 用条目写世界观要点，每条一行\\n\\n';
+    sysMsg += '【规则精华】\\n- 用条目写必须遵守/禁止的规则，每条一行\\n\\n';
+    sysMsg += '【文风精华】\\n- 用条目写文风要求，每条一行\\n\\n';
+    sysMsg += '【禁用词精华】\\n- 每行一个需要避免的词或短语\\n\\n';
+    sysMsg += '【额外设定精华】\\n- 把其它无法归类的重要信息用条目列出\\n\\n';
+    sysMsg += '【注意】只输出纯文本，不要 JSON，不要代码块，不要多余说明；只为用户消息中出现的板块生成内容，如果某个板块在用户提供的内容中完全没有出现，就不要输出它的标题和内容。';
+  }
+
+  // 只把“勾选过的模块”发给模型
+  var userMsg = '需要压缩的内容如下：\\n\\n';
+  var nameMap = {
+    char:  '人物',
+    rel:   '关系',
+    npc:   'NPC',
+    world: '世界观',
+    rule:  '规则',
+    style: '文风',
+    ban:   '禁用词',
+    extra: '额外设定'
+  };
+  Object.keys(parts).forEach(function(k){
+    var title = nameMap[k] || k;
+    userMsg += '【'+title+' '+k+'】\\n'+(parts[k] || '')+'\\n\\n';
+  });
+
+  // 状态标记 & 按钮
+  cmpIsRunning = true;
+  cmpAbortCtrl = new AbortController();
+  btn.disabled = true;
+  btn.innerHTML = '压缩中…';
+  if(stopBtn) stopBtn.style.display = 'block';
+
+  let result = '';
+
+  try{
+    const baseUrl = cfg.url.replace(/\/+$/,'');
+    const endpoint = baseUrl + '/chat/completions';
+
+    const resp = await fetch(endpoint,{
+      method:'POST',
+      headers:{
+        'Content-Type':'application/json',
+        'Authorization':'Bearer '+cfg.key
+      },
+      body:JSON.stringify({
+        model:cfg.model,
+        messages:[
+          {role:'system',content:sysMsg},
+          {role:'user',content:userMsg}
+        ],
+        temperature:cfg.temp,
+        max_tokens:cfg.maxTokens
+      }),
+      signal: cmpAbortCtrl.signal
+    });
+
+    if(!resp.ok){
+      const errText = await resp.text();
+      showToast('压缩失败('+resp.status+'): '+errText.slice(0,80),4000);
+      return;
+    }
+
+    const data = await resp.json();
+    if(!data.choices || !data.choices[0] || !data.choices[0].message){
+      showToast('压缩失败：返回格式异常',4000);
+      return;
+    }
+    result = data.choices[0].message.content || '';
+  }catch(err){
+    if(err.name === 'AbortError'){
+      // 手动停止，不弹错误
+      return;
+    }
+    showToast('压缩失败：'+err.message,4000);
+    return;
+  }finally{
+    cmpIsRunning = false;
+    cmpAbortCtrl = null;
+    btn.disabled = false;
+    btn.textContent = '🚀 开始压缩';
+    if(stopBtn) stopBtn.style.display = 'none';
+  }
+
+  if(!result) return;
+
+  // 纯文本模式：不解析 JSON，直接写结果
+  if(outMode === 'text'){
+    cmpLastResult = null;
+    document.getElementById('cmpOut').value = result.trim();
+    refreshCmpStats();
+    showToast('压缩完成（纯文本模式），可以直接复制使用',3000);
+    return;
+  }
+
+  // JSON 模式：尝试解析
+  let obj = null;
+  try{
+    obj = safeJsonParse(result);
+  }catch(e){
+    obj = null;
+  }
+
+  if(!obj || typeof obj !== 'object'){
+    cmpLastResult = null;
+    refreshCmpStats();
+    document.getElementById('cmpOut').value = result;
+    showToast('压缩已完成，但模型未按 JSON 返回。已将原始结果放入结果框，可手动复制使用。',5000);
+    return;
+  }
+
   const keys = ['char','rel','npc','world','rule','style','ban','extra'];
-  keys.forEach(k=>{
-    if (typeof obj[k] !== 'string') obj[k] = String(obj[k] ?? '');
+  keys.forEach(function(k){
+    if(typeof obj[k] !== 'string'){
+      obj[k] = (obj[k] == null ? '' : String(obj[k]));
+    }
   });
 
   cmpLastResult = {
-    char : obj.char.trim(),
-    rel  : obj.rel.trim(),
-    npc  : obj.npc.trim(),
-    world: obj.world.trim(),
-    rule : obj.rule.trim(),
-    style: obj.style.trim(),
-    ban  : obj.ban.trim(),
-    extra: obj.extra.trim()
+    char  : obj.char.trim(),
+    rel   : obj.rel.trim(),
+    npc   : obj.npc.trim(),
+    world : obj.world.trim(),
+    rule  : obj.rule.trim(),
+    style : obj.style.trim(),
+    ban   : obj.ban.trim(),
+    extra : obj.extra.trim()
   };
 
-  const out =
-`【人物精华】
-${cmpLastResult.char}
+  // 只输出“被勾选”的板块
+  var outLines = [];
 
-【关系精华】
-${cmpLastResult.rel}
+  if(typeof parts.char !== 'undefined'){
+    outLines.push('【人物精华】\\n'+cmpLastResult.char);
+  }
+  if(typeof parts.rel !== 'undefined'){
+    outLines.push('【关系精华】\\n'+cmpLastResult.rel);
+  }
+  if(typeof parts.npc !== 'undefined'){
+    outLines.push('【NPC精华】\\n'+cmpLastResult.npc);
+  }
+  if(typeof parts.world !== 'undefined'){
+    outLines.push('【世界观精华】\\n'+cmpLastResult.world);
+  }
+  if(typeof parts.rule !== 'undefined'){
+    outLines.push('【规则精华】\\n'+cmpLastResult.rule);
+  }
+  if(typeof parts.style !== 'undefined'){
+    outLines.push('【文风精华】\\n'+cmpLastResult.style);
+  }
+  if(typeof parts.ban !== 'undefined'){
+    outLines.push('【禁用词精华】\\n'+cmpLastResult.ban);
+  }
+  if(typeof parts.extra !== 'undefined'){
+    outLines.push('【额外设定精华（手动复制）】\\n'+cmpLastResult.extra);
+  }
 
-【NPC精华】
-${cmpLastResult.npc}
-
-【世界观精华】
-${cmpLastResult.world}
-
-【规则精华】
-${cmpLastResult.rule}
-
-【文风精华】
-${cmpLastResult.style}
-
-【禁用词精华】
-${cmpLastResult.ban}
-
-【额外设定精华（手动复制）】
-${cmpLastResult.extra}`.trim();
-
-  document.getElementById('cmpOut').value = out;
+  document.getElementById('cmpOut').value = outLines.join('\\n\\n');
   refreshCmpStats();
-  showToast('压缩完成 ✅（已生成可复制版本）');
+  showToast('压缩完成 ✅（已生成可复制版本）',3000);
+}
+function stopCompress(){
+  if(!cmpIsRunning || !cmpAbortCtrl){
+    showToast('当前没有正在运行的压缩');
+    return;
+  }
+  try{
+    cmpAbortCtrl.abort();
+  }catch(e){}
+  showToast('已发送停止压缩的请求');
 }
 function applyOutline(){
 if(!outlineText){showToast('没有大纲内容');return;}
@@ -10055,7 +10151,7 @@ function copyCmpResult(){
 
 function applyCmpResult(){
   if(!cmpLastResult){
-    showToast('请先压缩生成结果');
+    showToast('纯文本模式下不支持一键写回，请手动复制使用；如需写回预设，请选 JSON 输出模式');
     return;
   }
 
