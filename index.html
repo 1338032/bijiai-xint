@@ -5785,6 +5785,11 @@ p+='• 段落间空一行\n';
 p+='• 对话用「」标注\n';
 p+='• 只输出小说正文，无任何说明、章节号、作者按语\n\n';
 
+// 新增：禁止暴露思维链 / 推理过程
+  p+='【输出约束】\n';
+  p+='- 所有构思、推理、分析过程只在你心里完成，不要写在答案里\n';
+  p+='- 不要在输出中出现“思维链”“推理过程”“分析过程”“想一想”“步骤如下”等字样\n';
+  p+='- 不要解释自己的写作思路，只输出小说标题和正文内容\n\n';
 // 人物设定（优化呈现方式）
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
@@ -5921,7 +5926,6 @@ p+='5. 不确定的地方宁可保守也不要乱发挥\n\n';
 p+='现在，深呼吸，让故事在你脑海中活过来。写出让你自己也想继续读下去的文字。\n';
 return p;
 }
-
 // ==================== STREAM API CALL ====================
 async function callAPIStream(messages,onChunk,onDone,onError){
 const cfg=getCurApi();
@@ -6066,6 +6070,21 @@ if(!navigator.onLine){ onError('网络已断开，请检查网络连接后重试
 
 // Fallback: non-stream API call
 method:'POST',
+// 把模型输出里的思维链/推理过程剪掉（防止暴露思考过程）
+function stripMetaThinking(text){
+  if(!text)return '';
+  let t=text;
+
+  // 去掉 <think>...</think> 这种块（有些模型会用这个包裹思考过程）
+  t=t.replace(/<think>[\s\S]*?<\/think>/gi,'');
+
+  // 去掉尾巴上的“思维链：……”“推理过程：……”“分析过程：……”整段
+  t=t.replace(/思维链[:：][\s\S]*$/gi,'');
+  t=t.replace(/推理过程[:：][\s\S]*$/gi,'');
+  t=t.replace(/分析过程[:：][\s\S]*$/gi,'');
+
+  return t.trim();
+}
 async function callAPINonStream(messages){
   const cfg = getCurApi();
   if (!cfg.url || !cfg.key) {
@@ -6105,11 +6124,13 @@ async function callAPINonStream(messages){
       throw new Error('API错误(' + resp.status + '): ' + e.substring(0, 200));
     }
 
-    const data = await resp.json();
-    if (!data.choices || !data.choices[0] || !data.choices[0].message) {
-      throw new Error('API返回格式异常');
-    }
-    return data.choices[0].message.content;
+    const data=await resp.json();
+if(!data.choices || !data.choices[0] || !data.choices[0].message){
+  throw new Error('API返回格式异常');
+}
+let content=data.choices[0].message.content;
+content=stripMetaThinking(content);
+return content;
   } catch (err) {
     if (err.name === 'AbortError') {
       showToast('请求超时，请检查网络或稍后重试', 3000);
@@ -9924,6 +9945,9 @@ sysMsg+='- 每3-4章设置一个小高潮\n';
 sysMsg+='- 伏笔要在埋设后3-5章内回收\n';
 sysMsg+='- 主角要有清晰的成长弧线\n';
 sysMsg+='- 避免"为虐而虐"，冲突要有意义\n';
+sysMsg+='\n【输出约束】\n';
+sysMsg+='- 所有分析、思考过程只在你心里完成，不要写在输出里\n';
+sysMsg+='- 只按要求输出大纲内容，不要写“分析如下”“思维链”等说明\n';
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
 sysMsg+='\n【可用角色】\n';
@@ -10114,7 +10138,9 @@ async function doCompress(){
       showToast('压缩失败：返回格式异常',4000);
       return;
     }
-    result = data.choices[0].message.content || '';
+    let content = data.choices[0].message.content;
+content = stripMetaThinking(content);
+return content;
   }catch(err){
     if(err.name === 'AbortError'){
       // 手动停止，不弹错误
