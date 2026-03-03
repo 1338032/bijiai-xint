@@ -2124,7 +2124,11 @@ border:3px solid rgba(108,92,231,.3);
 }
 body.theme-light .xj-input{background:rgba(255,255,255,.9);border-color:rgba(108,92,231,.2);}
 body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,245,248,.9));}
-#addFsOv{z-index:850;} /* 创作目标 */ .goal-panel{padding:14px 18px;} .goal-card{ background:var(--card);border-radius:16px;padding:18px; border:1px solid var(--border);margin-bottom:12px; } .goal-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;} .goal-card-hdr h3{font-size:14px;font-weight:700;} .goal-progress{ height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0 6px; } .goal-progress-bar{ height:100%;border-radius:4px;transition:width .5s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); } .goal-progress-bar.done{background:linear-gradient(90deg,var(--success),#2ecc71);} .goal-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);} .goal-stat .cur{color:var(--accent2);font-weight:600;} .goal-stat .cur.done{color:var(--success);} .goal-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;} .goal-input-row label{font-size:11px;color:var(--text2);width:70px;flex-shrink:0;} .goal-input-row input{ flex:1;padding:8px 12px;border-radius:9px; border:1px solid var(--border);background:var(--bg); color:var(--text);font-size:12px;outline:none; } .goal-input-row input:focus{border-color:var(--accent);} .goal-tabs{display:flex;gap:0;margin-bottom:12px;} .goal-tab{ flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600; cursor:pointer;border:none;border-bottom:2px solid transparent; color:var(--text2);background:none;transition:all .3s; } .goal-tab.act{color:var(--accent2);border-bottom-color:var(--accent);} .goal-history{max-height:200px;overflow-y:auto;} .goal-history-item{ padding:10px 12px;background:var(--bg);border-radius:9px; border:1px solid var(--border);margin-bottom:6px; display:flex;justify-content:space-between;align-items:center; } .goal-history-item .done-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(81,207,102,.15);color:var(--success); } .goal-history-item .fail-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(255,107,107,.15);color:var(--danger); } /* 达标祝贺弹窗 */ .goal-celebrate{ position:fixed;inset:0;z-index:9000; background:rgba(0,0,0,.6); display:none;align-items:center;justify-content:center;padding:20px; } .goal-celebrate.show{display:flex;} .goal-celebrate-box{ background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.15) 100%); border:2px solid var(--accent);border-radius:24px;padding:30px 24px; text-align:center;max-width:320px;width:100%; animation:celebratePop .5s cubic-bezier(.34,1.56,.64,1); box-shadow:0 20px 60px rgba(108,92,231,.3); } @keyframes celebratePop{ 0%{transform:scale(0) rotate(-10deg);opacity:0} 100%{transform:scale(1) rotate(0);opacity:1} } .goal-celebrate-icon{font-size:64px;margin-bottom:12px;} .goal-celebrate-title{font-size:20px;font-weight:800;margin-bottom:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;} .goal-celebrate-msg{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;} .goal-celebrate-btn{ padding:12px 32px;border-radius:14px;border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;font-size:14px;font-weight:600;cursor:pointer; box-shadow:0 4px 15px rgba(108,92,231,.3); }
+#addFsOv{z-index:850;} /* 创作目标 */ .goal-panel{padding:14px 18px;} .goal-card{ background:var(--card);border-radius:16px;padding:18px; border:1px solid var(--border);margin-bottom:12px; } .goal-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;} .goal-card-hdr h3{font-size:14px;font-weight:700;} .goal-progress{ height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0 6px; } .goal-progress-bar{ height:100%;border-radius:4px;transition:width .5s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); } .goal-progress-bar.done{background:linear-gradient(90deg,var(--success),#2ecc71);} .goal-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);} .goal-stat .cur{color:var(--accent2);font-weight:600;} .goal-stat .cur.done{color:var(--success);} .goal-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;} .goal-input-row label{font-size:11px;color:var(--text2);width:70px;flex-shrink:0;} .goal-input-row input{ flex:1;padding:8px 12px;border-radius:9px; border:1px solid var(--border);background:var(--bg); color:var(--text);font-size:12px;outline:none; } .goal-input-row input:focus{border-color:var(--accent);} .goal-tabs{display:flex;gap:0;margin-bottom:12px;} .goal-tab{ flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600; cursor:pointer;border:none;border-bottom:2px solid transparent; color:var(--text2);background:none;transition:all .3s; } .goal-tab.act{color:var(--accent2);border-bottom-color:var(--accent);} .goal-history{max-height:200px;overflow-y:auto;} .goal-history-item{ padding:10px 12px;background:var(--bg);border-radius:9px; border:1px solid var(--border);margin-bottom:6px; display:flex;justify-content:space-between;align-items:center; } .goal-history-item .done-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(81,207,102,.15);color:var(--success); } .goal-history-item .fail-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(255,107,107,.15);color:var(--danger); } 
+.goal-chart{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
+.goal-chart canvas{width:100%;height:120px;display:block;}
+/* 达标祝贺弹窗 */
+.goal-celebrate{ position:fixed;inset:0;z-index:9000; background:rgba(0,0,0,.6); display:none;align-items:center;justify-content:center;padding:20px; } .goal-celebrate.show{display:flex;} .goal-celebrate-box{ background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.15) 100%); border:2px solid var(--accent);border-radius:24px;padding:30px 24px; text-align:center;max-width:320px;width:100%; animation:celebratePop .5s cubic-bezier(.34,1.56,.64,1); box-shadow:0 20px 60px rgba(108,92,231,.3); } @keyframes celebratePop{ 0%{transform:scale(0) rotate(-10deg);opacity:0} 100%{transform:scale(1) rotate(0);opacity:1} } .goal-celebrate-icon{font-size:64px;margin-bottom:12px;} .goal-celebrate-title{font-size:20px;font-weight:800;margin-bottom:8px; background:linear-gradient(135deg,var(--accent),var(--accent2)); -webkit-background-clip:text;-webkit-text-fill-color:transparent;} .goal-celebrate-msg{font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:20px;} .goal-celebrate-btn{ padding:12px 32px;border-radius:14px;border:none; background:linear-gradient(135deg,var(--accent),var(--accent2)); color:#fff;font-size:14px;font-weight:600;cursor:pointer; box-shadow:0 4px 15px rgba(108,92,231,.3); }
 /* ==================== LOCK SCREEN ==================== */
 .lock-ov{
   display:none;position:fixed;inset:0;z-index:12000;
@@ -2308,7 +2312,22 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <button class="cr-tab" onclick="switchCrTab('novel',this)">我的小说</button>
 <button class="cr-tab" onclick="switchCrTab('goal',this)">创作目标</button>
 </div>
-<div class="cr-list" id="crList"></div> <div class="goal-panel" id="goalPanel" style="display:none"> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📝 本周目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalWeekRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalWeekWords" min="0" step="500" value="5000" placeholder="5000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalWeekChapters" min="0" step="1" value="3" placeholder="3" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekWordsCur">0</span><span id="goalWeekWordsTarget">/ 5000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekChCur">0</span><span id="goalWeekChTarget">/ 3 章</span></div> </div> </div> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📅 本月目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalMonthRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalMonthWords" min="0" step="1000" value="20000" placeholder="20000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalMonthChapters" min="0" step="1" value="12" placeholder="12" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthWordsCur">0</span><span id="goalMonthWordsTarget">/ 20000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthChCur">0</span><span id="goalMonthChTarget">/ 12 章</span></div> </div> </div> <div class="goal-card"> <div class="goal-card-hdr"><h3>📊 创作记录</h3></div> <div style="font-size:11px;color:var(--text2);margin-bottom:8px">仅统计在创作页面手动写作的字数和章节（作坊AI生成不计入）</div> <div class="goal-history" id="goalHistory"></div> <button class="btn-s" onclick="resetGoalProgress()" style="margin-top:10px;border-color:rgba(255,107,107,.3);color:var(--danger)">🗑️ 重置本周/本月进度</button> </div> </div>
+<div class="cr-list" id="crList"></div> <div class="goal-panel" id="goalPanel" style="display:none"> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📝 本周目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalWeekRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalWeekWords" min="0" step="500" value="5000" placeholder="5000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalWeekChapters" min="0" step="1" value="3" placeholder="3" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekWordsCur">0</span><span id="goalWeekWordsTarget">/ 5000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalWeekChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalWeekChCur">0</span><span id="goalWeekChTarget">/ 3 章</span></div> </div> </div> <div class="goal-card"> <div class="goal-card-hdr"> <h3>📅 本月目标</h3> <span style="font-size:10px;color:var(--text2)" id="goalMonthRange"></span> </div> <div class="goal-input-row"> <label>目标字数</label> <input type="number" id="goalMonthWords" min="0" step="1000" value="20000" placeholder="20000" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">字</span> </div> <div class="goal-input-row"> <label>目标章数</label> <input type="number" id="goalMonthChapters" min="0" step="1" value="12" placeholder="12" onchange="saveGoalSettings()"> <span style="font-size:11px;color:var(--text2)">章</span> </div> <div style="margin-top:10px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">字数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthWordsBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthWordsCur">0</span><span id="goalMonthWordsTarget">/ 20000 字</span></div> </div> <div style="margin-top:8px"> <div style="font-size:11px;color:var(--text2);margin-bottom:4px">章数进度</div> <div class="goal-progress"><div class="goal-progress-bar" id="goalMonthChBar"></div></div> <div class="goal-stat"><span class="cur" id="goalMonthChCur">0</span><span id="goalMonthChTarget">/ 12 章</span></div> </div> </div><div class="goal-card">
+  <div class="goal-card-hdr"><h3>📊 创作记录</h3></div>
+  <div style="font-size:11px;color:var(--text2);margin-bottom:8px">
+    仅统计在创作页面手动写作的字数和章节（作坊AI生成不计入）
+  </div>
+  <div class="goal-history" id="goalHistory"></div>
+  <!-- 新增：年度折线统计图 -->
+  <div class="goal-chart" id="goalYearChartWrap">
+    <canvas id="goalYearChart" width="300" height="120"></canvas>
+  </div>
+  <button class="btn-s"
+          onclick="resetGoalProgress()"
+          style="margin-top:10px;border-color:rgba(255,107,107,.3);color:var(--danger)">
+    🗑️ 重置本周/本月进度
+  </button>
+</div> </div>
 </div>
 <!-- SETTINGS -->
 <div class="pg" id="pg-settings">
@@ -2436,6 +2455,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <button class="adv-only" onclick="toggleFullscreen()" id="btnFS" aria-label="全屏">⛶</button>
 <button class="adv-only" onclick="copyCurrentArticle()" aria-label="复制全文">📋</button>
 <button class="adv-only" onclick="copyCurChapter()" title="复制当前章节">📄</button>
+<button class="adv-only" onclick="importRdToCreate()" title="导入到创作编辑">✍</button>
 <button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
 <button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
 <button class="adv-only" onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
@@ -2526,6 +2546,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="notice">
 <p><strong>当前版本：v2.9.0</strong></p>
 <p>增加了简洁模式，可隐藏部分复杂按键，在页面美化开启</p>
+<p>创作目标页面最下方增加折线统计图，记录年度写作字数趋势</p>
 <p>修复了资源无法导出的问题</p>
 <p>优化了各方面的体验，着重优化了精华压缩器，现在基本可以正常使用</p>
 <p>完善了手册，更多示例和使用技巧正在下方</p>
@@ -3258,17 +3279,26 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 <div id="outlineResult" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;max-height:40vh;overflow-y:auto">
 <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:8px">📋 生成的大纲</div>
-<div id="outlineContent" style="font-size:12px;line-height:1.8;color:var(--text);white-space:pre-wrap;word-wrap:break-word"></div>
+<div id="outlineResult" style="display:none;background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:10px;max-height:40vh;overflow-y:auto">
+  <div style="font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:8px">📋 生成的大纲（可手动修改）</div>
+  <textarea id="outlineContent"
+            style="width:100%;min-height:180px;max-height:40vh;resize:vertical;
+                   font-size:12px;line-height:1.8;color:var(--text);
+                   background:var(--bg);border:1px solid var(--border);
+                   border-radius:8px;padding:8px 10px;box-sizing:border-box;
+                   font-family:inherit;white-space:pre-wrap;"></textarea>
+</div>
 </div>
 <div class="res-exp-btns">
 <button class="dlg-cancel" onclick="closeOutlineGen()">取消</button>
 <button class="dlg-ok" id="outlineGenBtn" onclick="doGenOutline()">🧠 生成大纲</button>
 </div>
 <div id="outlineActions" style="display:none;margin-top:8px">
-<div class="res-exp-btns">
-<button class="dlg-cancel" onclick="doGenOutline()">🔄 重新生成</button>
-<button class="dlg-ok" onclick="applyOutline()">✅ 确认并创建小说</button>
-</div>
+  <div class="res-exp-btns">
+    <button class="dlg-cancel" onclick="doGenOutline()">🔄 重新生成</button>
+    <button class="dlg-cancel" onclick="saveOutlineAsDraft()">💾 保存为草稿</button>
+    <button class="dlg-ok" onclick="applyOutline()">✅ 确认并创建小说</button>
+  </div>
 </div>
 </div>
 </div>
@@ -3305,12 +3335,18 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 
 <!-- AI生成的故事区 -->
 <div class="wheel-story-panel" id="wheelStoryArea" style="display:none">
-<div class="wheel-story-header">📖 故事梗概</div>
-<div class="wheel-story-content" id="wheelStoryContent"></div>
-<div class="wheel-story-actions">
-<button class="wheel-btn-secondary" onclick="copyWheelStory()">📋 复制梗概</button>
-<button class="wheel-btn-primary" onclick="useWheelStory()">✅ 使用此梗概</button>
-</div>
+  <div class="wheel-story-header">📖 故事梗概</div>
+  <textarea class="wheel-story-content" id="wheelStoryContent"
+            style="width:100%;min-height:160px;max-height:200px;resize:vertical;
+                   font-size:13px;line-height:1.9;color:var(--text);
+                   background:var(--bg);border:1px solid var(--border);
+                   border-radius:8px;padding:8px 10px;box-sizing:border-box;
+                   font-family:inherit;"></textarea>
+  <div class="wheel-story-actions">
+    <button class="wheel-btn-secondary" onclick="copyWheelStory()">📋 复制梗概</button>
+    <button class="wheel-btn-secondary" onclick="saveWheelStoryToDraft()">💾 保存为草稿</button>
+    <button class="wheel-btn-primary" onclick="useWheelStory()">✅ 使用此梗概</button>
+  </div>
 </div>
 </div>
 
@@ -5136,32 +5172,43 @@ maxTokens:parseInt(document.getElementById('apiMaxTokens').value)||4096
 }
 // 拉取模型列表
 async function fetchModels(){
-const cfg=getCurApi();
-if(!cfg.url||!cfg.key){showToast('请先填写API地址和密钥');return;}
-showToast('正在拉取模型列表...');
-const baseUrl=cfg.url.replace(/\/+$/,'');
-try{
-const resp=await fetch(baseUrl+'/models',{
-headers:{'Authorization':'Bearer '+cfg.key}
-});
-if(!resp.ok)throw new Error('HTTP '+resp.status);
-const data=await resp.json();
-let models=[];
-if(data.data&&Array.isArray(data.data)){
-models=data.data.map(m=>m.id).sort();
-}else if(Array.isArray(data)){
-models=data.map(m=>m.id||m).sort();
-}
-if(models.length===0){showToast('未获取到模型');return;}
-const dl=document.getElementById('modelSuggest');
-dl.innerHTML='';
-models.forEach(m=>{
-const opt=document.createElement('option');
-opt.value=m;
-dl.appendChild(opt);
-});
-showToast('已拉取 '+models.length+' 个模型，点击输入框可选择');
-}catch(e){showToast('拉取失败: '+e.message,3000);}
+  const cfg=getCurApi();
+  // 这里用 showToastForce：即使在勿扰模式下，也要提示 API 没填
+  if(!cfg.url||!cfg.key){
+    showToastForce('请先填写API地址和密钥');
+    return;
+  }
+
+  // 拉取模型过程中的提示全部强制显示
+  showToastForce('正在拉取模型列表...');
+  const baseUrl=cfg.url.replace(/\/+$/,'');
+  try{
+    const resp=await fetch(baseUrl+'/models',{
+      headers:{'Authorization':'Bearer '+cfg.key}
+    });
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const data=await resp.json();
+    let models=[];
+    if(data.data && Array.isArray(data.data)){
+      models=data.data.map(m=>m.id).sort();
+    }else if(Array.isArray(data)){
+      models=data.map(m=>m.id||m).sort();
+    }
+    if(models.length===0){
+      showToastForce('未获取到模型');
+      return;
+    }
+    const dl=document.getElementById('modelSuggest');
+    dl.innerHTML='';
+    models.forEach(m=>{
+      const opt=document.createElement('option');
+      opt.value=m;
+      dl.appendChild(opt);
+    });
+    showToastForce('已拉取 '+models.length+' 个模型，点击输入框可选择');
+  }catch(e){
+    showToastForce('拉取失败: '+e.message,3000);
+  }
 }
 
 // 测试API连接
@@ -7577,7 +7624,46 @@ const header='════════════════════\n「'
 const footer='\n\n════════════════════\n本文由AI辅助创作，内容仅供参考\n创作工具：笔记AI '+APP_VER+'（AI创作工坊）\n网页作者：心田\n════════════════════';
 doCopy(header+text+footer);
 }
+function importRdToCreate(){
+  if(!curRd){
+    showToast('没有打开的作品');
+    return;
+  }
+  // 新建一个创作作品
+  const work={
+    id:uid(),
+    type:curRd.type==='long'?'novel':'draft',
+    title:curRd.title||'未命名',
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  if(work.type==='novel'){
+    // 长篇：把每章搬过去
+    if(Array.isArray(curRd.chapters)&&curRd.chapters.length>0){
+      work.chapters=curRd.chapters.slice();
+    }else{
+      work.chapters=[curRd.content||''];
+    }
+  }else{
+    // 短篇：整篇当成一篇草稿
+    if(curRd.content){
+      work.content=curRd.content;
+    }else if(Array.isArray(curRd.chapters)){
+      work.content=curRd.chapters.join('\n\n');
+    }else{
+      work.content='';
+    }
+  }
 
+  crWorks.unshift(work);
+  sv('bj_crWorks',crWorks);
+  showToast('已导入到创作编辑 ✍');
+
+  // 切到创作页面并打开编辑器
+  const navBtns=document.querySelectorAll('.bnav-i');
+  if(navBtns[2]) switchPage('create',navBtns[2]);
+  openEditor(work.id);
+}
 function doCopy(text){
 if(navigator.clipboard&&navigator.clipboard.writeText){
 navigator.clipboard.writeText(text).then(()=>showToast('已复制到剪贴板 📋')).catch(()=>fbCopy(text));
@@ -8450,6 +8536,9 @@ function exportData(){
         appearance: ap,
         userCard: userCard,
         lockSettings: lockSettings,
+        goalSettings: goalSettings,
+        goalProgress: goalProgress,
+        goalYearStats: goalYearStats,
         globalWorld: globalWorld,
         globalRule: globalRule,
         globalBanWords: globalBanWords,
@@ -8523,6 +8612,18 @@ if(data.worldPresets){worldP=data.worldPresets;sv(K.worldP,worldP);}
 if(data.lockSettings){
   lockSettings=data.lockSettings;
   sv('bj_lockSettings',lockSettings);}
+  if(data.goalSettings){
+  goalSettings=data.goalSettings;
+  sv('bj_goalSettings',goalSettings);
+}
+if(data.goalProgress){
+  goalProgress=data.goalProgress;
+  sv('bj_goalProgress',goalProgress);
+}
+if(data.goalYearStats){
+  goalYearStats=data.goalYearStats;
+  sv('bj_goalYearStats',goalYearStats);
+}
 if(data.stylePresets){styleP=data.stylePresets;sv('bj_styleP',styleP);}
 if(data.rulePresets){ruleP=data.rulePresets;sv('bj_ruleP',ruleP);}
 if(data.curRule){curRule=data.curRule;sv('bj_curRule',curRule);}
@@ -9844,23 +9945,23 @@ if(useStream){
 await callAPIStream(messages,
 (fullText)=>{
 outlineText=fullText;
-contentEl.textContent=fullText;
+contentEl.value=fullText;
 contentEl.parentElement.scrollTop=contentEl.parentElement.scrollHeight;
 },
 (fullText)=>{
 btn.disabled=false;btn.textContent='🧠 生成大纲';
 if(fullText){
 outlineText=fullText;
-contentEl.textContent=fullText;
+contentEl.value=fullText;
 btn.style.display='none';
 document.getElementById('outlineActions').style.display='block';
 }else{
-contentEl.textContent='生成已取消';
+contentEl.value='生成已取消';
 }
 },
 (errMsg)=>{
 btn.disabled=false;btn.textContent='🧠 生成大纲';
-contentEl.textContent='生成失败：'+errMsg;
+contentEl.value='生成失败：'+errMsg;
 }
 );
 }else{
@@ -9868,11 +9969,11 @@ const result=await callAPINonStream(messages);
 btn.disabled=false;btn.textContent='🧠 生成大纲';
 if(result){
 outlineText=result;
-contentEl.textContent=result;
+contentEl.value=result;
 btn.style.display='none';
 document.getElementById('outlineActions').style.display='block';
 }else{
-contentEl.textContent='生成失败，请检查API设置';
+contentEl.value='生成失败，请检查API设置';
 }
 }
 }
@@ -10117,31 +10218,61 @@ function stopCompress(){
   showToast('已发送停止压缩的请求');
 }
 function applyOutline(){
-if(!outlineText){showToast('没有大纲内容');return;}
-let title='';
-const lines=outlineText.split('\n');
-for(let i=0;i<Math.min(3,lines.length);i++){
-const l=lines[i].trim();
-if(l&&l.length<40&&!l.startsWith('-')&&!l.startsWith('第')){
-title=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
-break;
+  const contentEl=document.getElementById('outlineContent');
+  const text=((contentEl && (contentEl.value||contentEl.textContent))||'').trim();
+  if(!text){
+    showToast('没有大纲内容');
+    return;
+  }
+
+  let title='';
+  const lines=text.split('\n');
+  for(let i=0;i<Math.min(3,lines.length);i++){
+    const l=lines[i].trim();
+    if(l && l.length<40 && !l.startsWith('-')){
+      title=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
+      break;
+    }
+  }
+  const inputTitle=(document.getElementById('outlineTitle').value||'').trim();
+  if(inputTitle)title=inputTitle;
+  if(!title)title='未命名小说';
+
+  const work={
+    id:uid(),
+    type:'novel',
+    title:title,
+    chapters:[''],
+    outline:text, // 用当前编辑后的文本
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  crWorks.unshift(work);
+  sv('bj_crWorks',crWorks);
+  closeOutlineGen();
+  openEditor(work.id);
+  showToast('小说已创建，大纲已保存 📋');
 }
-}
-const inputTitle=(document.getElementById('outlineTitle').value||'').trim();
-if(inputTitle)title=inputTitle;
-if(!title)title='未命名小说';
-const work={
-id:uid(),type:'novel',title:title,
-chapters:[''],
-outline:outlineText,
-createdAt:new Date().toISOString(),
-updatedAt:new Date().toISOString()
-};
-crWorks.unshift(work);
-sv('bj_crWorks',crWorks);
-closeOutlineGen();
-openEditor(work.id);
-showToast('小说已创建，大纲已保存 📋');
+function saveOutlineAsDraft(){
+  const el=document.getElementById('outlineContent');
+  if(!el)return;
+  const text=((el.value||el.textContent)||'').trim();
+  if(!text){
+    showToast('没有大纲内容');
+    return;
+  }
+  const baseTitle=(document.getElementById('outlineTitle').value||'AI大纲').trim()||'AI大纲';
+  const work={
+    id:uid(),
+    type:'draft',
+    title:baseTitle+'（大纲）',
+    content:text,
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  crWorks.unshift(work);
+  sv('bj_crWorks',crWorks);
+  showToast('大纲已保存到创作草稿 ✍');
 }
 function copyCmpResult(){
   const t=(document.getElementById('cmpOut').value||'').trim();
@@ -11350,14 +11481,14 @@ showToast('已复制：'+text);
 }
 
 function copyWheelStory(){
-const content=document.getElementById('wheelStoryContent').textContent;
+const content=document.getElementById('wheelStoryContent').value;
 if(!content){showToast('没有故事内容');return;}
 doCopy(content);
 showToast('故事梗概已复制 📋');
 }
 
 function useWheelStory(){
-const content=document.getElementById('wheelStoryContent').textContent;
+const content=document.getElementById('wheelStoryContent').value;
 if(!content){showToast('没有故事内容');return;}
 closeWheelPanel();
 document.getElementById('searchInput').value=content;
@@ -11365,7 +11496,27 @@ const wsBtn=document.querySelector('.bnav-i');
 switchPage('workshop',wsBtn);
 showToast('已填入作坊，可以开始创作啦 ✨');
 }
-
+function saveWheelStoryToDraft(){
+  const el=document.getElementById('wheelStoryContent');
+  if(!el)return;
+  const text=(el.value||'').trim();
+  if(!text){
+    showToast('没有梗概可以保存');
+    return;
+  }
+  const title='转盘故事梗概 '+new Date().toLocaleString();
+  const work={
+    id:uid(),
+    type:'draft',
+    title:title,
+    content:text,
+    createdAt:new Date().toISOString(),
+    updatedAt:new Date().toISOString()
+  };
+  crWorks.unshift(work);
+  sv('bj_crWorks',crWorks);
+  showToast('梗概已保存到创作草稿 ✍');
+}
 async function aiGenStoryFromWheel(){
 if(wheelResults.length===0){showToast('请先转动转盘');return;}
 const cfg=getCurApi();
@@ -11391,35 +11542,37 @@ const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
 const storyArea=document.getElementById('wheelStoryArea');
 const storyContent=document.getElementById('wheelStoryContent');
 storyArea.style.display='block';
-storyContent.textContent='正在构思故事...';
+storyContent.value='正在构思故事...';
 
 if(useStream){
-await callAPIStream(messages,
-(text)=>{storyContent.textContent=text;},
-(text)=>{
-btn.disabled=false;
-btn.textContent='🔄 重新生成';
-if(text){
-storyContent.textContent=text;
-storyArea.scrollIntoView({behavior:'smooth',block:'center'});
-}
-},
-(err)=>{
-btn.disabled=false;
-btn.textContent='🤖 AI生成梗概';
-storyContent.textContent='生成失败：'+err;
-}
-);
+  await callAPIStream(messages,
+    (text)=>{
+      storyContent.value=text;
+    },
+    (text)=>{
+      btn.disabled=false;
+      btn.textContent='🔄 重新生成';
+      if(text){
+        storyContent.value=text;
+        storyArea.scrollIntoView({behavior:'smooth',block:'center'});
+      }
+    },
+    (err)=>{
+      btn.disabled=false;
+      btn.textContent='🤖 AI生成梗概';
+      storyContent.value='生成失败：'+err;
+    }
+  );
 }else{
-const result=await callAPINonStream(messages);
-btn.disabled=false;
-btn.textContent='🔄 重新生成';
-if(result){
-storyContent.textContent=result;
-storyArea.scrollIntoView({behavior:'smooth',block:'center'});
-}else{
-storyContent.textContent='生成失败，请检查API设置';
-}
+  const result=await callAPINonStream(messages);
+  btn.disabled=false;
+  btn.textContent='🔄 重新生成';
+  if(result){
+    storyContent.value=result;
+    storyArea.scrollIntoView({behavior:'smooth',block:'center'});
+  }else{
+    storyContent.value='生成失败，请检查API设置';
+  }
 }
 }
 
@@ -14248,6 +14401,7 @@ weekKey:'',weekWords:0,weekChapters:0,
 monthKey:'',monthWords:0,monthChapters:0,
 history:[]
 });
+let goalYearStats=ld('bj_goalYearStats',{}); // 每年每月手动写作字数统计
 // 已弹过的达标提醒（防重复弹窗）
 let goalCelebrated=ld('bj_goalCelebrated',{weekWords:false,weekCh:false,monthWords:false,monthCh:false,lastWeekKey:'',lastMonthKey:''});
 
@@ -14332,18 +14486,31 @@ renderGoalPanel();
 
 // 记录手动创作的字数和章节（由编辑器保存时调用）
 function recordManualWrite(addedWords,addedChapters){
-checkGoalReset();
-if(addedWords>0){
-goalProgress.weekWords+=addedWords;
-goalProgress.monthWords+=addedWords;
-}
-if(addedChapters>0){
-goalProgress.weekChapters+=addedChapters;
-goalProgress.monthChapters+=addedChapters;
-}
-sv('bj_goalProgress',goalProgress);
-// 检查是否达标
-checkGoalComplete();
+  checkGoalReset();
+  if(addedWords>0){
+    // 周 / 月进度
+    goalProgress.weekWords+=addedWords;
+    goalProgress.monthWords+=addedWords;
+
+    // === 新增：当年每个月的手动写作字数统计 ===
+    const now=new Date();
+    const yearKey=String(now.getFullYear());
+    const monthIndex=now.getMonth(); // 0-11
+    if(!goalYearStats[yearKey]) goalYearStats[yearKey]=Array(12).fill(0);
+    goalYearStats[yearKey][monthIndex]+=addedWords;
+    sv('bj_goalYearStats',goalYearStats);
+  }
+  if(addedChapters>0){
+    goalProgress.weekChapters+=addedChapters;
+    goalProgress.monthChapters+=addedChapters;
+  }
+  sv('bj_goalProgress',goalProgress);
+
+  // 更新折线图
+  renderGoalYearChart();
+
+  // 检查是否达标
+  checkGoalComplete();
 }
 
 function checkGoalComplete(){
@@ -14441,6 +14608,8 @@ mcCur.className='cur'+(mcPct>=100?' done':'');
 document.getElementById('goalMonthChTarget').textContent='/ '+goalSettings.monthChapters+' 章'+(mcPct>=100?' ✅':'');
 // 历史记录
 renderGoalHistory();
+// 年度折线图
+renderGoalYearChart();
 }
 
 function renderGoalHistory(){
@@ -14465,7 +14634,107 @@ div.innerHTML=
 container.appendChild(div);
 });
 }
+function renderGoalYearChart(){
+  const wrap=document.getElementById('goalYearChartWrap');
+  const canvas=document.getElementById('goalYearChart');
+  if(!wrap||!canvas)return;
 
+  const ctx=canvas.getContext('2d');
+  // 清空画布
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+
+  const now=new Date();
+  const yearKey=String(now.getFullYear());
+  const data=goalYearStats[yearKey]||Array(12).fill(0);
+
+  // 如果全年都没写过字，就显示一行提示
+  const sum=data.reduce((a,b)=>a+b,0);
+  if(sum===0){
+    ctx.fillStyle='rgba(144,144,168,0.9)';
+    ctx.font='12px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('本年度还没有在创作页面手动写作的字数记录',canvas.width/2,canvas.height/2);
+    return;
+  }
+
+  // 找到最大值，确定纵轴比例
+  const max=Math.max.apply(null,data);
+  const paddingLeft=30;
+  const paddingRight=10;
+  const paddingTop=10;
+  const paddingBottom=20;
+  const w=canvas.width-paddingLeft-paddingRight;
+  const h=canvas.height-paddingTop-paddingBottom;
+
+  // 坐标轴
+  ctx.strokeStyle='rgba(144,144,168,0.6)';
+  ctx.lineWidth=1;
+  ctx.beginPath();
+  ctx.moveTo(paddingLeft,paddingTop);
+  ctx.lineTo(paddingLeft,paddingTop+h);
+  ctx.lineTo(paddingLeft+w,paddingTop+h);
+  ctx.stroke();
+
+  // y 轴刻度（向上取整到合理的数）
+  const stepBase=Math.pow(10,Math.floor(Math.log10(max||1)));
+  const yMax=Math.ceil(max/stepBase)*stepBase;
+  const yStep=yMax/4;
+
+  ctx.fillStyle='rgba(144,144,168,0.9)';
+  ctx.font='10px sans-serif';
+  ctx.textAlign='right';
+  for(let i=0;i<=4;i++){
+    const yVal=yStep*i;
+    const yPos=paddingTop+h-(yVal/yMax)*h;
+    ctx.beginPath();
+    ctx.moveTo(paddingLeft,yPos);
+    ctx.lineTo(paddingLeft+w,yPos);
+    ctx.strokeStyle='rgba(144,144,168,0.15)';
+    ctx.stroke();
+    ctx.fillText(yVal,paddingLeft-4,yPos+3);
+  }
+
+  // 折线
+  const monthCount=12;
+  const stepX=w/(monthCount-1);
+  ctx.beginPath();
+  data.forEach((val,idx)=>{
+    const x=paddingLeft+stepX*idx;
+    const y=paddingTop+h-(val/yMax)*h;
+    if(idx===0)ctx.moveTo(x,y);
+    else ctx.lineTo(x,y);
+  });
+  ctx.strokeStyle='var(--accent)';
+  ctx.lineWidth=2;
+  ctx.stroke();
+
+  // 圆点
+  ctx.fillStyle='var(--accent2)';
+  data.forEach((val,idx)=>{
+    const x=paddingLeft+stepX*idx;
+    const y=paddingTop+h-(val/yMax)*h;
+    ctx.beginPath();
+    ctx.arc(x,y,3,0,Math.PI*2);
+    ctx.fill();
+  });
+
+  // x 轴月份文字
+  const monthNames=['1','2','3','4','5','6','7','8','9','10','11','12'];
+  ctx.fillStyle='rgba(144,144,168,0.9)';
+  ctx.font='10px sans-serif';
+  ctx.textAlign='center';
+  monthNames.forEach((m,idx)=>{
+    const x=paddingLeft+stepX*idx;
+    const y=paddingTop+h+12;
+    ctx.fillText(m,x,y);
+  });
+
+  // 标题小字
+  ctx.textAlign='left';
+  ctx.fillStyle='rgba(144,144,168,0.9)';
+  ctx.font='10px sans-serif';
+  ctx.fillText(yearKey+' 年每月手动写作字数（不含作坊AI）',paddingLeft,paddingTop-2);
+}
 function resetGoalProgress(){
 showDlg('重置进度','确定要重置本周和本月的创作进度吗？目标设置不会改变。',()=>{
 goalProgress.weekWords=0;
@@ -14489,7 +14758,7 @@ showToast=function(msg,dur){
   // 勿扰模式：只拦截“普通提示”，关键错误仍提示
   const important =
     (typeof msg==='string') &&
-    (msg.includes('失败') || msg.includes('错误') || msg.includes('请先') || msg.includes('⚠️') || msg.includes('❌') || msg.includes('🔒'));
+    (msg.includes('失败') || msg.includes('错误') || msg.includes('请先') || msg.includes('⚠️') || msg.includes('❌') || msg.includes('连接') || msg.includes('API'));
 
   if(dndMode && !important){
     console.log('[勿扰] 已拦截提示:',msg);
