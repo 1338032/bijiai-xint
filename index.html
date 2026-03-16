@@ -2226,7 +2226,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.9.5</div>
+<div class="splash-ver" id="splashVer">v2.9.6</div>
 </div>
 
 <!-- APP -->
@@ -2544,13 +2544,11 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p>所有数据都保存在你的浏览器本地（或APP内置浏览器），你可以 <strong>随时导出备份</strong>，不依赖云端账号，也不和任何平台绑定。</p>
 
 <div class="notice">
-  <p><strong>当前版本：v2.9.5</strong></p>
-  <p>✓ 增强精华压缩器：可以压缩人设/世界观/规则/禁用词，支持额外设定区</p>
-  <p>✓ 创作目标页新增「年度折线图」，查看每月写作趋势</p>
-  <p>✓ 优化资源导出逻辑，更好适配移动端浏览器 / APK</p>
-  <p>✓ 优化API设置，尽量减少报错</p>
-  <p>✓ 调整手册结构和星笺提示词，让说明更清晰、陪伴更自然</p>
-  <p>✓ 修复删除日志的弹窗会被遮挡等bug</p>
+  <p><strong>当前版本：v2.9.6</strong></p>
+  <p>✓ API兼容性全面升级</p>
+  <p>✓ 修复多个Bug</p>
+  <p>✓ 数据完整性增强</p>
+  <p>✓ 体验优化</p>
 </div>
 
 <h3>二、创作理念：AI是搭子，不是替身</h3>
@@ -2950,13 +2948,13 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <div class="contact">
   <p>📕 小红书：95567118758</p>
   <p>📕 小红书：27418565861</p>
-  <p>💬 微信：Aa9620520</p>
+  <p>🎵 抖音：60372879897</p>
   <p>💬 QQ：962005530</p>
   <p style="margin-top:8px">如果你遇到BUG、使用困难、功能建议，或者只是想分享一段自己很满意的文字，都欢迎来找我。看到消息会尽量回复，也会根据大家的反馈持续调整笔记AI。</p>
 </div>
 
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v2.9.5 · Created by 心田<br>让每一个灵感都有机会长成作品
+笔记AI v2.9.6 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
 
 </div>
@@ -4387,7 +4385,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v2.9.5';
+const APP_VER='v2.9.6';
 
 // ==================== STORAGE ====================
 const K={
@@ -5020,10 +5018,12 @@ if(bIdx>-1){
 const cover=cols.books[bIdx].cover;
 const status=cols.books[bIdx].status;
 const rating=cols.books[bIdx].rating;
+const chOutlines=cols.books[bIdx].chOutlines;
 cols.books[bIdx]=JSON.parse(JSON.stringify(article));
 cols.books[bIdx].cover=cover;
 cols.books[bIdx].status=status;
 cols.books[bIdx].rating=rating;
+if(!cols.books[bIdx].chOutlines&&chOutlines)cols.books[bIdx].chOutlines=chOutlines;
 sv(K.cols,cols);
 }
 }else{
@@ -5050,7 +5050,7 @@ function getCurApi(){
   const key = (document.getElementById('apiKey') && document.getElementById('apiKey').value || '').trim();
   let model = (document.getElementById('apiModel') && document.getElementById('apiModel').value || '').trim();
   let temp = parseFloat(document.getElementById('apiTemp') && document.getElementById('apiTemp').value) || 0.8;
-  let maxTokens = parseInt(document.getElementById('apiMaxTokens') && document.getElementById('apiMaxTokens').value) || 2000;
+  let maxTokens = parseInt(document.getElementById('apiMaxTokens') && document.getElementById('apiMaxTokens').value) || 4096;
 
   // 如果用户没写 http/https，自动补成 https://
   if (url && !/^https?:\/\//i.test(url)) {
@@ -5884,13 +5884,21 @@ p+='4. 如果设定之间有冲突，以核心人物设定为准\n';
 p+='5. 不确定的地方宁可保守也不要乱发挥\n\n';
 }
 p+='现在，深呼吸，让故事在你脑海中活过来。写出让你自己也想继续读下去的文字。\n';
+
+// 系统提示词超长保护：如果超过6000字符，精简非核心部分
+if(p.length > 10000){
+  // 删掉示范部分，只保留规则
+  p = p.replace(/【让文字有温度——五感写作法】[\s\S]*?【对话的艺术】/g, '【对话的艺术】');
+  p = p.replace(/【节奏呼吸】[\s\S]*?永远不要匀速行驶。\n\n/g, '');
+}
+
 return p;
 }
 // ==================== STREAM API CALL ====================
 async function callAPIStream(messages,onChunk,onDone,onError){
   const cfg = getCurApi();
   if(!cfg.url || !cfg.key){
-    showToast('请先在设置中填写 API 地址和密钥');
+    showToast('请先在底部「设置」→「API设置」中填写地址和密钥',4000);
     if(onError) onError('未配置API');
     return;
   }
@@ -6034,6 +6042,33 @@ async function callAPIStream(messages,onChunk,onDone,onError){
         }
       }
       if(sseDone) break;
+      // 兼容：部分API每行一个data不用双换行分隔
+      if(!sseDone && buffer.length > 0){
+        let lines2 = buffer.split('\n');
+        let remaining = '';
+        for(let li=0; li<lines2.length; li++){
+          let line2 = lines2[li];
+          if(line2.startsWith('data:')){
+            let d2 = line2.slice(5).trim();
+            if(d2 === '[DONE]'){ sseDone = true; break; }
+            if(d2){
+              try{
+                const j2 = JSON.parse(d2);
+                const ch2 = j2 && j2.choices && j2.choices[0];
+                const delta2 = ch2 && (ch2.delta || ch2.message || {});
+                const chunk2 = (delta2 && (delta2.content ?? delta2.text ?? delta2.reasoning_content)) || '';
+                if(chunk2){ fullText += chunk2; onChunk(fullText, chunk2); }
+              }catch(e2){
+                // 可能是不完整的JSON，留给下一次
+                remaining += line2 + '\n';
+              }
+            }
+          } else if(line2.trim()){
+            remaining += line2 + '\n';
+          }
+        }
+        buffer = remaining;
+      }
     }
 
     onDone(fullText);
@@ -6056,9 +6091,6 @@ async function callAPIStream(messages,onChunk,onDone,onError){
   }
 }
 
-// Fallback: non-stream API call
-method:'POST',
-// 把模型输出里的思维链/推理过程剪掉（防止暴露思考过程）
 function stripMetaThinking(text){
   if(!text)return '';
   let t=text;
@@ -6076,7 +6108,7 @@ function stripMetaThinking(text){
 async function callAPINonStream(messages){
   const cfg = getCurApi();
   if(!cfg.url || !cfg.key){
-    showToast('请先在设置中填写 API 地址和密钥');
+    showToast('请先在底部「设置」→「API设置」中填写地址和密钥',4000);
     return null;
   }
 
@@ -6463,7 +6495,7 @@ const lines2=result.split(/\n/);
 for(let i=0;i<Math.min(5,lines2.length);i++){
 const l=lines2[i].trim();
 if(!l)continue;
-if(l.length>0&&l.length<40&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')){
+if(l.length>0&&l.length<50&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')&&!l.startsWith('——')&&!l.startsWith('…')&&!/^[　\s]*[，。、！？：；]/.test(l)){
 title2=l.replace(/^[#*《「【\s:：标题]+/,'').replace(/[》」】\s]+$/,'').trim();
 content2=lines2.slice(i+1).join('\n').trim();
 break;
@@ -6518,7 +6550,7 @@ let titleLine='';
 for(let i=0;i<Math.min(5,lines.length);i++){
 const l=lines[i].trim();
 if(!l)continue;
-if(l.length>0&&l.length<40&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')){
+if(l.length>0&&l.length<50&&!l.startsWith('　')&&!l.startsWith('"')&&!l.startsWith('"')&&!l.startsWith('「')&&!l.startsWith('——')&&!l.startsWith('…')&&!/^[　\s]*[，。、！？：；]/.test(l)){
 titleLine=l;
 content=lines.slice(i+1).join('\n').trim();
 break;
@@ -6536,7 +6568,7 @@ prompt:searchText
 // 字数不足自动补写
 const mWCheck=parseInt(document.getElementById('minWords').value)||800;
 const actualWc=countWords(content);
-if(actualWc<mWCheck&&actualWc>100){
+if(actualWc<mWCheck&&actualWc>200){
 showToast('字数不足('+actualWc+'/'+mWCheck+')，正在自动补写...',3000);
 const extendMsg=[
 {role:'system',content:buildSysPrompt()},
@@ -6613,7 +6645,6 @@ setTimeout(()=>generateNonStream(messages,type,searchText),500);
 
 // Non-stream fallback
 async function generateNonStream(messages,type,searchText){
-if(isGen)return;
 isGen=true;
 const btn=document.getElementById('btnGen');
 btn.disabled=true;
@@ -8612,6 +8643,14 @@ function exportData(){
         localBanWordsBindings: localBanWordsBindings,
         localStyleBindings: localStyleBindings,
         currentCharPresetName: currentCharPresetName,
+        articleContexts: articleContexts,
+        storyWheels: storyWheels,
+        genLogs: genLogs,
+        fontPresets: fontP,
+        customTraits: customTraits,
+        dndMode: dndMode,
+        ttsSettings: ttsSettings_,
+        devMode: devMode,
         notes: exportAllNotes()
     };
 
@@ -8729,6 +8768,11 @@ if(data.localBanWordsBindings){localBanWordsBindings=data.localBanWordsBindings;
 if(data.localStyleBindings){localStyleBindings=data.localStyleBindings;sv('bj_localStyleBindings',localStyleBindings);}
 if(data.currentCharPresetName){currentCharPresetName=data.currentCharPresetName;sv('bj_currentCharPresetName',currentCharPresetName);}
 if(data.userCard){userCard=data.userCard;sv('bj_userCard',userCard);}
+if(data.articleContexts){articleContexts=data.articleContexts;sv('bj_articleContexts',articleContexts);}
+if(data.storyWheels){storyWheels=data.storyWheels;sv('bj_storyWheels',storyWheels);}
+if(data.genLogs){genLogs=data.genLogs;sv('bj_genLogs',genLogs);}
+if(data.fontPresets){fontP=data.fontPresets;sv('bj_fontP',fontP);}
+if(data.customTraits){customTraits=data.customTraits;sv('bj_customTraits',customTraits);}
 if(data.appearance){
 ap={...{theme:'default',fontUrl:'',rdBg:'',rdFontSize:15,rdLineHeight:2},...data.appearance};
 sv(K.ap,ap);
@@ -10150,10 +10194,13 @@ async function doCompress(){
   let result = '';
 
   try{
-    const baseUrl = cfg.url.replace(/\/+$/,'');
-    const endpoint = baseUrl + '/chat/completions';
+    const ep = buildChatEndpoint(cfg.url);
+    if(!ep.endpoint){
+      showToast('API地址为空');
+      return;
+    }
 
-    const resp = await fetch(endpoint,{
+    const resp = await fetch(ep.endpoint,{
       method:'POST',
       headers:{
         'Content-Type':'application/json',
@@ -10184,7 +10231,7 @@ async function doCompress(){
     }
     let content = data.choices[0].message.content;
 content = stripMetaThinking(content);
-return content;
+result = content;
   }catch(err){
     if(err.name === 'AbortError'){
       // 手动停止，不弹错误
@@ -10934,7 +10981,7 @@ content+='工具作者：心田\n';
 content+='联系方式：\n';
 content+='· 小红书：95567118758\n';
 content+='· 小红书：27418565861\n';
-content+='· 微信：Aa9620520\n';
+content+='· 抖音：60372879897\n';
 content+='· QQ：962005530\n\n';
 content+='════════════════════════════════════════\n';
 content+='感谢使用笔记AI，祝创作愉快！\n';
@@ -12835,7 +12882,7 @@ if(!fullText)return;
 let finalText=fullText;
 const mWCh=parseInt(document.getElementById('minWords').value)||800;
 const chWc=countWords(fullText);
-if(chWc<mWCh&&chWc>100){
+if(chWc<mWCh&&chWc>200){
 showToast('字数不足('+chWc+'/'+mWCh+')，正在补写...',3000);
 const extMsg2=[
 {role:'system',content:buildSysPrompt()},
@@ -13830,8 +13877,9 @@ messages.push({role:m.role==='assistant'?'assistant':'user',content:m.content});
 });
 xjAbortCtrl=new AbortController();
 try{
-const baseUrl=cfg.url.replace(/\/+$/,'');
-const resp=await fetch(baseUrl+'/chat/completions',{
+const ep=buildChatEndpoint(cfg.url);
+if(!ep.endpoint){showToast('API地址为空');return;}
+const resp=await fetch(ep.endpoint,{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
 body:JSON.stringify({
@@ -14074,8 +14122,9 @@ messages.push({role:m.role==='assistant'?'assistant':'user',content:m.content});
 });
 xjAbortCtrl=new AbortController();
 try{
-const baseUrl=cfg.url.replace(/\/+$/,'');
-const resp=await fetch(baseUrl+'/chat/completions',{
+const ep=buildChatEndpoint(cfg.url);
+if(!ep.endpoint){showToast('API地址为空');return;}
+const resp=await fetch(ep.endpoint,{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
 body:JSON.stringify({model:cfg.model,messages:messages,temperature:0.85,max_tokens:800}),
@@ -14920,6 +14969,19 @@ function initLockSystem(){
 // ==================== SPLASH & INIT ====================
 function initApp(){
 xjBgImg=ld('bj_xjBg','')||'';
+articleContexts = ld('bj_articleContexts', {});
+goalSettings = ld('bj_goalSettings', goalSettings);
+goalProgress = ld('bj_goalProgress', goalProgress);
+goalYearStats = ld('bj_goalYearStats', goalYearStats);
+goalCelebrated = ld('bj_goalCelebrated', goalCelebrated);
+genLogs = ld('bj_genLogs', []);
+storyWheels = ld('bj_storyWheels', []);
+fontP = ld('bj_fontP', []);
+dndMode = ld('bj_dndMode', false);
+ringData = ld('bj_ringData', '');
+ringName = ld('bj_ringName', '');
+ringVolume_ = ld('bj_ringVolume', 0.8);
+devMode = ld('bj_devMode', false);
 // ✅ 关键修复：IndexedDB加载完成后，重新从 ld() 把核心状态再读一遍（否则只用到了localStorage旧数据）
 ws = ld(K.ws, []);
 cols = ld(K.cols, {books:[], shorts:[]});
@@ -15040,6 +15102,46 @@ updateRingInfo();
 document.getElementById('ringVolume').value=ringVolume_;
 document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
 checkGoalReset();
+// 更新弹窗
+const UPDATE_VER='v2.9.6';
+const lastSeenVer=localStorage.getItem('bj_lastSeenVer');
+if(lastSeenVer!==UPDATE_VER){
+  setTimeout(()=>{
+    const updateMsg=
+      '🎉 笔记AI '+UPDATE_VER+' 更新内容\n\n'+
+      '🔧 API兼容性全面升级\n'+
+      '• 统一使用智能地址解析，自动适配各种API格式\n'+
+      '• 星笺聊天、精华压缩器现在也能正确识别API地址\n'+
+      '• 新增单行SSE兼容，支持更多第三方接口\n\n'+
+      '🐛 修复多个Bug\n'+
+      '• 修复语法错误导致部分设备JS崩溃\n'+
+      '• 修复精华压缩器结果无法正确返回的问题\n'+
+      '• 修复流式失败后无法回退到普通模式\n'+
+      '• 修复续写时章节大纲不同步到收藏\n'+
+      '• 修复标题提取偶尔失败的问题\n\n'+
+      '📦 数据完整性增强\n'+
+      '• 导入导出新增：上下文设置、转盘、日志、字体预设等\n'+
+      '• 初始化时更完整地恢复所有数据\n\n'+
+      '✨ 体验优化\n'+
+      '• 系统提示词超长时自动精简，减少token浪费\n'+
+      '• 自动补写阈值提高，避免误把错误信息当正文\n'+
+      '• 错误提示更友好，引导用户快速定位问题';
+
+    showDlg('📢 版本更新', updateMsg, ()=>{
+      localStorage.setItem('bj_lastSeenVer', UPDATE_VER);
+    });
+
+    // 让弹窗内容可滚动
+    setTimeout(()=>{
+      const p=document.getElementById('dlgMsg');
+      if(p){
+        p.style.maxHeight='55vh';
+        p.style.overflowY='auto';
+        p.style.webkitOverflowScrolling='touch';
+      }
+    },100);
+  }, 1500);
+}
 // 首次使用引导
 const hasVisited=localStorage.getItem('bj_hasVisited');
 if(!hasVisited){
