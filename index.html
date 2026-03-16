@@ -21,6 +21,10 @@ font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
 background:var(--bg);color:var(--text);
 min-height:100vh;overflow-x:hidden;
 position:relative;
+-webkit-font-smoothing:antialiased;
+-moz-osx-font-smoothing:grayscale;
+text-rendering:optimizeLegibility;
+padding-bottom:env(safe-area-inset-bottom, 0px);
 }
 body::before{
 content:'';position:fixed;inset:0;z-index:-1;
@@ -276,6 +280,7 @@ display:flex;align-items:center;gap:4px;transition:all .3s;
 body.theme-light .hdr{
 background:linear-gradient(135deg,rgba(245,245,248,.95) 0%,rgba(255,255,255,.98) 100%);
 border-bottom-color:rgba(0,0,0,.08);
+box-shadow:0 2px 12px rgba(0,0,0,.04);
 }
 body.theme-light .hdr-left h1{
 background:linear-gradient(135deg,var(--accent),var(--accent2));
@@ -299,7 +304,7 @@ body.theme-light .tts-bar-btns button{background:var(--card2);color:var(--text);
   border-top:1px solid rgba(108,92,231,.2);
   display:flex;
   justify-content:space-around;
-  padding:8px 0 12px;
+  padding:8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
   transition:transform .3s;
   box-shadow:0 -4px 30px rgba(0,0,0,.3);
 }
@@ -409,7 +414,7 @@ color:var(--text2);transition:all .3s;background:none;
 .alist{padding:8px 18px;display:flex;flex-direction:column;gap:11px;}
 .acard{
 background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.05) 50%,var(--card) 100%);
-border-radius:20px;padding:20px;
+border-radius:16px;padding:16px;
 border:1px solid var(--border);transition:all .35s cubic-bezier(.4,0,.2,1);cursor:pointer;
 position:relative;overflow:hidden;
 backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
@@ -443,8 +448,10 @@ border:1px solid var(--border);background:transparent;color:var(--text2);
 font-size:11px;cursor:pointer;transition:all .3s;flex-shrink:0;
 }
 .btn-like.liked{background:rgba(255,107,107,.13);border-color:var(--danger);color:var(--danger);}
-.empty-st{text-align:center;padding:50px 18px;color:var(--text2);}
-.empty-st svg{width:50px;height:50px;margin-bottom:12px;opacity:.3;}
+.empty-st{text-align:center;padding:40px 18px;color:var(--text2);}
+.empty-st svg{width:48px;height:48px;margin-bottom:12px;opacity:.25;}
+.empty-st p{font-size:13px;line-height:1.8;}
+.empty-st p br+br{display:none;}
 .empty-st p{font-size:13px;line-height:1.6;}
 
 /* STREAMING INDICATOR */
@@ -534,6 +541,12 @@ position:fixed;inset:0;z-index:0;
 background-size:cover;background-position:center;
 opacity:.50;pointer-events:none;display:none;
 }
+.rd-progress-bar{
+position:fixed;top:0;left:0;height:3px;z-index:1000;
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+transition:width .15s;pointer-events:none;
+box-shadow:0 0 8px var(--accent);
+}
 .rd-hdr{
 position:sticky;top:0;z-index:10;
 background:rgba(15,15,20,.88);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
@@ -549,13 +562,18 @@ border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:4px;
 display:flex;gap:6px;
 overflow-x:auto;
 flex-wrap:nowrap;
+padding:2px 0;
+scrollbar-width:none;
+-ms-overflow-style:none;
 -webkit-overflow-scrolling:touch;
 padding-bottom:2px;
 }
 .rd-acts::-webkit-scrollbar{display:none;}
 .rd-acts button{
 flex-shrink:0;
-padding:5px 10px;border-radius:9px;border:1px solid var(--border);
+padding:6px 11px;border-radius:10px;
+min-width:32px;text-align:center;
+border:1px solid var(--border);
 background:var(--card);color:var(--text2);font-size:11px;cursor:pointer;
 transition:all .3s;white-space:nowrap;
 }
@@ -636,7 +654,7 @@ border:1px solid var(--border);transition:all .3s;cursor:pointer;
 }
 .bcard:active{transform:scale(.97);}
 .bcov{
-width:100%;aspect-ratio:3/4;
+width:100%;aspect-ratio:2/3;
 background:linear-gradient(135deg,var(--card2),var(--card));
 display:flex;align-items:center;justify-content:center;
 position:relative;overflow:hidden;
@@ -861,6 +879,7 @@ display:flex;justify-content:space-between;align-items:center;
 cursor:pointer;transition:all .3s;
 }
 .set-entry:active{transform:scale(.98);border-color:var(--accent);}
+@media (hover:hover){.set-entry:hover{border-color:var(--accent);background:rgba(108,92,231,.03);}}
 .set-entry-left{display:flex;align-items:center;gap:12px;}
 .set-entry-icon{font-size:22px;}
 .set-entry-info h3{font-size:14px;font-weight:600;margin-bottom:2px;}
@@ -1097,12 +1116,13 @@ border-radius:18px;font-size:14px;z-index:9999;opacity:0;
 transition:all .4s cubic-bezier(.34,1.56,.64,1);pointer-events:none;text-align:center;
 border:1px solid rgba(108,92,231,.4);
 box-shadow:0 10px 40px rgba(0,0,0,.4),0 0 30px rgba(108,92,231,.25),0 0 0 1px rgba(255,255,255,.1) inset;
-max-width:300px;font-weight:500;
+max-width:320px;font-weight:500;
+word-break:break-word;line-height:1.5;
 letter-spacing:.5px;
 }
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 .dlg-ov{
-display:none;position:fixed;inset:0;z-index:1200;
+display:none;position:fixed;inset:0;z-index:9500;
 background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:28px;
 }
 .dlg-ov.show{display:flex;}
@@ -1279,7 +1299,10 @@ display:flex;gap:6px;padding:8px 14px;
 overflow-x:auto;-webkit-overflow-scrolling:touch;
 border-bottom:1px solid var(--border);
 background:var(--card);
+scrollbar-width:none;
+-ms-overflow-style:none;
 }
+.ed-acts::-webkit-scrollbar{height:0;display:none;}
 .ed-acts::-webkit-scrollbar{display:none;}
 .ed-acts button{
 flex-shrink:0;padding:6px 12px;border-radius:8px;
@@ -1447,15 +1470,16 @@ background:rgba(0,0,0,.45);
 }
 .note-ov.show{display:block;}
 .note-panel{
-position:fixed;top:0;right:-320px;bottom:0;z-index:561;
+position:fixed;top:0;right:0;bottom:0;z-index:561;
 width:300px;max-width:85vw;
+transform:translateX(100%);
 background:linear-gradient(180deg,var(--card) 0%,rgba(108,92,231,.03) 100%);
 border-left:1px solid rgba(108,92,231,.2);
 display:flex;flex-direction:column;
 transition:right .35s cubic-bezier(.4,0,.2,1);
 box-shadow:-8px 0 30px rgba(0,0,0,.35),-2px 0 10px rgba(108,92,231,.1);
 }
-.note-ov.show .note-panel{right:0;}
+.note-ov.show .note-panel{transform:translateX(0);}
 .note-hdr{
 padding:16px 18px;
 border-bottom:1px solid rgba(108,92,231,.15);
@@ -2122,9 +2146,27 @@ text-align:center;padding:20px;color:var(--text2);font-size:12px;
 width:80px;height:80px;border-radius:50%;margin-bottom:12px;
 border:3px solid rgba(108,92,231,.3);
 }
-body.theme-light .xj-input{background:rgba(255,255,255,.9);border-color:rgba(108,92,231,.2);}
+body.theme-light .xj-input{background:rgba(255,255,255,.95);border-color:rgba(108,92,231,.25);color:#1a1a2e;}
+body.theme-light .xj-msg.xj{background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));}
+body.theme-light .xj-msg.user{background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));}
+body.theme-light .xj-hdr{background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(162,155,254,.05));}
 body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,245,248,.9));}
-#addFsOv{z-index:850;} /* 创作目标 */ .goal-panel{padding:14px 18px;} .goal-card{ background:var(--card);border-radius:16px;padding:18px; border:1px solid var(--border);margin-bottom:12px; } .goal-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;} .goal-card-hdr h3{font-size:14px;font-weight:700;} .goal-progress{ height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0 6px; } .goal-progress-bar{ height:100%;border-radius:4px;transition:width .5s ease; background:linear-gradient(90deg,var(--accent),var(--accent2)); } .goal-progress-bar.done{background:linear-gradient(90deg,var(--success),#2ecc71);} .goal-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);} .goal-stat .cur{color:var(--accent2);font-weight:600;} .goal-stat .cur.done{color:var(--success);} .goal-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;} .goal-input-row label{font-size:11px;color:var(--text2);width:70px;flex-shrink:0;} .goal-input-row input{ flex:1;padding:8px 12px;border-radius:9px; border:1px solid var(--border);background:var(--bg); color:var(--text);font-size:12px;outline:none; } .goal-input-row input:focus{border-color:var(--accent);} .goal-tabs{display:flex;gap:0;margin-bottom:12px;} .goal-tab{ flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600; cursor:pointer;border:none;border-bottom:2px solid transparent; color:var(--text2);background:none;transition:all .3s; } .goal-tab.act{color:var(--accent2);border-bottom-color:var(--accent);} .goal-history{max-height:200px;overflow-y:auto;} .goal-history-item{ padding:10px 12px;background:var(--bg);border-radius:9px; border:1px solid var(--border);margin-bottom:6px; display:flex;justify-content:space-between;align-items:center; } .goal-history-item .done-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(81,207,102,.15);color:var(--success); } .goal-history-item .fail-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(255,107,107,.15);color:var(--danger); } 
+#addFsOv{z-index:850;} /* 创作目标 */ .goal-panel{padding:14px 18px;}
+.goal-card{
+background:var(--card);border-radius:16px;padding:18px;
+border:1px solid var(--border);margin-bottom:14px;
+box-shadow:0 2px 8px rgba(0,0,0,.04);
+}
+.goal-card-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
+.goal-card-hdr h3{font-size:14px;font-weight:700;}
+.goal-progress{ height:8px;background:var(--border);border-radius:4px;overflow:hidden;margin:10px 0 6px;}.goal-progress-bar{
+height:100%;border-radius:4px;transition:width .6s cubic-bezier(.4,0,.2,1);
+background:linear-gradient(90deg,var(--accent),var(--accent2));
+background-size:200% 100%;
+animation:goalBarShine 3s ease infinite;
+}
+@keyframes goalBarShine{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+.goal-progress-bar.done{background:linear-gradient(90deg,var(--success),#2ecc71);} .goal-stat{display:flex;justify-content:space-between;font-size:11px;color:var(--text2);} .goal-stat .cur{color:var(--accent2);font-weight:600;} .goal-stat .cur.done{color:var(--success);} .goal-input-row{display:flex;gap:8px;align-items:center;margin-bottom:8px;} .goal-input-row label{font-size:11px;color:var(--text2);width:70px;flex-shrink:0;} .goal-input-row input{ flex:1;padding:8px 12px;border-radius:9px; border:1px solid var(--border);background:var(--bg); color:var(--text);font-size:12px;outline:none; } .goal-input-row input:focus{border-color:var(--accent);} .goal-tabs{display:flex;gap:0;margin-bottom:12px;} .goal-tab{ flex:1;padding:8px;text-align:center;font-size:12px;font-weight:600; cursor:pointer;border:none;border-bottom:2px solid transparent; color:var(--text2);background:none;transition:all .3s; } .goal-tab.act{color:var(--accent2);border-bottom-color:var(--accent);} .goal-history{max-height:200px;overflow-y:auto;} .goal-history-item{ padding:10px 12px;background:var(--bg);border-radius:9px; border:1px solid var(--border);margin-bottom:6px; display:flex;justify-content:space-between;align-items:center; } .goal-history-item .done-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(81,207,102,.15);color:var(--success); } .goal-history-item .fail-badge{ padding:2px 8px;border-radius:6px;font-size:9px;font-weight:600; background:rgba(255,107,107,.15);color:var(--danger); } 
 .goal-chart{margin-top:10px;padding-top:10px;border-top:1px solid var(--border);}
 .goal-chart canvas{width:100%;height:120px;display:block;}
 /* 达标祝贺弹窗 */
@@ -2205,6 +2247,20 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
   transform:translateZ(0);
   will-change:transform, opacity;
 }
+@media (max-width:768px){
+  .acard{padding:14px;}
+  .sbar input{padding:11px 16px;font-size:14px;}
+  .btn-gen{padding:11px 18px;font-size:14px;}
+  .bnav-i{padding:5px 12px;}
+  .bnav-i svg{width:20px;height:20px;}
+  .hdr{padding:14px 16px 10px;}
+  .hdr-left h1{font-size:20px;}
+  .set-entry{padding:14px;}
+  .rd-content{font-size:var(--rd-fontsize,15px);line-height:var(--rd-lineheight,2);}
+  .modal{-webkit-overflow-scrolling:touch;}
+  .set-modal{-webkit-overflow-scrolling:touch;}
+  .ed-textarea{font-size:var(--rd-fontsize,16px);}
+}
 </style>
 </head>
 <body>
@@ -2226,7 +2282,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.9.6</div>
+<div class="splash-ver" id="splashVer">v2.9.7</div>
 </div>
 
 <!-- APP -->
@@ -2253,7 +2309,8 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <!-- WORKSHOP -->
 <div class="pg act" id="pg-workshop">
 <div class="sbar" style="position:relative">
-<input type="text" id="searchInput" placeholder="描述你想要的故事内容..." onkeydown="if(event.key==='Enter'){event.preventDefault();generateArticle();}" oninput="document.getElementById('searchClear').style.display=this.value?'flex':'none'"> <button id="searchClear" style="display:none;position:absolute;right:90px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px 8px;z-index:1" onclick="document.getElementById('searchInput').value='';this.style.display='none'">✕</button>
+<input type="text" id="searchInput" placeholder="描述你想要的故事内容..." onkeydown="if(event.key==='Enter'){event.preventDefault();generateArticle();}" oninput="document.getElementById('searchClear').style.display=this.value?'flex':'none';updateGenBtnState();filterWorkshopArticles(this.value)">
+<button id="searchClear" style="display:none;position:absolute;right:90px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px 8px;z-index:1" onclick="document.getElementById('searchInput').value='';this.style.display='none';updateGenBtnState()">✕</button>
 <button class="btn-gen" id="btnGen" onclick="handleGenBtn()">生成</button>
 </div>
 <div class="tags-sec">
@@ -2298,7 +2355,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 <!-- CREATE -->
 <div class="pg" id="pg-create">
-<div class="cr-new-bar" style="overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:12px">
+<div class="cr-new-bar" style="overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:12px;scrollbar-width:none;-ms-overflow-style:none;mask-image:linear-gradient(to right,black 90%,transparent 100%);-webkit-mask-image:linear-gradient(to right,black 90%,transparent 100%)">
 <button onclick="newDraft()" style="flex-shrink:0">📄 新建草稿</button>
 <button onclick="newNovel()" style="flex-shrink:0">📖 新建小说</button>
 <button onclick="openAdvancedCreate()" style="flex-shrink:0;border-color:var(--success);color:var(--success)">🎯 高级创作</button> <button onclick="openAdvLoad()" style="flex-shrink:0;border-color:var(--accent);color:var(--accent2)">📂 加载项目</button>
@@ -2444,6 +2501,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 <!-- READING MODAL -->
 <div class="modal" id="rdModal" role="dialog" aria-label="阅读">
+<div class="rd-progress-bar" id="rdProgressBar" style="width:0%"></div>
 <div class="rd-bg" id="rdBg"></div>
 <div class="rd-hdr">
 <button class="rd-back" onclick="closeReading()">
@@ -2544,11 +2602,25 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 <p>所有数据都保存在你的浏览器本地（或APP内置浏览器），你可以 <strong>随时导出备份</strong>，不依赖云端账号，也不和任何平台绑定。</p>
 
 <div class="notice">
-  <p><strong>当前版本：v2.9.6</strong></p>
-  <p>✓ API兼容性全面升级</p>
-  <p>✓ 修复多个Bug</p>
-  <p>✓ 数据完整性增强</p>
-  <p>✓ 体验优化</p>
+  <p><strong>当前版本：v2.9.7</strong></p>
+  <p>✓ 界面布局全面优化：卡片、封面、工具栏、按钮间距更协调</p>
+  <p>✓ 移动端深度适配：底部安全区域、小屏紧凑模式、触摸反馈</p>
+  <p>✓ 浅色主题增强：星笺聊天、导航栏、整体配色更完善</p>
+  <p>✓ 笔记面板改用 transform 动画，滑入更流畅</p>
+  <p>✓ 创作目标进度条加入流光动效</p>
+  <p>✓ 确认弹窗层级修复，解决被其他弹窗遮盖的问题</p>
+  <p>✓ 编辑器/阅读页工具条隐藏滚动条，体验更干净</p>
+  <p>✓ Toast提示支持长文本自动换行</p>
+  <p>✓ 全局文字渲染优化（抗锯齿、字体平滑）</p>
+  <p>✓ 作坊搜索增强：输入关键词可实时过滤已有文章</p>
+  <p>✓ 阅读页顶部新增进度条，随滚动实时显示阅读进度</p>
+  <p>✓ 编辑器底部新增字数目标进度条和百分比显示</p>
+  <p>✓ 收藏书架显示「上次读到第几章」标记</p>
+  <p>✓ 生成完成提示增加耗时统计</p>
+  <p>✓ 快速续写自动同步方向提示到上下文</p>
+  <p>✓ AI大纲弹窗布局修复，按钮不再跑偏</p>
+  <p>✓ 创作目标CSS格式修复，进度条正常显示</p>
+  <p>✓ 多项细节优化与体验增强</p>
 </div>
 
 <h3>二、创作理念：AI是搭子，不是替身</h3>
@@ -2954,7 +3026,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v2.9.6 · Created by 心田<br>让每一个灵感都有机会长成作品
+笔记AI v2.9.7 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
 
 </div>
@@ -3036,8 +3108,11 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
   <button class="immersive-exit" onclick="toggleImmersiveEdit()">✕ 退出沉浸</button>
 <textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
 </div>
+<div id="edWordBar" style="height:2px;background:var(--border);margin:0 14px">
+<div id="edWordBarInner" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s;border-radius:1px"></div>
+</div>
 <div class="ed-footer">
-<span>字数：<span class="ed-wc" id="edWc">0</span></span>
+<span>字数：<span class="ed-wc" id="edWc">0</span> <span id="edWordTarget" style="font-size:9px;color:var(--text2)"></span></span>
 <span id="edReadTime" style="margin-left:10px;font-size:9px;color:var(--text2)"></span>
 <span id="edSaveStatus">未保存</span>
 </div>
@@ -3163,7 +3238,6 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
                    border-radius:8px;padding:8px 10px;box-sizing:border-box;
                    font-family:inherit;white-space:pre-wrap;"></textarea>
 </div>
-</div>
 <div class="res-exp-btns">
 <button class="dlg-cancel" onclick="closeOutlineGen()">取消</button>
 <button class="dlg-ok" id="outlineGenBtn" onclick="doGenOutline()">🧠 生成大纲</button>
@@ -3177,6 +3251,7 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 </div>
 </div>
 </div>
+</die>
 <!-- STORY WHEEL 故事转盘 - 全屏版 -->
 <div class="wheel-modal" id="wheelOv">
 <div class="wheel-modal-hdr">
@@ -4385,7 +4460,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v2.9.6';
+const APP_VER='v2.9.7';
 
 // ==================== STORAGE ====================
 const K={
@@ -6301,6 +6376,47 @@ function showSettingPreview(){
     p.style.webkitOverflowScrolling='touch';
   }
 }
+function filterWorkshopArticles(kw){
+kw=(kw||'').trim().toLowerCase();
+if(!kw){renderArticles();return;}
+const list=document.getElementById('articleList');
+const filtered=ws.filter(a=>a&&a.type===curType&&(
+(a.title||'').toLowerCase().includes(kw)||
+(a.prompt||'').toLowerCase().includes(kw)||
+(a.tags||[]).some(t=>t.toLowerCase().includes(kw))
+));
+if(filtered.length===0){renderArticles();return;}
+list.innerHTML='';
+filtered.forEach(article=>{
+const liked=isLiked(article);
+const card=document.createElement('div');
+card.className='acard';
+card.onclick=e=>{if(!e.target.closest('.btn-like'))openReading(article);};
+let text='';
+if(article.type==='long'&&article.chapters&&article.chapters.length>0)text=article.chapters[0];
+else if(article.content)text=article.content;
+const preview=(text||'').substring(0,120).replace(/\n/g,' ');
+const wc=getTotalWords(article);
+card.innerHTML=
+'<div class="acard-hd"><div class="acard-t">'+esc(article.title)+'</div>'+
+'<span class="acard-badge '+article.type+'">'+(article.type==='long'?'长篇':'短篇')+'</span></div>'+
+'<div class="acard-pv">'+esc(preview)+'</div>'+
+'<div class="acard-ft">'+
+'<span class="acard-wc">'+wc+'字</span>'+
+'<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')">'+(liked?'❤️ 已收藏':'♡ 收藏')+'</button>'+
+'</div>';
+list.appendChild(card);
+});
+}
+function updateGenBtnState(){
+  const btn=document.getElementById('btnGen');
+  const input=document.getElementById('searchInput');
+  const hasInput=input&&input.value.trim().length>0;
+  const hasTags=selTags.length>0;
+  if(!isGen){
+    btn.style.opacity=(hasInput||hasTags)?'1':'0.7';
+  }
+}
 function handleGenBtn(){
 if(isGen&&abortCtrl){
 showDlg('停止生成', '确定要停止当前生成吗？', () => {
@@ -6599,9 +6715,8 @@ if(qc.issues.length>0||qc.suggestions.length>0){
 const scoreEmoji=qc.score>=80?'✨':qc.score>=60?'👍':'💪';
 showToast('创作完成！'+countWords(content)+'字 · 质量评分 '+qc.score+'/100 '+scoreEmoji,3000);
 }else{
-showToast('创作完成！'+countWords(content)+'字 ✨',2500);
-}
-});
+const genTime=((Date.now()-startTime)/1000).toFixed(1);
+showToast('创作完成！'+countWords(content)+'字 · 用时'+genTime+'秒 ✨',3000);}});
 }else{
 ws.unshift(article);
 sv(K.ws,ws);
@@ -6762,6 +6877,14 @@ setRdLine(ap.rdLineHeight||2);
 document.getElementById('rdModal').classList.add('show');
 document.getElementById('rdModal').scrollTop=0;
 updateNoteBtn();
+// 绑定阅读进度
+const rdModal=document.getElementById('rdModal');
+rdModal.onscroll=function(){
+const scrollTop=rdModal.scrollTop;
+const scrollHeight=rdModal.scrollHeight-rdModal.clientHeight;
+const pct=scrollHeight>0?Math.round(scrollTop/scrollHeight*100):0;
+document.getElementById('rdProgressBar').style.width=pct+'%';
+};
 }
 
 function getTotalWords(a){
@@ -7431,6 +7554,14 @@ function quickContinue(){
         return;
     }
     
+    // 自动保存方向提示到上下文
+    const dir=(document.getElementById('dirInput').value||'').trim();
+    if(dir){
+        if(!articleContexts[curRd.id])articleContexts[curRd.id]={};
+        articleContexts[curRd.id].direction=dir;
+        sv('bj_articleContexts',articleContexts);
+    }
+    
     continueChapterWithContext();
 }
 async function continueChapter(){
@@ -7769,7 +7900,8 @@ card.innerHTML=
 '<div class="bcov" onclick="openColBook(\''+realId+'\')">'+covHtml+'</div>'+
 '<div class="binfo" onclick="openColBook(\''+realId+'\')">'+
 '<div class="binfo-t">'+esc(book.title)+'</div>'+
-'<div class="binfo-m">'+(book.chapters?book.chapters.length+'章 · ':'')+ getTotalWords(book)+'字</div>'+
+'<div class="binfo-m">'+(book.chapters?book.chapters.length+'章 · ':'')+getTotalWords(book)+'字</div>'+
+'<div style="font-size:8px;color:var(--text2);margin-top:1px">'+(function(){const lc=parseInt(localStorage.getItem("bj_lastCh_"+realId));return lc>0?"上次读到第"+(lc+1)+"章":"";})()+'</div>'+
 '<span class="binfo-status '+statusClass+'">'+statusText+'</span>'+
 renderStarHTML(book.rating||0,realId)+
 '</div>'+
@@ -7810,7 +7942,11 @@ shorts.forEach(s=>{
 const realId=s.id;
 const item=document.createElement('div');
 item.className='sitem';
-item.onclick=e=>{if(!e.target.closest('button')&&!e.target.closest('.star-rating'))openReading(s);};
+item.onclick=e=>{
+if(!e.target.closest('button')&&!e.target.closest('.star-rating')){
+openReading(s);
+}
+};
 item.innerHTML=
 '<div class="sitem-info"><div class="sitem-t">'+esc(s.title)+'</div>'+
 '<div class="sitem-pv">'+esc((s.content||'').replace(/\n/g,' ').substring(0,20))+'</div>'+
@@ -9195,6 +9331,18 @@ wcEl.title='已达到字数要求 ✓';
 }else{
 wcEl.style.color='var(--accent2)';
 wcEl.title='';
+}
+// 更新字数进度条
+const barInner=document.getElementById('edWordBarInner');
+const targetEl=document.getElementById('edWordTarget');
+if(barInner&&targetEl){
+const pct2=minWords>0?Math.min(100,Math.round(wc/minWords*100)):0;
+barInner.style.width=pct2+'%';
+if(wc>0&&minWords>0){
+targetEl.textContent='/ '+minWords+'字 ('+pct2+'%)';
+}else{
+targetEl.textContent='';
+}
 }
 }
 function copyEditorContent(){
@@ -15103,35 +15251,54 @@ document.getElementById('ringVolume').value=ringVolume_;
 document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
 checkGoalReset();
 // 更新弹窗
-const UPDATE_VER='v2.9.6';
+const UPDATE_VER='v2.9.7';
 const lastSeenVer=localStorage.getItem('bj_lastSeenVer');
 if(lastSeenVer!==UPDATE_VER){
   setTimeout(()=>{
     const updateMsg=
       '🎉 笔记AI '+UPDATE_VER+' 更新内容\n\n'+
-      '🔧 API兼容性全面升级\n'+
-      '• 统一使用智能地址解析，自动适配各种API格式\n'+
-      '• 星笺聊天、精华压缩器现在也能正确识别API地址\n'+
-      '• 新增单行SSE兼容，支持更多第三方接口\n\n'+
-      '🐛 修复多个Bug\n'+
-      '• 修复语法错误导致部分设备JS崩溃\n'+
-      '• 修复精华压缩器结果无法正确返回的问题\n'+
-      '• 修复流式失败后无法回退到普通模式\n'+
-      '• 修复续写时章节大纲不同步到收藏\n'+
-      '• 修复标题提取偶尔失败的问题\n\n'+
-      '📦 数据完整性增强\n'+
-      '• 导入导出新增：上下文设置、转盘、日志、字体预设等\n'+
-      '• 初始化时更完整地恢复所有数据\n\n'+
-      '✨ 体验优化\n'+
-      '• 系统提示词超长时自动精简，减少token浪费\n'+
-      '• 自动补写阈值提高，避免误把错误信息当正文\n'+
-      '• 错误提示更友好，引导用户快速定位问题';
+      '🎨 界面美化与布局优化\n'+
+      '• 文章卡片、书架封面比例更协调\n'+
+      '• 阅读页工具栏横向滚动更流畅\n'+
+      '• 编辑器工具条隐藏滚动条，更简洁\n'+
+      '• 创作页按钮栏加入右侧渐隐提示\n'+
+      '• 笔记面板滑入动画更丝滑\n'+
+      '• 创作目标进度条加入流光动效\n\n'+
+      '📱 移动端适配增强\n'+
+      '• 底部导航适配iPhone安全区域\n'+
+      '• 小屏幕下文章卡片更紧凑\n'+
+      '• 输入框、按钮尺寸针对手机优化\n'+
+      '• 弹窗文字过长时自动换行\n\n'+
+      '🌙 浅色主题优化\n'+
+      '• 星笺聊天页浅色适配更完善\n'+
+      '• 顶部导航加入柔和阴影\n'+
+      '• 整体配色更协调\n\n'+
+      '🔧 细节改进\n'+
+      '• 确认弹窗层级修复，不再被遮盖\n'+
+      '• 空状态页面视觉优化\n'+
+      '• 设置入口卡片加入hover反馈\n'+
+      '• 全局文字渲染更清晰\n'+
+      '🔍 搜索与过滤增强\n'+
+      '• 作坊搜索框支持实时过滤已有文章\n'+
+      '• 按标题、标签、描述智能匹配\n\n'+
+      '📖 阅读体验升级\n'+
+      '• 阅读页顶部新增紫色进度条\n'+
+      '• 滚动时实时显示阅读百分比\n'+
+      '• 收藏书架显示上次阅读位置\n\n'+
+      '✍️ 编辑器优化\n'+
+      '• 底部新增字数目标进度条\n'+
+      '• 实时显示目标达成百分比\n'+
+      '• 快速续写自动同步方向提示\n\n'+
+      '🔧 问题修复\n'+
+      '• AI大纲弹窗按钮布局修复\n'+
+      '• 创作目标CSS格式修复\n'+
+      '• 生成完成提示增加耗时统计\n'+
+      '• 多项细节优化与体验增强';
 
     showDlg('📢 版本更新', updateMsg, ()=>{
       localStorage.setItem('bj_lastSeenVer', UPDATE_VER);
     });
 
-    // 让弹窗内容可滚动
     setTimeout(()=>{
       const p=document.getElementById('dlgMsg');
       if(p){
