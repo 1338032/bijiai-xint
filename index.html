@@ -1304,6 +1304,7 @@ scrollbar-width:none;
 }
 .ed-acts::-webkit-scrollbar{height:0;display:none;}
 .ed-acts::-webkit-scrollbar{display:none;}
+.ed-acts-mini::-webkit-scrollbar{display:none;}
 .ed-acts button{
 flex-shrink:0;padding:6px 12px;border-radius:8px;
 border:1px solid var(--border);background:var(--bg);
@@ -1311,6 +1312,98 @@ color:var(--text2);font-size:11px;cursor:pointer;
 white-space:nowrap;display:flex;align-items:center;gap:4px;
 }
 .ed-acts button:active{transform:scale(.95);background:var(--accent);color:#fff;border-color:var(--accent);}
+/* ==================== 折叠工具栏 ==================== */
+.tool-bar-wrap{padding:0 14px;position:relative;}
+.tool-bar-toggle{
+width:100%;padding:10px 14px;border-radius:12px;
+border:1px solid var(--border);background:var(--card);
+color:var(--text);font-size:13px;font-weight:600;
+cursor:pointer;display:flex;justify-content:space-between;
+align-items:center;transition:all .3s;
+}
+.tool-bar-toggle:active{transform:scale(.98);border-color:var(--accent);}
+.tool-bar-toggle svg{width:16px;height:16px;color:var(--text2);transition:transform .3s;}
+.tool-bar-toggle.open svg{transform:rotate(180deg);}
+.tool-bar-toggle .tbt-hint{font-size:11px;color:var(--text2);font-weight:400;margin-left:8px;}
+.tool-bar-panel{
+display:none;margin-top:8px;padding:12px;
+background:var(--card);border:1px solid var(--border);
+border-radius:14px;animation:fadeIn .2s ease;
+}
+.tool-bar-panel.open{display:block;}
+#rdToolPanel{
+  position:fixed;top:50px;left:10px;right:10px;z-index:50;
+  max-height:70vh;overflow-y:auto;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+  margin:0!important;
+}
+#rdToolPanel.open{display:block;}
+#crToolPanel{
+  position:fixed;top:100px;left:10px;right:10px;z-index:50;
+  max-height:65vh;overflow-y:auto;
+  box-shadow:0 8px 30px rgba(0,0,0,.4);
+}
+#crToolPanel.open{display:block;}
+.tool-group{margin-bottom:12px;}
+.tool-group:last-child{margin-bottom:0;}
+.tool-group-title{
+font-size:11px;font-weight:700;color:var(--accent2);
+margin-bottom:8px;padding-bottom:4px;
+border-bottom:1px solid var(--border);
+display:flex;align-items:center;gap:6px;
+}
+.tool-grid{display:flex;flex-wrap:wrap;gap:6px;}
+.tool-item{
+padding:8px 12px;border-radius:10px;
+border:1px solid var(--border);background:var(--bg);
+color:var(--text);font-size:12px;cursor:pointer;
+transition:all .25s;display:flex;align-items:center;gap:5px;
+white-space:nowrap;
+}
+.tool-item:active{transform:scale(.95);border-color:var(--accent);background:rgba(108,92,231,.08);}
+.tool-item.danger{border-color:rgba(255,107,107,.3);color:var(--danger);}
+.tool-item.danger:active{background:rgba(255,107,107,.08);}
+.tool-item .ti-desc{font-size:9px;color:var(--text2);font-weight:400;}
+body.theme-light .tool-bar-panel{background:#fff;}
+#edToolPanel{
+  position:fixed;
+  top:80px;
+  left:8px;
+  right:8px;
+  z-index:610;
+  max-height:70vh;
+  overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  margin:0!important;
+  border-radius:14px;
+}
+#crToolPanel{
+  position:fixed;
+  top:120px;
+  left:8px;
+  right:8px;
+  z-index:610;
+  max-height:65vh;
+  overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  margin:0!important;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:14px;
+  padding:12px;
+}
+#rdToolPanel{
+  position:fixed;
+  top:55px;
+  left:8px;
+  right:8px;
+  z-index:610;
+  max-height:70vh;
+  overflow-y:auto;
+  box-shadow:0 10px 40px rgba(0,0,0,.5);
+  margin:0!important;
+}
+body.theme-light .tool-item{background:#f8f8fc;}
 .ed-ch-bar{
 padding:8px 14px;display:flex;gap:6px;align-items:center;
 border-bottom:1px solid var(--border);overflow-x:auto;flex-wrap:nowrap;
@@ -1332,7 +1425,8 @@ white-space:nowrap;flex-shrink:0;
 width:100%;min-height:calc(100vh - 200px);padding:16px 20px;
 border-radius:0;border:none;
 background:transparent;color:var(--text);
-font-size:var(--rd-fontsize,15px);line-height:var(--rd-lineheight,2);
+font-size:var(--ed-fontsize,15px);line-height:var(--ed-lineheight,2);
+letter-spacing:var(--ed-letterspacing,0px);
 outline:none;resize:none;font-family:inherit;
 }
 .ed-textarea:focus{border:none;box-shadow:none;}
@@ -2282,7 +2376,7 @@ animation:goalBarShine 3s ease infinite;
 <span id="splashTxt">正在初始化...</span>
 </div>
 </div>
-<div class="splash-ver" id="splashVer">v2.9.7</div>
+<div class="splash-ver" id="splashVer">v2.9.8</div>
 </div>
 
 <!-- APP -->
@@ -2309,9 +2403,9 @@ animation:goalBarShine 3s ease infinite;
 <!-- WORKSHOP -->
 <div class="pg act" id="pg-workshop">
 <div class="sbar" style="position:relative">
-<input type="text" id="searchInput" placeholder="描述你想要的故事内容..." onkeydown="if(event.key==='Enter'){event.preventDefault();generateArticle();}" oninput="document.getElementById('searchClear').style.display=this.value?'flex':'none';updateGenBtnState();filterWorkshopArticles(this.value)">
-<button id="searchClear" style="display:none;position:absolute;right:90px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:4px 8px;z-index:1" onclick="document.getElementById('searchInput').value='';this.style.display='none';updateGenBtnState()">✕</button>
-<button class="btn-gen" id="btnGen" onclick="handleGenBtn()">生成</button>
+<input type="text" id="searchInput" placeholder="例如：一个社恐女生在书店偶遇高中同学..." onkeydown="if(event.key==='Enter'){event.preventDefault();generateArticle();}" oninput="document.getElementById('searchClear').style.display=this.value?'flex':'none';updateGenBtnState();filterWorkshopArticles(this.value)">
+<button id="searchClear" style="display:none;position:absolute;right:95px;top:50%;transform:translateY(-50%);background:var(--card);border:1px solid var(--border);color:var(--text2);font-size:14px;cursor:pointer;padding:2px 8px;z-index:2;border-radius:50%;width:28px;height:28px;line-height:1" onclick="document.getElementById('searchInput').value='';this.style.display='none';updateGenBtnState()">✕</button>
+<button class="btn-gen" id="btnGen" onclick="handleGenBtn()" title="输入描述后点击生成文章">✨ 生成</button>
 </div>
 <div class="tags-sec">
 <div class="tags-wrap" id="tagsWrap"></div>
@@ -2355,14 +2449,36 @@ animation:goalBarShine 3s ease infinite;
 </div>
 <!-- CREATE -->
 <div class="pg" id="pg-create">
-<div class="cr-new-bar" style="overflow-x:auto;flex-wrap:nowrap;-webkit-overflow-scrolling:touch;padding-bottom:12px;scrollbar-width:none;-ms-overflow-style:none;mask-image:linear-gradient(to right,black 90%,transparent 100%);-webkit-mask-image:linear-gradient(to right,black 90%,transparent 100%)">
-<button onclick="newDraft()" style="flex-shrink:0">📄 新建草稿</button>
-<button onclick="newNovel()" style="flex-shrink:0">📖 新建小说</button>
-<button onclick="openAdvancedCreate()" style="flex-shrink:0;border-color:var(--success);color:var(--success)">🎯 高级创作</button> <button onclick="openAdvLoad()" style="flex-shrink:0;border-color:var(--accent);color:var(--accent2)">📂 加载项目</button>
-<button onclick="openOutlineGen()" style="flex-shrink:0;border-color:var(--accent);color:var(--accent2)">🧠 AI大纲</button>
-<button onclick="openNameGen()" style="flex-shrink:0;border-color:var(--accent);color:var(--accent2)">✨ AI起名</button>
-<button onclick="openBranchGen()" style="flex-shrink:0;border-color:var(--accent);color:var(--accent2)">🌿 情节分支</button>
-<button onclick="exportCrToTxt()" style="flex-shrink:0">📥 导出TXT</button>
+<div class="tool-bar-wrap" style="padding-top:10px">
+<button class="tool-bar-toggle" onclick="toggleCrToolbar(this)" id="crToolToggle">
+<span>🛠 创作工具箱 <span class="tbt-hint">新建、AI辅助、导出</span></span>
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+<div class="tool-bar-panel" id="crToolPanel">
+<div class="tool-group">
+<div class="tool-group-title">📄 新建作品</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="toggleCrToolbar();newDraft()">📄 新建草稿 <span class="ti-desc">灵感片段</span></div>
+<div class="tool-item" onclick="toggleCrToolbar();newNovel()">📖 新建小说 <span class="ti-desc">多章节</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">🤖 AI辅助创作</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="toggleCrToolbar();openAdvancedCreate()" style="border-color:var(--success);color:var(--success)">🎯 高级创作 <span class="ti-desc">按大纲逐章生成</span></div>
+<div class="tool-item" onclick="toggleCrToolbar();openOutlineGen()">🧠 AI大纲 <span class="ti-desc">自动规划章节</span></div>
+<div class="tool-item" onclick="toggleCrToolbar();openNameGen()">✨ AI起名 <span class="ti-desc">人名/书名/地名</span></div>
+<div class="tool-item" onclick="toggleCrToolbar();openBranchGen()">🌿 情节分支 <span class="ti-desc">卡文时找方向</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">📦 管理与导出</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="toggleCrToolbar();openAdvLoad()">📂 加载项目 <span class="ti-desc">继续之前的工程</span></div>
+<div class="tool-item" onclick="toggleCrToolbar();exportCrToTxt()">📥 导出TXT <span class="ti-desc">保存为文本文件</span></div>
+</div>
+</div>
+</div>
 </div>
 <div class="cr-tabs">
 <button class="cr-tab act" onclick="switchCrTab('draft',this)">草稿箱</button>
@@ -2508,22 +2624,47 @@ animation:goalBarShine 3s ease infinite;
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
 返回
 </button>
-<div class="rd-acts">
-<button onclick="toggleRdSettings()" title="阅读设置" aria-label="阅读设置">⚙</button>
-<button class="adv-only" onclick="toggleFullscreen()" id="btnFS" aria-label="全屏">⛶</button>
-<button class="adv-only" onclick="copyCurrentArticle()" aria-label="复制全文">📋</button>
-<button class="adv-only" onclick="copyCurChapter()" title="复制当前章节">📄</button>
-<button class="adv-only" onclick="importRdToCreate()" title="导入到创作编辑">✍</button>
-<button onclick="openNotePanel()" id="rdNoteBtn">📝</button>
-<button onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
-<button class="adv-only" onclick="document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})" title="回到顶部">⬆</button>
-<button class="adv-only" onclick="enterImmersiveRead()" title="沉浸阅读">🌙</button>
-<button class="adv-only" onclick="toggleTtsBar()" id="rdTtsBtn" title="语音朗读">🔊</button>
-<button class="adv-only" onclick="openArticleRewrite()" title="重写全文">🔄</button>
-<button class="adv-only" onclick="openForeshadow()" title="伏笔追踪">🎯</button>
+<div style="display:flex;align-items:center;gap:6px">
+<button style="padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px" onclick="toggleRdToolbar()" id="rdToolToggle">
+🛠 工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M6 9l6 6 6-6"/></svg>
+</button>
+<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()">⚙ 设置</button>
+<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
 </div>
 </div>
 <div class="rd-body">
+  <div id="rdToolPanel" class="tool-bar-panel" style="margin:0">
+<div class="tool-group">
+<div class="tool-group-title">📖 阅读辅助</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;enterImmersiveRead()">🌙 沉浸阅读 <span class="ti-desc">全屏无干扰</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;toggleTtsBar()" id="rdTtsBtn2">🔊 语音朗读 <span class="ti-desc">逐段朗读</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;document.getElementById('rdModal').scrollTo({top:0,behavior:'smooth'})">⬆ 回到顶部</div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;toggleFullscreen()" id="btnFS2">⛶ 全屏模式</div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">📝 笔记与伏笔</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;openNotePanel()" id="rdNoteBtn2">📝 章节笔记 <span class="ti-desc">记录想法</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;openForeshadow()">🎯 伏笔追踪 <span class="ti-desc">管理线索</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">📋 复制与导出</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;copyCurrentArticle()">📋 复制全文</div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;copyCurChapter()">📄 复制本章</div>
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;importRdToCreate()">✍ 导入创作 <span class="ti-desc">转为草稿编辑</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">🔄 AI改写工具</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;openArticleRewrite()">🔄 重写文章 <span class="ti-desc">保留情节重新表达</span></div>
+</div>
+</div>
+</div>
   <button class="immersive-exit-float" onclick="exitImmersiveRead()">✕ 退出沉浸</button>
 <h1 class="rd-title" id="rdTitle"></h1>
 <div class="rd-meta" id="rdMeta"></div>
@@ -2602,25 +2743,20 @@ animation:goalBarShine 3s ease infinite;
 <p>所有数据都保存在你的浏览器本地（或APP内置浏览器），你可以 <strong>随时导出备份</strong>，不依赖云端账号，也不和任何平台绑定。</p>
 
 <div class="notice">
-  <p><strong>当前版本：v2.9.7</strong></p>
-  <p>✓ 界面布局全面优化：卡片、封面、工具栏、按钮间距更协调</p>
-  <p>✓ 移动端深度适配：底部安全区域、小屏紧凑模式、触摸反馈</p>
-  <p>✓ 浅色主题增强：星笺聊天、导航栏、整体配色更完善</p>
-  <p>✓ 笔记面板改用 transform 动画，滑入更流畅</p>
-  <p>✓ 创作目标进度条加入流光动效</p>
-  <p>✓ 确认弹窗层级修复，解决被其他弹窗遮盖的问题</p>
-  <p>✓ 编辑器/阅读页工具条隐藏滚动条，体验更干净</p>
-  <p>✓ Toast提示支持长文本自动换行</p>
-  <p>✓ 全局文字渲染优化（抗锯齿、字体平滑）</p>
-  <p>✓ 作坊搜索增强：输入关键词可实时过滤已有文章</p>
-  <p>✓ 阅读页顶部新增进度条，随滚动实时显示阅读进度</p>
-  <p>✓ 编辑器底部新增字数目标进度条和百分比显示</p>
-  <p>✓ 收藏书架显示「上次读到第几章」标记</p>
-  <p>✓ 生成完成提示增加耗时统计</p>
-  <p>✓ 快速续写自动同步方向提示到上下文</p>
-  <p>✓ AI大纲弹窗布局修复，按钮不再跑偏</p>
-  <p>✓ 创作目标CSS格式修复，进度条正常显示</p>
-  <p>✓ 多项细节优化与体验增强</p>
+  <p><strong>当前版本：v2.9.8</strong></p>
+  <p>✓ 全局工具栏折叠改造：阅读页、创作页、编辑器按钮全部改为折叠面板</p>
+  <p>✓ 所有工具按钮标注名称和用途说明，新用户一目了然</p>
+  <p>✓ 工具按功能分类归组（基础编辑、AI辅助、章节管理、其他工具）</p>
+  <p>✓ 新增写作排版设置：字号、行高、字距可调，自动保存全局通用</p>
+  <p>✓ 新增章节命名功能：可为每章起名、修改，目录中显示章名</p>
+  <p>✓ 新增编辑器撤回按钮：支持最多30步撤回，恢复误删和误改内容</p>
+  <p>✓ 新增全文/本章搜索定位：输入关键词快速跳转，支持上下翻找</p>
+  <p>✓ 新增AI错别字检查：智能识别笔误，点击错字自动填入搜索栏定位</p>
+  <p>✓ 创作页按钮栏改为「创作工具箱」折叠菜单，界面更整洁</p>
+  <p>✓ 阅读页顶部只保留3个核心按钮，其余工具收入折叠面板</p>
+  <p>✓ 编辑器只露出「保存」按钮，其余通过「更多工具」展开</p>
+  <p>✓ 浅色/深色主题均适配新折叠面板样式</p>
+  <p>✓ 折叠面板展开带动画效果，交互更流畅</p>
 </div>
 
 <h3>二、创作理念：AI是搭子，不是替身</h3>
@@ -2756,6 +2892,13 @@ animation:goalBarShine 3s ease infinite;
 </ul>
 
 <h3>3）创作：你的私人写作间</h3>
+<p><strong>工具箱折叠菜单：</strong></p>
+<ul>
+  <li>页面顶部的「🛠 创作工具箱」按钮，点击展开所有工具。</li>
+  <li>工具按功能分三组：「新建作品」「AI辅助创作」「管理与导出」。</li>
+  <li>每个按钮都标注了名称和灰色小字说明，不用猜。</li>
+  <li>用完后点击按钮即可自动收起，界面保持清爽。</li>
+</ul>
 <p><strong>基础写作：</strong></p>
 <ul>
   <li><strong>草稿箱</strong>：适合写灵感片段、零碎对白、随手感想。</li>
@@ -2777,6 +2920,11 @@ animation:goalBarShine 3s ease infinite;
   <li><strong>自动保存 + 手动保存</strong>：输入过程中会自动保存，右上角也有【保存】按钮。</li>
   <li><strong>字数统计 + 阅读时间</strong>：底部实时显示本章字数和预估阅读时间。</li>
   <li><strong>排版（¶）</strong>：整理换行和空行，让文本更整齐。</li>
+  <li><strong>写作排版设置（🔤）</strong>：调整字号、行高、字距，设置后自动保存，所有写作页面通用。</li>
+<li><strong>章节命名（📛）</strong>：为每章起一个名字（如"初遇"、"暗涌"），可随时修改，在目录中显示。</li>
+<li><strong>撤回操作（↩）</strong>：最多支持30步撤回，可恢复误删、误改的内容。</li>
+<li><strong>搜索定位（🔍）</strong>：输入关键词在本章或全文中搜索，支持上下翻跳，快速定位。</li>
+<li><strong>AI查错别字（🔍）</strong>：AI检查本章或全文的错别字，发现的错字会列出来，点击即可复制到搜索栏快速定位修改。</li>
   <li><strong>沉浸写作</strong>：隐藏顶部工具条，更专注写作。</li>
   <li><strong>AI评价</strong>：从亮点、问题、建议、评分四个角度给出反馈。</li>
   <li><strong>AI润色 / 重写 / 扩写 / 缩写</strong>：
@@ -2796,17 +2944,12 @@ animation:goalBarShine 3s ease infinite;
 <p>在作坊或收藏中点击一篇文章，会进入阅读页。</p>
 <ul>
   <li><strong>顶部工具</strong>：
-    <br>· ⚙ 阅读设置：字号 / 行距  
-    <br>· ⛶ 全屏：适合电脑端  
-    <br>· 📋 复制全文 / 复制当前章节  
-    <br>· ✍ 导入到创作编辑：一键变成草稿继续改  
-    <br>· 📝 章节笔记：右侧笔记面板  
-    <br>· ♡ 收藏 / 取消收藏  
-    <br>· 🌙 沉浸阅读：全屏 + 自动滚动  
-    <br>· 🔊 语音朗读：逐段朗读，自动高亮  
-    <br>· 🔄 文章重写：短篇整篇，长篇逐章  
-    <br>· 🎯 伏笔追踪：记录和管理各种伏笔
-  </li>
+    <br>改版后顶部只保留三个按钮：
+    <br>· 🛠 工具：点击展开折叠面板，包含全部功能（沉浸阅读、语音朗读、笔记、伏笔、复制导出、AI改写等）
+    <br>· ⚙ 设置：字号和行距调整
+    <br>· ♡ 收藏/取消收藏
+    <br>所有工具按功能分组，每个都标注名称和用途说明。
+</li>
   <li><strong>章节目录</strong>：可以查看所有章节字数、估算阅读时间，点击跳转。</li>
   <li><strong>章节笔记</strong>：
     <br>· 按章节存笔记，可打标签（灵感/修改/伏笔/吐槽）  
@@ -3026,7 +3169,7 @@ animation:goalBarShine 3s ease infinite;
 </div>
 
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v2.9.7 · Created by 心田<br>让每一个灵感都有机会长成作品
+笔记AI v2.9.8 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
 
 </div>
@@ -3080,6 +3223,7 @@ animation:goalBarShine 3s ease infinite;
 </div>
 </div>
 </div>
+<div id="toolOverlay" style="display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.3)" onclick="closeAllToolPanels()"></div>
 <!-- EDITOR MODAL -->
 <div class="ed-modal" id="edModal" role="dialog" aria-label="编辑器"> <div class="cr-bg" id="crBg"></div>
 <div class="ed-hdr">
@@ -3088,23 +3232,72 @@ animation:goalBarShine 3s ease infinite;
 </button>
 <input class="ed-title-input" id="edTitle" placeholder="输入标题...">
 </div>
-<div class="ed-acts">
-<button class="adv-only" onclick="toggleImmersiveEdit()" id="immersiveEditBtn">🌙 沉浸</button>
-<button onclick="saveEditorContent()">💾 保存</button>
-<button onclick="formatEditorText()">¶ 排版</button>
-<button onclick="copyEditorContent()">📋 复制</button>
-<button class="adv-only" onclick="exportEdToTxt()">📥 导出TXT</button>
-<button class="adv-only" onclick="requestAIReview()">🤖 AI评价</button>
-<button class="adv-only" onclick="viewOutline()" id="edOutlineBtn" style="display:none">📋 总大纲</button>
-<button class="adv-only" onclick="openChOutline()" id="edChOutlineBtn" style="display:none">📝 章节大纲</button>
-<button class="adv-only" onclick="aiRewriteChapter()">🔄 AI重写</button>
-<button class="adv-only" onclick="aiPolishChapter()">✨ AI润色</button>
-<button class="adv-only" onclick="openAiExpand()">📈 AI扩写</button>
-<button class="adv-only" onclick="openAiShrink()">📉 AI缩写</button>
-<button onclick="deleteEdChapter()" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️ 删除本章</button>
+<div style="padding:6px 14px;display:flex;gap:6px;align-items:center;border-bottom:1px solid var(--border);background:var(--card);flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;-ms-overflow-style:none;-webkit-overflow-scrolling:touch" class="ed-acts-mini">
+<button onclick="saveEditorContent()" style="flex-shrink:0;padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px;cursor:pointer;white-space:nowrap">💾 保存</button>
+<button onclick="toggleEdToolbar()" id="edToolToggle" style="flex-shrink:0;padding:6px 12px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent2);font-size:11px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px">🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg></button>
+<span style="font-size:10px;color:var(--text2);white-space:nowrap;flex-shrink:0" id="edToolHint">排版、AI、导出...</span>
+</div>
+<div id="edToolPanel" class="tool-bar-panel" style="margin:0 14px 0 14px;border-top:none;border-radius:0 0 14px 14px">
+<div class="tool-group">
+<div class="tool-group-title">✏️ 基础编辑</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();formatEditorText()">¶ 自动排版 <span class="ti-desc">整理空行换行</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();toggleEdWriteSettings()">🔤 排版设置 <span class="ti-desc">字号行高字距</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();copyEditorContent()">📋 复制全文</div>
+<div class="tool-item" onclick="closeAllToolPanels();exportEdToTxt()">📥 导出TXT <span class="ti-desc">保存到本地</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();toggleImmersiveEdit()" id="immersiveEditBtn2">🌙 沉浸写作 <span class="ti-desc">全屏专注</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">🤖 AI辅助</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();requestAIReview()">🤖 AI评价 <span class="ti-desc">获取写作建议</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();aiPolishChapter()">✨ AI润色 <span class="ti-desc">只改文笔不改情节</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();aiRewriteChapter()">🔄 AI重写 <span class="ti-desc">保留骨架重新表达</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();openAiExpand()">📈 AI扩写 <span class="ti-desc">添加更多细节</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();openAiShrink()">📉 AI缩写 <span class="ti-desc">精简冗余内容</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">📋 章节管理</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();viewOutline()" id="edOutlineBtnNew" style="display:none">📋 查看总大纲</div>
+<div class="tool-item" onclick="closeAllToolPanels();openChOutline()" id="edChOutlineBtnNew" style="display:none">📝 章节大纲 <span class="ti-desc">为每章设摘要</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();renameEdChapter()" id="edRenameBtnNew">📛 章节命名 <span class="ti-desc">给本章起名</span></div>
+<div class="tool-item danger" onclick="closeAllToolPanels();deleteEdChapter()">🗑️ 删除本章 <span class="ti-desc">不可恢复</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">🔧 其他工具</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();toggleEdSearch()">🔍 搜索定位 <span class="ti-desc">查找关键词</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();aiCheckTypo()">🔍 查错别字 <span class="ti-desc">AI识别笔误</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();edUndo()" id="edUndoBtnNew">↩ 撤回操作 <span class="ti-desc">恢复上一步</span></div>
+</div>
+</div>
 </div>
 <div class="ed-ch-bar" id="edChBar" style="display:none"> <button class="ed-ch-btn act" id="edChCurrent" onclick="openEdChList()">第1章</button> <button class="ed-ch-btn" onclick="goEdPrevCh()" id="edPrevBtn" style="display:none">◀ 上一章</button> <button class="ed-ch-btn" onclick="goEdNextCh()" id="edNextBtn" style="display:none">下一章 ▶</button> <button class="ed-ch-btn" onclick="openEdChList()">📑 目录</button> </div>
 <div class="ed-body">
+  <div id="edSearchBar" style="display:none;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;gap:6px">
+<div style="display:flex;gap:6px;align-items:center">
+<input type="text" id="edSearchInput" placeholder="搜索关键词..." style="flex:1;min-width:0;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none" oninput="doEdSearch()" onkeydown="if(event.key==='Enter'){event.preventDefault();edSearchNext();}">
+<button onclick="closeEdSearch()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:14px;cursor:pointer;flex-shrink:0">✕</button>
+</div>
+<div style="display:flex;gap:6px;align-items:center;justify-content:space-between">
+<span id="edSearchCount" style="font-size:11px;color:var(--text2);white-space:nowrap">0/0</span>
+<div style="display:flex;gap:4px">
+<button onclick="edSearchPrev()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer">▲ 上一个</button>
+<button onclick="edSearchNext()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer">▼ 下一个</button>
+<button onclick="toggleEdSearchScope()" id="edSearchScopeBtn" style="padding:5px 10px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent2);font-size:11px;cursor:pointer;white-space:nowrap">本章</button>
+</div>
+</div>
+</div>
+  <div class="rd-settings" id="edWriteSettings">
+<h4>写作排版设置</h4>
+<div class="rd-s-row"><span class="rd-s-label">字号</span><input type="range" min="12" max="28" value="15" oninput="setEdFont(this.value)"><span class="rd-s-val" id="edFontVal">15</span></div>
+<div class="rd-s-row"><span class="rd-s-label">行高</span><input type="range" min="1.4" max="3.5" step="0.1" value="2" oninput="setEdLine(this.value)"><span class="rd-s-val" id="edLineVal">2.0</span></div>
+<div class="rd-s-row"><span class="rd-s-label">字距</span><input type="range" min="0" max="6" step="0.5" value="0" oninput="setEdLetterSpacing(this.value)"><span class="rd-s-val" id="edLsVal">0</span></div>
+</div>
   <button class="immersive-exit" onclick="toggleImmersiveEdit()">✕ 退出沉浸</button>
 <textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
 </div>
@@ -3147,6 +3340,29 @@ animation:goalBarShine 3s ease infinite;
 <div class="res-exp-btns" id="rewriteBtns">
 <button class="dlg-cancel" onclick="closeRewriteOv()">取消</button>
 <button class="dlg-ok" id="rewriteDoBtn" onclick="doArticleRewrite()">🚀 开始重写</button>
+</div>
+</div>
+</div>
+<!-- TYPO CHECK -->
+<div class="ai-review-ov" id="typoOv" onclick="if(event.target===this)closeTypoCheck()">
+<div class="ai-review-box">
+<div class="ai-review-hdr">
+<h3>🔍 错别字检查</h3>
+<button class="note-close" onclick="closeTypoCheck()">✕</button>
+</div>
+<div style="padding:10px 16px 6px;display:flex;gap:6px">
+<button onclick="aiCheckTypo('chapter')" id="typoChBtn" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:12px;cursor:pointer">检查本章</button>
+<button onclick="aiCheckTypo('all')" id="typoAllBtn" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer">检查全文</button>
+</div>
+<div class="ai-review-body" id="typoBody" style="min-height:200px">
+<div class="note-empty">点击上方按钮开始检查</div>
+</div>
+<div id="typoList" style="padding:0 16px 12px;display:none">
+<div style="font-size:11px;color:var(--text2);margin-bottom:6px">点击错字可复制到搜索栏快速定位 👇</div>
+<div id="typoTags" style="display:flex;flex-wrap:wrap;gap:6px"></div>
+</div>
+<div class="ai-review-ft">
+<button onclick="closeTypoCheck()">关闭</button>
 </div>
 </div>
 </div>
@@ -3251,7 +3467,7 @@ animation:goalBarShine 3s ease infinite;
 </div>
 </div>
 </div>
-</die>
+</div>
 <!-- STORY WHEEL 故事转盘 - 全屏版 -->
 <div class="wheel-modal" id="wheelOv">
 <div class="wheel-modal-hdr">
@@ -4460,7 +4676,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v2.9.7';
+const APP_VER='v2.9.8';
 
 // ==================== STORAGE ====================
 const K={
@@ -4488,26 +4704,27 @@ function ld(k, fb) {
 }
 
 function sv(k, d) {
-    // 存入内存缓存
     dbCache[k] = d;
-    
-    // 异步存入IndexedDB
     if (dbReady && db) {
-        dbSet(k, d).catch((e) => {
+        dbSet(k, d).catch(function(e) {
             console.warn('IndexedDB保存失败:', k, e);
         });
     }
-    
-    // 同时尝试存localStorage（作为备份）
     try {
-        const str = JSON.stringify(d);
+        var str = JSON.stringify(d);
         if (str.length < 500000) {
             localStorage.setItem(k, str);
         }
     } catch (e) {
-        // localStorage满了，检查是否需要提醒用户
         if (e.name === 'QuotaExceededError') {
-            console.warn('localStorage已满，数据仅保存在IndexedDB');
+            console.warn('localStorage已满，尝试清理');
+            try {
+                localStorage.removeItem('bj_genLogs');
+                localStorage.removeItem('bj_xjMessages');
+                localStorage.setItem(k, JSON.stringify(d));
+            } catch (e2) {
+                console.warn('清理后仍无法保存:', k);
+            }
         }
     }
 }
@@ -4968,7 +5185,14 @@ el.classList.add('act');renderArticles();
 // ==================== ARTICLES RENDER ====================
 function renderArticles(){
 const list=document.getElementById('articleList');
-const filtered=ws.filter(a=>a&&a.type===curType).slice(0,30);// 限制显示30条提升性能
+const _wsTypeCache={};
+function getWsByType(type){
+if(!_wsTypeCache[type]||_wsTypeCache[type].ver!==ws.length){
+_wsTypeCache[type]={ver:ws.length,data:ws.filter(a=>a&&a.type===type)};
+}
+return _wsTypeCache[type].data;
+}
+const filtered=getWsByType(curType).slice(0,30);// 限制显示30条提升性能
 if(filtered.length===0){
 list.innerHTML='<div class="empty-st"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 20h9M16.5 3.5a2.12 2.12 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg><p>还没有作品<br><br>💡 试试这样开始：<br>1. 在上方输入框描述你想要的故事<br>2. 选择几个氛围标签<br>3. 点击「生成」按钮<br><br>或者点击右上角「转盘」获取创意 ✨</p></div>';
 return;
@@ -5046,14 +5270,34 @@ let likeProcessing=false;
 function toggleLike(id){
 if(likeProcessing)return;
 likeProcessing=true;
-setTimeout(()=>{likeProcessing=false;},300);
+setTimeout(()=>{likeProcessing=false;},500);
 const article=ws.find(a=>a.id===id);
-if(!article){likeProcessing=false;return;}
+if(!article){
+// 也检查收藏里的文章（可能只在收藏不在作坊）
+let found=null;
+if(cols.books.find(b=>b.id===id)){
+cols.books=cols.books.filter(b=>b.id!==id);
+sv(K.cols,cols);
+renderArticles();
+showToast('已取消收藏');
+likeProcessing=false;
+return;
+}
+if(cols.shorts.find(s=>s.id===id)){
+cols.shorts=cols.shorts.filter(s=>s.id!==id);
+sv(K.cols,cols);
+renderArticles();
+showToast('已取消收藏');
+likeProcessing=false;
+return;
+}
+likeProcessing=false;
+return;
+}
 if(article.type==='long'){
 const bIdx=cols.books.findIndex(b=>b.id===id);
 if(bIdx>-1){cols.books.splice(bIdx,1);showToast('已取消收藏');}
 else{
-// Deep copy to avoid reference issues
 const copy=JSON.parse(JSON.stringify(article));
 copy.cover=null;copy.status='ongoing';copy.rating=0;
 cols.books.push(copy);
@@ -5278,18 +5522,24 @@ async function testApiConnection(){
 }
 
 let lastSaveTime=0;
+let _dirtyKeys=new Set();
+function markDirty(key){_dirtyKeys.add(key);}
 function autoSaveAll(){
 const now=Date.now();
-if(now-lastSaveTime<1000)return;// 1秒内不重复保存
+if(now-lastSaveTime<2000)return;
 lastSaveTime=now;
-sv(K.ws,ws);
-sv(K.cols,cols);
-sv(K.tags,tags);
-sv(K.ap,ap);
-sv('bj_genLogs', genLogs);
-sv('bj_crWorks',crWorks);
-sv('bj_resPacks',resPacks);
-sv('bj_stream',useStream);
+if(_dirtyKeys.size===0)return;
+_dirtyKeys.forEach(k=>{
+if(k===K.ws)sv(K.ws,ws);
+else if(k===K.cols)sv(K.cols,cols);
+else if(k===K.tags)sv(K.tags,tags);
+else if(k===K.ap)sv(K.ap,ap);
+else if(k==='bj_genLogs')sv('bj_genLogs',genLogs);
+else if(k==='bj_crWorks')sv('bj_crWorks',crWorks);
+else if(k==='bj_resPacks')sv('bj_resPacks',resPacks);
+else if(k==='bj_stream')sv('bj_stream',useStream);
+});
+_dirtyKeys.clear();
 }
 function saveCurSettings(){
 sv(K.curApi,getCurApi());
@@ -6536,6 +6786,9 @@ score=Math.max(0,Math.min(100,score));
 return {issues,suggestions,score};
 }
 async function generateArticle(){
+if(isGen){showToast('正在生成中，请稍候...');return;}
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先在底部「设置」→「API设置」中填写地址和密钥',4000);return;}
 // 生成前检查设定冲突
 const conflicts=checkSettingConflicts();
 if(conflicts.length>0){
@@ -6824,11 +7077,11 @@ curRd=latestArticle;
 const savedCh=parseInt(localStorage.getItem('bj_lastCh_'+article.id))||0;
 curCh=Math.min(savedCh,article.chapters?article.chapters.length-1:0);
 
-document.getElementById('rdTitle').textContent=curRd.title;
+const rdTitleEl=document.getElementById('rdTitle'); if(rdTitleEl)rdTitleEl.textContent=curRd.title;
 // 显示笔记数量
 const allNotes=getArticleNotes(curRd.id);
-if(allNotes.length>0){
-document.getElementById('rdTitle').textContent=curRd.title+' ('+allNotes.length+'条笔记)';
+if(allNotes.length>0&&rdTitleEl){
+rdTitleEl.textContent=curRd.title+' ('+allNotes.length+'条笔记)';
 }
 const totalWords=getTotalWords(curRd);
 const meta=document.getElementById('rdMeta');
@@ -6907,6 +7160,7 @@ function renderChContent(){
   }
 
   const nav=document.getElementById('chNav');
+  if(!nav)return;
   if(curRd.type==='long'&&curRd.chapters&&curRd.chapters.length>1){
     nav.innerHTML='';
 
@@ -7007,10 +7261,8 @@ btn.innerHTML=isLiked(curRd)?'❤️':'♡';
 function toggleCurrentLike(){
 if(!curRd)return;
 toggleLike(curRd.id);
-// 重新从收藏中获取最新状态
-const inBooks=cols.books.some(b=>b.id===curRd.id);
-const inShorts=cols.shorts.some(s=>s.id===curRd.id);
 updateRdLikeBtn();
+// 更新续写按钮状态
 const liked=isLiked(curRd);
 const cw2=document.getElementById('contWrap');
 const dw2=document.getElementById('dirInputWrap');
@@ -7019,6 +7271,7 @@ if(curRd.type==='long'){
 cw2.style.display='block';
 dw2.style.display='flex';
 if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';}
+if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';bc2.scrollIntoView({behavior:'smooth',block:'center'});}
 else{bc2.disabled=true;bc2.textContent='❤️ 请先收藏后才能续写';}
 }else{cw2.style.display='none';dw2.style.display='none';}
 }
@@ -7466,7 +7719,22 @@ btn.textContent='⛶';
 if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
 }
 }
-
+// ==================== 阅读页折叠工具栏 ====================
+let rdToolOpen=false;
+function toggleRdToolbar(){
+rdToolOpen=!rdToolOpen;
+const panel=document.getElementById('rdToolPanel');
+const btn=document.getElementById('rdToolToggle');
+if(!panel||!btn)return;
+if(rdToolOpen){
+panel.classList.add('open');
+btn.innerHTML='🛠 收起 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px;transform:rotate(180deg)"><path d="M6 9l6 6 6-6"/></svg>';
+}else{
+panel.classList.remove('open');
+btn.innerHTML='🛠 工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M6 9l6 6 6-6"/></svg>';
+closeAllToolPanels();
+}
+}
 function toggleRdSettings(){
 document.getElementById('rdSettingsPanel').classList.toggle('show');
 }
@@ -8552,6 +8820,7 @@ refreshAllCounters();
 // ==================== APPEARANCE ====================
 function setTheme(theme,el){
 document.body.className='';
+if(ap.simpleUI) document.body.classList.add('simple-ui');
 if(theme==='light')document.body.classList.add('theme-light');
 else if(theme!=='default')document.body.classList.add('theme-'+theme);
 document.querySelectorAll('.t-opt').forEach(o=>o.classList.remove('act'));
@@ -9024,6 +9293,19 @@ goalPanel.style.display='none';
 renderCrList();
 }
 }
+// ==================== 创作页折叠工具栏 ====================
+function toggleCrToolbar(el){
+const panel=document.getElementById('crToolPanel');
+const btn=document.getElementById('crToolToggle');
+const isOpen=panel.classList.contains('open');
+if(!isOpen){
+panel.classList.add('open');
+btn.classList.add('open');
+}else{
+panel.classList.remove('open');
+btn.classList.remove('open');
+}
+}
 function renderCrList(){
 const list=document.getElementById('crList');
 const filtered=crWorks.filter(w=>w.type===crTab);
@@ -9124,12 +9406,57 @@ const modal=document.getElementById('edModal');
 isImmersiveEdit=!isImmersiveEdit;
 if(isImmersiveEdit){
 modal.classList.add('immersive');
-document.getElementById('immersiveEditBtn').textContent='☀️ 普通';
+try{document.getElementById('immersiveEditBtn2').innerHTML='☀️ 普通 <span class="ti-desc">退出沉浸</span>';}catch(e){}
 if(document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
 }else{
 modal.classList.remove('immersive');
-document.getElementById('immersiveEditBtn').textContent='🌙 沉浸';
+try{document.getElementById('immersiveEditBtn2').innerHTML='🌙 沉浸写作 <span class="ti-desc">全屏专注</span>';}catch(e){}
 if(document.fullscreenElement)document.exitFullscreen().catch(()=>{});
+}
+}
+// ==================== 编辑器折叠工具栏 ====================
+function closeAllToolPanels(){
+document.getElementById('toolOverlay').style.display='none';
+try{
+const ep=document.getElementById('edToolPanel');
+if(ep)ep.classList.remove('open');
+const et=document.getElementById('edToolToggle');
+if(et){et.innerHTML='🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg>';}
+const eh=document.getElementById('edToolHint');
+if(eh)eh.style.display='';
+}catch(e){}
+try{
+const rp=document.getElementById('rdToolPanel');
+if(rp)rp.classList.remove('open');
+rdToolOpen=false;
+const rb=document.getElementById('rdToolToggle');
+if(rb){rb.innerHTML='🛠 工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M6 9l6 6 6-6"/></svg>';}
+}catch(e){}
+try{
+const cp=document.getElementById('crToolPanel');
+if(cp)cp.classList.remove('open');
+const cb=document.getElementById('crToolToggle');
+if(cb)cb.classList.remove('open');
+}catch(e){}
+}
+
+function showToolOverlay(){
+document.getElementById('toolOverlay').style.display='block';
+}
+function toggleEdToolbar(){
+const panel=document.getElementById('edToolPanel');
+const btn=document.getElementById('edToolToggle');
+const hint=document.getElementById('edToolHint');
+const isOpen=panel.classList.contains('open');
+if(!isOpen){
+panel.classList.add('open');
+btn.innerHTML='🛠 收起工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;transform:rotate(180deg)"><path d="M6 9l6 6 6-6"/></svg>';
+if(hint)hint.style.display='none';
+}else{
+panel.classList.remove('open');
+btn.innerHTML='🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg>';
+if(hint)hint.style.display='';
+closeAllToolPanels();
 }
 }
 function openEditor(id){
@@ -9137,6 +9464,8 @@ const work=crWorks.find(w=>w.id===id);
 if(!work)return;
 curEd=work;
 curEdCh=0;
+edUndoStack=[];
+updateEdUndoBtn();
 document.getElementById('edTitle').value=work.title||'';
 if(work.type==='novel'){
 document.getElementById('edChBar').style.display='flex';
@@ -9148,15 +9477,25 @@ document.getElementById('edTextarea').value=work.content||'';
 }
 updateEdWc();
 document.getElementById('edSaveStatus').textContent='已保存';
-document.getElementById('edOutlineBtn').style.display=(work.outline?'':'none');
-document.getElementById('edChOutlineBtn').style.display=(work.type==='novel'?'':'none');
+try{document.getElementById('edOutlineBtnNew').style.display=(work.outline?'flex':'none');}catch(e){}
+try{document.getElementById('edChOutlineBtnNew').style.display=(work.type==='novel'?'flex':'none');}catch(e){}
+try{document.getElementById('edRenameBtnNew').style.display=(work.type==='novel'?'flex':'none');}catch(e){}
 applyCrBg();
+try{document.getElementById('edToolPanel').classList.remove('open');}catch(e){}
+try{document.getElementById('edToolToggle').innerHTML='🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg>';}catch(e){}
+try{document.getElementById('edToolHint').style.display='';}catch(e){}
 document.getElementById('edModal').classList.add('show');
+loadEdWriteSettings();
 // 启动自动保存
    if(autoSaveInterval) clearInterval(autoSaveInterval);
    autoSaveInterval = setInterval(() => {
-       if(curEd) saveEditorContent();
-   }, 5000); // 每5秒自动保存一次
+       if(curEd) {
+           const statusEl=document.getElementById('edSaveStatus');
+           if(statusEl&&statusEl.textContent==='编辑中...'){
+               saveEditorContent();
+           }
+       }
+   }, 8000);
 document.getElementById('bnav').classList.add('hide');
 }
 function closeEditor(){
@@ -9195,7 +9534,10 @@ renderCrList();
 function renderEdChBar(){
 if(!curEd||curEd.type!=='novel')return;
 const total=curEd.chapters.length;
-document.getElementById('edChCurrent').textContent='第'+(curEdCh+1)+'章 / 共'+total+'章';
+if(!curEd.chNames)curEd.chNames=[];
+const chName=curEd.chNames[curEdCh]||'';
+const displayName=chName?'第'+(curEdCh+1)+'章 '+chName:'第'+(curEdCh+1)+'章';
+document.getElementById('edChCurrent').textContent=displayName+' / 共'+total+'章';
 document.getElementById('edPrevBtn').style.display=curEdCh>0?'':'none';
 document.getElementById('edNextBtn').style.display=curEdCh<total-1?'':'none';
 }
@@ -9216,7 +9558,7 @@ const hasOutline=curEd.chOutlines&&curEd.chOutlines[i];
 const item=document.createElement('div');
 item.className='ch-item'+(i===curEdCh?' act':'');
 item.innerHTML=
-'<span class="ch-item-num" style="width:55px;flex-shrink:0">第'+(i+1)+'章</span>'+
+'<span class="ch-item-num" style="width:auto;max-width:120px;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">第'+(i+1)+'章'+(curEd.chNames&&curEd.chNames[i]?' '+esc(curEd.chNames[i]):'')+'</span>'+
 '<span style="flex:1;font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(preview||'空白章节')+'</span>'+
 '<span class="ch-item-wc" style="flex-shrink:0">'+wc+'字'+(hasOutline?' 📋':'')+'</span>';
 item.onclick=()=>{
@@ -9275,8 +9617,50 @@ if(curEd.chapters[curEdCh]!==undefined)curEd.chapters[curEdCh]=text;
 curEd.content=text;
 }
 }
+// ==================== 编辑器撤回功能 ====================
+let edUndoStack=[];
+const ED_UNDO_MAX=30;
+
+function edPushUndo(){
+if(!curEd)return;
+const snapshot={
+ch:curEdCh,
+text:document.getElementById('edTextarea').value||'',
+time:Date.now()
+};
+// 避免重复记录（内容一样不记）
+if(edUndoStack.length>0){
+const last=edUndoStack[edUndoStack.length-1];
+if(last.text===snapshot.text&&last.ch===snapshot.ch)return;
+}
+edUndoStack.push(snapshot);
+if(edUndoStack.length>ED_UNDO_MAX)edUndoStack.shift();
+updateEdUndoBtn();
+}
+
+function edUndo(){
+if(edUndoStack.length===0){showToast('没有可撤回的操作');return;}
+const snapshot=edUndoStack.pop();
+if(curEd&&curEd.type==='novel'&&snapshot.ch!==curEdCh){
+// 切换到对应章节
+curEdCh=snapshot.ch;
+renderEdChBar();
+}
+document.getElementById('edTextarea').value=snapshot.text;
+onEditorInput();
+updateEdUndoBtn();
+showToast('已撤回 ↩');
+}
+
+function updateEdUndoBtn(){
+const btn=document.getElementById('edUndoBtnNew');
+if(!btn)return;
+btn.style.opacity=edUndoStack.length>0?'1':'0.5';
+btn.title=edUndoStack.length+'步可撤回';
+}
 function saveEditorContent(){
 if(!curEd)return;
+edPushUndo();
 // 记录保存前的字数（用于计算增量）
 let oldWc=0;
 const oldWork=crWorks.find(w=>w.id===curEd.id);
@@ -9286,12 +9670,12 @@ oldWork.chapters.forEach(ch=>oldWc+=countWords(ch||''));
 }else{oldWc=countWords(oldWork.content||'');}
 }
 saveEditorChapter();
-curEd.title=(document.getElementById('edTitle').value||'').trim();
+const edTitleEl=document.getElementById('edTitle'); curEd.title=edTitleEl?(edTitleEl.value||'').trim():(curEd.title||'');
 curEd.updatedAt=new Date().toISOString();
 const idx=crWorks.findIndex(w=>w.id===curEd.id);
 if(idx>-1)crWorks[idx]=curEd;
 sv('bj_crWorks',crWorks);
-document.getElementById('edSaveStatus').textContent='已保存 ✓';
+const edStatusEl=document.getElementById('edSaveStatus'); if(edStatusEl)edStatusEl.textContent='已保存 ✓';
 // 计算新增字数，记录到创作目标
 let newWc=0;
 if(curEd.type==='novel'&&curEd.chapters){
@@ -9304,24 +9688,84 @@ recordManualWrite(addedWords,0);
 }
 function onEditorInput(){
 updateEdWc();
-document.getElementById('edSaveStatus').textContent='编辑中...';
+const statusEl=document.getElementById('edSaveStatus');
+if(statusEl)statusEl.textContent='编辑中...';
 if(edAutoSaveTimer)clearTimeout(edAutoSaveTimer);
 edAutoSaveTimer=setTimeout(()=>{
 saveEditorContent();
-document.getElementById('edSaveStatus').textContent='已自动保存 ✓';
+const s2=document.getElementById('edSaveStatus');
+if(s2)s2.textContent='已自动保存 ✓';
 },2000);
 }
+// ==================== 写作排版设置 ====================
+let edFontSize=ld('bj_edFontSize',15);
+let edLineHeight=ld('bj_edLineHeight',2);
+let edLetterSpacing=ld('bj_edLetterSpacing',0);
+
+function toggleEdWriteSettings(){
+const el=document.getElementById('edWriteSettings');
+if(el)el.classList.toggle('show');
+}
+
+function setEdFont(v){
+v=parseInt(v);
+edFontSize=v;
+sv('bj_edFontSize',v);
+document.getElementById('edFontVal').textContent=v;
+applyEdWriteStyle();
+}
+
+function setEdLine(v){
+v=parseFloat(v);
+edLineHeight=v;
+sv('bj_edLineHeight',v);
+document.getElementById('edLineVal').textContent=v.toFixed(1);
+applyEdWriteStyle();
+}
+
+function setEdLetterSpacing(v){
+v=parseFloat(v);
+edLetterSpacing=v;
+sv('bj_edLetterSpacing',v);
+document.getElementById('edLsVal').textContent=v;
+applyEdWriteStyle();
+}
+
+function applyEdWriteStyle(){
+const ta=document.getElementById('edTextarea');
+if(!ta)return;
+ta.style.setProperty('--ed-fontsize',edFontSize+'px');
+ta.style.setProperty('--ed-lineheight',edLineHeight);
+ta.style.setProperty('--ed-letterspacing',edLetterSpacing+'px');
+}
+
+function loadEdWriteSettings(){
+edFontSize=ld('bj_edFontSize',15);
+edLineHeight=ld('bj_edLineHeight',2);
+edLetterSpacing=ld('bj_edLetterSpacing',0);
+try{
+document.getElementById('edFontVal').textContent=edFontSize;
+document.getElementById('edLineVal').textContent=edLineHeight.toFixed(1);
+document.getElementById('edLsVal').textContent=edLetterSpacing;
+const ranges=document.querySelectorAll('#edWriteSettings input[type=range]');
+if(ranges[0])ranges[0].value=edFontSize;
+if(ranges[1])ranges[1].value=edLineHeight;
+if(ranges[2])ranges[2].value=edLetterSpacing;
+}catch(e){}
+applyEdWriteStyle();
+}
 function updateEdWc(){
-const text=document.getElementById('edTextarea').value||'';
+const ta=document.getElementById('edTextarea');
+if(!ta)return;
+const text=ta.value||'';
 const wc=countWords(text);
 const wcEl=document.getElementById('edWc');
+if(!wcEl)return;
 wcEl.textContent=wc;
-// 预计阅读时间（按每分钟500字计算）
 const readTime=Math.ceil(wc/500);
 const rtEl=document.getElementById('edReadTime');
 if(rtEl)rtEl.textContent=readTime>0?'约'+readTime+'分钟阅读':'';
-// 字数目标提醒
-const minWords=parseInt(document.getElementById('minWords').value)||800;
+const minWords=parseInt((document.getElementById('minWords')||{}).value)||800;
 if(wc>0&&wc<minWords){
 wcEl.style.color='var(--danger)';
 wcEl.title='未达到最低字数要求('+minWords+'字)';
@@ -9332,7 +9776,6 @@ wcEl.title='已达到字数要求 ✓';
 wcEl.style.color='var(--accent2)';
 wcEl.title='';
 }
-// 更新字数进度条
 const barInner=document.getElementById('edWordBarInner');
 const targetEl=document.getElementById('edWordTarget');
 if(barInner&&targetEl){
@@ -9350,8 +9793,128 @@ if(!curEd)return;
 saveEditorContent();
 copyCrWork(curEd.id);
 }
+// ==================== 编辑器搜索功能 ====================
+let edSearchScope='chapter';// chapter or all
+let edSearchMatches=[];
+let edSearchIdx=-1;
+
+function toggleEdSearch(){
+const bar=document.getElementById('edSearchBar');
+if(!bar)return;
+if(bar.style.display==='flex'){
+closeEdSearch();
+}else{
+bar.style.display='flex';
+const inp=document.getElementById('edSearchInput');
+if(inp)inp.focus();
+}
+}
+
+function closeEdSearch(){
+const bar=document.getElementById('edSearchBar');
+if(bar)bar.style.display='none';
+const inp=document.getElementById('edSearchInput');
+if(inp)inp.value='';
+edSearchMatches=[];
+edSearchIdx=-1;
+const cnt=document.getElementById('edSearchCount');
+if(cnt)cnt.textContent='0/0';
+}
+
+function toggleEdSearchScope(){
+edSearchScope=edSearchScope==='chapter'?'all':'chapter';
+document.getElementById('edSearchScopeBtn').textContent=edSearchScope==='chapter'?'本章':'全文';
+doEdSearch();
+}
+
+function doEdSearch(){
+const kw=(document.getElementById('edSearchInput').value||'').trim();
+edSearchMatches=[];
+edSearchIdx=-1;
+if(!kw||!curEd){
+document.getElementById('edSearchCount').textContent='0/0';
+return;
+}
+const kwLower=kw.toLowerCase();
+if(edSearchScope==='chapter'){
+// 只搜本章
+const text=document.getElementById('edTextarea').value||'';
+let idx=0;
+while(true){
+const found=text.toLowerCase().indexOf(kwLower,idx);
+if(found===-1)break;
+edSearchMatches.push({ch:curEdCh,pos:found,len:kw.length});
+idx=found+1;
+}
+}else{
+// 搜全文（所有章节）
+if(curEd.type==='novel'&&curEd.chapters){
+curEd.chapters.forEach((ch,ci)=>{
+let idx=0;
+const t=(ch||'').toLowerCase();
+while(true){
+const found=t.indexOf(kwLower,idx);
+if(found===-1)break;
+edSearchMatches.push({ch:ci,pos:found,len:kw.length});
+idx=found+1;
+}
+});
+}else{
+const text=(curEd.content||document.getElementById('edTextarea').value||'');
+let idx=0;
+while(true){
+const found=text.toLowerCase().indexOf(kwLower,idx);
+if(found===-1)break;
+edSearchMatches.push({ch:0,pos:found,len:kw.length});
+idx=found+1;
+}
+}
+}
+if(edSearchMatches.length>0){
+edSearchIdx=0;
+goToEdSearchMatch();
+}
+document.getElementById('edSearchCount').textContent=
+(edSearchMatches.length>0?(edSearchIdx+1):0)+'/'+edSearchMatches.length;
+}
+
+function edSearchNext(){
+if(edSearchMatches.length===0)return;
+edSearchIdx=(edSearchIdx+1)%edSearchMatches.length;
+goToEdSearchMatch();
+document.getElementById('edSearchCount').textContent=(edSearchIdx+1)+'/'+edSearchMatches.length;
+}
+
+function edSearchPrev(){
+if(edSearchMatches.length===0)return;
+edSearchIdx=(edSearchIdx-1+edSearchMatches.length)%edSearchMatches.length;
+goToEdSearchMatch();
+document.getElementById('edSearchCount').textContent=(edSearchIdx+1)+'/'+edSearchMatches.length;
+}
+
+function goToEdSearchMatch(){
+const m=edSearchMatches[edSearchIdx];
+if(!m)return;
+// 如果在不同章节，先切过去
+if(curEd.type==='novel'&&m.ch!==curEdCh){
+saveEditorChapter();
+curEdCh=m.ch;
+document.getElementById('edTextarea').value=curEd.chapters[curEdCh]||'';
+updateEdWc();
+renderEdChBar();
+}
+const ta=document.getElementById('edTextarea');
+ta.focus();
+ta.setSelectionRange(m.pos,m.pos+m.len);
+// 滚动到选中位置
+const lineHeight=parseInt(getComputedStyle(ta).lineHeight)||24;
+const charsPerLine=Math.floor(ta.clientWidth/14)||40;
+const approxLine=Math.floor(m.pos/charsPerLine);
+ta.scrollTop=Math.max(0,approxLine*lineHeight-ta.clientHeight/3);
+}
 function formatEditorText(){
 const ta=document.getElementById('edTextarea');
+if(!ta)return;
 let text=ta.value||'';
 // 先把多个连续空行合并成一个
 text=text.replace(/\n{3,}/g,'\n\n');
@@ -9434,6 +9997,168 @@ body.textContent='获取评价失败：'+errMsg;
 function closeAIReview(){
 document.getElementById('aiReviewOv').classList.remove('show');
 }
+// ==================== AI错别字检查 ====================
+let typoResults=[];
+
+function openTypoCheck(){
+document.getElementById('typoOv').classList.add('show');
+document.getElementById('typoBody').innerHTML='<div class="note-empty">点击上方按钮开始检查</div>';
+document.getElementById('typoList').style.display='none';
+typoResults=[];
+}
+
+function closeTypoCheck(){
+document.getElementById('typoOv').classList.remove('show');
+}
+
+async function aiCheckTypo(scope){
+if(!curEd){showToast('请先打开一篇文章');return;}
+const cfg=getCurApi();
+if(!cfg.url||!cfg.key){showToast('请先配置API');return;}
+
+// 如果直接从工具栏调用（无参数），先打开弹窗
+if(!scope){
+openTypoCheck();
+return;
+}
+
+let text='';
+let label='';
+if(scope==='chapter'){
+text=document.getElementById('edTextarea').value||'';
+label='本章（第'+(curEdCh+1)+'章）';
+try{
+document.getElementById('typoChBtn').style.background='var(--accent)';
+document.getElementById('typoChBtn').style.color='#fff';
+document.getElementById('typoAllBtn').style.background='var(--card)';
+document.getElementById('typoAllBtn').style.color='var(--text)';
+}catch(e){}
+}else{
+if(curEd.type==='novel'&&curEd.chapters){
+saveEditorChapter();
+curEd.chapters.forEach((ch,i)=>{
+text+='【第'+(i+1)+'章】\n'+ch+'\n\n';
+});
+}else{
+text=curEd.content||document.getElementById('edTextarea').value||'';
+}
+label='全文';
+try{
+document.getElementById('typoAllBtn').style.background='var(--accent)';
+document.getElementById('typoAllBtn').style.color='#fff';
+document.getElementById('typoChBtn').style.background='var(--card)';
+document.getElementById('typoChBtn').style.color='var(--text)';
+}catch(e){}
+}
+
+if(countWords(text)<10){showToast('内容太少，至少10字');return;}
+
+const body=document.getElementById('typoBody');
+body.innerHTML='<div style="text-align:center;padding:30px;color:var(--text2)"><span class="ldots"><span></span><span></span><span></span></span><br>正在检查'+label+'的错别字...</div>';
+document.getElementById('typoList').style.display='none';
+
+const sysMsg=`你是一位严谨的中文校对编辑，专门负责检查小说文本中的错别字、用词错误、语病。
+
+【任务】检查用户提供的文本，找出所有错别字和明显的用词错误。
+
+【输出格式】严格按以下格式，每行一条：
+错误词 → 正确词 | 所在句子片段（前后各5字）
+
+【检查范围】
+- 同音字错误（如：以经→已经、在见→再见）
+- 形近字错误（如：己以→已经、未来→末来）
+- 多字/少字（如：我我去→我去）
+- 标点符号错用
+- 常见网文笔误
+
+【注意】
+- 不要修改文风和表达方式
+- 不要把故意的用法当成错误（如角色口头禅、方言）
+- 如果没有发现错误，就说"未发现明显错别字 ✅"
+- 只输出错误列表，不要其他内容`;
+
+const userMsg='请检查以下'+label+'的文本：\n\n'+text.substring(0,6000);
+const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+
+typoResults=[];
+
+if(useStream){
+let fullText='';
+await callAPIStream(messages,
+(ft)=>{
+fullText=ft;
+body.textContent=ft;
+body.scrollTop=body.scrollHeight;
+},
+(ft)=>{
+if(ft){
+body.textContent=ft;
+parseTypoResult(ft);
+}else{
+body.innerHTML='<div style="color:var(--text2);text-align:center">检查已取消</div>';
+}
+},
+(err)=>{
+body.textContent='检查失败：'+err;
+}
+);
+}else{
+const result=await callAPINonStream(messages);
+if(result){
+body.textContent=result;
+parseTypoResult(result);
+}else{
+body.textContent='检查失败，请重试';
+}
+}
+}
+
+function parseTypoResult(text){
+typoResults=[];
+const lines=text.split('\n').filter(l=>l.trim());
+lines.forEach(line=>{
+const arrow=line.indexOf('→');
+if(arrow>0){
+const wrongWord=line.substring(0,arrow).trim().replace(/^[\d\.\、\)\]]+/,'').trim();
+if(wrongWord&&wrongWord.length<20){
+typoResults.push(wrongWord);
+}
+}
+});
+
+if(typoResults.length===0){
+document.getElementById('typoList').style.display='none';
+return;
+}
+
+// 去重
+typoResults=[...new Set(typoResults)];
+
+const listDiv=document.getElementById('typoList');
+const tagsDiv=document.getElementById('typoTags');
+listDiv.style.display='block';
+tagsDiv.innerHTML='';
+
+typoResults.forEach(word=>{
+const tag=document.createElement('span');
+tag.style.cssText='padding:6px 12px;border-radius:10px;background:rgba(255,107,107,.12);color:var(--danger);font-size:12px;font-weight:600;cursor:pointer;border:1px solid rgba(255,107,107,.3);transition:all .2s';
+tag.textContent=word;
+tag.title='点击复制「'+word+'」并打开搜索';
+tag.onclick=function(){
+doCopy(word);
+// 自动打开搜索栏并填入
+const bar=document.getElementById('edSearchBar');
+bar.style.display='flex';
+document.getElementById('edSearchInput').value=word;
+edSearchScope='chapter';
+document.getElementById('edSearchScopeBtn').textContent='本章';
+doEdSearch();
+closeTypoCheck();
+showToast('已复制「'+word+'」并定位到搜索 🔍');
+};
+tagsDiv.appendChild(tag);
+});
+}
 function shareCrToRes(id){
 const work=crWorks.find(w=>w.id===id);
 if(!work)return;
@@ -9513,10 +10238,27 @@ saveEditorContent();
 closeChOutline();
 showToast('章节大纲已保存 📋');
 }
+function renameEdChapter(){
+if(!curEd||curEd.type!=='novel')return;
+if(!curEd.chNames)curEd.chNames=[];
+const current=curEd.chNames[curEdCh]||'';
+showInp('第'+(curEdCh+1)+'章 章节名','输入章节名称（如：初遇、暗涌）',name=>{
+curEd.chNames[curEdCh]=name;
+saveEditorContent();
+renderEdChBar();
+showToast('第'+(curEdCh+1)+'章已命名为「'+name+'」');
+});
+// 预填已有名称
+setTimeout(()=>{
+const f=document.getElementById('inpField');
+if(f&&current)f.value=current;
+},120);
+}
 function deleteEdChapter(){
 if(!curEd||curEd.type!=='novel')return;
 if(curEd.chapters.length<=1){showToast('至少保留一章');return;}
 const chWc=countWords(curEd.chapters[curEdCh]||'');
+edPushUndo();
 showDlg('删除章节','确定要删除第'+(curEdCh+1)+'章吗？('+chWc+'字)\n\n⚠️ 此操作不可恢复！',()=>{
 curEd.chapters.splice(curEdCh,1);
 if(curEdCh>=curEd.chapters.length)curEdCh=curEd.chapters.length-1;
@@ -13031,7 +13773,7 @@ let finalText=fullText;
 const mWCh=parseInt(document.getElementById('minWords').value)||800;
 const chWc=countWords(fullText);
 if(chWc<mWCh&&chWc>200){
-showToast('字数不足('+chWc+'/'+mWCh+')，正在补写...',3000);
+showToast('本章'+chWc+'字，未达到'+mWCh+'字要求，正在自动补写...',4000);
 const extMsg2=[
 {role:'system',content:buildSysPrompt()},
 {role:'user',content:'以下是一个章节的内容，只有'+chWc+'字，需要至少'+mWCh+'字。请直接续写下去，不要重复已有内容，不要加标题说明，直接输出续写部分：\n\n'+fullText}
@@ -14618,6 +15360,7 @@ function recordManualWrite(addedWords,addedChapters){
 
 function checkGoalComplete(){
 // 防止重复弹窗
+if(!goalCelebrated) return;
 if (goalCelebrated.weekWords && goalCelebrated.weekCh && 
     goalCelebrated.monthWords && goalCelebrated.monthCh) return;
 let msg='';let title='';
@@ -14665,6 +15408,7 @@ if(ringAudio){ringAudio.pause();ringAudio=null;}
 
 function renderGoalPanel(){
 checkGoalReset();
+if(!document.getElementById('goalWeekRange')) return;
 // 日期范围
 document.getElementById('goalWeekRange').textContent=getWeekRange();
 document.getElementById('goalMonthRange').textContent=getMonthRange();
@@ -15225,10 +15969,12 @@ setTimeout(()=>{
     const lb=document.getElementById('banWordsInput'); if(lb) limitLines(lb,30,'lbwCount');
   }catch(e){}
 },0);
-document.getElementById('streamOn').checked=useStream;
+try{document.getElementById('streamOn').checked=useStream;}catch(e){}
+try{
 document.getElementById('quickTemp').value=document.getElementById('apiTemp').value;
 document.getElementById('qtVal').textContent=document.getElementById('apiTemp').value;
-updateStreamUI();
+}catch(e){}
+try{updateStreamUI();}catch(e){}
 
 renderTags();renderArticles();renderCharCards();applyAppearance();
 document.getElementById('splashVer').textContent=APP_VER;
@@ -15251,49 +15997,28 @@ document.getElementById('ringVolume').value=ringVolume_;
 document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
 checkGoalReset();
 // 更新弹窗
-const UPDATE_VER='v2.9.7';
+const UPDATE_VER='v2.9.8';
 const lastSeenVer=localStorage.getItem('bj_lastSeenVer');
 if(lastSeenVer!==UPDATE_VER){
   setTimeout(()=>{
     const updateMsg=
-      '🎉 笔记AI '+UPDATE_VER+' 更新内容\n\n'+
-      '🎨 界面美化与布局优化\n'+
-      '• 文章卡片、书架封面比例更协调\n'+
-      '• 阅读页工具栏横向滚动更流畅\n'+
-      '• 编辑器工具条隐藏滚动条，更简洁\n'+
-      '• 创作页按钮栏加入右侧渐隐提示\n'+
-      '• 笔记面板滑入动画更丝滑\n'+
-      '• 创作目标进度条加入流光动效\n\n'+
-      '📱 移动端适配增强\n'+
-      '• 底部导航适配iPhone安全区域\n'+
-      '• 小屏幕下文章卡片更紧凑\n'+
-      '• 输入框、按钮尺寸针对手机优化\n'+
-      '• 弹窗文字过长时自动换行\n\n'+
-      '🌙 浅色主题优化\n'+
-      '• 星笺聊天页浅色适配更完善\n'+
-      '• 顶部导航加入柔和阴影\n'+
-      '• 整体配色更协调\n\n'+
-      '🔧 细节改进\n'+
-      '• 确认弹窗层级修复，不再被遮盖\n'+
-      '• 空状态页面视觉优化\n'+
-      '• 设置入口卡片加入hover反馈\n'+
-      '• 全局文字渲染更清晰\n'+
-      '🔍 搜索与过滤增强\n'+
-      '• 作坊搜索框支持实时过滤已有文章\n'+
-      '• 按标题、标签、描述智能匹配\n\n'+
-      '📖 阅读体验升级\n'+
-      '• 阅读页顶部新增紫色进度条\n'+
-      '• 滚动时实时显示阅读百分比\n'+
-      '• 收藏书架显示上次阅读位置\n\n'+
-      '✍️ 编辑器优化\n'+
-      '• 底部新增字数目标进度条\n'+
-      '• 实时显示目标达成百分比\n'+
-      '• 快速续写自动同步方向提示\n\n'+
-      '🔧 问题修复\n'+
-      '• AI大纲弹窗按钮布局修复\n'+
-      '• 创作目标CSS格式修复\n'+
-      '• 生成完成提示增加耗时统计\n'+
-      '• 多项细节优化与体验增强';
+      '🎉 笔记AI v2.9.8 更新内容\n\n'+
+      '🛠 全局工具栏折叠改造\n'+
+      '• 阅读页：密集图标按钮改为折叠式工具面板\n'+
+      '• 创作页：横向按钮栏改为「创作工具箱」折叠菜单\n'+
+      '• 编辑器：只保留「保存」和「更多工具」，其余折叠收纳\n'+
+      '• 所有按钮标注名称 + 灰色用途说明，新手一看就懂\n'+
+      '• 工具按分类归组：基础编辑、AI辅助、章节管理、其他工具\n\n'+
+      '✍️ 创作系统增强\n'+
+      '• 新增写作排版设置：字号、行高、字距可调，自动保存全局通用\n'+
+      '• 新增章节命名：可为每章起名，目录中显示章名\n'+
+      '• 新增撤回按钮：支持最多30步撤回，恢复误删和误改\n'+
+      '• 新增全文/本章搜索：关键词定位，支持上下翻跳\n'+
+      '• 新增AI查错别字：智能识别笔误，点击错字直达搜索定位\n\n'+
+      '📖 体验优化\n'+
+      '• 新用户不再面对满屏按钮，界面更清爽\n'+
+      '• 工具面板带动画展开，视觉流畅\n'+
+      '• 浅色/深色主题均已适配折叠面板';
 
     showDlg('📢 版本更新', updateMsg, ()=>{
       localStorage.setItem('bj_lastSeenVer', UPDATE_VER);
@@ -15457,13 +16182,20 @@ function quickThemeSwitch(){
     const newTheme = themes[index];
     
     document.body.className = '';
+    if(ap.simpleUI) document.body.classList.add('simple-ui');
     if(newTheme === 'light') document.body.classList.add('theme-light');
     else if(newTheme !== 'default') document.body.classList.add('theme-' + newTheme);
     
     ap.theme = newTheme;
     sv(K.ap, ap);
     
-    showToast('已切换为 ' + (newTheme==='default'?'默认紫色':newTheme==='warm'?'暖橙':newTheme==='green'?'翠绿':newTheme==='blue'?'深蓝':'浅色') + '主题 🎨');
+    const themeMap={default:'t0',warm:'t1',green:'t2',blue:'t3',light:'t4'};
+    document.querySelectorAll('.t-opt').forEach(o=>o.classList.remove('act'));
+    const target=document.querySelector('.t-opt.'+(themeMap[newTheme]||'t0'));
+    if(target)target.classList.add('act');
+    
+    const names={default:'默认紫色',warm:'暖橙',green:'翠绿',blue:'深蓝',light:'浅色'};
+    showToast('已切换为 ' + (names[newTheme]||newTheme) + '主题 🎨');
 }
 </script>
 </body>
