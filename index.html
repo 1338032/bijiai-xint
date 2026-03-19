@@ -242,8 +242,8 @@ to{transform:rotate(360deg);}
 }
 
 /* APP */
-.app{opacity:0;transform:translateY(16px);transition:opacity .5s .2s,transform .5s .2s;padding-bottom:68px;}
-.app.show{opacity:1;transform:translateY(0);}
+.app{opacity:0;transition:opacity .5s .2s;padding-bottom:68px;}
+.app.show{opacity:1;}
 
 /* HEADER */
 .hdr{
@@ -528,6 +528,8 @@ box-shadow:0 4px 15px rgba(0,0,0,.3);
 .modal{
 display:none;position:fixed;inset:0;z-index:500;
 background:var(--bg);overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+position:fixed;
 }
 .modal.show{display:block;animation:slideUp .3s ease;}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
@@ -536,10 +538,146 @@ position:fixed;top:0;left:0;right:0;
 background:rgba(15,15,20,.85);backdrop-filter:blur(10px);z-index:10;
 }
 .modal.fs .rd-body{padding-top:62px;}
+/* ==================== 主题背景 ==================== */
+.theme-bg-layer{
+  position:fixed;inset:0;z-index:0;
+  pointer-events:none;
+  transition:opacity .5s ease;
+  display:none;
+}
+
+.theme-bg-layer.rd-theme-bg{z-index:0;}
+.theme-bg-layer.cr-theme-bg{z-index:0;}
+#rdModal.show #rdThemeBg{display:block;}
+#edModal.show #crThemeBg{display:block;}
+.theme-bg-layer.cr-theme-bg{z-index:0;}
+/* 六种主题背景 */
+.theme-bg-layer[data-bg="1"]{
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 10%,rgba(108,92,231,.12),transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%,rgba(162,155,254,.08),transparent 50%),
+    linear-gradient(160deg,rgba(15,15,20,.98),rgba(25,20,40,.95));
+}
+.theme-bg-layer[data-bg="2"]{
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%,rgba(41,128,185,.1),transparent 60%),
+    radial-gradient(ellipse 80% 50% at 10% 100%,rgba(52,152,219,.06),transparent 50%),
+    linear-gradient(180deg,rgba(10,15,25,.98),rgba(15,20,35,.95));
+}
+.theme-bg-layer[data-bg="3"]{
+  background:
+    radial-gradient(ellipse 90% 60% at 30% 20%,rgba(39,174,96,.1),transparent 55%),
+    radial-gradient(ellipse 70% 50% at 70% 80%,rgba(46,204,113,.06),transparent 50%),
+    linear-gradient(170deg,rgba(10,20,15,.98),rgba(15,25,20,.95));
+}
+.theme-bg-layer[data-bg="4"]{
+  background:
+    radial-gradient(ellipse 100% 80% at 60% 10%,rgba(230,126,34,.08),transparent 55%),
+    radial-gradient(ellipse 80% 50% at 20% 90%,rgba(241,196,15,.05),transparent 50%),
+    linear-gradient(165deg,rgba(20,15,10,.98),rgba(30,22,15,.95));
+}
+.theme-bg-layer[data-bg="5"]{
+  background:
+    radial-gradient(ellipse 110% 70% at 40% 5%,rgba(255,107,107,.07),transparent 55%),
+    radial-gradient(ellipse 80% 60% at 80% 95%,rgba(162,155,254,.06),transparent 50%),
+    linear-gradient(175deg,rgba(20,12,18,.98),rgba(25,15,22,.95));
+}
+.theme-bg-layer[data-bg="6"]{
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%,rgba(108,92,231,.04),transparent 60%),
+    linear-gradient(180deg,rgba(18,18,24,.99),rgba(12,12,16,.99));
+}
+/* 浅色主题适配 */
+body.theme-light .theme-bg-layer[data-bg="1"]{
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 10%,rgba(108,92,231,.08),transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%,rgba(162,155,254,.06),transparent 50%),
+    linear-gradient(160deg,rgba(248,248,252,.98),rgba(240,238,250,.95));
+}
+body.theme-light .theme-bg-layer[data-bg="2"]{
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%,rgba(41,128,185,.07),transparent 60%),
+    radial-gradient(ellipse 80% 50% at 10% 100%,rgba(52,152,219,.04),transparent 50%),
+    linear-gradient(180deg,rgba(245,250,255,.98),rgba(235,245,252,.95));
+}
+body.theme-light .theme-bg-layer[data-bg="3"]{
+  background:
+    radial-gradient(ellipse 90% 60% at 30% 20%,rgba(39,174,96,.07),transparent 55%),
+    radial-gradient(ellipse 70% 50% at 70% 80%,rgba(46,204,113,.04),transparent 50%),
+    linear-gradient(170deg,rgba(245,252,248,.98),rgba(238,250,242,.95));
+}
+body.theme-light .theme-bg-layer[data-bg="4"]{
+  background:
+    radial-gradient(ellipse 100% 80% at 60% 10%,rgba(230,126,34,.06),transparent 55%),
+    radial-gradient(ellipse 80% 50% at 20% 90%,rgba(241,196,15,.04),transparent 50%),
+    linear-gradient(165deg,rgba(255,252,245,.98),rgba(252,248,238,.95));
+}
+body.theme-light .theme-bg-layer[data-bg="5"]{
+  background:
+    radial-gradient(ellipse 110% 70% at 40% 5%,rgba(255,107,107,.05),transparent 55%),
+    radial-gradient(ellipse 80% 60% at 80% 95%,rgba(162,155,254,.04),transparent 50%),
+    linear-gradient(175deg,rgba(255,248,250,.98),rgba(252,242,248,.95));
+}
+body.theme-light .theme-bg-layer[data-bg="6"]{
+  background:
+    radial-gradient(ellipse 90% 70% at 50% 50%,rgba(108,92,231,.03),transparent 60%),
+    linear-gradient(180deg,rgba(250,250,252,.99),rgba(245,245,248,.99));
+}
+/* 暖色主题适配 */
+body.theme-warm .theme-bg-layer[data-bg="1"]{
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 10%,rgba(230,126,34,.12),transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%,rgba(240,178,122,.08),transparent 50%),
+    linear-gradient(160deg,rgba(20,15,10,.98),rgba(30,22,15,.95));
+}
+body.theme-warm .theme-bg-layer[data-bg="4"]{
+  background:
+    radial-gradient(ellipse 100% 80% at 60% 10%,rgba(230,126,34,.15),transparent 55%),
+    radial-gradient(ellipse 80% 50% at 20% 90%,rgba(241,196,15,.08),transparent 50%),
+    linear-gradient(165deg,rgba(25,18,10,.98),rgba(35,25,15,.95));
+}
+/* 绿色主题适配 */
+body.theme-green .theme-bg-layer[data-bg="1"]{
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 10%,rgba(39,174,96,.12),transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%,rgba(88,214,141,.08),transparent 50%),
+    linear-gradient(160deg,rgba(10,20,15,.98),rgba(15,28,20,.95));
+}
+body.theme-green .theme-bg-layer[data-bg="3"]{
+  background:
+    radial-gradient(ellipse 90% 60% at 30% 20%,rgba(39,174,96,.15),transparent 55%),
+    radial-gradient(ellipse 70% 50% at 70% 80%,rgba(46,204,113,.1),transparent 50%),
+    linear-gradient(170deg,rgba(10,22,15,.98),rgba(15,30,20,.95));
+}
+/* 蓝色主题适配 */
+body.theme-blue .theme-bg-layer[data-bg="1"]{
+  background:
+    radial-gradient(ellipse 120% 80% at 20% 10%,rgba(41,128,185,.12),transparent 60%),
+    radial-gradient(ellipse 80% 60% at 80% 90%,rgba(93,173,226,.08),transparent 50%),
+    linear-gradient(160deg,rgba(10,15,25,.98),rgba(15,22,35,.95));
+}
+body.theme-blue .theme-bg-layer[data-bg="2"]{
+  background:
+    radial-gradient(ellipse 100% 70% at 50% 0%,rgba(41,128,185,.15),transparent 60%),
+    radial-gradient(ellipse 80% 50% at 10% 100%,rgba(52,152,219,.1),transparent 50%),
+    linear-gradient(180deg,rgba(10,18,30,.98),rgba(15,25,40,.95));
+}
 .rd-bg{
-position:fixed;inset:0;z-index:0;
-background-size:cover;background-position:center;
-opacity:.50;pointer-events:none;display:none;
+position:fixed;
+top:0;left:0;
+width:100%;height:100vh;
+margin-bottom:-100vh;
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
+opacity:.50;
+pointer-events:none;
+z-index:0;
+display:none;
+}
+.modal.show::before{
+content:none;
+display:none;
 }
 .rd-progress-bar{
 position:fixed;top:0;left:0;height:3px;z-index:1000;
@@ -1344,18 +1482,6 @@ background:var(--card);border:1px solid var(--border);
 border-radius:14px;animation:fadeIn .2s ease;
 }
 .tool-bar-panel.open{display:block;}
-#rdToolPanel{
-  position:fixed;top:50px;left:10px;right:10px;z-index:50;
-  max-height:70vh;overflow-y:auto;
-  box-shadow:0 8px 30px rgba(0,0,0,.4);
-  margin:0!important;
-}
-#rdToolPanel.open{display:block;}
-#crToolPanel{
-  position:fixed;top:100px;left:10px;right:10px;z-index:50;
-  max-height:65vh;overflow-y:auto;
-  box-shadow:0 8px 30px rgba(0,0,0,.4);
-}
 #crToolPanel.open{display:block;}
 .tool-group{margin-bottom:12px;}
 .tool-group:last-child{margin-bottom:0;}
@@ -1406,15 +1532,14 @@ body.theme-light .tool-bar-panel{background:#fff;}
   padding:12px;
 }
 #rdToolPanel{
-  position:fixed;
-  top:55px;
-  left:8px;
-  right:8px;
-  z-index:610;
-  max-height:70vh;
-  overflow-y:auto;
+  position:absolute;top:100%;left:0;right:0;z-index:610;
+  max-height:70vh;overflow-y:auto;
   box-shadow:0 10px 40px rgba(0,0,0,.5);
   margin:0!important;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:0 0 14px 14px;
+  padding:12px;
 }
 body.theme-light .tool-item{background:#f8f8fc;}
 .ed-ch-bar{
@@ -2653,9 +2778,10 @@ animation:goalBarShine 3s ease infinite;
 <div class="xj-msg-menu" id="xjMsgMenu" style="display:none">
 </div>
 <!-- READING MODAL -->
+<div class="rd-bg" id="rdBg"></div>
+<div class="theme-bg-layer rd-theme-bg" id="rdThemeBg"></div>
 <div class="modal" id="rdModal" role="dialog" aria-label="阅读">
 <div class="rd-progress-bar" id="rdProgressBar" style="width:0%"></div>
-<div class="rd-bg" id="rdBg"></div>
 <div class="rd-hdr">
 <button class="rd-back" onclick="closeReading()">
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
@@ -2668,9 +2794,7 @@ animation:goalBarShine 3s ease infinite;
 <button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()">⚙ 设置</button>
 <button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
 </div>
-</div>
-<div class="rd-body">
-  <div id="rdToolPanel" class="tool-bar-panel" style="margin:0">
+<div id="rdToolPanel" class="tool-bar-panel" style="margin:0">
 <div class="tool-group">
 <div class="tool-group-title">📖 阅读辅助</div>
 <div class="tool-grid">
@@ -2697,11 +2821,25 @@ animation:goalBarShine 3s ease infinite;
 </div>
 <div class="tool-group">
 <div class="tool-group-title">🔄 AI改写工具</div>
+<div class="tool-group">
+<div class="tool-group-title">🎨 阅读背景</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="setRdThemeBg('0')" style="color:var(--danger)">✕ 无背景</div>
+<div class="tool-item" onclick="setRdThemeBg('1')">🌌 星辉紫</div>
+<div class="tool-item" onclick="setRdThemeBg('2')">🌊 深海蓝</div>
+<div class="tool-item" onclick="setRdThemeBg('3')">🌿 翡翠绿</div>
+<div class="tool-item" onclick="setRdThemeBg('4')">🔥 暖阳橙</div>
+<div class="tool-item" onclick="setRdThemeBg('5')">🌸 樱花粉</div>
+<div class="tool-item" onclick="setRdThemeBg('6')">🌑 纯净墨</div>
+</div>
+</div>
 <div class="tool-grid">
 <div class="tool-item" onclick="closeAllToolPanels();rdToolOpen=false;openArticleRewrite()">🔄 重写文章 <span class="ti-desc">保留情节重新表达</span></div>
 </div>
 </div>
 </div>
+</div>
+<div class="rd-body">
   <button class="immersive-exit-float" onclick="exitImmersiveRead()">✕ 退出沉浸</button>
 <h1 class="rd-title" id="rdTitle"></h1>
 <div class="rd-meta" id="rdMeta"></div>
@@ -3218,7 +3356,18 @@ animation:goalBarShine 3s ease infinite;
   <p>💬 QQ：962005530</p>
   <p style="margin-top:8px">如果你遇到BUG、使用困难、功能建议，或者只是想分享一段自己很满意的文字，都欢迎来找我。看到消息会尽量回复，也会根据大家的反馈持续调整笔记AI。</p>
 </div>
-
+<!-- 个人创作者信息 -->
+<div style="margin-top: 28px; padding: 16px 20px; background: linear-gradient(145deg, rgba(108,92,231,0.08), rgba(162,155,254,0.03)); border-radius: 14px; border: 1px solid var(--border); text-align: center;">
+  <div style="font-size: 14px; font-weight: 700; color: var(--accent2); margin-bottom: 6px;">✨ 个人创作者 · 为爱发电</div>
+  <p style="font-size: 12px; color: var(--text2); line-height: 1.8; margin: 0;">
+    这个工具是我一个人利用课余时间做的，纯粹是因为喜欢写作。<br>
+    我会随缘更新，有想法或建议可以随时找我聊聊。<br>
+    如果它能帮到你，我就很开心啦～
+  </p>
+  <div style="margin-top: 8px; font-size: 10px; color: var(--text2);">
+    （联系方式已在上面，欢迎友好交流～）
+  </div>
+</div>
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
 笔记AI v2.9.9 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
@@ -3276,6 +3425,7 @@ animation:goalBarShine 3s ease infinite;
 </div>
 <div id="toolOverlay" style="display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.3)" onclick="closeAllToolPanels()"></div>
 <!-- EDITOR MODAL -->
+<div class="theme-bg-layer cr-theme-bg" id="crThemeBg"></div>
 <div class="ed-modal" id="edModal" role="dialog" aria-label="编辑器"> <div class="cr-bg" id="crBg"></div>
 <div class="ed-hdr">
 <button class="ed-back" onclick="closeEditor()">
@@ -3326,6 +3476,18 @@ animation:goalBarShine 3s ease infinite;
 <div class="tool-item" onclick="closeAllToolPanels();toggleEdSearch()">🔍 搜索定位 <span class="ti-desc">查找关键词</span></div>
 <div class="tool-item" onclick="closeAllToolPanels();aiCheckTypo()">🔍 查错别字 <span class="ti-desc">AI识别笔误</span></div>
 <div class="tool-item" onclick="closeAllToolPanels();edUndo()" id="edUndoBtnNew">↩ 撤回操作 <span class="ti-desc">恢复上一步</span></div>
+</div>
+</div>
+<div class="tool-group">
+<div class="tool-group-title">🎨 写作背景</div>
+<div class="tool-grid">
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('0')" style="color:var(--danger)">✕ 无背景</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('1')">🌌 星辉紫</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('2')">🌊 深海蓝</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('3')">🌿 翡翠绿</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('4')">🔥 暖阳橙</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('5')">🌸 樱花粉</div>
+<div class="tool-item" onclick="closeAllToolPanels();setCrThemeBg('6')">🌑 纯净墨</div>
 </div>
 </div>
 </div>
@@ -4331,7 +4493,6 @@ animation:goalBarShine 3s ease infinite;
 </div>
 <div class="plist" id="fontPL"></div>
 <div class="fg"><label class="fl">创作背景图片</label><button class="btn-s" onclick="document.getElementById('crBgUp').click()">📁 上传图片</button><input type="file" id="crBgUp" accept="image/*" style="display:none" onchange="uploadCrBg(event)"><button class="btn-s" onclick="clearCrBg()" style="margin-top:5px">🗑️ 清除背景</button></div>
-<div class="fg"><label class="fl">阅读背景图片</label><button class="btn-s" onclick="document.getElementById('rdBgUp').click()">📁 上传图片</button><input type="file" id="rdBgUp" accept="image/*" style="display:none" onchange="uploadRdBg(event)"><button class="btn-s" onclick="clearRdBg()" style="margin-top:5px">🗑️ 清除背景</button></div>
 </div>
 </div>
 <div class="set-modal" id="setModalNotify">
@@ -6273,10 +6434,12 @@ p+='• 对话用「」标注\n';
 p+='• 只输出小说正文，无任何说明、章节号、作者按语\n\n';
 
 // 新增：禁止暴露思维链 / 推理过程
-  p+='【输出约束】\n';
-  p+='- 所有构思、推理、分析过程只在你心里完成，不要写在答案里\n';
-  p+='- 不要在输出中出现“思维链”“推理过程”“分析过程”“想一想”“步骤如下”等字样\n';
-  p+='- 不要解释自己的写作思路，只输出小说标题和正文内容\n\n';
+  p+='【输出约束（铁律）】\n';
+  p+='- 所有构思、推理、分析过程只在你心里完成，绝对不要写在答案里\n';
+  p+='- 禁止在输出中出现"思维链""推理过程""分析过程""想一想""步骤如下""让我分析""首先我需要"等字样\n';
+  p+='- 禁止解释自己的写作思路、创作意图、构思过程\n';
+  p+='- 禁止使用<think>标签或任何形式的思考标记\n';
+  p+='- 只输出小说标题和正文内容，第一个字就是标题或正文\n\n';
 // 人物设定（优化呈现方式）
 const validChars=characters.filter(c=>c.name||c.desc);
 if(validChars.length>0){
@@ -6600,7 +6763,7 @@ async function callAPIStream(messages,onChunk,onDone,onError){
       }
     }
 
-    onDone(fullText);
+    onDone(stripMetaThinking(fullText));
   }catch(err){
     if(err.name==='AbortError'){
       onDone(null);
@@ -6624,13 +6787,28 @@ function stripMetaThinking(text){
   if(!text)return '';
   let t=text;
 
-  // 去掉 <think>...</think> 这种块（有些模型会用这个包裹思考过程）
+  // 去掉 <think>...</think> 块
   t=t.replace(/<think>[\s\S]*?<\/think>/gi,'');
+  // 去掉 <reasoning>...</reasoning> 块
+  t=t.replace(/<reasoning>[\s\S]*?<\/reasoning>/gi,'');
+  // 去掉 ```thinking ... ``` 块
+  t=t.replace(/```thinking[\s\S]*?```/gi,'');
 
-  // 去掉尾巴上的“思维链：……”“推理过程：……”“分析过程：……”整段
-  t=t.replace(/思维链[:：][\s\S]*$/gi,'');
-  t=t.replace(/推理过程[:：][\s\S]*$/gi,'');
-  t=t.replace(/分析过程[:：][\s\S]*$/gi,'');
+  // 去掉开头的思维过程（有些模型会在正文前输出分析）
+  t=t.replace(/^[\s\S]*?(?=^[^\n]*[\u4e00-\u9fa5]{2,})/m, function(match){
+    // 如果开头包含思考关键词，去掉
+    if(/思维链|推理过程|分析过程|让我|首先.*需要|步骤如下|我的思路/i.test(match)){
+      return '';
+    }
+    return match;
+  });
+
+  // 去掉尾巴上的思维链
+  t=t.replace(/\n*思维链[:：][\s\S]*$/gi,'');
+  t=t.replace(/\n*推理过程[:：][\s\S]*$/gi,'');
+  t=t.replace(/\n*分析过程[:：][\s\S]*$/gi,'');
+  t=t.replace(/\n*创作思路[:：][\s\S]*$/gi,'');
+  t=t.replace(/\n*写作说明[:：][\s\S]*$/gi,'');
 
   return t.trim();
 }
@@ -7324,17 +7502,14 @@ dirWrap.style.display=(curRd.type==='long')?'flex':'none';
 const undoBtn=document.getElementById('btnUndo');
 undoBtn.style.display=(curRd.type==='long'&&curRd.chapters&&curRd.chapters.length>1)?'inline-block':'none';
 
-// Reading bg
+// Reading bg - 主题背景优先，旧的自定义背景已移除
 const bg=document.getElementById('rdBg');
-if(ap.rdBg){
-bg.style.backgroundImage='url('+ap.rdBg+')';
-bg.style.display='block';
-}else{bg.style.display='none';}
+if(bg){bg.style.display='none';}
 
 // Apply reading font settings
 setRdFont(ap.rdFontSize||15);
 setRdLine(ap.rdLineHeight||2);
-
+applyRdThemeBg();
 document.getElementById('rdModal').classList.add('show');
 document.getElementById('rdModal').scrollTop=0;
 updateNoteBtn();
@@ -9193,6 +9368,8 @@ e.target.value='';
 function clearRdBg(){
 ap.rdBg='';sv(K.ap,ap);
 document.getElementById('rdBg').style.display='none';
+const rm=document.getElementById('rdModal');
+if(rm)rm.style.setProperty('--rd-bg-img','none');
 showToast('阅读背景已清除');
 }
 function uploadCrBg(e){
@@ -9544,6 +9721,16 @@ const isOpen=panel.classList.contains('open');
 if(!isOpen){
 panel.classList.add('open');
 btn.classList.add('open');
+// 点击空白处自动关闭
+setTimeout(function(){
+  document.addEventListener('click',function closeCrPanel(e){
+    if(!panel.contains(e.target)&&e.target!==btn){
+      panel.classList.remove('open');
+      btn.classList.remove('open');
+      document.removeEventListener('click',closeCrPanel);
+    }
+  });
+},100);
 }else{
 panel.classList.remove('open');
 btn.classList.remove('open');
@@ -9696,7 +9883,7 @@ if(!isOpen){
 panel.classList.add('open');
 btn.innerHTML='🛠 收起工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;transform:rotate(180deg)"><path d="M6 9l6 6 6-6"/></svg>';
 if(hint)hint.style.display='none';
-if(overlay)overlay.style.display='block';
+if(overlay)overlay.style.display='none';
 }else{
 panel.classList.remove('open');
 btn.innerHTML='🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg>';
@@ -9726,6 +9913,7 @@ try{document.getElementById('edOutlineBtnNew').style.display=(work.outline?'flex
 try{document.getElementById('edChOutlineBtnNew').style.display=(work.type==='novel'?'flex':'none');}catch(e){}
 try{document.getElementById('edRenameBtnNew').style.display=(work.type==='novel'?'flex':'none');}catch(e){}
 applyCrBg();
+applyCrThemeBg();
 try{document.getElementById('edToolPanel').classList.remove('open');}catch(e){}
 try{document.getElementById('edToolToggle').innerHTML='🛠 更多工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px"><path d="M6 9l6 6 6-6"/></svg>';}catch(e){}
 try{document.getElementById('edToolHint').style.display='';}catch(e){}
@@ -15812,7 +16000,8 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 - 不要捏造网页上不存在的按钮或功能
 - 用网页中已有的词汇：作坊、收藏、创作、设置、资源、故事转盘、精华压缩器等
 - 普通聊天1-3段，教程可以长一些
-- 始终记住：你的首要任务是让用户写得更顺、更开心、更能坚持下去`;
+- 始终记住：你的首要任务是让用户写得更顺、更开心、更能坚持下去
+- 【铁律】不要在回答中输出任何思维链、推理过程、分析步骤、<think>标签，直接用星笺的语气回答`;
 
 function openXingJian(){
 document.getElementById('xjModal').classList.add('show');
@@ -15945,7 +16134,7 @@ body:JSON.stringify({
 model:cfg.model,
 messages:messages,
 temperature:0.85,
-max_tokens:800
+max_tokens:2048
 }),
 signal:xjAbortCtrl.signal
 });
@@ -16186,7 +16375,8 @@ if(!ep.endpoint){showToast('API地址为空');return;}
 const resp=await fetch(ep.endpoint,{
 method:'POST',
 headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
-body:JSON.stringify({model:cfg.model,messages:messages,temperature:0.85,max_tokens:800}),
+body:JSON.stringify({model:cfg.model,messages:messages,temperature:0.85,
+max_tokens:2048}),
 signal:xjAbortCtrl.signal
 });
 hideXjTyping();
@@ -17376,6 +17566,67 @@ function exportAllCrWorks(){
     a.download = '我的全部创作_' + new Date().toLocaleDateString() + '.json';
     a.click();
     showToast('已导出全部创作数据 📤');
+}
+// ==================== 主题背景功能 ====================
+function setRdThemeBg(id){
+  var el=document.getElementById('rdThemeBg');
+  if(!el)return;
+  if(id==='0'||!id){
+    el.removeAttribute('data-bg');
+    el.style.opacity='0';
+    ap.rdThemeBg='';
+  }else{
+    el.setAttribute('data-bg',id);
+    el.style.opacity='1';
+    ap.rdThemeBg=id;
+  }
+  // 同时隐藏旧的自定义背景图
+  var oldBg=document.getElementById('rdBg');
+  if(oldBg)oldBg.style.display='none';
+  sv(K.ap,ap);
+  showToast('阅读背景已切换 🎨');
+}
+
+function applyRdThemeBg(){
+  var el=document.getElementById('rdThemeBg');
+  if(!el)return;
+  var id=ap.rdThemeBg||'';
+  if(id&&id!=='0'){
+    el.setAttribute('data-bg',id);
+    el.style.opacity='1';
+  }else{
+    el.removeAttribute('data-bg');
+    el.style.opacity='0';
+  }
+}
+
+function setCrThemeBg(id){
+  var el=document.getElementById('crThemeBg');
+  if(!el)return;
+  if(id==='0'||!id){
+    el.removeAttribute('data-bg');
+    el.style.opacity='0';
+    ap.crThemeBg='';
+  }else{
+    el.setAttribute('data-bg',id);
+    el.style.opacity='1';
+    ap.crThemeBg=id;
+  }
+  sv(K.ap,ap);
+  showToast('写作背景已切换 🎨');
+}
+
+function applyCrThemeBg(){
+  var el=document.getElementById('crThemeBg');
+  if(!el)return;
+  var id=ap.crThemeBg||'';
+  if(id&&id!=='0'){
+    el.setAttribute('data-bg',id);
+    el.style.opacity='1';
+  }else{
+    el.removeAttribute('data-bg');
+    el.style.opacity='0';
+  }
 }
 function quickThemeSwitch(){
     const themes = ['default','warm','green','blue','light'];
