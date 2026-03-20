@@ -11739,19 +11739,25 @@ document.getElementById('hbOv').classList.remove('show');
 }
 // ==================== USER CARD ====================
 function renderUserCard(){
-const uc=userCard;
-const nameEl=document.getElementById('ucName');
-const bioEl=document.getElementById('ucBio');
-const avatarEl=document.getElementById('ucAvatar');
-nameEl.textContent=uc.name||'点击设置昵称';
-bioEl.textContent=uc.bio||'点击添加个人简介...';
-if(uc.avatar){
-avatarEl.innerHTML='<img src="'+uc.avatar+'" alt="头像"><div class="ucard-avatar-hint">更换</div>';
-}else{
-avatarEl.innerHTML='<span id="ucAvatarPh">✦</span><div class="ucard-avatar-hint">更换</div>';
+  const uc = userCard;
+  const nameEl = document.getElementById('ucName');
+  const bioEl = document.getElementById('ucBio');
+  const avatarEl = document.getElementById('ucAvatar');
+  nameEl.textContent = uc.name || '点击设置昵称';
+  bioEl.textContent = uc.bio || '点击添加个人简介...';
+
+  // 默认头像图片地址（替换为你自己的链接）
+  const defaultAvatar = 'https://i.postimg.cc/7hMhTQJG/IMG-20260320-155353.jpg';
+
+  if (uc.avatar) {
+    avatarEl.innerHTML = '<img src="' + uc.avatar + '" alt="头像"><div class="ucard-avatar-hint">更换</div>';
+  } else {
+    // 使用默认图片代替 ✦ 符号
+    avatarEl.innerHTML = '<img src="' + defaultAvatar + '" alt="默认头像"><div class="ucard-avatar-hint">更换</div>';
+  }
+  updateStats();
 }
-updateStats();
-}
+
 function getStorageUsage(){
 let total=0;
 for(let key in localStorage){
