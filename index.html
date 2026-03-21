@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
 <title>笔记AI</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -116,6 +116,7 @@ box-shadow:0 12px 40px rgba(0,0,0,.4),
 0 0 100px rgba(108,92,231,.15),
 0 -20px 60px rgba(162,155,254,.05) inset;
 text-align:center;
+will-change: transform;
 animation:cardFloat 5s ease-in-out infinite;
 }
 @keyframes cardFloat{
@@ -894,6 +895,7 @@ cursor:pointer;
 z-index:10;
 animation:xjFloat 4s ease-in-out infinite;
 transition:transform .3s cubic-bezier(.34,1.56,.64,1), filter .3s;
+will-change: transform;
 }
 .xj-float-btn::before{
 content:'';
@@ -4982,6 +4984,15 @@ body.theme-light .more-menu-panel {
   </div>
 </div>
 <div class="fg">
+  <label class="fl">🔲 全屏模式</label>
+  <div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleFullscreenSwitch()">
+    <input type="checkbox" id="fullscreenOn" style="display:none">
+    <div style="width:44px;height:24px;border-radius:12px;background:var(--border);transition:background .3s" id="fullscreenTrack">
+      <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="fullscreenThumb"></div>
+    </div>
+  </div>
+</div>
+<div class="fg">
   <label class="fl">自定义字体链接</label>
   <input class="fi" id="customFontUrl" placeholder="https://example.com/font.ttf">
   <button class="btn-s" onclick="saveFontPreset()" style="margin-top:6px">💾 保存字体预设</button>
@@ -5681,30 +5692,43 @@ function ld(k, fb) {
     }
 }
 
+let _svQueue = new Map();
+let _svTimer = null;
+
 function sv(k, d) {
     dbCache[k] = d;
-    if (dbReady && db) {
-        dbSet(k, d).catch(function(e) {
-            console.warn('IndexedDB保存失败:', k, e);
-        });
+    _svQueue.set(k, d);
+    
+    // 合并写入：50ms内的多次sv只执行一次实际写入
+    if (!_svTimer) {
+        _svTimer = setTimeout(_flushSv, 50);
     }
-    try {
-        var str = JSON.stringify(d);
-        if (str.length < 500000) {
-            localStorage.setItem(k, str);
+}
+
+function _flushSv() {
+    _svTimer = null;
+    _svQueue.forEach((d, k) => {
+        // IndexedDB写入
+        if (dbReady && db) {
+            dbSet(k, d).catch(() => {});
         }
-    } catch (e) {
-        if (e.name === 'QuotaExceededError') {
-            console.warn('localStorage已满，尝试清理');
-            try {
-                localStorage.removeItem('bj_genLogs');
-                localStorage.removeItem('bj_xjMessages');
-                localStorage.setItem(k, JSON.stringify(d));
-            } catch (e2) {
-                console.warn('清理后仍无法保存:', k);
+        // localStorage写入（小数据才写）
+        try {
+            var str = JSON.stringify(d);
+            if (str.length < 500000) {
+                localStorage.setItem(k, str);
+            }
+        } catch (e) {
+            if (e.name === 'QuotaExceededError') {
+                try {
+                    localStorage.removeItem('bj_genLogs');
+                    localStorage.removeItem('bj_xjMessages');
+                    localStorage.setItem(k, JSON.stringify(d));
+                } catch (e2) {}
             }
         }
-    }
+    });
+    _svQueue.clear();
 }
 
 // ==================== STATE ====================
@@ -6168,6 +6192,11 @@ el.classList.add('act');renderArticles();
 
 // ==================== ARTICLES RENDER ====================
 function renderArticles(){
+// 防止无意义重渲染
+if(renderArticles._lastLen === ws.length && renderArticles._lastType === curType && !renderArticles._force) return;
+renderArticles._lastLen = ws.length;
+renderArticles._lastType = curType;
+renderArticles._force = false;
 const list=document.getElementById('articleList');
 const _wsTypeCache={};
 function getWsByType(type){
@@ -6262,6 +6291,7 @@ let found=null;
 if(cols.books.find(b=>b.id===id)){
 cols.books=cols.books.filter(b=>b.id!==id);
 sv(K.cols,cols);
+renderArticles._force = true;
 renderArticles();
 showToast('已取消收藏');
 likeProcessing=false;
@@ -6270,6 +6300,7 @@ return;
 if(cols.shorts.find(s=>s.id===id)){
 cols.shorts=cols.shorts.filter(s=>s.id!==id);
 sv(K.cols,cols);
+renderArticles._force = true;
 renderArticles();
 showToast('已取消收藏');
 likeProcessing=false;
@@ -6297,6 +6328,7 @@ cols.shorts.push(copy);
 showToast('已收藏 ❤️');
 }
 }
+renderArticles._force = true;
 sv(K.cols,cols);renderArticles();
 }
 
@@ -7923,6 +7955,7 @@ content:type==='short'?content2:undefined,
 prompt:searchText
 };
 ws.unshift(article2);sv(K.ws,ws);
+renderArticles._force = true;
 renderArticles();showToast('创作完成！✨');
 return;
 }
@@ -7995,6 +8028,7 @@ else{article.content=content;}
 }
 ws.unshift(article);
 sv(K.ws,ws);
+renderArticles._force = true;
 renderArticles();
 const qc=quickQualityCheck(content);
 const sc=checkSettingConsistency(content);
@@ -8017,6 +8051,7 @@ showToast('创作完成！'+countWords(content)+'字 · 用时'+genTime+'秒 ✨
 }else{
 ws.unshift(article);
 sv(K.ws,ws);
+renderArticles._force = true;
 renderArticles();
 const qc=quickQualityCheck(content);
 
@@ -8087,6 +8122,7 @@ content:type==='short'?content:undefined,
 prompt:searchText
 };
 ws.unshift(article);sv(K.ws,ws);
+renderArticles._force = true;
 renderArticles();showToast('创作完成！✨');
 }
 
@@ -8659,6 +8695,7 @@ closeNotePanel();
 closeChapterList();
 curRd=null;
 curCh=0;
+renderArticles._force = true;
 renderArticles();
 renderCollections();
 }
@@ -9230,7 +9267,7 @@ covHtml='<div style="position:absolute;top:8px;left:8px;z-index:2;width:22px;hei
 if(book.cover)covHtml+='<img src="'+book.cover+'" alt="封面">';
 else covHtml+='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
 }else{
-if(book.cover)covHtml='<img src="'+book.cover+'" alt="封面">';
+if(book.cover)covHtml='<img data-src="'+book.cover+'" alt="封面" style="opacity:0;transition:opacity .3s" onload="this.style.opacity=1">';
 else covHtml='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
 }
 const statusClass=book.status||'ongoing';
@@ -9318,6 +9355,15 @@ if(totalShorts > shorts.length){
 }
 
 document.getElementById('colCnt').textContent=(cols.books.length+cols.shorts.length)+' 篇';
+// 懒加载封面图片
+setTimeout(()=>{
+  document.querySelectorAll('.bcov img[data-src]').forEach(img=>{
+    if(!img.src || img.src===''){
+      img.src = img.dataset.src;
+      img.removeAttribute('data-src');
+    }
+  });
+}, 100);
 }
 
 function renderStarHTML(rating,id){
@@ -10047,6 +10093,47 @@ function toggleSimpleUiSwitch(){
   updateSimpleUiSwitch();
   showToast(ap.simpleUI?'已开启简洁模式':'已关闭简洁模式');
 }
+// ==================== 全屏模式 ====================
+function enterFullscreen(){
+  var el=document.documentElement;
+  if(el.requestFullscreen)el.requestFullscreen();
+  else if(el.webkitRequestFullscreen)el.webkitRequestFullscreen();
+  else if(el.mozRequestFullScreen)el.mozRequestFullScreen();
+  else if(el.msRequestFullscreen)el.msRequestFullscreen();
+}
+function exitFullscreen(){
+  if(document.exitFullscreen)document.exitFullscreen();
+  else if(document.webkitExitFullscreen)document.webkitExitFullscreen();
+  else if(document.mozCancelFullScreen)document.mozCancelFullScreen();
+  else if(document.msExitFullscreen)document.msExitFullscreen();
+}
+function updateFullscreenSwitch(){
+  var cb=document.getElementById('fullscreenOn');
+  var track=document.getElementById('fullscreenTrack');
+  var thumb=document.getElementById('fullscreenThumb');
+  if(!cb||!track||!thumb)return;
+  var on=!!ap.fullscreen;
+  cb.checked=on;
+  track.style.background=on?'var(--accent)':'var(--border)';
+  thumb.style.left=on?'22px':'2px';
+}
+function toggleFullscreenSwitch(){
+  ap.fullscreen=!ap.fullscreen;
+  sv(K.ap,ap);
+  if(ap.fullscreen){enterFullscreen();}else{exitFullscreen();}
+  updateFullscreenSwitch();
+  showToast(ap.fullscreen?'已开启全屏模式 ⛶':'已关闭全屏模式');
+}
+document.addEventListener('fullscreenchange',function(){
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    ap.fullscreen=false;sv(K.ap,ap);updateFullscreenSwitch();
+  }
+});
+document.addEventListener('webkitfullscreenchange',function(){
+  if(!document.fullscreenElement&&!document.webkitFullscreenElement){
+    ap.fullscreen=false;sv(K.ap,ap);updateFullscreenSwitch();
+  }
+});
 function applyAppearance(){
 document.body.className='';
 if(ap.theme==='light')document.body.classList.add('theme-light');
@@ -10054,7 +10141,8 @@ else if(ap.theme&&ap.theme!=='default')document.body.classList.add('theme-'+ap.t
 
 // 简洁模式：根据 ap.simpleUI 给 body 加/去 simple-ui 类
 applySimpleUiClass();
-
+if(ap.fullscreen){enterFullscreen();}
+updateFullscreenSwitch();
 document.querySelectorAll('.t-opt').forEach(o=>o.classList.remove('act'));
 const themeMap={default:'t0',warm:'t1',green:'t2',blue:'t3',light:'t4'};
 const target=document.querySelector('.t-opt.'+(themeMap[ap.theme]||'t0'));
@@ -10412,6 +10500,7 @@ try{
 }catch(e){}
 if(cleanCount>0){
 sv(K.ws,ws);
+renderArticles._force = true;
 renderArticles();
 showToast('已清理 '+cleanCount+' 篇旧文章');
 }else{
@@ -10865,16 +10954,20 @@ if(addedWords>0){
 recordManualWrite(addedWords,0);
 }
 }
+let _edWcTimer = null;
 function onEditorInput(){
-updateEdWc();
-const statusEl=document.getElementById('edSaveStatus');
-if(statusEl)statusEl.textContent='编辑中...';
-if(edAutoSaveTimer)clearTimeout(edAutoSaveTimer);
-edAutoSaveTimer=setTimeout(()=>{
-saveEditorContent();
-const s2=document.getElementById('edSaveStatus');
-if(s2)s2.textContent='已自动保存 ✓';
-},2000);
+    // 字数统计用200ms防抖，避免每次按键都计算
+    if(_edWcTimer) clearTimeout(_edWcTimer);
+    _edWcTimer = setTimeout(updateEdWc, 200);
+    
+    const statusEl=document.getElementById('edSaveStatus');
+    if(statusEl)statusEl.textContent='编辑中...';
+    if(edAutoSaveTimer)clearTimeout(edAutoSaveTimer);
+    edAutoSaveTimer=setTimeout(()=>{
+        saveEditorContent();
+        const s2=document.getElementById('edSaveStatus');
+        if(s2)s2.textContent='已自动保存 ✓';
+    },2000);
 }
 // ==================== 写作排版设置 ====================
 let edFontSize=ld('bj_edFontSize',15);
@@ -18364,49 +18457,30 @@ ringData = ld('bj_ringData', '');
 ringName = ld('bj_ringName', '');
 ringVolume_ = ld('bj_ringVolume', 0.8);
 devMode = ld('bj_devMode', false);
-// ✅ 关键修复：IndexedDB加载完成后，重新从 ld() 把核心状态再读一遍（否则只用到了localStorage旧数据）
-ws = ld(K.ws, []);
-cols = ld(K.cols, {books:[], shorts:[]});
-tags = ld(K.tags, ['#日常','#bg','#穿越','#奇幻','#校园','#甜文','#虐文','#悬疑','#古风','#现代']);
-
-apiP = ld(K.apiP, []);
-charP = ld(K.charP, []);
-worldP = ld(K.worldP, []);
-styleP = ld('bj_styleP', []);
-ruleP = ld('bj_ruleP', []);
-
-curRule = ld('bj_curRule', '');
-globalWorld = ld('bj_globalWorld','');
-globalRule = ld('bj_globalRule','');
-globalBanWords = ld('bj_globalBanWords','');
-
-localWorldBindings = ld('bj_localWorldBindings',{});
-localRuleBindings  = ld('bj_localRuleBindings',{});
-localBanWordsBindings = ld('bj_localBanWordsBindings',{});
-localStyleBindings = ld('bj_localStyleBindings',{});
-
-currentWorldBinding = ld('bj_currentWorldBinding','');
-currentRuleBinding  = ld('bj_currentRuleBinding','');
-currentBanBinding   = ld('bj_currentBanBinding','');
-currentStyleBinding = ld('bj_currentStyleBinding','');
-
-currentCharPresetName = ld('bj_currentCharPresetName','');
-banWords = ld('bj_banWords','');
-banWordsP = ld('bj_banWordsP',[]);
-
-ap = ld(K.ap,{theme:'default',fontUrl:'',rdBg:'',rdFontSize:15,rdLineHeight:2,curStyle:''});
-characters = ld(K.curChars,[{name:'',desc:''},{name:'',desc:''}]);
-customTraits = ld('bj_customTraits',[]);
-charRelations = ld('bj_charRelations',[]);
-npcList = ld('bj_npcList',[]);
-crWorks = ld('bj_crWorks',[]);
-resPacks = ld('bj_resPacks',[]);
-useStream = ld('bj_stream', true);
-userCard = ld('bj_userCard',{name:'',bio:'',avatar:''});
-lockSettings = ld('bj_lockSettings', { enabled:false, passHash:'', q:'', aHash:'' });
-
-xjMessages = ld('bj_xjMessages', []);
-xjBgImg = ld('bj_xjBg','')||'';
+// 从 dbCache 刷新核心数据（IndexedDB已在splash阶段加载完毕）
+ws = ld(K.ws, ws || []);
+cols = ld(K.cols, cols || {books:[], shorts:[]});
+tags = ld(K.tags, tags);
+apiP = ld(K.apiP, apiP);
+charP = ld(K.charP, charP);
+worldP = ld(K.worldP, worldP);
+styleP = ld('bj_styleP', styleP);
+ruleP = ld('bj_ruleP', ruleP);
+curRule = ld('bj_curRule', curRule);
+banWords = ld('bj_banWords', banWords);
+banWordsP = ld('bj_banWordsP', banWordsP);
+characters = ld(K.curChars, characters);
+customTraits = ld('bj_customTraits', customTraits);
+charRelations = ld('bj_charRelations', charRelations);
+npcList = ld('bj_npcList', npcList);
+crWorks = ld('bj_crWorks', crWorks);
+resPacks = ld('bj_resPacks', resPacks);
+useStream = ld('bj_stream', useStream);
+userCard = ld('bj_userCard', userCard);
+lockSettings = ld('bj_lockSettings', lockSettings);
+xjMessages = ld('bj_xjMessages', xjMessages);
+xjBgImg = ld('bj_xjBg', xjBgImg) || '';
+ap = ld(K.ap, ap);
 // 数据完整性检查
 try{
 if(!Array.isArray(ws))ws=[];
@@ -18585,6 +18659,7 @@ else{saveCurSettings();showToast('设置已保存 ✓');}
 }
 // Esc 关闭弹窗
 if(e.key==='Escape'){
+e.preventDefault();
 if(document.getElementById('lockOv').classList.contains('show'))return;
 if(document.getElementById('contextEditorOv').classList.contains('show')){closeContextEditor();return;}
 if(document.getElementById('foreshadowOv').classList.contains('show')){closeForeshadow();return;}
