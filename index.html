@@ -2883,6 +2883,27 @@ body.theme-light .more-menu-panel {
   background: rgba(245, 245, 248, 0.95);
   border-color: rgba(0, 0, 0, 0.1);
 }
+/* RP 角色模拟 */
+.rp-msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.7;word-wrap:break-word;animation:msgIn .3s ease;}
+.rp-msg.char{align-self:flex-start;background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));color:#fff;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(108,92,231,.25);}
+.rp-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));color:#fff;border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(88,166,255,.25);}
+.rp-msg .rp-time{display:block;font-size:9px;opacity:.6;margin-top:4px;}
+.rp-msg.char .rp-time{text-align:left;}
+.rp-msg.user .rp-time{text-align:right;}
+.rp-msg-group{display:flex;flex-direction:column;gap:4px;align-self:flex-start;max-width:82%;}
+.rp-msg-group .rp-msg{max-width:100%;align-self:flex-start;}
+.rp-typing{align-self:flex-start;padding:10px 14px;border-radius:16px;border-bottom-left-radius:4px;background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));display:flex;align-items:center;gap:4px;}
+.rp-typing span{width:5px;height:5px;border-radius:50%;background:#fff;animation:typingDot 1.4s infinite both;}
+.rp-typing span:nth-child(2){animation-delay:.2s;}
+.rp-typing span:nth-child(3){animation-delay:.4s;}
+.rp-char-item{padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
+.rp-char-item:active{transform:scale(.98);border-color:var(--accent);}
+.rp-char-item.active{border-color:var(--accent);background:rgba(108,92,231,.08);}
+.rp-char-item-avatar{width:40px;height:40px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:18px;overflow:hidden;flex-shrink:0;}
+.rp-char-item-avatar img{width:100%;height:100%;object-fit:cover;}
+.rp-char-item-info{flex:1;min-width:0;}
+.rp-char-item-name{font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.rp-char-item-desc{font-size:10px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin-top:2px;}
 </style>
 </head>
 <body>
@@ -2935,6 +2956,7 @@ body.theme-light .more-menu-panel {
     <button class="menu-item" onclick="closeMoreMenu();openHandbook();">📖 使用手册</button>
     <button class="menu-item" onclick="closeMoreMenu();openProtocol();">📜 使用协议</button>
     <button class="menu-item" onclick="closeMoreMenu();openWizard();">🪄 快速向导</button>
+    <button class="menu-item" onclick="closeMoreMenu();openRolePlay();">🎭 角色模拟</button>
   </div>
 </div>
 </div>
@@ -3324,14 +3346,13 @@ body.theme-light .more-menu-panel {
 <p>所有数据都保存在你的浏览器本地（或APP内置浏览器），你可以 <strong>随时导出备份</strong>，不依赖云端账号，也不和任何平台绑定。</p>
 
 <div class="notice">
-  <p><strong>当前版本：v1.3.0</strong></p>
-  <p>✓ 统一错误处理：所有异常捕获现在会记录日志，开发者模式下弹出提示，方便排查问题</p>
-  <p>✓ 加载体验优化：启动页显示具体加载进度和数据量，IndexedDB增加5秒超时保护</p>
-  <p>✓ 非首屏内容延迟渲染：角色卡片、预设列表、统计等延迟500ms加载，启动更快</p>
-  <p>✓ 全局变量安全保护：isGen状态通过setIsGen函数统一管理，防止生成状态异常</p>
-  <p>✓ logError安全调用：防止早期初始化时因_originalShowToast未定义而报错</p>
-  <p>✓ 字数统计防抖优化：编辑器输入时字数统计使用200ms防抖，减少卡顿</p>
-  <p>✓ 优化各方面的体验与修复部分bug</p>
+  <p><strong>当前版本：v1.3.1</strong></p>
+  <p>✓ 新增「🎭 角色模拟」功能：创建角色，以纯对话方式与角色聊天，支持角色记忆和AI自动总结</p>
+  <p>✓ 角色模拟增强活人感：优化系统提示词，角色回复更像真人说话，减少AI味</p>
+  <p>✓ 角色模拟支持流式输出：实时看到角色"打字"，支持中途停止并保留已生成内容</p>
+  <p>✓ 角色模拟消息管理：长按消息可编辑、重说、复制、删除；支持清空对话和删除最旧N条</p>
+  <p>✓ 角色模拟记忆优化：AI总结更精简，更能反映角色性格，短期记忆上限提升至50轮</p>
+  <p>✓ 修复部分bug，优化整体体验</p>
 </div>
 
 <h3>二、创作理念：AI是搭子，不是替身</h3>
@@ -3677,7 +3698,44 @@ body.theme-light .more-menu-panel {
     <br>· 方便复盘：什么时候状态好？什么时候容易断更？
   </li>
 </ul>
-
+<h3>8）角色模拟：和你笔下的角色聊天</h3>
+<p>在顶部右上角点击「更多」→「🎭 角色模拟」即可进入。</p>
+<p><strong>这是什么？</strong></p>
+<p>角色模拟是一个独立的「纯对话」模式——你创建一个角色（填写人设、性格、说话方式），然后像在聊天软件里一样和他/她对话。角色会根据人设用自己的方式回复你，不会写动作描写、心理旁白，只说"话"。</p>
+<p><strong>适合用来做什么？</strong></p>
+<ul>
+  <li>写小说前先和角色"聊一聊"，找到角色的说话节奏和口癖</li>
+  <li>测试角色在不同情境下的反应，看人设是否立得住</li>
+  <li>和喜欢的角色互动，纯粹享受对话的乐趣</li>
+  <li>同人创作者用来揣摩原作角色的语气和态度</li>
+</ul>
+<p><strong>核心功能：</strong></p>
+<ul>
+  <li><strong>创建角色</strong>：填写名字、头像、人设描述、世界书背景、开场白。人设写得越详细，角色越像"那个人"。</li>
+  <li><strong>多角色管理</strong>：可以创建多个角色，随时切换对话。每个角色的对话记录和记忆独立保存。</li>
+  <li><strong>角色记忆</strong>：
+    <br>· 短期记忆：自动发送最近N轮对话给AI（默认10轮，最大50轮）
+    <br>· 长期记忆：点击「🧠 记忆」→「AI总结记忆」，AI会用角色的口吻把对话浓缩成私人日记
+    <br>· 记忆会在后续对话中被参考，角色会"记得"之前发生过的事
+  </li>
+  <li><strong>流式输出</strong>：角色回复时可以实时看到"打字"过程，中途停止会保留已生成的内容</li>
+  <li><strong>消息管理</strong>：长按任意消息可：
+    <br>· 📋 复制内容
+    <br>· ✏️ 编辑消息（修改后保存）
+    <br>· 🔄 重说（仅角色消息，删除后重新生成）
+    <br>· 🗑️ 删除单条消息
+  </li>
+  <li><strong>对话管理</strong>：在设置中可以「清空所有对话」或「删除最旧N条」，记忆不受影响</li>
+  <li><strong>我的身份设定</strong>：在设置中可以填写你在对话中扮演的身份（如"我是原创作者""我是同人创作者"），角色会据此调整态度</li>
+  <li><strong>聊天背景</strong>：可以上传自定义背景图片，所有角色通用</li>
+</ul>
+<p><strong>写好人设的技巧：</strong></p>
+<ul>
+  <li>不要只写外貌，重点写「说话方式」和「性格矛盾点」</li>
+  <li>写明口头禅、用词习惯、情绪表达方式（如"生气时会用反问句""紧张时说话变快"）</li>
+  <li>写明角色对"你"（对话者）的态度——是冷淡、热情、警惕还是好奇？</li>
+  <li>世界书可以补充角色不会主动说但会影响行为的背景信息</li>
+</ul>
 <h3>八、常见问题（FAQ）</h3>
 
 <p><strong>Q1：API老是报错 / 生成失败怎么办？</strong></p>
@@ -3765,7 +3823,7 @@ body.theme-light .more-menu-panel {
   </div>
 </div>
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v1.3.0 · Created by 心田<br>让每一个灵感都有机会长成作品
+笔记AI v1.3.1 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
 
 </div>
@@ -5563,6 +5621,138 @@ body.theme-light .more-menu-panel {
     </div>
   </div>
 </div>
+<!-- ROLE PLAY 角色模拟 -->
+<div class="set-modal" id="rpModal">
+<div class="set-modal-hdr">
+<button onclick="closeRolePlay()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button>
+<h2>🎭 角色模拟</h2>
+<div style="display:flex;gap:6px">
+<button class="hdr-btn" onclick="openRpSettings()" style="padding:5px 10px;font-size:11px">⚙</button>
+<button class="hdr-btn" onclick="openRpCharList()" style="padding:5px 10px;font-size:11px">👤 切换</button>
+</div>
+</div>
+<div style="flex:1;display:flex;flex-direction:column;height:calc(100vh - 56px);overflow:hidden">
+<!-- 角色信息栏 -->
+<div id="rpCharBar" style="padding:10px 16px;background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(162,155,254,.06));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px;flex-shrink:0">
+<div id="rpCharAvatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;overflow:hidden;flex-shrink:0;cursor:pointer" onclick="uploadRpCharAvatar()">🎭</div>
+<div style="flex:1;min-width:0">
+<div id="rpCharName" style="font-size:14px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">未选择角色</div>
+<div id="rpCharSub" style="font-size:10px;color:var(--text2)">点击右上角「👤 切换」选择或创建角色</div>
+</div>
+<div id="rpMemoryBadge" style="padding:3px 8px;border-radius:8px;font-size:9px;background:rgba(108,92,231,.15);color:var(--accent2);cursor:pointer;flex-shrink:0" onclick="openRpMemory()" title="记忆管理">🧠 记忆</div>
+</div>
+<!-- 聊天背景 -->
+<div style="flex:1;position:relative;overflow:hidden">
+<div id="rpBg" style="position:absolute;inset:0;background-size:cover;background-position:center;opacity:.25;pointer-events:none;z-index:0"></div>
+<div id="rpChatBody" style="position:relative;z-index:1;height:100%;overflow-y:auto;padding:14px 16px;display:flex;flex-direction:column;gap:10px">
+<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px" id="rpWelcome">
+选择一个角色开始对话吧～<br>点击右上角「👤 切换」创建或选择角色
+</div>
+</div>
+</div>
+<!-- 输入栏 -->
+<div style="padding:10px 14px 14px;border-top:1px solid var(--border);flex-shrink:0;background:var(--card)">
+<div style="display:flex;gap:8px;align-items:flex-end">
+<textarea id="rpInput" placeholder="和角色说点什么..." rows="1" style="flex:1;padding:10px 14px;border-radius:18px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none;resize:none;min-height:40px;max-height:100px;font-family:inherit;line-height:1.5" oninput="this.style.height='40px';this.style.height=Math.min(this.scrollHeight,100)+'px'" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendRpMsg();}"></textarea>
+<button onclick="sendRpMsg()" id="rpSendBtn" style="width:40px;height:40px;border-radius:50%;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center;box-shadow:0 2px 8px rgba(108,92,231,.3)">➤</button>
+<button onclick="stopRpMsg()" id="rpStopBtn" style="display:none;width:40px;height:40px;border-radius:50%;border:none;background:var(--danger);color:#fff;font-size:14px;cursor:pointer;flex-shrink:0;align-items:center;justify-content:center">⏹</button>
+</div>
+</div>
+</div>
+</div>
+<!-- RP角色列表弹窗 -->
+<div class="res-exp-ov" id="rpCharListOv" onclick="if(event.target===this)closeRpCharList()" style="z-index:650">
+<div class="res-exp-box" style="max-width:400px;max-height:80vh;display:flex;flex-direction:column">
+<h3>👤 角色列表</h3>
+<div style="display:flex;gap:8px;margin-bottom:12px">
+<button class="btn-p" onclick="createRpChar()" style="flex:1;margin:0">➕ 新建角色</button>
+</div>
+<div id="rpCharListBody" style="flex:1;overflow-y:auto"></div>
+<div class="res-exp-btns" style="margin-top:10px">
+<button class="dlg-cancel" onclick="closeRpCharList()">关闭</button>
+</div>
+</div>
+</div>
+<!-- RP角色编辑弹窗 -->
+<div class="res-exp-ov" id="rpCharEditOv" onclick="if(event.target===this)closeRpCharEdit()" style="z-index:660">
+<div class="res-exp-box" style="max-width:440px;max-height:90vh;display:flex;flex-direction:column">
+<h3 id="rpCharEditTitle">编辑角色</h3>
+<div style="flex:1;overflow-y:auto">
+<div class="fg"><label class="fl">角色名称</label><input class="fi" id="rpCharNameInput" placeholder="角色名字"></div>
+<div class="fg"><label class="fl">角色头像</label>
+<div style="display:flex;gap:8px;align-items:center">
+<div id="rpEditAvatarPreview" style="width:48px;height:48px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid var(--border);flex-shrink:0">🎭</div>
+<button class="btn-s" onclick="document.getElementById('rpAvatarUpload').click()" style="margin:0">📁 上传头像</button>
+<input type="file" id="rpAvatarUpload" accept="image/*" style="display:none" onchange="handleRpAvatarUpload(event)">
+</div>
+</div>
+<div class="fg"><label class="fl">角色设定（人设 / 性格 / 说话方式）</label><textarea class="fta" id="rpCharDesc" placeholder="描述角色的性格、身份、说话风格、口头禅等...&#10;&#10;例如：&#10;你是林黛玉，性格敏感多疑，说话时常含讽刺和双关，对贾宝玉有深厚感情但从不直说..." style="min-height:120px"></textarea></div>
+<div class="fg"><label class="fl">世界书 / 背景设定（可选）</label><textarea class="fta" id="rpCharWorld" placeholder="角色所处的世界背景、重要事件、人物关系等...&#10;&#10;例如：&#10;故事发生在贾府，当前时间线是黛玉初进贾府不久..." style="min-height:80px"></textarea></div>
+<div class="fg"><label class="fl">开场白（角色说的第一句话，可选）</label><input class="fi" id="rpCharGreeting" placeholder="例如：「你来了？我还以为你把我忘了呢。」"></div>
+</div>
+<div class="res-exp-btns" style="margin-top:12px">
+<button class="dlg-cancel" onclick="closeRpCharEdit()">取消</button>
+<button class="dlg-ok" id="rpCharSaveBtn" onclick="saveRpChar()">💾 保存</button>
+</div>
+</div>
+</div>
+<!-- RP设置弹窗 -->
+<div class="res-exp-ov" id="rpSettingsOv" onclick="if(event.target===this)closeRpSettings()" style="z-index:650">
+<div class="res-exp-box" style="max-width:420px;max-height:85vh;display:flex;flex-direction:column">
+<h3>⚙ 角色模拟设置</h3>
+<div style="flex:1;overflow-y:auto">
+<div class="fg"><label class="fl">👤 我的身份设定（User）</label><textarea class="fta" id="rpUserDesc" placeholder="你在对话中扮演的身份..." style="min-height:80px"></textarea></div>
+<div class="fg"><label class="fl">快捷模板</label>
+<div style="display:flex;gap:6px;flex-wrap:wrap">
+<button class="tag" onclick="applyRpUserTemplate('original')">📝 我是原创作者</button>
+<button class="tag" onclick="applyRpUserTemplate('fanfic')">✍ 我是同人创作者</button>
+</div>
+</div>
+<div class="fg"><label class="fl">📏 短期记忆（发送最近几轮对话）</label>
+<div style="display:flex;align-items:center;gap:10px">
+<input type="range" id="rpContextLen" min="2" max="50" value="10" style="flex:1;accent-color:var(--accent)" oninput="document.getElementById('rpContextLenVal').textContent=this.value+'轮'">
+<span id="rpContextLenVal" style="font-size:12px;color:var(--accent2);width:40px">10轮</span>
+</div>
+</div>
+<div class="fg"><label class="fl">🗑️ 对话管理</label>
+<div style="display:flex;gap:8px;margin-top:6px">
+<button class="btn-s" onclick="clearRpAllChat()" style="flex:1;margin:0;border-color:rgba(255,107,107,.3);color:var(--danger)">清空所有对话</button>
+<button class="btn-s" onclick="deleteRpOldestMsgs()" style="flex:1;margin:0">删除最旧N条</button>
+</div>
+<div style="font-size:9px;color:var(--text2);margin-top:4px">清空对话不会删除角色记忆</div>
+</div>
+<div class="fg"><label class="fl">🖼 聊天背景（所有角色通用）</label>
+<div style="display:flex;gap:8px">
+<button class="btn-s" onclick="document.getElementById('rpBgUpload').click()" style="flex:1;margin:0">📁 上传背景</button>
+<button class="btn-s" onclick="clearRpBg()" style="width:60px;margin:0;border-color:rgba(255,107,107,.3);color:var(--danger)">清除</button>
+<input type="file" id="rpBgUpload" accept="image/*" style="display:none" onchange="handleRpBgUpload(event)">
+</div>
+</div>
+</div>
+<div class="res-exp-btns" style="margin-top:12px">
+<button class="dlg-cancel" onclick="closeRpSettings()">关闭</button>
+<button class="dlg-ok" onclick="saveRpSettings()">💾 保存设置</button>
+</div>
+</div>
+</div>
+<!-- RP记忆管理弹窗 -->
+<div class="res-exp-ov" id="rpMemoryOv" onclick="if(event.target===this)closeRpMemory()" style="z-index:660">
+<div class="res-exp-box" style="max-width:440px;max-height:90vh;display:flex;flex-direction:column">
+<h3>🧠 记忆管理</h3>
+<div id="rpMemoryUnsummarized" style="padding:8px 12px;background:rgba(255,165,0,.1);border:1px solid rgba(255,165,0,.3);border-radius:10px;margin-bottom:10px;font-size:11px;color:#f0a030">
+⏳ 未总结的对话：<span id="rpUnsumCount">0</span> 轮
+<button onclick="doRpSummarize()" id="rpSumBtn" style="float:right;padding:4px 10px;border-radius:8px;border:1px solid var(--accent);background:transparent;color:var(--accent2);font-size:10px;cursor:pointer">🤖 AI总结记忆</button>
+</div>
+<div class="fg"><label class="fl">📝 角色记忆（第一人称，像角色自己的日记）</label>
+<textarea class="fta" id="rpMemoryText" placeholder="角色的记忆会以第一人称记录在这里...&#10;&#10;例如：&#10;今天那个人又来找我了，问了些奇奇怪怪的问题。我不太想理他，但他的眼神让我想起了一些事..." style="min-height:200px"></textarea>
+</div>
+<div class="res-exp-btns">
+<button class="dlg-cancel" onclick="closeRpMemory()">取消</button>
+<button class="dlg-ok" onclick="saveRpMemory()">💾 保存记忆</button>
+</div>
+</div>
+</div>
+<input type="file" id="rpCharAvatarFile" accept="image/*" style="display:none">
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
@@ -5727,7 +5917,7 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v1.3.0';
+const APP_VER='v1.3.1';
 
 // ==================== STORAGE ====================
 const K={
@@ -10706,6 +10896,9 @@ function exportData(){
         customTraits: customTraits,
         customSysPrompt: customSysPrompt,
         customSysPromptPosition: customSysPromptPosition,
+        rpChars: rpChars,
+        rpSettings: rpSettings,
+        rpCurrentCharId: rpCurrentCharId,
         dndMode: dndMode,
         ttsSettings: ttsSettings_,
         devMode: devMode,
@@ -10838,6 +11031,9 @@ sv(K.ap,ap);
 }
 if(data.customSysPrompt){ customSysPrompt=data.customSysPrompt; sv('bj_customSysPrompt',customSysPrompt); }
 if(data.customSysPromptPosition){ customSysPromptPosition = data.customSysPromptPosition; sv('bj_customSysPromptPosition', customSysPromptPosition); }
+if(data.rpChars){rpChars=data.rpChars;sv('bj_rpChars',rpChars);}
+if(data.rpSettings){rpSettings=data.rpSettings;sv('bj_rpSettings',rpSettings);}
+if(data.rpCurrentCharId){rpCurrentCharId=data.rpCurrentCharId;sv('bj_rpCurrentCharId',rpCurrentCharId);}
 
 // Reload forms
 const api=data.curApi||data.currentApi||{};
@@ -17357,7 +17553,7 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 3. 问题排查：API报错、功能异常等技术问题的排查指引
 4. 情感陪伴：缓解卡文焦虑、鼓励坚持、庆祝完成
 
-═══════ 第三章：网页功能全景（v1.3.0）═════
+═══════ 第三章：网页功能全景（v1.3.1）═════
 
 【底部导航 - 五个主页面】
 
@@ -17408,6 +17604,24 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 - 打包导出：勾选人物/世界观/文风/规则/作品 → 生成资源包JSON
 - 导入资源包：导入别人分享的资源包
 - 写经验：记录使用心得
+
+【顶部更多菜单里的独立功能】
+
+🎭 角色模拟（右上角「更多」→「🎭 角色模拟」）
+- 这是一个独立的纯对话模式，和创作页、作坊无关
+- 核心玩法：创建角色 → 填写人设/性格/说话方式 → 像聊天软件一样和角色对话
+- 角色只输出"说的话"，不写动作描写、心理旁白、环境描写
+- 多角色管理：可创建多个角色，随时切换，对话和记忆独立保存
+- 角色记忆系统：
+  · 短期记忆：自动发送最近N轮对话（默认10轮，最大50轮，在设置里调）
+  · 长期记忆：点击顶部「🧠 记忆」→「AI总结记忆」，AI用角色口吻写日记式总结
+  · 记忆会在后续对话中被参考，角色会"记得"之前的事
+- 消息管理：长按任意消息可 编辑/重说/复制/删除
+- 对话管理：设置里可「清空所有对话」或「删除最旧N条」
+- 我的身份设定：填写你在对话中的身份（原创作者/同人创作者等）
+- 流式输出：实时看到角色打字，停止时保留已生成内容
+- 聊天背景：可上传自定义背景图
+- 写好人设的关键：重点写说话方式、口癖、情绪表达习惯，比写外貌更重要
 
 【顶部工具】
 - 🎰 故事转盘：创建多个转盘（标签/职业/场景等），随机转动组合，可AI生成梗概
@@ -17495,6 +17709,12 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 → 「导入TXT」把已有稿子导进来
 → 「收藏批量管理」整理书架
 → 定期导出备份！！
+
+想和角色聊天的人：
+→ 右上角「更多」→「🎭 角色模拟」
+→ 创建角色时重点写说话方式和口癖
+→ 聊几轮后记得去「🧠 记忆」让AI总结
+→ 如果角色太"AI味"，在人设里写明：不要用书面语、说话要简短直接
 
 ═══════ 第五章：输出约束 ═══════
 
@@ -18859,6 +19079,9 @@ ringData = ld('bj_ringData', '');
 ringName = ld('bj_ringName', '');
 ringVolume_ = ld('bj_ringVolume', 0.8);
 devMode = ld('bj_devMode', false);
+rpChars = ld('bj_rpChars', []);
+rpSettings = ld('bj_rpSettings', {userDesc:'',contextLen:10,bg:''});
+rpCurrentCharId = ld('bj_rpCurrentCharId', '');
 // 从 dbCache 刷新核心数据（IndexedDB已在splash阶段加载完毕）
 ws = ld(K.ws, ws || []);
 cols = ld(K.cols, cols || {books:[], shorts:[]});
@@ -18979,48 +19202,40 @@ document.getElementById('ringVolume').value=ringVolume_;
 document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
 checkGoalReset();
 // 更新弹窗
-const UPDATE_VER='v1.3.0';
+const UPDATE_VER='v1.3.1';
 const lastSeenVer=localStorage.getItem('bj_lastSeenVer');
 if(lastSeenVer!==UPDATE_VER){
   setTimeout(()=>{
     const updateMsg=
-'📢 笔记AI v1.3 · 内测通知\n\n'+
+'📢 笔记AI v1.3.1 更新日志\n\n'+
 '━━━━━━━━━━━━━━━━━━━━\n'+
-'📌 关于这个网页\n'+
+'🎭 新功能：角色模拟\n'+
 '━━━━━━━━━━━━━━━━━━━━\n\n'+
-'「笔记AI」是一款完全免费、无需注册的AI辅助创作工具。\n'+
-'你只需配置自己的API接口，就能在这里完成从灵感到成文的全过程。\n'+
-'支持长篇连载、短篇创作、多角色设定、世界观构建等功能。\n\n'+
+'现在你可以和自己笔下的角色直接对话了！\n\n'+
+'✦ 创建角色，填写人设和性格，像聊天一样和角色互动\n'+
+'✦ 角色只说"话"，不写动作描写，像真人在打字\n'+
+'✦ 支持角色记忆：AI会用角色的口吻总结对话，角色会"记得"你说过的事\n'+
+'✦ 支持流式输出：实时看到角色"打字"，可中途停止\n'+
+'✦ 长按消息可编辑、重说、复制、删除\n'+
+'✦ 支持清空对话和删除最旧N条消息\n\n'+
+'入口：右上角「更多」→「🎭 角色模拟」\n\n'+
 '━━━━━━━━━━━━━━━━━━━━\n'+
-'✨ 创作理念\n'+
+'✨ 其他优化\n'+
 '━━━━━━━━━━━━━━━━━━━━\n\n'+
-'AI不是替代你写作，而是帮你把脑海中的故事更好地表达出来。\n'+
-'这个工具的核心目标是：让每一个有故事的人，都能更轻松地把故事写出来。\n'+
-'你的创意永远是最重要的，AI只是你的笔。\n\n'+
+'✓ 角色模拟增强活人感，减少AI味\n'+
+'✓ 记忆总结更精简，更能反映角色性格\n'+
+'✓ 短期记忆上限提升至50轮\n'+
+'✓ 修复部分bug，优化整体体验\n\n'+
 '━━━━━━━━━━━━━━━━━━━━\n'+
-'📖 新手必读\n'+
+'💡 使用建议\n'+
 '━━━━━━━━━━━━━━━━━━━━\n\n'+
-'⚠️ 强烈建议先点击右上角「更多」按钮选择使用手册，查看完整使用教程！\n'+
-'手册里有详细的配置指引和功能说明，5分钟即可上手。\n'+
-'也可以在设置页点击星笺头像，向星笺提问任何使用问题。\n\n'+
-'━━━━━━━━━━━━━━━━━━━━\n'+
-'⚠️ 声明\n'+
-'━━━━━━━━━━━━━━━━━━━━\n\n'+
-'• 本网页目前处于内测阶段（v1.3），功能可能存在不稳定之处\n'+
-'• 所有数据存储在你的浏览器本地，请定期导出备份\n'+
-'• 本工具不提供API服务，需要你自行准备API密钥\n'+
-'• AI生成的内容仅供参考和辅助，最终作品版权归创作者所有\n'+
-'• 请合理使用，勿用于生成违规内容\n\n'+
-'━━━━━━━━━━━━━━━━━━━━\n'+
-'💬 来自开发者\n'+
-'━━━━━━━━━━━━━━━━━━━━\n\n'+
-'感谢你愿意试用这个小工具！\n'+
-'这是一个人独立开发的项目，每一个功能都倾注了很多心血。\n'+
-'如果你在使用中遇到问题或有任何建议，欢迎随时反馈。\n'+
-'希望这个工具能陪你写出更多精彩的故事。\n\n'+
+'• 角色人设写得越详细，角色越像"那个人"\n'+
+'• 重点写说话方式和口癖，比外貌更重要\n'+
+'• 对话几轮后记得去「🧠 记忆」让AI总结\n'+
+'• 完整教程见右上角「更多」→「📖 使用手册」\n\n'+
 '祝创作愉快！✨';
 
-    showDlg('📢 笔记AI v1.3 内测公告', updateMsg, ()=>{
+    showDlg('📢 笔记AI 2026.3.21 公告', updateMsg, ()=>{
       localStorage.setItem('bj_lastSeenVer', UPDATE_VER);
     });
 
@@ -19465,6 +19680,957 @@ existing.replaceWith(inp);
 var ov=document.getElementById('inpOv');
 var cancelBtn=ov.querySelector('.dlg-cancel');
 if(cancelBtn)cancelBtn.onclick=function(){closeInp();};
+}
+// ==================== 角色模拟系统 ====================
+let rpChars = ld('bj_rpChars', []); // [{id,name,avatar,desc,world,greeting,messages:[],memory:'',lastSumIdx:0}]
+let rpSettings = ld('bj_rpSettings', {userDesc:'',contextLen:10,bg:''});
+let rpCurrentCharId = ld('bj_rpCurrentCharId', '');
+let rpAbortCtrl = null;
+let rpEditingCharId = '';
+let rpTempAvatar = '';
+
+function getRpCurrentChar(){
+  if(!rpCurrentCharId) return null;
+  return rpChars.find(c => c.id === rpCurrentCharId) || null;
+}
+
+function openRolePlay(){
+  var modal = document.getElementById('rpModal');
+  if(!modal){showToast('角色模拟组件未加载');return;}
+  modal.classList.add('show');
+  document.getElementById('bnav').classList.add('hide');
+  applyRpBg();
+  renderRpChat();
+  updateRpCharBar();
+  updateRpMemoryBadge();
+}
+
+function closeRolePlay(){
+  document.getElementById('rpModal').classList.remove('show');
+  document.getElementById('bnav').classList.remove('hide');
+  if(rpAbortCtrl){try{rpAbortCtrl.abort();}catch(e){} rpAbortCtrl=null;}
+}
+
+// ---- 角色信息栏 ----
+function updateRpCharBar(){
+  const ch = getRpCurrentChar();
+  const nameEl = document.getElementById('rpCharName');
+  const subEl = document.getElementById('rpCharSub');
+  const avatarEl = document.getElementById('rpCharAvatar');
+  if(!ch){
+    nameEl.textContent = '未选择角色';
+    subEl.textContent = '点击右上角「👤 切换」选择或创建角色';
+    avatarEl.innerHTML = '🎭';
+    return;
+  }
+  nameEl.textContent = ch.name || '未命名';
+  const msgCount = (ch.messages||[]).length;
+  const memLen = (ch.memory||'').length;
+  subEl.textContent = msgCount + '条对话' + (memLen > 0 ? ' · 有记忆' : '');
+  if(ch.avatar){
+    avatarEl.innerHTML = '<img src="'+ch.avatar+'" style="width:100%;height:100%;object-fit:cover">';
+  } else {
+    avatarEl.innerHTML = (ch.name||'🎭').substring(0,1);
+  }
+}
+
+function updateRpMemoryBadge(){
+  const ch = getRpCurrentChar();
+  const badge = document.getElementById('rpMemoryBadge');
+  if(!ch){badge.textContent='🧠 记忆';return;}
+  const lastIdx = ch.lastSumIdx || 0;
+  const totalMsgs = (ch.messages||[]).length;
+  const unsumRounds = Math.floor((totalMsgs - lastIdx) / 2);
+  if(unsumRounds > 0){
+    badge.textContent = '🧠 '+unsumRounds+'轮未总结';
+    badge.style.background = 'rgba(255,165,0,.2)';
+    badge.style.color = '#f0a030';
+  } else {
+    badge.textContent = '🧠 记忆';
+    badge.style.background = 'rgba(108,92,231,.15)';
+    badge.style.color = 'var(--accent2)';
+  }
+}
+
+// ---- 渲染聊天 ----
+function renderRpChat(){
+  const body = document.getElementById('rpChatBody');
+  if(!body) return;
+  const ch = getRpCurrentChar();
+  if(!ch){
+    body.innerHTML = '<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px" id="rpWelcome">选择一个角色开始对话吧～<br>点击右上角「👤 切换」创建或选择角色</div>';
+    return;
+  }
+  const msgs = ch.messages || [];
+  if(msgs.length === 0 && ch.greeting){
+    // 自动发送开场白
+    ch.messages = [{role:'char',content:ch.greeting,time:new Date().toISOString()}];
+    saveRpChars();
+  }
+  body.innerHTML = '';
+
+  let i = 0;
+  while(i < (ch.messages||[]).length){
+    const msg = ch.messages[i];
+    if(msg.role === 'user'){
+      const div = document.createElement('div');
+      div.className = 'rp-msg user';
+      div.dataset.rpIdx = i;
+      const t = msg.time ? new Date(msg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+      div.innerHTML = esc(msg.content).replace(/\n/g,'<br>') + '<span class="rp-time">' + t + '</span>';
+      bindRpMsgLongPress(div, i, 'user');
+      body.appendChild(div);
+      i++;
+    } else {
+      // char消息：把连续的char消息合成一组
+      const group = document.createElement('div');
+      group.className = 'rp-msg-group';
+      while(i < ch.messages.length && ch.messages[i].role === 'char'){
+        const cmsg = ch.messages[i];
+        const cdiv = document.createElement('div');
+        cdiv.className = 'rp-msg char';
+        cdiv.dataset.rpIdx = i;
+        const ct = cmsg.time ? new Date(cmsg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}) : '';
+        cdiv.innerHTML = esc(cmsg.content).replace(/\n/g,'<br>') + '<span class="rp-time">' + (ch.name||'角色') + ' ' + ct + '</span>';
+        bindRpMsgLongPress(cdiv, i, 'char');
+        group.appendChild(cdiv);
+        i++;
+      }
+      body.appendChild(group);
+    }
+  }
+  body.scrollTop = body.scrollHeight;
+}
+
+// ---- 发送消息 ----
+async function sendRpMsg(){
+  const ch = getRpCurrentChar();
+  if(!ch){showToast('请先选择一个角色');return;}
+  const input = document.getElementById('rpInput');
+  const text = (input.value||'').trim();
+  if(!text) return;
+  const cfg = getCurApi();
+  if(!cfg.url || !cfg.key){showToast('请先在设置中配置API');return;}
+
+  input.value = '';
+  input.style.height = '40px';
+
+  // 添加用户消息
+  if(!ch.messages) ch.messages = [];
+  ch.messages.push({role:'user',content:text,time:new Date().toISOString()});
+  saveRpChars();
+  renderRpChat();
+
+  // 显示loading
+  const sendBtn = document.getElementById('rpSendBtn');
+  const stopBtn = document.getElementById('rpStopBtn');
+  if(sendBtn) sendBtn.style.display = 'none';
+  if(stopBtn) stopBtn.style.display = 'flex';
+
+  const body = document.getElementById('rpChatBody');
+  const typing = document.createElement('div');
+  typing.className = 'rp-typing';
+  typing.id = 'rpTyping';
+  typing.innerHTML = '<span></span><span></span><span></span>';
+  body.appendChild(typing);
+  body.scrollTop = body.scrollHeight;
+
+  // 构建prompt
+  const sysPrompt = buildRpSystemPrompt(ch);
+  const apiMessages = buildRpApiMessages(ch);
+  apiMessages.unshift({role:'system',content:sysPrompt});
+
+  rpAbortCtrl = new AbortController();
+
+  try{
+    const ep = buildChatEndpoint(cfg.url);
+    if(!ep.endpoint){showToast('API地址为空');return;}
+    const resp = await fetch(ep.endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
+      body:JSON.stringify({model:cfg.model,messages:apiMessages,temperature:0.85,max_tokens:1024,stream:!!useStream}),
+      signal:rpAbortCtrl.signal
+    });
+
+    if(!resp.ok){
+      const typingEl=document.getElementById('rpTyping');if(typingEl)typingEl.remove();
+      if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
+      rpAbortCtrl=null;
+      showToast('请求失败('+resp.status+')');
+      return;
+    }
+
+    let reply='';
+
+    if(useStream && resp.body){
+      // 流式输出
+      const reader=resp.body.getReader();
+      const decoder=new TextDecoder();
+      let buffer='';
+      // 创建临时消息气泡用于实时显示
+      const typingEl=document.getElementById('rpTyping');
+      if(typingEl)typingEl.remove();
+      const liveBubble=document.createElement('div');
+      liveBubble.className='rp-msg char';
+      liveBubble.id='rpLiveBubble';
+      liveBubble.style.opacity='0.8';
+      liveBubble.innerHTML='<span style="color:rgba(255,255,255,.5)">…</span>';
+      body.appendChild(liveBubble);
+      body.scrollTop=body.scrollHeight;
+
+      try{
+        while(true){
+          const{done,value}=await reader.read();
+          if(done)break;
+          buffer+=decoder.decode(value,{stream:true});
+          const lines2=buffer.split('\n');
+          buffer=lines2.pop()||'';
+          for(const line of lines2){
+            const trimmed=line.trim();
+            if(!trimmed||!trimmed.startsWith('data:'))continue;
+            const dataStr=trimmed.slice(5).trim();
+            if(dataStr==='[DONE]')break;
+            try{
+              const json=JSON.parse(dataStr);
+              const delta=json.choices&&json.choices[0]&&json.choices[0].delta;
+              const chunk=delta&&(delta.content||delta.text||'');
+              if(chunk){
+                reply+=chunk;
+                liveBubble.innerHTML=esc(reply).replace(/\n/g,'<br>');
+                body.scrollTop=body.scrollHeight;
+              }
+            }catch(pe){}
+          }
+        }
+      }catch(streamErr){
+        if(streamErr.name==='AbortError'){
+          // 用户主动停止，保留已生成的部分
+        }else{
+          throw streamErr;
+        }
+      }
+      const lb=document.getElementById('rpLiveBubble');
+      if(lb)lb.remove();
+    } else {
+      // 非流式
+      const data = await resp.json();
+      const typingEl=document.getElementById('rpTyping');if(typingEl)typingEl.remove();
+      if(!data.choices||!data.choices[0]||!data.choices[0].message){
+        if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
+        rpAbortCtrl=null;
+        showToast('返回格式异常');return;
+      }
+      reply=(data.choices[0].message.content||'').trim();
+    }
+
+    if(sendBtn)sendBtn.style.display='flex';
+    if(stopBtn)stopBtn.style.display='none';
+    rpAbortCtrl=null;
+
+    reply=stripMetaThinking(reply).trim();
+    if(!reply){saveRpChars();renderRpChat();updateRpMemoryBadge();return;}
+
+    // 清理AI残留标记
+    reply=reply.replace(/[（(][^）)]{0,30}[动作表情心理环境旁白叹气微笑皱眉摇头点头][^）)]{0,30}[）)]/g,'');
+    reply=reply.replace(/\*[^*]{1,40}\*/g,'');
+    reply=reply.replace(/^["「『""]/gm,'').replace(/["」』""]$/gm,'');
+    reply=reply.replace(/^\s*[\-—]\s*/gm,'');
+    reply=reply.trim();
+
+    // 按换行拆分为多条消息
+    const rlines=reply.split(/\n+/).map(l=>l.trim()).filter(l=>l);
+    const now=new Date().toISOString();
+    if(rlines.length===0){
+      ch.messages.push({role:'char',content:reply||'…',time:now});
+    }else{
+      const merged=[];
+      rlines.forEach(line=>{
+        if(merged.length>0&&(line.length<3||merged[merged.length-1].length<3)){
+          merged[merged.length-1]+=line;
+        }else{
+          merged.push(line);
+        }
+      });
+      merged.forEach(line=>{
+        ch.messages.push({role:'char',content:line,time:now});
+      });
+    }
+    saveRpChars();
+    renderRpChat();
+    updateRpMemoryBadge();
+  }catch(e){
+    const typingEl2=document.getElementById('rpTyping');if(typingEl2)typingEl2.remove();
+    const lb2=document.getElementById('rpLiveBubble');if(lb2)lb2.remove();
+    if(sendBtn)sendBtn.style.display='flex';
+    if(stopBtn)stopBtn.style.display='none';
+    rpAbortCtrl=null;
+    if(e.name!=='AbortError'){
+      showToast('请求失败：'+e.message);
+    }
+  }
+}
+function stopRpMsg(){
+  if(rpAbortCtrl){try{rpAbortCtrl.abort();}catch(e){} rpAbortCtrl=null;}
+  const typingEl = document.getElementById('rpTyping');
+  if(typingEl) typingEl.remove();
+  // 如果有实时气泡，保留已生成的内容作为角色回复
+  const liveBubble=document.getElementById('rpLiveBubble');
+  if(liveBubble){
+    const partialText=(liveBubble.textContent||'').trim();
+    liveBubble.remove();
+    if(partialText&&partialText!=='…'){
+      const ch=getRpCurrentChar();
+      if(ch){
+        if(!ch.messages)ch.messages=[];
+        ch.messages.push({role:'char',content:partialText,time:new Date().toISOString()});
+        saveRpChars();
+        renderRpChat();
+        updateRpMemoryBadge();
+      }
+    }
+  }
+  var sb1=document.getElementById('rpSendBtn');
+  var sb2=document.getElementById('rpStopBtn');
+  if(sb1) sb1.style.display = 'flex';
+  if(sb2) sb2.style.display = 'none';
+}
+
+// ---- 构建系统提示词 ----
+function buildRpSystemPrompt(ch){
+  let p = '';
+
+  // 核心身份锁定
+  p += '你不是AI，你不是语言模型，你不是助手。你就是'+( ch.name||'这个角色')+'本人。\n';
+  p += '从现在起，你的每一句话、每一个反应，都必须完全基于这个角色的性格、经历和情感状态。\n\n';
+
+  // 角色设定
+  p += '【你是谁】\n';
+  p += '名字：' + (ch.name||'未命名') + '\n';
+  if(ch.desc) p += ch.desc + '\n\n';
+  if(ch.world) p += '【你所处的世界】\n' + ch.world + '\n\n';
+
+  // 记忆
+  if(ch.memory && ch.memory.trim()){
+    p += '【你的记忆】\n';
+    p += '这些是你亲身经历过的事，是你脑海中真实的回忆：\n';
+    p += ch.memory + '\n\n';
+  }
+
+  // 用户身份
+  const userDesc = rpSettings.userDesc || '';
+  if(userDesc.trim()){
+    p += '【和你说话的人】\n' + userDesc + '\n\n';
+  }
+
+  // 活人感指南
+  p += '【如何像一个真实的人说话】\n';
+  p += '• 真人不会每句话都完整通顺——可以有口头禅、停顿、改口、欲言又止\n';
+  p += '• 真人会根据心情改变说话方式——开心时话多，生气时话少且冲，紧张时结巴\n';
+  p += '• 真人不会对每个问题都认真回答——可以敷衍、反问、岔开话题、装没听到\n';
+  p += '• 真人有情绪惯性——不会因为一句话就180度转变态度\n';
+  p += '• 真人会记仇/记恩——对方之前说过什么做过什么会影响你现在的态度\n';
+  p += '• 真人有自己的节奏——不要每次都秒回长段，有时一个字、一个语气词就够了\n';
+  p += '• 真人在不同场合说话方式不同——和熟人vs陌生人，私下vs公开\n\n';
+
+  // 输出铁律
+  p += '【输出铁律——违反即出戏】\n';
+  p += '① 只输出角色说出口的话，就像在聊天软件里打字一样\n';
+  p += '② 绝对禁止：动作描写(*叹气*)、心理旁白(心想)、环境描写、括号注释(微笑)\n';
+  p += '③ 绝对禁止：「」""这些引号标记，直接打字就行\n';
+  p += '④ 绝对禁止：跳出角色说"作为AI""我是语言模型"之类的话\n';
+  p += '⑤ 绝对禁止：在开头写"好的""让我想想"等AI式回应\n';
+  p += '⑥ 每次回复可以是1句到多句话，用换行分隔\n';
+  p += '⑦ 短回复（1-2句）和长回复（3-5句）交替使用，不要总是固定长度\n';
+  p += '⑧ 如果角色此刻不想说话/生气了，可以只回一个字或语气词\n\n';
+
+  p += '【正确示范】\n';
+  p += '你怎么又来了。\n';
+  p += '……算了，坐吧。\n\n';
+  p += '【错误示范——以下任何一种都不准出现】\n';
+  p += '×  *微微一笑* 你来了啊。\n';
+  p += '×  （心想：他怎么又来了）你来了。\n';
+  p += '×  「你来了。」她放下手中的书。\n';
+  p += '×  好的，我来扮演这个角色。你来了。\n';
+
+  return p;
+}
+
+// ---- 构建API消息（短期记忆） ----
+function buildRpApiMessages(ch){
+  const msgs = ch.messages || [];
+  const contextLen = rpSettings.contextLen || 10;
+  // 取最近 contextLen*2 条消息（每轮=user+char各1条，但char可能多条）
+  let start = 0;
+  let roundCount = 0;
+  for(let i = msgs.length - 1; i >= 0; i--){
+    if(msgs[i].role === 'user') roundCount++;
+    if(roundCount >= contextLen){ start = i; break; }
+  }
+  const recent = msgs.slice(start);
+  const apiMsgs = [];
+  let i = 0;
+  while(i < recent.length){
+    const m = recent[i];
+    if(m.role === 'user'){
+      apiMsgs.push({role:'user',content:m.content});
+      i++;
+    } else {
+      // 合并连续char消息为一条assistant消息
+      let combined = '';
+      while(i < recent.length && recent[i].role === 'char'){
+        if(combined) combined += '\n';
+        combined += recent[i].content;
+        i++;
+      }
+      apiMsgs.push({role:'assistant',content:combined});
+    }
+  }
+  return apiMsgs;
+}
+
+// ---- 保存 ----
+function saveRpChars(){
+  sv('bj_rpChars', rpChars);
+}
+
+function saveRpSettings_(){
+  sv('bj_rpSettings', rpSettings);
+}
+
+// ---- 角色列表 ----
+function openRpCharList(){
+  renderRpCharList();
+  document.getElementById('rpCharListOv').classList.add('show');
+}
+
+function closeRpCharList(){
+  document.getElementById('rpCharListOv').classList.remove('show');
+}
+
+function renderRpCharList(){
+  const body = document.getElementById('rpCharListBody');
+  if(rpChars.length === 0){
+    body.innerHTML = '<div style="text-align:center;padding:30px;color:var(--text2);font-size:12px">还没有角色<br>点击上方按钮创建一个</div>';
+    return;
+  }
+  body.innerHTML = '';
+  rpChars.forEach(c => {
+    const isActive = c.id === rpCurrentCharId;
+    const div = document.createElement('div');
+    div.className = 'rp-char-item' + (isActive ? ' active' : '');
+    const msgCount = (c.messages||[]).length;
+    const avatarHtml = c.avatar
+      ? '<img src="'+c.avatar+'" style="width:100%;height:100%;object-fit:cover">'
+      : '<span>'+(c.name||'?').substring(0,1)+'</span>';
+    div.innerHTML =
+      '<div class="rp-char-item-avatar">' + avatarHtml + '</div>' +
+      '<div class="rp-char-item-info">' +
+        '<div class="rp-char-item-name">' + esc(c.name||'未命名') + (isActive?' ✦':'') + '</div>' +
+        '<div class="rp-char-item-desc">' + msgCount + '条对话 · ' + esc((c.desc||'').substring(0,30)) + '</div>' +
+      '</div>' +
+      '<div style="display:flex;gap:4px;flex-shrink:0">' +
+        '<button style="padding:4px 8px;border-radius:6px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:10px;cursor:pointer" onclick="event.stopPropagation();editRpChar(\''+c.id+'\')">编辑</button>' +
+        '<button style="padding:4px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:10px;cursor:pointer" onclick="event.stopPropagation();deleteRpChar(\''+c.id+'\')">删除</button>' +
+      '</div>';
+    div.onclick = () => {
+      rpCurrentCharId = c.id;
+      sv('bj_rpCurrentCharId', rpCurrentCharId);
+      closeRpCharList();
+      updateRpCharBar();
+      renderRpChat();
+      updateRpMemoryBadge();
+    };
+    body.appendChild(div);
+  });
+}
+
+// ---- 创建/编辑角色 ----
+function createRpChar(){
+  rpEditingCharId = '';
+  rpTempAvatar = '';
+  document.getElementById('rpCharEditTitle').textContent = '新建角色';
+  document.getElementById('rpCharNameInput').value = '';
+  document.getElementById('rpCharDesc').value = '';
+  document.getElementById('rpCharWorld').value = '';
+  document.getElementById('rpCharGreeting').value = '';
+  document.getElementById('rpEditAvatarPreview').innerHTML = '🎭';
+  document.getElementById('rpCharEditOv').classList.add('show');
+}
+
+function editRpChar(id){
+  const ch = rpChars.find(c => c.id === id);
+  if(!ch) return;
+  rpEditingCharId = id;
+  rpTempAvatar = ch.avatar || '';
+  document.getElementById('rpCharEditTitle').textContent = '编辑角色';
+  document.getElementById('rpCharNameInput').value = ch.name || '';
+  document.getElementById('rpCharDesc').value = ch.desc || '';
+  document.getElementById('rpCharWorld').value = ch.world || '';
+  document.getElementById('rpCharGreeting').value = ch.greeting || '';
+  if(ch.avatar){
+    document.getElementById('rpEditAvatarPreview').innerHTML = '<img src="'+ch.avatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  } else {
+    document.getElementById('rpEditAvatarPreview').innerHTML = '🎭';
+  }
+  document.getElementById('rpCharEditOv').classList.add('show');
+}
+
+function closeRpCharEdit(){
+  document.getElementById('rpCharEditOv').classList.remove('show');
+  rpEditingCharId = '';
+  rpTempAvatar = '';
+}
+
+function handleRpAvatarUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const canvas = document.createElement('canvas');
+  const img = new Image();
+  img.onload = () => {
+    const size = 100;
+    canvas.width = size; canvas.height = size;
+    const ctx = canvas.getContext('2d');
+    const min = Math.min(img.width, img.height);
+    const sx = (img.width - min) / 2;
+    const sy = (img.height - min) / 2;
+    ctx.drawImage(img, sx, sy, min, min, 0, 0, size, size);
+    rpTempAvatar = canvas.toDataURL('image/jpeg', 0.75);
+    document.getElementById('rpEditAvatarPreview').innerHTML = '<img src="'+rpTempAvatar+'" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+  };
+  img.src = URL.createObjectURL(file);
+  e.target.value = '';
+}
+
+function uploadRpCharAvatar(){
+  const ch = getRpCurrentChar();
+  if(!ch){showToast('请先选择角色');return;}
+  editRpChar(ch.id);
+}
+
+function saveRpChar(){
+  const name = (document.getElementById('rpCharNameInput').value||'').trim();
+  if(!name){showToast('请输入角色名称');return;}
+  const desc = (document.getElementById('rpCharDesc').value||'').trim();
+  const world = (document.getElementById('rpCharWorld').value||'').trim();
+  const greeting = (document.getElementById('rpCharGreeting').value||'').trim();
+
+  if(rpEditingCharId){
+    // 编辑
+    const ch = rpChars.find(c => c.id === rpEditingCharId);
+    if(ch){
+      ch.name = name;
+      ch.desc = desc;
+      ch.world = world;
+      ch.greeting = greeting;
+      if(rpTempAvatar) ch.avatar = rpTempAvatar;
+      showToast('角色已更新');
+    }
+  } else {
+    // 新建
+    const newChar = {
+      id: uid(),
+      name: name,
+      avatar: rpTempAvatar || '',
+      desc: desc,
+      world: world,
+      greeting: greeting,
+      messages: [],
+      memory: '',
+      lastSumIdx: 0
+    };
+    rpChars.push(newChar);
+    rpCurrentCharId = newChar.id;
+    sv('bj_rpCurrentCharId', rpCurrentCharId);
+    showToast('角色已创建 🎭');
+  }
+  saveRpChars();
+  closeRpCharEdit();
+  renderRpCharList();
+  updateRpCharBar();
+  renderRpChat();
+  updateRpMemoryBadge();
+}
+
+function deleteRpChar(id){
+  const ch = rpChars.find(c => c.id === id);
+  if(!ch) return;
+  showDlg('删除角色','确定要删除「'+(ch.name||'未命名')+'」吗？\n所有对话和记忆都会丢失！',()=>{
+    rpChars = rpChars.filter(c => c.id !== id);
+    if(rpCurrentCharId === id){
+      rpCurrentCharId = rpChars.length > 0 ? rpChars[0].id : '';
+      sv('bj_rpCurrentCharId', rpCurrentCharId);
+    }
+    saveRpChars();
+    renderRpCharList();
+    updateRpCharBar();
+    renderRpChat();
+    updateRpMemoryBadge();
+    showToast('角色已删除');
+  },true);
+}
+
+// ---- 设置 ----
+function openRpSettings(){
+  document.getElementById('rpUserDesc').value = rpSettings.userDesc || '';
+  document.getElementById('rpContextLen').value = rpSettings.contextLen || 10;
+  document.getElementById('rpContextLenVal').textContent = (rpSettings.contextLen||10) + '轮';
+  document.getElementById('rpSettingsOv').classList.add('show');
+}
+
+function closeRpSettings(){
+  document.getElementById('rpSettingsOv').classList.remove('show');
+}
+
+function saveRpSettings(){
+  rpSettings.userDesc = (document.getElementById('rpUserDesc').value||'').trim();
+  rpSettings.contextLen = parseInt(document.getElementById('rpContextLen').value) || 10;
+  saveRpSettings_();
+  closeRpSettings();
+  showToast('设置已保存 ⚙');
+}
+
+function applyRpUserTemplate(type){
+  const ta = document.getElementById('rpUserDesc');
+  if(type === 'original'){
+    ta.value = '我是这个故事的原创作者。我创造了你和你所在的世界。我正在和你对话，目的是更深入地理解你的性格、动机和情感，以便更好地把你的故事写出来。请像真实的你一样回答我，不要刻意讨好我，保持你自己的个性和立场。';
+  } else if(type === 'fanfic'){
+    ta.value = '我是一名同人创作者，非常喜欢你所在的作品。我正在构思一个关于你的同人故事，想通过和你对话来找灵感，了解你对某些事件和人物的真实看法。请以你在原作中的性格来回应我，保持角色的一致性。';
+  }
+  showToast('已应用模板 ✨');
+}
+
+// ---- 聊天背景 ----
+function handleRpBgUpload(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const canvas = document.createElement('canvas');
+  const img = new Image();
+  img.onload = () => {
+    const maxW = 600;
+    let w = img.width, h = img.height;
+    if(w > maxW){h = h*(maxW/w); w = maxW;}
+    canvas.width = w; canvas.height = h;
+    canvas.getContext('2d').drawImage(img, 0, 0, w, h);
+    rpSettings.bg = canvas.toDataURL('image/jpeg', 0.5);
+    saveRpSettings_();
+    applyRpBg();
+    showToast('聊天背景已设置 🎨');
+  };
+  img.src = URL.createObjectURL(file);
+  e.target.value = '';
+}
+
+function clearRpBg(){
+  rpSettings.bg = '';
+  saveRpSettings_();
+  applyRpBg();
+  showToast('背景已清除');
+}
+
+function applyRpBg(){
+  const el = document.getElementById('rpBg');
+  if(!el) return;
+  if(rpSettings.bg){
+    el.style.backgroundImage = 'url(' + rpSettings.bg + ')';
+    el.style.display = 'block';
+  } else {
+    el.style.backgroundImage = '';
+    el.style.display = 'none';
+  }
+}
+
+// ---- 记忆管理 ----
+function openRpMemory(){
+  const ch = getRpCurrentChar();
+  if(!ch){showToast('请先选择角色');return;}
+  document.getElementById('rpMemoryText').value = ch.memory || '';
+  const lastIdx = ch.lastSumIdx || 0;
+  const totalMsgs = (ch.messages||[]).length;
+  const unsumRounds = Math.max(0, Math.floor((totalMsgs - lastIdx) / 2));
+  document.getElementById('rpUnsumCount').textContent = unsumRounds;
+  document.getElementById('rpSumBtn').disabled = unsumRounds < 1;
+  document.getElementById('rpMemoryOv').classList.add('show');
+}
+
+function closeRpMemory(){
+  document.getElementById('rpMemoryOv').classList.remove('show');
+}
+
+function saveRpMemory(){
+  const ch = getRpCurrentChar();
+  if(!ch) return;
+  ch.memory = (document.getElementById('rpMemoryText').value||'').trim();
+  saveRpChars();
+  closeRpMemory();
+  updateRpMemoryBadge();
+  showToast('记忆已保存 🧠');
+}
+
+async function doRpSummarize(){
+  const ch = getRpCurrentChar();
+  if(!ch){showToast('请先选择角色');return;}
+  const cfg = getCurApi();
+  if(!cfg.url || !cfg.key){showToast('请先配置API');return;}
+
+  const lastIdx = ch.lastSumIdx || 0;
+  const msgs = (ch.messages||[]).slice(lastIdx);
+  if(msgs.length < 2){showToast('没有需要总结的新对话');return;}
+
+  const btn = document.getElementById('rpSumBtn');
+  btn.disabled = true;
+  btn.textContent = '总结中...';
+
+  // 构建要总结的对话文本
+  let dialogText = '';
+  msgs.forEach(m => {
+    if(m.role === 'user') dialogText += '对方：' + m.content + '\n';
+    else dialogText += '我：' + m.content + '\n';
+  });
+
+  const existingMemory = ch.memory || '';
+
+  let sysMsg = '你是一个记忆提炼器。任务：把对话提炼成角色的私人记忆笔记。\n\n';
+  sysMsg += '角色：' + (ch.name||'未命名') + '\n';
+  if(ch.desc) sysMsg += '性格特质：' + ch.desc.substring(0,200) + '\n\n';
+  sysMsg += '【提炼规则】\n';
+  sysMsg += '1. 用第一人称"我"，像角色自己写的日记片段\n';
+  sysMsg += '2. 只记三类东西：\n';
+  sysMsg += '   ① 对方透露的关键信息（名字、身份、秘密、承诺）\n';
+  sysMsg += '   ② 让角色情绪波动的瞬间（开心/生气/心动/失望的具体原因）\n';
+  sysMsg += '   ③ 关系变化（从陌生→熟悉，从信任→怀疑等）\n';
+  sysMsg += '3. 要体现角色的性格——同一件事，不同性格的人记忆方式不同\n';
+  sysMsg += '4. 字数控制在80-150字，宁短勿长\n';
+  sysMsg += '5. 不要写流水账（"他问了我XX，我说了XX"），要写印象和感受\n';
+  sysMsg += '6. 直接输出记忆内容，第一个字就是正文\n';
+  sysMsg += '7. 禁止输出标题、编号、分析过程\n';
+
+  let userMsg = '';
+  if(existingMemory){
+    userMsg += '【已有的记忆】\n' + existingMemory + '\n\n';
+  }
+  userMsg += '【需要总结的新对话】\n' + dialogText;
+
+  const messages = [{role:'system',content:sysMsg},{role:'user',content:userMsg}];
+  const result = await callAPINonStream(messages);
+
+  btn.disabled = false;
+  btn.textContent = '🤖 AI总结记忆';
+
+  if(result){
+    const newMemory = existingMemory
+      ? existingMemory.trim() + '\n\n---\n\n' + result.trim()
+      : result.trim();
+    document.getElementById('rpMemoryText').value = newMemory;
+    ch.memory = newMemory;
+    ch.lastSumIdx = (ch.messages||[]).length;
+    saveRpChars();
+    updateRpMemoryBadge();
+    const unsumRounds = 0;
+    document.getElementById('rpUnsumCount').textContent = unsumRounds;
+    showToast('记忆已总结 🧠');
+  } else {
+    showToast('总结失败，请重试');
+  }
+}
+// ==================== RP 消息长按菜单 ====================
+function bindRpMsgLongPress(el, msgIdx, role){
+  let lpTimer=null;
+  let moved=false;
+  let sx=0,sy=0;
+  el.addEventListener('touchstart',function(e){
+    moved=false;
+    if(e.touches.length>0){sx=e.touches[0].clientX;sy=e.touches[0].clientY;}
+    lpTimer=setTimeout(function(){
+      if(moved)return;
+      e.preventDefault();
+      if(navigator.vibrate)navigator.vibrate(30);
+      showRpMsgMenu(msgIdx,role,e.touches[0].clientX,e.touches[0].clientY);
+    },500);
+  },{passive:false});
+  el.addEventListener('touchmove',function(e){
+    if(e.touches.length>0){
+      if(Math.abs(e.touches[0].clientX-sx)>10||Math.abs(e.touches[0].clientY-sy)>10){
+        moved=true;clearTimeout(lpTimer);
+      }
+    }
+  },{passive:true});
+  el.addEventListener('touchend',function(){clearTimeout(lpTimer);});
+  el.addEventListener('touchcancel',function(){clearTimeout(lpTimer);});
+  // PC右键
+  el.addEventListener('contextmenu',function(e){
+    e.preventDefault();
+    showRpMsgMenu(msgIdx,role,e.clientX,e.clientY);
+  });
+}
+
+function showRpMsgMenu(msgIdx,role,x,y){
+  const menu=document.getElementById('xjMsgMenu');
+  let html='';
+  if(role==='char'){
+    html+='<div class="xj-msg-menu-item" onclick="rpMsgAction(\'regenerate\','+msgIdx+')">🔄 重说</div>';
+  }
+  html+='<div class="xj-msg-menu-item" onclick="rpMsgAction(\'edit\','+msgIdx+')">✏️ 编辑</div>';
+  html+='<div class="xj-msg-menu-item" onclick="rpMsgAction(\'copy\','+msgIdx+')">📋 复制</div>';
+  html+='<div class="xj-msg-menu-item danger" onclick="rpMsgAction(\'delete\','+msgIdx+')">🗑️ 删除</div>';
+  menu.innerHTML=html;
+  menu.style.display='block';
+  let posX=x,posY=y;
+  const mw=menu.offsetWidth,mh=menu.offsetHeight;
+  if(x+mw>window.innerWidth)posX=window.innerWidth-mw-10;
+  if(y+mh>window.innerHeight)posY=y-mh;
+  if(posX<10)posX=10;if(posY<10)posY=10;
+  menu.style.left=posX+'px';menu.style.top=posY+'px';
+  setTimeout(function(){
+    const closeH=function(e){
+      if(!menu.contains(e.target)){menu.style.display='none';}
+      document.removeEventListener('touchstart',closeH);
+      document.removeEventListener('click',closeH);
+    };
+    document.addEventListener('touchstart',closeH);
+    document.addEventListener('click',closeH);
+  },100);
+}
+
+function rpMsgAction(action,idx){
+  document.getElementById('xjMsgMenu').style.display='none';
+  const ch=getRpCurrentChar();
+  if(!ch||!ch.messages||idx<0||idx>=ch.messages.length)return;
+  const msg=ch.messages[idx];
+
+  if(action==='copy'){
+    doCopy(msg.content);
+    showToast('已复制 📋');
+  } else if(action==='delete'){
+    showDlg('删除消息','确定要删除这条消息吗？',function(){
+      ch.messages.splice(idx,1);
+      saveRpChars();renderRpChat();updateRpMemoryBadge();
+      showToast('已删除');
+    },true);
+  } else if(action==='edit'){
+    rpEditMessage(idx);
+  } else if(action==='regenerate'){
+    rpRegenerateFrom(idx);
+  }
+}
+
+function rpEditMessage(idx){
+  const ch=getRpCurrentChar();
+  if(!ch||!ch.messages[idx])return;
+  const msg=ch.messages[idx];
+  showInp('编辑消息','修改消息内容',function(val){
+    ch.messages[idx].content=val;
+    ch.messages[idx].edited=true;
+    saveRpChars();renderRpChat();
+    showToast('消息已修改 ✏️');
+  });
+  setTimeout(function(){
+    var f=document.getElementById('inpField');
+    if(f)f.value=msg.content;
+  },120);
+}
+
+async function rpRegenerateFrom(idx){
+  const ch=getRpCurrentChar();
+  if(!ch)return;
+  const cfg=getCurApi();
+  if(!cfg.url||!cfg.key){showToast('请先配置API');return;}
+  // 删除从idx开始的所有char连续消息
+  let endIdx=idx;
+  while(endIdx<ch.messages.length&&ch.messages[endIdx].role==='char'){endIdx++;}
+  ch.messages.splice(idx,endIdx-idx);
+  saveRpChars();renderRpChat();
+  // 重新生成
+  const body=document.getElementById('rpChatBody');
+  const sendBtn=document.getElementById('rpSendBtn');
+  const stopBtn=document.getElementById('rpStopBtn');
+  if(sendBtn)sendBtn.style.display='none';
+  if(stopBtn)stopBtn.style.display='flex';
+  const typing=document.createElement('div');
+  typing.className='rp-typing';typing.id='rpTyping';
+  typing.innerHTML='<span></span><span></span><span></span>';
+  body.appendChild(typing);
+  body.scrollTop=body.scrollHeight;
+
+  const sysPrompt=buildRpSystemPrompt(ch);
+  const apiMessages=buildRpApiMessages(ch);
+  apiMessages.unshift({role:'system',content:sysPrompt});
+
+  rpAbortCtrl=new AbortController();
+  try{
+    const ep=buildChatEndpoint(cfg.url);
+    if(!ep.endpoint){showToast('API地址为空');return;}
+    const resp=await fetch(ep.endpoint,{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
+      body:JSON.stringify({model:cfg.model,messages:apiMessages,temperature:0.9,max_tokens:1024}),
+      signal:rpAbortCtrl.signal
+    });
+    const typingEl=document.getElementById('rpTyping');if(typingEl)typingEl.remove();
+    if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
+    rpAbortCtrl=null;
+    if(!resp.ok){showToast('重说失败('+resp.status+')');return;}
+    const data=await resp.json();
+    if(!data.choices||!data.choices[0]||!data.choices[0].message){showToast('返回异常');return;}
+    let reply=(data.choices[0].message.content||'').trim();
+    reply=stripMetaThinking(reply);
+    reply=reply.replace(/[（(][^）)]{0,30}[动作表情心理环境旁白叹气微笑皱眉摇头点头][^）)]{0,30}[）)]/g,'');
+    reply=reply.replace(/\*[^*]{1,40}\*/g,'');
+    reply=reply.replace(/^["「『""]/gm,'').replace(/["」』""]$/gm,'');
+    reply=reply.replace(/^\s*[\-—]\s*/gm,'').trim();
+    const rlines=reply.split(/\n+/).map(l=>l.trim()).filter(l=>l);
+    const now=new Date().toISOString();
+    if(rlines.length===0){
+      ch.messages.push({role:'char',content:reply||'…',time:now});
+    }else{
+      const merged=[];
+      rlines.forEach(function(line){
+        if(merged.length>0&&(line.length<3||merged[merged.length-1].length<3)){
+          merged[merged.length-1]+=line;
+        }else{merged.push(line);}
+      });
+      merged.forEach(function(line){
+        ch.messages.push({role:'char',content:line,time:now});
+      });
+    }
+    saveRpChars();renderRpChat();updateRpMemoryBadge();
+    showToast('已重新回答');
+  }catch(e){
+    const t2=document.getElementById('rpTyping');if(t2)t2.remove();
+    if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
+    rpAbortCtrl=null;
+    if(e.name!=='AbortError')showToast('重说失败：'+e.message);
+  }
+}
+
+// ==================== RP 清空/选择性删除对话 ====================
+function clearRpAllChat(){
+  const ch=getRpCurrentChar();
+  if(!ch){showToast('请先选择角色');return;}
+  if(!ch.messages||ch.messages.length===0){showToast('没有对话可清空');return;}
+  showDlg('清空所有对话','确定要删除「'+(ch.name||'角色')+'」的全部 '+ch.messages.length+' 条对话吗？\n\n记忆不会被删除。',function(){
+    ch.messages=[];
+    ch.lastSumIdx=0;
+    saveRpChars();renderRpChat();updateRpMemoryBadge();
+    showToast('对话已清空');
+  },true);
+}
+
+function deleteRpOldestMsgs(){
+  const ch=getRpCurrentChar();
+  if(!ch||!ch.messages||ch.messages.length===0){showToast('没有对话');return;}
+  showInp('删除最旧的对话','输入要删除的条数（从最早的开始删）',function(val){
+    var count=parseInt(val);
+    if(!count||count<1){showToast('请输入有效数字');return;}
+    if(count>=ch.messages.length){
+      ch.messages=[];
+      ch.lastSumIdx=0;
+    }else{
+      ch.messages=ch.messages.slice(count);
+      ch.lastSumIdx=Math.max(0,ch.lastSumIdx-count);
+    }
+    saveRpChars();renderRpChat();updateRpMemoryBadge();
+    showToast('已删除 '+Math.min(count,ch.messages.length+count)+' 条最旧的对话');
+  });
 }
 // 触摸设备支持（同样适用）
 document.addEventListener('touchstart', function(e) {
