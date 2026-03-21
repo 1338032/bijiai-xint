@@ -9886,7 +9886,7 @@ function saveCharPreset(){
 saveCharactersFromUI();
 showInp('保存人物预设','为这组人物起个名字',name=>{
 charP.push({name,characters:JSON.parse(JSON.stringify(characters)),relations:JSON.parse(JSON.stringify(charRelations)),npcs:JSON.parse(JSON.stringify(npcList))});
-sv(K.charP,charP);renderCharPresets();showToast('人物预设已保存');
+sv(K.charP,charP);renderCharPresets();updateBindingNames();showToast('人物预设已保存');
 });
 }
 function renderCharPresets(){
@@ -9913,7 +9913,7 @@ renderNpcCards();
 loadLocalSettingsForPreset(p.name);
 showToast('已加载人物: '+p.name);
 }
-function delCharP(i){charP.splice(i,1);sv(K.charP,charP);renderCharPresets();}
+function delCharP(i){charP.splice(i,1);sv(K.charP,charP);renderCharPresets();updateBindingNames();}
 
 // World Presets
 function clearAllWorld(){
