@@ -71,6 +71,7 @@ background:linear-gradient(135deg,#0a0a12 0%,#12121f 50%,#0d0d18 100%);
 display:flex;flex-direction:column;align-items:center;justify-content:center;
 transition:opacity 0.8s,transform 0.8s;
 overflow:hidden;
+background: #0a0a12;  /* 深色背景，和原来的渐变一致 */
 }
 .splash.hide{opacity:0;transform:scale(1.05);pointer-events:none;}
 .splash::before{
@@ -11900,7 +11901,7 @@ function renderUserCard(){
   bioEl.textContent = uc.bio || '点击添加个人简介...';
 
   // 默认头像图片地址（替换为你自己的链接）
-  const defaultAvatar = 'https://i.postimg.cc/7hMhTQJG/IMG-20260320-155353.jpg';
+  const defaultAvatar = 'https://i.postimg.cc/2SCshSLM/retouch-2026032101143556.png';
 
   if (uc.avatar) {
     avatarEl.innerHTML = '<img src="' + uc.avatar + '" alt="头像"><div class="ucard-avatar-hint">更换</div>';
@@ -18629,49 +18630,45 @@ document.addEventListener('DOMContentLoaded', async () => {
         particlesContainer.appendChild(p);
     }
 
-    // 初始化步骤
-    txt.textContent = '正在唤醒创作灵感...';
-    bar.style.width = '10%';
+    // 先显示“加载中”，不改变进度条
+    txt.textContent = '正在加载...';
+    bar.style.width = '0%';
 
     try {
-        // 初始化IndexedDB
+        // 1. 初始化IndexedDB
         await initDB();
         txt.textContent = '正在整理你的故事...';
-        bar.style.width = '30%';
+        bar.style.width = '20%';
 
-        // 从IndexedDB加载所有数据
+        // 2. 加载所有数据（可能很慢）
         await loadAllFromDB();
         txt.textContent = '正在准备写作工具...';
         bar.style.width = '60%';
 
-        // 初始化应用
+        // 3. 初始化应用（渲染界面）
         initApp();
         txt.textContent = '正在布置创作空间...';
         bar.style.width = '80%';
 
-        setTimeout(() => {
-            txt.textContent = '灵感已就位，开始创作吧 ✨';
-            bar.style.width = '100%';
-        }, 200);
+        // 4. 再给一个小延时，让界面稳定
+        await new Promise(r => setTimeout(r, 300));
+        txt.textContent = '灵感已就位，开始创作吧 ✨';
+        bar.style.width = '100%';
 
+        // 5. 隐藏启动页
         setTimeout(() => {
             splash.classList.add('hide');
             app.classList.add('show');
-        }, 600);
+        }, 300);
 
         setTimeout(() => {
             splash.style.display = 'none';
-        }, 1400);
-
-        setTimeout(autoBackup, 5000);
-// 每30分钟自动备份一次
-setInterval(autoBackup, 30 * 60 * 1000);
+        }, 1000);
     } catch (e) {
         console.error('初始化失败:', e);
-        txt.textContent = '初始化失败，使用备用模式...';
-        // 即使IndexedDB失败，也尝试用localStorage启动
+        txt.textContent = '初始化失败，尝试进入...';
+        bar.style.width = '100%';
         setTimeout(() => {
-            try { initApp(); } catch (e2) { console.error(e2); }
             splash.classList.add('hide');
             app.classList.add('show');
         }, 1000);
