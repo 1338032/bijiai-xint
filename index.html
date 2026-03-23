@@ -958,6 +958,109 @@ body.theme-light .rd-reader-ov-top,
 body.theme-light .rd-reader-ov-bottom{
   background:linear-gradient(180deg,rgba(245,245,248,.97),rgba(245,245,248,.92));
 }
+/* ==================== 阅读器搜索浮层 ==================== */
+.rd-search-ov{
+  position:fixed;bottom:0;left:0;right:0;z-index:25;
+  background:linear-gradient(180deg,rgba(20,20,28,.97),rgba(15,15,20,.99));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border-top:1px solid rgba(108,92,231,.25);
+  padding:14px 16px calc(16px + env(safe-area-inset-bottom,0px));
+  transform:translateY(100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 -8px 30px rgba(0,0,0,.4);
+}
+.rd-search-ov.show{transform:translateY(0);}
+body.theme-light .rd-search-ov{
+  background:linear-gradient(180deg,rgba(245,245,248,.97),rgba(255,255,255,.99));
+  border-top-color:rgba(0,0,0,.1);
+  box-shadow:0 -4px 20px rgba(0,0,0,.08);
+}
+.rd-search-ov .rds-header{
+  display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;
+}
+.rd-search-ov .rds-title{
+  font-size:13px;font-weight:700;color:var(--text);
+  display:flex;align-items:center;gap:6px;
+}
+.rd-search-ov .rds-close{
+  width:28px;height:28px;border-radius:50%;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text2);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.rd-search-ov .rds-close:active{transform:scale(.9);border-color:var(--accent);}
+.rd-search-ov .rds-input-row{
+  display:flex;gap:8px;align-items:center;
+}
+.rd-search-ov .rds-input{
+  flex:1;padding:10px 14px;border-radius:12px;
+  border:1px solid var(--border);
+  background:linear-gradient(135deg,var(--card),rgba(108,92,231,.03));
+  color:var(--text);font-size:14px;outline:none;
+  transition:border-color .3s;font-family:inherit;
+}
+.rd-search-ov .rds-input:focus{
+  border-color:var(--accent);
+  box-shadow:0 0 0 3px rgba(108,92,231,.12);
+}
+.rd-search-ov .rds-input::placeholder{color:var(--text2);opacity:.6;}
+.rd-search-ov .rds-nav{
+  display:flex;gap:4px;flex-shrink:0;
+}
+.rd-search-ov .rds-nav-btn{
+  width:36px;height:36px;border-radius:10px;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:13px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all .2s;
+}
+.rd-search-ov .rds-nav-btn:active{
+  transform:scale(.92);background:var(--accent);color:#fff;border-color:var(--accent);
+}
+.rd-search-ov .rds-nav-btn:disabled{opacity:.3;pointer-events:none;}
+.rd-search-ov .rds-bottom{
+  display:flex;justify-content:space-between;align-items:center;
+  margin-top:10px;
+}
+.rd-search-ov .rds-count{
+  font-size:12px;font-weight:600;
+  color:var(--accent2);
+  min-width:80px;
+}
+.rd-search-ov .rds-count.empty{color:var(--text2);font-weight:400;}
+.rd-search-ov .rds-count.not-found{color:var(--danger);}
+.rd-search-ov .rds-jump-row{
+  display:flex;gap:6px;align-items:center;
+}
+.rd-search-ov .rds-jump-label{
+  font-size:11px;color:var(--text2);flex-shrink:0;
+}
+.rd-search-ov .rds-jump-input{
+  width:52px;padding:7px 8px;border-radius:9px;text-align:center;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:13px;font-weight:600;outline:none;
+  transition:border-color .2s;
+}
+.rd-search-ov .rds-jump-input:focus{border-color:var(--accent);}
+.rd-search-ov .rds-jump-btn{
+  padding:7px 14px;border-radius:9px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:11px;font-weight:600;cursor:pointer;
+  transition:all .2s;flex-shrink:0;
+}
+.rd-search-ov .rds-jump-btn:active{transform:scale(.95);}
+.rd-search-highlight{
+  background:rgba(241,196,15,.45)!important;
+  color:inherit!important;
+  border-radius:2px;padding:0 1px;
+  transition:background .2s;
+}
+.rd-search-highlight.current{
+  background:rgba(255,107,107,.55)!important;
+  box-shadow:0 0 0 2px rgba(255,107,107,.3);
+}
+
 body.theme-light .rd-reader-ov-top{border-bottom-color:rgba(0,0,0,.08);}
 body.theme-light .rd-reader-ov-bottom{border-top-color:rgba(0,0,0,.08);}
 @media (hover: hover) {   .rd-content p:hover{background:rgba(108,92,231,.03);} }
@@ -6182,6 +6285,29 @@ body.theme-light .more-menu-panel {
 </div>
 </div>
 </div>
+<!-- 阅读器搜索浮层 -->
+<div class="rd-search-ov" id="rdSearchOv">
+<div class="rds-header">
+<div class="rds-title">🔍 搜索本章内容</div>
+<button class="rds-close" onclick="closeRdSearch()">✕</button>
+</div>
+<div class="rds-input-row">
+<input type="text" class="rds-input" id="rdSearchInput" placeholder="输入关键词..." oninput="_rdSearchDebounce()" onkeydown="if(event.key==='Enter'){event.preventDefault();rdSearchNext();}">
+<div class="rds-nav">
+<button class="rds-nav-btn" onclick="rdSearchPrev()" id="rdSPrev" disabled title="上一个">▲</button>
+<button class="rds-nav-btn" onclick="rdSearchNext()" id="rdSNext" disabled title="下一个">▼</button>
+</div>
+</div>
+<div class="rds-bottom">
+<span class="rds-count empty" id="rdSearchCount">输入关键词开始搜索</span>
+<div class="rds-jump-row">
+<span class="rds-jump-label">跳到</span>
+<input type="number" class="rds-jump-input" id="rdJumpInput" min="1" placeholder="页" onkeydown="if(event.key==='Enter'){event.preventDefault();rdJumpToPage();}">
+<span class="rds-jump-label" id="rdJumpTotal">/ ?</span>
+<button class="rds-jump-btn" onclick="rdJumpToPage()">跳转</button>
+</div>
+</div>
+</div>
 <div class="toast" id="toast"></div>
 
 <!-- BOTTOM NAV -->
@@ -9347,18 +9473,11 @@ function _rdCreateOverlay(){
     '<button class="rd-reader-ov-btn" onclick="_rdHideOverlay();toggleCurrentLike();setTimeout(function(){_rdRefreshOverlay();},300)">'+(isLiked(curRd)?'❤️':'♡')+'</button>';
   ov.appendChild(top);
 
-  // === 中间空白区：只用来关闭菜单，不触发任何功能 ===
+  // === 中间空白区：点击关闭菜单 ===
   const mid=document.createElement('div');
   mid.style.cssText='flex:1;';
-  mid.onclick=function(e){
-    e.stopPropagation();
-    _rdHideOverlay();
-  };
-  // 阻止中间区域的触摸穿透
-  mid.ontouchend=function(e){
-    e.stopPropagation();
-    _rdHideOverlay();
-  };
+  mid.onclick=function(e){e.stopPropagation();_rdHideOverlay();};
+  mid.ontouchend=function(e){e.stopPropagation();_rdHideOverlay();};
   ov.appendChild(mid);
 
   // === 底部栏 ===
@@ -9367,7 +9486,7 @@ function _rdCreateOverlay(){
 
   let html='';
 
-  // 字号行高
+  // 字号行高滑块
   html+=
     '<div class="rd-reader-ov-slider">'+
       '<span style="font-size:13px">A</span>'+
@@ -9381,7 +9500,7 @@ function _rdCreateOverlay(){
       '<span class="rros-val" id="rdReaderLineVal">'+(ap.rdLineHeight||2).toFixed(1)+'</span>'+
     '</div>';
 
-  // 章节导航（仅长篇且多章）
+  // 章节导航（仅长篇多章）
   if(isLong&&totalCh>1){
     html+=
       '<div class="rd-reader-ov-row">'+
@@ -9391,20 +9510,41 @@ function _rdCreateOverlay(){
       '</div>';
   }
 
-  // ========== 工具箱折叠栏（8个功能合并） ==========
+  // ========== 搜索 & 跳页（直接嵌入，不用独立浮层） ==========
+  html+=
+    '<div style="margin:8px 0;padding:10px 12px;background:var(--card);border:1px solid var(--border);border-radius:12px">'+
+      '<div style="display:flex;gap:6px;align-items:center">'+
+        '<input type="text" id="rdOvSearchInput" placeholder="🔍 搜索内容..." style="flex:1;padding:9px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none;font-family:inherit" oninput="_rdOvDoSearch()" onkeydown="if(event.key===\'Enter\'){event.preventDefault();_rdOvSearchNext();}" ontouchstart="event.stopPropagation()">'+
+        '<button onclick="_rdOvSearchPrev()" id="rdOvSPrev" disabled style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">▲</button>'+
+        '<button onclick="_rdOvSearchNext()" id="rdOvSNext" disabled style="width:32px;height:32px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;display:flex;align-items:center;justify-content:center">▼</button>'+
+      '</div>'+
+      '<div style="display:flex;justify-content:space-between;align-items:center;margin-top:6px">'+
+        '<span id="rdOvSearchCount" style="font-size:11px;color:var(--text2)">输入关键词搜索</span>'+
+        '<div style="display:flex;gap:6px;align-items:center">'+
+          '<span style="font-size:10px;color:var(--text2)">跳到</span>'+
+          '<input type="number" id="rdOvJumpInput" min="1" placeholder="页" style="width:48px;padding:6px 8px;border-radius:8px;text-align:center;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;outline:none" onkeydown="if(event.key===\'Enter\'){event.preventDefault();_rdOvJumpToPage();}" ontouchstart="event.stopPropagation()">'+
+          '<span style="font-size:10px;color:var(--text2)" id="rdOvJumpTotal">/ '+_rdTotalPg+'</span>'+
+          '<button onclick="_rdOvJumpToPage()" style="padding:6px 12px;border-radius:8px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:11px;font-weight:600;cursor:pointer">跳转</button>'+
+        '</div>'+
+      '</div>'+
+    '</div>';
+
+  // ========== 工具箱折叠栏 ==========
   html+=
     '<div id="rdOvToolWrap" style="margin-top:6px">'+
       '<div id="rdOvToolToggle" onclick="_rdToggleToolBox()" style="width:100%;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:13px;font-weight:600;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s">'+
         '<span>🛠 工具箱</span>'+
-        '<span style="font-size:10px;color:var(--text2)">笔记·复制·朗读·伏笔·改写...</span>'+
+        '<span style="font-size:10px;color:var(--text2)">笔记·朗读·复制·伏笔·改写·番外...</span>'+
       '</div>'+
       '<div id="rdOvToolPanel" style="display:none;margin-top:8px;animation:fadeIn .2s ease">'+
+        // 第一行：笔记、朗读、全屏、回到顶部
         '<div class="rd-reader-ov-row">'+
           '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'note\')"><div class="rroi-icon">📝</div><div class="rroi-text">笔记</div></div>'+
-          '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'copyAll\')"><div class="rroi-icon">📋</div><div class="rroi-text">复制全文</div></div>'+
           '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'tts\')"><div class="rroi-icon">🔊</div><div class="rroi-text">朗读</div></div>'+
+          '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'copyAll\')"><div class="rroi-icon">📋</div><div class="rroi-text">复制全文</div></div>'+
           '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'import\')"><div class="rroi-icon">✍</div><div class="rroi-text">导入创作</div></div>'+
         '</div>'+
+        // 第二行：复制本章、伏笔、改写、番外
         '<div class="rd-reader-ov-row">'+
           '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'copyCh\')"><div class="rroi-icon">📄</div><div class="rroi-text">'+(isLong?'复制本章':'复制')+'</div></div>'+
           '<div class="rd-reader-ov-item" onclick="_rdToolAction(\'foreshadow\')"><div class="rroi-icon">🎯</div><div class="rroi-text">伏笔</div></div>'+
@@ -9424,7 +9564,7 @@ function _rdCreateOverlay(){
     {id:'5',label:'🌸'},
     {id:'6',label:'🌑'}
   ];
-  bgOpts.forEach(bg=>{
+  bgOpts.forEach(function(bg){
     const isAct=(bg.id==='0'&&!curBg)||(curBg===bg.id);
     html+='<div onclick="_rdToolAction(\'bg\',\''+bg.id+'\')" style="padding:8px 12px;border-radius:10px;border:1px solid '+(isAct?'var(--accent)':'var(--border)')+';background:'+(isAct?'rgba(108,92,231,.15)':'var(--card)')+';cursor:pointer;font-size:14px;text-align:center;min-width:36px;flex:1;transition:all .2s'+(bg.id==='0'?';color:var(--danger)':'')+'">'+bg.label+'</div>';
   });
@@ -9452,7 +9592,7 @@ function _rdCreateOverlay(){
   bottom.innerHTML=html;
   ov.appendChild(bottom);
 
-  // === 阻止浮层上所有事件冒泡到阅读器翻页手势 ===
+  // 阻止浮层上所有事件冒泡到阅读器翻页手势
   ov.addEventListener('touchstart',function(e){e.stopPropagation();},{passive:true});
   ov.addEventListener('touchmove',function(e){e.stopPropagation();},{passive:true});
   ov.addEventListener('touchend',function(e){e.stopPropagation();},{passive:true});
@@ -22526,6 +22666,15 @@ async function startFanwaiGen(){
 
     if(fwAbortFlag) break;
 
+    if(result === null){
+      // 生成失败，具体原因已在generateSingleFanwai中弹窗
+      fwIsGenerating = false;
+      document.getElementById('fwStartBtn').disabled = false;
+      document.getElementById('fwStartBtn').textContent = '🔄 重试第' + (i+1) + '篇';
+      document.getElementById('fwProgressInfo').textContent = '第' + (i+1) + '篇生成失败，请查看错误提示后重试';
+      return;
+    }
+
     if(result){
       fwResults[i] = result;
       renderFwOutlineList();
@@ -22575,51 +22724,85 @@ function stopFanwaiGen(){
 
 async function generateSingleFanwai(idx, summary){
   var cfg = getCurApi();
+  if(!cfg.url || !cfg.key){
+    showToast('❌ 番外生成失败：未配置API地址或密钥\n请去「设置→API设置」填写',5000);
+    return null;
+  }
   var mW = parseInt(document.getElementById('minWords').value) || 800;
   var outline = fwOutlines[idx] || '';
 
   // 构建系统提示词
   var sysMsg = buildSysPrompt();
   sysMsg += '\n\n【特别任务：番外篇续写】\n';
-  sysMsg += '你正在为一部已完结的作品续写番外篇。\n';
-  sysMsg += '番外篇的特点：\n';
-  sysMsg += '• 独立成篇，不需要悬念结尾\n';
-  sysMsg += '• 角色性格、说话方式必须和原作一致\n';
-  sysMsg += '• 可以补充原作没讲到的细节、另一个视角、后续故事\n';
-  sysMsg += '• 氛围和基调可以和原作不同（比如原作虐，番外可以甜）\n';
-  sysMsg += '• 但人物不能OOC，世界观不能矛盾\n\n';
+  sysMsg += '你正在为一部已完结的作品续写番外篇。\n\n';
+  sysMsg += '【番外篇核心原则——违反即废稿】\n';
+  sysMsg += '① 角色一致性：所有角色的性格、说话方式、口癖必须和原作完全一致，不能突然变温柔或变暴躁\n';
+  sysMsg += '② 关系延续性：人物之间的关系状态从原作结局继续，不能无故倒退或跳跃\n';
+  sysMsg += '③ 世界观一致：不能出现原作世界观中不存在的设定、能力或规则\n';
+  sysMsg += '④ 独立完整：番外必须有清晰的开头、发展、结尾，不能写到一半突然停下\n';
+  sysMsg += '⑤ 情感落点：番外的核心是"补充情感"，不是"推进主线"，要有一个让人回味的情感瞬间\n\n';
+  sysMsg += '【番外篇写法指南】\n';
+  sysMsg += '• 开头：用一个具体的场景或动作切入，不要用"时光飞逝""婚后的日子"这类概括句\n';
+  sysMsg += '• 中段：聚焦一个小事件或一个特定的瞬间，把它写透写深\n';
+  sysMsg += '• 结尾：用一个细节或一句对话收束，留有余韵，不要写感悟式总结\n';
+  sysMsg += '• 对话：番外的对话应该更日常、更随意，体现人物之间的亲密度变化\n';
+  sysMsg += '• 细节：多写只有亲密的人才会注意到的小细节（习惯、小动作、默契）\n\n';
+  sysMsg += '【绝对禁止】\n';
+  sysMsg += '• 禁止在番外中制造新的重大冲突或危机（番外不是续集）\n';
+  sysMsg += '• 禁止引入原作中没有的重要新角色\n';
+  sysMsg += '• 禁止推翻或改变原作的结局走向\n';
+  sysMsg += '• 禁止写成流水账（今天做了XX，然后做了XX，最后做了XX）\n';
 
-  // 如果有之前的番外，提供参考
+  // 如果有之前的番外，提供参考（增强防重复）
   var prevFwContext = '';
+  var prevFwThemes = [];
   for(var p = 0; p < idx; p++){
     if(fwResults[p]){
-      prevFwContext += '【番外第' + (p+1) + '篇摘要】\n' + fwResults[p].substring(0, 300) + '...\n\n';
+      prevFwContext += '【番外第' + (p+1) + '篇摘要】\n' + fwResults[p].substring(0, 400) + '...\n\n';
+      // 提取主题关键词防重复
+      var prevText = fwResults[p].substring(0, 200);
+      if(prevText.includes('婚')) prevFwThemes.push('婚后');
+      if(prevText.includes('日常')) prevFwThemes.push('日常');
+      if(prevText.includes('回忆')) prevFwThemes.push('回忆');
+      if(prevText.includes('重逢')) prevFwThemes.push('重逢');
+      if(prevText.includes('旅行')) prevFwThemes.push('旅行');
     }
   }
 
   // 构建用户消息
   var userMsg = '【续写任务】为《' + (fwArticle.title||'') + '》续写番外篇（第' + (idx+1) + '/' + fwCount + '篇）\n\n';
-  userMsg += '【原作内容摘要】\n' + summary + '\n\n';
+  userMsg += '【原作内容摘要（这是你必须熟记的背景）】\n' + summary + '\n\n';
 
   if(prevFwContext){
-    userMsg += '【已写的番外】\n' + prevFwContext;
-    userMsg += '请注意：本篇番外不要和之前的番外重复，要写不同的角度或时间线。\n\n';
+    userMsg += '【⚠️ 已写的番外（绝对不能重复）】\n' + prevFwContext;
+    userMsg += '以上番外已经写过了。本篇必须写一个完全不同的角度、时间点或事件。\n';
+    if(prevFwThemes.length > 0){
+      userMsg += '已使用的主题：' + prevFwThemes.join('、') + '。请避开这些主题方向。\n\n';
+    } else {
+      userMsg += '\n';
+    }
   }
 
   if(outline){
-    userMsg += '【本篇番外的剧情方向】\n' + outline + '\n\n';
+    userMsg += '【本篇番外的剧情方向（用户指定，必须遵守）】\n' + outline + '\n\n';
   } else {
-    if(idx === 0) userMsg += '【建议方向】可以写原作结局之后的日常生活、甜蜜互动、或补充一个温馨的小故事。\n\n';
-    else if(idx === 1) userMsg += '【建议方向】可以从配角视角看待主角的故事，或写一个"如果当初..."的平行线。\n\n';
-    else userMsg += '【建议方向】可以写更久以后的故事，或一个特别的纪念日/事件。\n\n';
+    // 根据篇数给出不同的方向建议
+    var suggestions = [
+      '可以写原作结局之后的一个温馨日常片段，聚焦一个具体的小事件。',
+      '可以从配角的视角回看故事中的某个关键时刻，或写一段原作中没展开的幕后故事。',
+      '可以写一个特殊时间节点（纪念日、季节变换、意外重逢），或一个"如果当初选了另一条路"的温柔假设。'
+    ];
+    userMsg += '【建议方向】' + (suggestions[idx] || suggestions[0]) + '\n\n';
   }
 
-  userMsg += '【格式要求】\n';
-  userMsg += '- 第一行：番外标题（如："番外：雨后初晴"）\n';
-  userMsg += '- 空一行后：正文\n';
-  userMsg += '- 独立成篇，有开头有结尾，情感完整\n';
-  userMsg += '- 字数不少于' + mW + '字\n';
-  userMsg += '- 直接输出，不要写"番外篇一"之类的序号\n';
+  userMsg += '【格式要求（严格）】\n';
+  userMsg += '- 第一行：番外标题（如："雨后初晴"或"那年冬天"，2-10个字，不加"番外："前缀）\n';
+  userMsg += '- 第二行：空行\n';
+  userMsg += '- 第三行起：正文开始\n';
+  userMsg += '- 独立成篇，有完整的开头和结尾\n';
+  userMsg += '- 字数不少于' + mW + '字，建议写到' + (mW+300) + '字\n';
+  userMsg += '- 禁止在正文前后加任何说明文字\n';
+  userMsg += '- 第一个字就是标题，不要写"好的""让我"等AI式开头\n';
 
   var messages = [{role:'system',content:sysMsg},{role:'user',content:userMsg}];
 
@@ -22635,9 +22818,62 @@ async function generateSingleFanwai(idx, summary){
     });
   }catch(e){logError('op',e);}
 
-  var result = await callAPINonStream(messages);
-  if(!result) return null;
+  // 调用API并增强错误处理
+  var result = null;
+  try{
+    result = await callAPINonStream(messages);
+  }catch(apiErr){
+    var errDetail = '番外第'+(idx+1)+'篇生成失败\n\n';
+    errDetail += '❌ 错误信息：' + (apiErr.message||String(apiErr)) + '\n\n';
+    if(!navigator.onLine){
+      errDetail += '📡 原因：网络未连接\n💡 解决：请检查网络连接后重试';
+    } else if(apiErr.message && apiErr.message.includes('401')){
+      errDetail += '🔑 原因：API密钥无效或已过期\n💡 解决：去「设置→API设置」检查密钥';
+    } else if(apiErr.message && apiErr.message.includes('404')){
+      errDetail += '🔗 原因：API地址或模型名不正确\n💡 解决：检查API地址是否多写了/v1，模型名是否存在';
+    } else if(apiErr.message && apiErr.message.includes('429')){
+      errDetail += '⏱ 原因：请求太频繁或额度不足\n💡 解决：等待几秒后重试，或检查账户余额';
+    } else if(apiErr.message && apiErr.message.includes('500')){
+      errDetail += '🖥 原因：对方服务器暂时出问题\n💡 解决：等待几分钟后重试';
+    } else {
+      errDetail += '💡 建议：\n1. 检查API设置是否正确\n2. 点击「测试连接」验证\n3. 尝试关闭流式输出再试';
+    }
+    showDlg('番外生成失败', errDetail, function(){});
+    return null;
+  }
+
+  if(!result){
+    showDlg('番外生成失败', '番外第'+(idx+1)+'篇返回为空\n\n可能的原因：\n• API返回了空内容\n• 模型不支持当前请求\n• 内容被安全过滤拦截\n\n💡 建议：\n1. 换一个模型试试\n2. 检查番外大纲是否包含敏感内容\n3. 减少原作摘要的长度后重试', function(){});
+    return null;
+  }
+
   result = stripMetaThinking(result).trim();
+
+  // 质量检查
+  var fwWc = countWords(result);
+  if(fwWc < 50){
+    showDlg('番外质量异常', '番外第'+(idx+1)+'篇只有'+fwWc+'字，严重不足\n\n可能的原因：\n• AI被截断了（MaxTokens太小）\n• 提示词太长导致留给正文的空间不够\n\n💡 建议：\n1. 去「设置→API设置」把MaxTokens调到4096以上\n2. 精简原作摘要的长度\n3. 重新生成', function(){});
+    return null;
+  }
+
+  if(fwWc < mW && fwWc > 200){
+    // 字数不足但有内容，自动补写
+    showToast('番外第'+(idx+1)+'篇字数不足('+fwWc+'/'+mW+')，正在自动补写...',3000);
+    var extMsg = [
+      {role:'system',content:sysMsg},
+      {role:'user',content:'以下是一篇番外的内容，只有'+fwWc+'字，需要至少'+mW+'字。请直接续写下去，不要重复已有内容，不要加标题说明，保持风格一致，直接输出续写的正文部分：\n\n'+result}
+    ];
+    try{
+      var extResult = await callAPINonStream(extMsg);
+      if(extResult){
+        result = result + '\n\n' + stripMetaThinking(extResult).trim();
+      }
+    }catch(e){
+      // 补写失败不影响主流程
+      console.warn('番外补写失败:', e);
+    }
+  }
+
   return result;
 }
 
@@ -22757,6 +22993,213 @@ function deleteFanwai(idx){
 // 获取番外数据（用于导出备份）
 function getFanwaiData(articleId){
   return ld('bj_fanwai_' + articleId, []);
+}
+// ==================== 阅读器搜索功能（内嵌浮层版） ====================
+let _rdOvSearchMatches = [];
+let _rdOvSearchIdx = -1;
+let _rdOvSearchTimer = null;
+
+function _rdOvDoSearch(){
+  if(_rdOvSearchTimer) clearTimeout(_rdOvSearchTimer);
+  _rdOvSearchTimer = setTimeout(_rdOvDoSearchNow, 200);
+}
+
+function _rdOvDoSearchNow(){
+  var input = document.getElementById('rdOvSearchInput');
+  if(!input) return;
+  var kw = (input.value || '').trim();
+  _rdOvSearchMatches = [];
+  _rdOvSearchIdx = -1;
+
+  if(!kw || kw.length < 1){
+    _rdOvUpdateUI();
+    _rdOvClearHighlight();
+    _rdRenderPage();
+    return;
+  }
+
+  var kwLower = kw.toLowerCase();
+
+  for(var pi = 0; pi < _rdPages.length; pi++){
+    var pageParas = _rdPages[pi] || [];
+    for(var qi = 0; qi < pageParas.length; qi++){
+      var paraText = (pageParas[qi].text || '');
+      var paraLower = paraText.toLowerCase();
+      var searchStart = 0;
+      while(true){
+        var found = paraLower.indexOf(kwLower, searchStart);
+        if(found === -1) break;
+        _rdOvSearchMatches.push({
+          pageIdx: pi,
+          paraLocalIdx: qi,
+          paraGlobalIdx: pageParas[qi].idx,
+          pos: found,
+          len: kw.length
+        });
+        searchStart = found + 1;
+      }
+    }
+  }
+
+  if(_rdOvSearchMatches.length > 0){
+    _rdOvSearchIdx = 0;
+    _rdOvGoToMatch();
+  } else {
+    _rdRenderPage();
+  }
+
+  _rdOvUpdateUI();
+}
+
+function _rdOvSearchNext(){
+  if(_rdOvSearchMatches.length === 0) return;
+  _rdOvSearchIdx = (_rdOvSearchIdx + 1) % _rdOvSearchMatches.length;
+  _rdOvUpdateUI();
+  _rdOvGoToMatch();
+}
+
+function _rdOvSearchPrev(){
+  if(_rdOvSearchMatches.length === 0) return;
+  _rdOvSearchIdx = (_rdOvSearchIdx - 1 + _rdOvSearchMatches.length) % _rdOvSearchMatches.length;
+  _rdOvUpdateUI();
+  _rdOvGoToMatch();
+}
+
+function _rdOvGoToMatch(){
+  if(_rdOvSearchIdx < 0 || _rdOvSearchIdx >= _rdOvSearchMatches.length) return;
+  var match = _rdOvSearchMatches[_rdOvSearchIdx];
+
+  if(match.pageIdx !== _rdCurPage){
+    _rdCurPage = match.pageIdx;
+    _rdRenderPage();
+  }
+
+  setTimeout(function(){
+    _rdOvApplyHighlight();
+  }, 100);
+}
+
+function _rdOvApplyHighlight(){
+  var contentArea = document.getElementById('rdReaderContent');
+  if(!contentArea) return;
+  var input = document.getElementById('rdOvSearchInput');
+  var kw = (input ? input.value : '').trim();
+  if(!kw) return;
+
+  var kwLower = kw.toLowerCase();
+  var currentMatch = _rdOvSearchMatches[_rdOvSearchIdx];
+  var paras = contentArea.querySelectorAll('.rd-para');
+
+  paras.forEach(function(pEl){
+    var pGlobalIdx = parseInt(pEl.dataset.pi);
+    var text = pEl.textContent || '';
+    var textLower = text.toLowerCase();
+
+    var hasMatch = false;
+    _rdOvSearchMatches.forEach(function(m){
+      if(m.pageIdx === _rdCurPage && m.paraGlobalIdx === pGlobalIdx) hasMatch = true;
+    });
+
+    if(!hasMatch) return;
+
+    var parts = [];
+    var lastIdx = 0;
+
+    while(true){
+      var found = textLower.indexOf(kwLower, lastIdx);
+      if(found === -1) break;
+
+      if(found > lastIdx) parts.push({text: text.substring(lastIdx, found), hl: false});
+
+      var isCurrent = false;
+      if(currentMatch && currentMatch.paraGlobalIdx === pGlobalIdx && currentMatch.pos === found) isCurrent = true;
+
+      parts.push({text: text.substring(found, found + kw.length), hl: true, current: isCurrent});
+      lastIdx = found + kw.length;
+    }
+
+    if(lastIdx < text.length) parts.push({text: text.substring(lastIdx), hl: false});
+    if(parts.length === 0) return;
+
+    pEl.innerHTML = '';
+    parts.forEach(function(part){
+      if(part.hl){
+        var span = document.createElement('span');
+        span.className = 'rd-search-highlight' + (part.current ? ' current' : '');
+        span.textContent = part.text;
+        pEl.appendChild(span);
+      } else {
+        pEl.appendChild(document.createTextNode(part.text));
+      }
+    });
+
+    if(currentMatch && currentMatch.paraGlobalIdx === pGlobalIdx){
+      pEl.style.background = 'rgba(108,92,231,.08)';
+      pEl.style.borderRadius = '6px';
+      pEl.style.transition = 'background .5s';
+      setTimeout(function(){pEl.style.background='';}, 1200);
+    }
+  });
+}
+
+function _rdOvClearHighlight(){
+  var contentArea = document.getElementById('rdReaderContent');
+  if(!contentArea) return;
+  contentArea.querySelectorAll('.rd-para').forEach(function(pEl){
+    if(pEl.querySelector('.rd-search-highlight')){
+      pEl.textContent = pEl.textContent;
+    }
+  });
+}
+
+function _rdOvUpdateUI(){
+  var countEl = document.getElementById('rdOvSearchCount');
+  var prevBtn = document.getElementById('rdOvSPrev');
+  var nextBtn = document.getElementById('rdOvSNext');
+  var input = document.getElementById('rdOvSearchInput');
+  var kw = (input ? input.value : '').trim();
+
+  if(!kw){
+    if(countEl) countEl.textContent = '输入关键词搜索';
+    if(prevBtn) prevBtn.disabled = true;
+    if(nextBtn) nextBtn.disabled = true;
+    return;
+  }
+
+  if(_rdOvSearchMatches.length === 0){
+    if(countEl) countEl.textContent = '未找到 "' + kw + '"';
+    if(prevBtn) prevBtn.disabled = true;
+    if(nextBtn) nextBtn.disabled = true;
+    return;
+  }
+
+  var cur = _rdOvSearchIdx + 1;
+  var total = _rdOvSearchMatches.length;
+  var pageInfo = '（第' + (_rdOvSearchMatches[_rdOvSearchIdx].pageIdx + 1) + '页）';
+
+  if(countEl) countEl.textContent = cur + ' / ' + total + ' 个匹配 ' + pageInfo;
+  if(prevBtn) prevBtn.disabled = false;
+  if(nextBtn) nextBtn.disabled = false;
+}
+
+function _rdOvJumpToPage(){
+  var input = document.getElementById('rdOvJumpInput');
+  if(!input) return;
+  var page = parseInt(input.value);
+  if(!page || page < 1 || page > _rdTotalPg){
+    showToast('页码无效，范围 1 ~ ' + _rdTotalPg);
+    return;
+  }
+  _rdCurPage = page - 1;
+  _rdRenderPage();
+  input.value = '';
+
+  var searchInput = document.getElementById('rdOvSearchInput');
+  if(searchInput && searchInput.value.trim()){
+    setTimeout(function(){ _rdOvApplyHighlight(); }, 100);
+  }
+
+  showToast('已跳转到第 ' + page + ' 页');
 }
 // 触摸设备支持（同样适用）
 document.addEventListener('touchstart', function(e) {
