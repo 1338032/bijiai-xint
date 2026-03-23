@@ -9013,16 +9013,22 @@ const cw=document.getElementById('contWrap');
 if(curRd.type==='long'){
 cw.style.display='block';
 const btnCont=document.getElementById('btnCont');
-if(liked){
+var smartBtn=document.getElementById('btnSmartCont');
+var colBook=cols.books.find(function(b){return b.id===curRd.id;});
+var isComplete=colBook&&colBook.status==='complete';
+if(isComplete){
+btnCont.disabled=true;
+btnCont.textContent='📕 已完结，无法续写';
+if(smartBtn){smartBtn.disabled=true;smartBtn.textContent='📕 已完结';}
+document.getElementById('dirInputWrap').style.display='none';
+}else if(liked){
 btnCont.disabled=false;
 btnCont.textContent='📝 继续连载下一章';
-var smartBtn=document.getElementById('btnSmartCont');
 if(smartBtn){smartBtn.disabled=false;smartBtn.textContent='🧠 智能续写';}
 }else{
 btnCont.disabled=true;
 btnCont.textContent='❤️ 请先收藏后才能续写';
-var smartBtn2=document.getElementById('btnSmartCont');
-if(smartBtn2){smartBtn2.disabled=true;smartBtn2.textContent='❤️ 请先收藏';}
+if(smartBtn){smartBtn.disabled=true;smartBtn.textContent='❤️ 请先收藏';}
 }
 }else{
 cw.style.display='none';
@@ -9117,7 +9123,7 @@ ap.rdLineHeight = ld('bj_ap', ap).rdLineHeight || 2;
   container.id='rdReaderContainer';
 
   // 主题背景层（优先阅读背景图，其次主题渐变）
-  if(ap.crBg){
+  if(rdBgImg){
     var imgBg=document.createElement('div');
     imgBg.className='rd-custom-bg-layer';
     imgBg.style.cssText='position:absolute;inset:0;z-index:0;background-image:url('+rdBgImg+');background-size:cover;background-position:center;opacity:0.35;pointer-events:none;';
@@ -9650,11 +9656,11 @@ function _rdRefreshOverlay(){
   if(oldBg)oldBg.remove();
   var oldImgBg=_rdReaderEl.querySelector('.rd-custom-bg-layer');
   if(oldImgBg)oldImgBg.remove();
-  if(ap.crBg){
-    var imgBg2=document.createElement('div');
-    imgBg2.className='rd-custom-bg-layer';
-    imgBg2.style.cssText='position:absolute;inset:0;z-index:0;background-image:url('+rdBgImg+');background-size:cover;background-position:center;opacity:0.35;pointer-events:none;';
-    _rdReaderEl.insertBefore(imgBg2,_rdReaderEl.firstChild);
+      if(rdBgImg){
+      var imgBg2=document.createElement('div');
+      imgBg2.className='rd-custom-bg-layer';
+      imgBg2.style.cssText='position:absolute;inset:0;z-index:0;background-image:url('+rdBgImg+');background-size:cover;background-position:center;opacity:0.35;pointer-events:none;';
+      _rdReaderEl.insertBefore(imgBg2,_rdReaderEl.firstChild);
   }else{
     var bgId=ap.rdThemeBg||'';
     if(bgId&&bgId!=='0'){
@@ -10637,6 +10643,11 @@ if(!liked){
 showToast('请先点击 ❤️ 收藏后才能续写哦～');
 return;
 }
+var colBook2=cols.books.find(function(b){return b.id===curRd.id;});
+if(colBook2&&colBook2.status==='complete'){
+showToast('此作品已完结，无法续写。可以使用「番外篇」功能续写番外',4000);
+return;
+}
 var dir=(document.getElementById('dirInput').value||'').trim();
 if(dir){
 if(!articleContexts[curRd.id])articleContexts[curRd.id]={};
@@ -10973,134 +10984,222 @@ if(fsBtn)fsBtn.innerHTML='⛶ 全屏模式';
 function renderCollections(){
 const sv_=(document.getElementById('colSearchInput').value||'').trim().toLowerCase();
 
-// Books
 const grid=document.getElementById('bookGrid');
 let books=cols.books;
 if(sv_)books=books.filter(b=>b.title.toLowerCase().includes(sv_));
 const totalBooks = books.length;
 books = books.slice(0, colBookPage * PAGE_SIZE);
+
 if(books.length===0){
-grid.innerHTML='<div class="empty-st" style="grid-column:1/-1"><div style="font-size:48px;margin-bottom:12px;opacity:.5">📚</div><p>'+(sv_?'没有匹配的长篇':'书架空空如也<br><br>在作坊生成作品后<br>点击「♡ 收藏」即可添加到这里')+'</p></div>';
+  grid.innerHTML='<div class="empty-st" style="grid-column:1/-1"><div style="font-size:48px;margin-bottom:12px;opacity:.5">📚</div><p>'+(sv_?'没有匹配的长篇':'书架空空如也<br><br>在作坊生成作品后<br>点击「♡ 收藏」即可添加到这里')+'</p></div>';
 }else{
-grid.innerHTML='';
-const bookFrag=document.createDocumentFragment();
-books.forEach(book=>{
-const realId=book.id;
-const card=document.createElement('div');
-card.className='bcard';
-if(batchMode){
-var bKey='book_'+realId;
-card.dataset.batchId=bKey;
-card.style.borderColor=batchSelected.has(bKey)?'var(--accent)':'var(--border)';
-card.style.background=batchSelected.has(bKey)?'rgba(108,92,231,.08)':'';
+  grid.innerHTML='';
+  const bookFrag=document.createDocumentFragment();
+  books.forEach(book=>{
+    const realId=book.id;
+    const card=document.createElement('div');
+    card.className='bcard';
+    var covHtml='';
+    if(batchMode){
+      var bk2='book_'+realId;
+      covHtml='<div style="position:absolute;top:8px;left:8px;z-index:2;width:22px;height:22px;border-radius:6px;border:2px solid '+(batchSelected.has(bk2)?'var(--accent)':'rgba(255,255,255,.5)')+';background:'+(batchSelected.has(bk2)?'var(--accent)':'rgba(0,0,0,.3)')+';display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff">'+(batchSelected.has(bk2)?'✓':'')+'</div>';
+      if(book.cover) covHtml+='<img src="'+book.cover+'" alt="封面">';
+      else covHtml+='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
+    }else{
+      if(book.cover) covHtml='<img src="'+book.cover+'" alt="封面" loading="lazy">';
+      else covHtml='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
+    }
+    const statusClass=book.status||'ongoing';
+    const statusText={ongoing:'连载中',complete:'已完结',paused:'暂停'}[statusClass]||'连载中';
+    card.innerHTML=
+      '<div class="bcov" onclick="'+(batchMode?'toggleBatchItem(\''+realId+'\',\'book\')':'openColBook(\''+realId+'\')')+'">'+covHtml+'</div>'+
+      '<div class="binfo" onclick="openColBook(\''+realId+'\')">'+
+      '<div class="binfo-t">'+esc(book.title)+'</div>'+
+      '<div class="binfo-m">'+(book.chapters?book.chapters.length+'章 · ':'')+getTotalWords(book)+'字</div>'+
+      '<div style="font-size:8px;color:var(--text2);margin-top:1px">'+(function(){const lc=parseInt(localStorage.getItem("bj_lastCh_"+realId));return lc>0?"上次读到第"+(lc+1)+"章":"";})()+'</div>'+
+      '<span class="binfo-status '+statusClass+'">'+statusText+'</span>'+
+      renderStarHTML(book.rating||0,realId)+
+      '</div>'+
+      '<div class="bacts">'+
+      '<button class="bact" onclick="event.stopPropagation();uploadCover(\''+realId+'\')">封面</button>'+
+      '<button class="bact" onclick="event.stopPropagation();cycleStatus(\''+realId+'\')">状态</button>'+
+      '<button class="bact" onclick="event.stopPropagation();copyBook(\''+realId+'\')">复制</button>'+
+      '<button class="bact" onclick="event.stopPropagation();exportBookToTxt(\''+realId+'\')">导出</button>'+
+      '<button class="bact danger" onclick="event.stopPropagation();deleteBook(\''+realId+'\')">删除</button>'+
+      '</div>';
+    bookFrag.appendChild(card);
+  });
+  grid.appendChild(bookFrag);
+  if(totalBooks > books.length){
+    const more=document.createElement('div');
+    more.style.cssText='grid-column:1/-1;text-align:center;padding:14px;color:var(--text2);font-size:12px';
+    more.innerHTML='<button style="padding:10px 18px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer" onclick="colBookPage++;renderCollections()">加载更多（'+books.length+'/'+totalBooks+'）</button>';
+    grid.appendChild(more);
+  }
 }
 
-let covHtml='';
-if(batchMode){
-var bk2='book_'+realId;
-covHtml='<div style="position:absolute;top:8px;left:8px;z-index:2;width:22px;height:22px;border-radius:6px;border:2px solid '+(batchSelected.has(bk2)?'var(--accent)':'rgba(255,255,255,.5)')+';background:'+(batchSelected.has(bk2)?'var(--accent)':'rgba(0,0,0,.3)')+';display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff">'+(batchSelected.has(bk2)?'✓':'')+'</div>';
-if(book.cover)covHtml+='<img src="'+book.cover+'" alt="封面">';
-else covHtml+='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
-}else{
-if(book.cover)covHtml='<img data-src="'+book.cover+'" alt="封面" style="opacity:0;transition:opacity .3s" onload="this.style.opacity=1">';
-else covHtml='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
-}
-const statusClass=book.status||'ongoing';
-const statusText={ongoing:'连载中',complete:'已完结',paused:'暂停'}[statusClass]||'连载中';
-
-card.innerHTML=
-'<div class="bcov" onclick="'+(batchMode?'toggleBatchItem(\''+realId+'\',\'book\')':'openColBook(\''+realId+'\')')+'">'+covHtml+'</div>'+
-'<div class="binfo" onclick="openColBook(\''+realId+'\')">'+
-'<div class="binfo-t">'+esc(book.title)+'</div>'+
-'<div class="binfo-m">'+(book.chapters?book.chapters.length+'章 · ':'')+getTotalWords(book)+'字</div>'+
-'<div style="font-size:8px;color:var(--text2);margin-top:1px">'+(function(){const lc=parseInt(localStorage.getItem("bj_lastCh_"+realId));return lc>0?"上次读到第"+(lc+1)+"章":"";})()+'</div>'+
-'<span class="binfo-status '+statusClass+'">'+statusText+'</span>'+
-renderStarHTML(book.rating||0,realId)+
-'</div>'+
-'<div class="bacts">'+
-'<button class="bact" onclick="event.stopPropagation();uploadCover(\''+realId+'\')">封面</button>'+
-'<button class="bact" onclick="event.stopPropagation();cycleStatus(\''+realId+'\')">状态</button>'+
-'<button class="bact" onclick="event.stopPropagation();copyBook(\''+realId+'\')">复制</button>'+
-'<button class="bact" onclick="event.stopPropagation();exportBookToTxt(\''+realId+'\')">导出</button>'+
-'<button class="bact danger" onclick="event.stopPropagation();deleteBook(\''+realId+'\')">删除</button>'+
-'</div>';
-bookFrag.appendChild(card);
-});
-grid.appendChild(bookFrag);
-if(totalBooks > books.length){
-  const more=document.createElement('div');
-  more.style.cssText='grid-column:1/-1;text-align:center;padding:14px;color:var(--text2);font-size:12px';
-  more.innerHTML='<button style="padding:10px 18px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer" onclick="colBookPage++;renderCollections()">加载更多（'+books.length+'/'+totalBooks+'）</button>';
-  grid.appendChild(more);
-}
-}
-
-// Shorts
-// Shorts
 const sl=document.getElementById('shortList');
 let shorts=cols.shorts;
-
-if(sv_) shorts=shorts.filter(s=> (s.title||'').toLowerCase().includes(sv_));
-
+if(sv_) shorts=shorts.filter(s=>(s.title||'').toLowerCase().includes(sv_));
 const totalShorts = shorts.length;
 shorts = shorts.slice(0, colShortPage * PAGE_SIZE);
 
 if(shorts.length===0){
-sl.innerHTML='<div class="empty-st"><p>'+(sv_?'没有匹配的短篇':'还没有收藏的短篇文章')+'</p></div>';
+  sl.innerHTML='<div class="empty-st"><p>'+(sv_?'没有匹配的短篇':'还没有收藏的短篇文章')+'</p></div>';
 }else{
-sl.innerHTML='';
-const shortFrag=document.createDocumentFragment();
-shorts.forEach(s=>{
-const realId=s.id;
-const item=document.createElement('div');
-item.className='sitem';
-if(batchMode){
-var sKey='short_'+realId;
-item.dataset.batchId=sKey;
-item.style.borderColor=batchSelected.has(sKey)?'var(--accent)':'var(--border)';
-item.style.background=batchSelected.has(sKey)?'rgba(108,92,231,.08)':'';
-}
-item.onclick=e=>{
-if(batchMode){
-toggleBatchItem(realId,'short');
-return;
-}
-if(!e.target.closest('button')&&!e.target.closest('.star-rating')){
-openReading(s);
-}
-};
-item.innerHTML=
-'<div class="sitem-info"><div class="sitem-t">'+esc(s.title)+'</div>'+
-'<div class="sitem-pv">'+esc((s.content||'').replace(/\n/g,' ').substring(0,20))+'</div>'+
-renderStarHTML(s.rating||0,realId)+
-'</div>'+
-'<div class="sitem-acts">'+
-'<button onclick="event.stopPropagation();copyShort(\''+realId+'\')">复制</button>'+
-'<button onclick="event.stopPropagation();deleteShort(\''+realId+'\')" style="color:var(--danger)">删除</button>'+
-'</div>';
-shortFrag.appendChild(item);
-});
-sl.appendChild(shortFrag);
-if(totalShorts > shorts.length){
-  const more=document.createElement('div');
-  more.style.cssText='text-align:center;padding:14px;color:var(--text2);font-size:12px';
-  more.innerHTML='<button style="padding:10px 18px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer" onclick="colShortPage++;renderCollections()">加载更多（'+shorts.length+'/'+totalShorts+'）</button>';
-  sl.appendChild(more);
-}
+  sl.innerHTML='';
+  const shortFrag=document.createDocumentFragment();
+  shorts.forEach(s=>{
+    const realId=s.id;
+    const item=document.createElement('div');
+    item.className='sitem';
+    if(batchMode){
+      var sKey='short_'+realId;
+      item.dataset.batchId=sKey;
+      item.style.borderColor=batchSelected.has(sKey)?'var(--accent)':'var(--border)';
+      item.style.background=batchSelected.has(sKey)?'rgba(108,92,231,.08)':'';
+    }
+    item.onclick=e=>{
+      if(batchMode){toggleBatchItem(realId,'short');return;}
+      if(!e.target.closest('button')&&!e.target.closest('.star-rating')){openReading(s);}
+    };
+    item.innerHTML=
+      '<div class="sitem-info"><div class="sitem-t">'+esc(s.title)+'</div>'+
+      '<div class="sitem-pv">'+esc((s.content||'').replace(/\n/g,' ').substring(0,20))+'</div>'+
+      renderStarHTML(s.rating||0,realId)+
+      '</div>'+
+      '<div class="sitem-acts">'+
+      '<button onclick="event.stopPropagation();copyShort(\''+realId+'\')">复制</button>'+
+      '<button onclick="event.stopPropagation();deleteShort(\''+realId+'\')" style="color:var(--danger)">删除</button>'+
+      '</div>';
+    shortFrag.appendChild(item);
+  });
+  sl.appendChild(shortFrag);
+  if(totalShorts > shorts.length){
+    const more=document.createElement('div');
+    more.style.cssText='text-align:center;padding:14px;color:var(--text2);font-size:12px';
+    more.innerHTML='<button style="padding:10px 18px;border-radius:12px;border:1px solid var(--border);background:var(--card);color:var(--text);cursor:pointer" onclick="colShortPage++;renderCollections()">加载更多（'+shorts.length+'/'+totalShorts+'）</button>';
+    sl.appendChild(more);
+  }
 }
 
 document.getElementById('colCnt').textContent=(cols.books.length+cols.shorts.length)+' 篇';
-// 懒加载封面图片
-setTimeout(()=>{
-  document.querySelectorAll('.bcov img[data-src]').forEach(img=>{
-    if(!img.src || img.src===''){
-      img.src = img.dataset.src;
-      img.removeAttribute('data-src');
-    }
-  });
-}, 100);
+
+function renderStarHTML(rating,id){
+  let html='<div class="star-rating">';
+  for(let i=1;i<=5;i++){
+    html+='<span class="'+(i<=rating?'filled':'')+'" onclick="event.stopPropagation();setRating(\''+id+'\','+i+')">★</span>';
+  }
+  html+='</div>';
+  return html;
 }
 
+function setRating(id,rating){
+  let found=cols.books.find(b=>b.id===id);
+  if(found){found.rating=rating;}
+  else{found=cols.shorts.find(s=>s.id===id);if(found)found.rating=rating;}
+  sv(K.cols,cols);renderCollections();
+}
+
+function cycleStatus(id){
+  var book=cols.books.find(function(b){return b.id===id;});
+  if(!book)return;
+  var curStatus=book.status||'ongoing';
+  if(curStatus==='complete'){showToast('已完结的作品无法更改状态');return;}
+  var nextMap={'ongoing':'complete','paused':'ongoing'};
+  var nextStatus=nextMap[curStatus]||'ongoing';
+  if(nextStatus==='complete'){
+    var bookTitle=book.title||'未命名';
+    showDlg('确认完结','确定要将《'+bookTitle+'》标记为已完结吗？\n\n完结后：\n· 状态将锁定，无法再更改\n· 无法再续写新章节\n· 可以使用番外篇功能\n\n此操作不可撤销！',function(){
+      book.status='complete';
+      book.completedAt=new Date().toISOString();
+      sv(K.cols,cols);renderCollections();
+      showToast('《'+bookTitle+'》已完结');
+    },true);
+    return;
+  }
+  book.status=nextStatus;
+  sv(K.cols,cols);renderCollections();
+  var labels={'ongoing':'连载中','complete':'已完结','paused':'暂停'};
+  showToast('状态已切换为：'+labels[book.status]);
+}
+
+function updateBookCardStatus(id){
+  const book=cols.books.find(b=>b.id===id);
+  if(!book)return;
+  const cards=document.querySelectorAll('.bcard');
+  cards.forEach(function(card){
+    const statusEl=card.querySelector('.binfo-status');
+    const actsEl=card.querySelector('.bacts');
+    if(!statusEl||!actsEl)return;
+    const btnEl=actsEl.querySelector('.bact:nth-child(2)');
+    if(!btnEl)return;
+    const onclickStr=btnEl.getAttribute('onclick')||'';
+    if(!onclickStr.includes("'"+id+"'"))return;
+    const labels={ongoing:'连载中',complete:'已完结',paused:'暂停'};
+    const statusClass=book.status||'ongoing';
+    statusEl.className='binfo-status '+statusClass;
+    statusEl.textContent=labels[statusClass]||'连载中';
+  });
+}
+
+function openColBook(id){
+  const book=cols.books.find(b=>b.id===id);
+  if(book)openReading(book);
+}
+
+function uploadCover(id){
+  const input=document.getElementById('coverUp');
+  input.onchange=e=>{
+    const file=e.target.files[0];if(!file)return;
+    if(file.size>5*1024*1024){showToast('图片太大，请选择5MB以内的图片',3000);return;}
+    const canvas=document.createElement('canvas');
+    const img=new Image();
+    img.onerror=()=>{showToast('图片加载失败，请换一张');};
+    img.onload=()=>{
+      const maxW=400;
+      let w=img.width,h=img.height;
+      if(w>maxW){h=h*(maxW/w);w=maxW;}
+      canvas.width=w;canvas.height=h;
+      canvas.getContext('2d').drawImage(img,0,0,w,h);
+      const dataUrl=canvas.toDataURL('image/jpeg',0.75);
+      if(dataUrl.length>200*1024){
+        showToast('图片较大，已自动优化质量',2000);
+        const dataUrl2=canvas.toDataURL('image/jpeg',0.5);
+        const book=cols.books.find(b=>b.id===id);
+        if(book){book.cover=dataUrl2;sv(K.cols,cols);renderCollections();showToast('封面已更新 🎨');}
+        return;
+      }
+      const book=cols.books.find(b=>b.id===id);
+      if(book){book.cover=dataUrl;sv(K.cols,cols);renderCollections();showToast('封面已更新 🎨');}
+    };
+    img.src=URL.createObjectURL(file);
+    input.value='';
+  };
+  input.click();
+}
+
+function copyBook(id){
+  const book=cols.books.find(b=>b.id===id);if(!book)return;
+  let text='';
+  if(book.chapters){book.chapters.forEach((ch,i)=>{text+='第'+(i+1)+'章\n\n'+ch+'\n\n';});}
+  text=text.replace(/[\u200B-\u200D\uFEFF]/g,'');
+  const header='════════════════════\n「'+book.title+'」\n本文由「笔记AI」辅助创作生成\n创作工具：笔记AI · Created by 心田\n════════════════════\n\n';
+  const footer='\n\n════════════════════\n本文由AI辅助创作，内容仅供参考\n创作工具：笔记AI '+APP_VER+'（AI创作工坊）\n网页作者：心田\n════════════════════';
+  doCopy(header+text+footer);
+}
+
+function deleteBook(id){
+  const book=cols.books.find(b=>b.id===id);
+  if(!book)return;
+  const chCount=book.chapters?book.chapters.length:0;
+  const wc=getTotalWords(book);
+  showDlg('删除确认','确定要删除《'+book.title+'》吗？\n\n📖 '+chCount+' 章 · '+wc+' 字\n\n⚠️ 此操作不可恢复！',()=>{
+    cols.books=cols.books.filter(b=>b.id!==id);
+    sv(K.cols,cols);renderCollections();showToast('已删除');
+  },true);
+}
+}
 function renderStarHTML(rating,id){
 let html='<div class="star-rating">';
 for(let i=1;i<=5;i++){
@@ -11118,14 +11217,50 @@ sv(K.cols,cols);renderCollections();
 }
 
 function cycleStatus(id){
+  var book=cols.books.find(function(b){return b.id===id;});
+  if(!book)return;
+  var curStatus=book.status||'ongoing';
+  if(curStatus==='complete'){
+    showToast('已完结的作品无法更改状态');
+    return;
+  }
+  var nextMap={'ongoing':'complete','paused':'ongoing'};
+  var nextStatus=nextMap[curStatus]||'ongoing';
+  if(nextStatus==='complete'){
+    var bookTitle=book.title||'未命名';
+    showDlg('确认完结','确定要将《'+bookTitle+'》标记为已完结吗？\n\n完结后：\n· 状态将锁定，无法再更改\n· 无法再续写新章节\n· 可以使用番外篇功能\n\n此操作不可撤销！',function(){
+      book.status='complete';
+      book.completedAt=new Date().toISOString();
+      sv(K.cols,cols);
+      renderCollections();
+      showToast('《'+bookTitle+'》已完结');
+    },true);
+    return;
+  }
+  book.status=nextStatus;
+  sv(K.cols,cols);
+  renderCollections();
+  var labels={'ongoing':'连载中','complete':'已完结','paused':'暂停'};
+  showToast('状态已切换为：'+labels[book.status]);
+}
+
+function updateBookCardStatus(id){
 const book=cols.books.find(b=>b.id===id);
 if(!book)return;
-const states=['ongoing','complete','paused'];
-const cur=states.indexOf(book.status||'ongoing');
-book.status=states[(cur+1)%states.length];
-sv(K.cols,cols);renderCollections();
+const cards=document.querySelectorAll('.bcard');
+cards.forEach(function(card){
+const statusEl=card.querySelector('.binfo-status');
+const actsEl=card.querySelector('.bacts');
+if(!statusEl||!actsEl)return;
+const btnEl=actsEl.querySelector('.bact:nth-child(2)');
+if(!btnEl)return;
+const onclickStr=btnEl.getAttribute('onclick')||'';
+if(!onclickStr.includes("'"+id+"'"))return;
 const labels={ongoing:'连载中',complete:'已完结',paused:'暂停'};
-showToast('状态已切换为：'+labels[book.status]);
+const statusClass=book.status||'ongoing';
+statusEl.className='binfo-status '+statusClass;
+statusEl.textContent=labels[statusClass]||'连载中';
+});
 }
 
 function openColBook(id){
@@ -12122,7 +12257,8 @@ function exportData(){
         goalSettings: goalSettings,
         goalProgress: goalProgress,
         goalYearStats: goalYearStats,
-        globalWorld: globalWorld,
+goalDailyStats: goalDailyStats,
+globalWorld: globalWorld,
         globalRule: globalRule,
         globalBanWords: globalBanWords,
         localWorldBindings: localWorldBindings,
@@ -12221,6 +12357,10 @@ if(data.goalProgress){
 if(data.goalYearStats){
   goalYearStats=data.goalYearStats;
   sv('bj_goalYearStats',goalYearStats);
+}
+if(data.goalDailyStats){
+  goalDailyStats=data.goalDailyStats;
+  sv('bj_goalDailyStats',goalDailyStats);
 }
 if(data.stylePresets){styleP=data.stylePresets;sv('bj_styleP',styleP);}
 if(data.rulePresets){ruleP=data.rulePresets;sv('bj_ruleP',ruleP);}
@@ -18065,6 +18205,11 @@ if(!curRd||curRd.type!=='long')return;
 if(isGen){showToast('正在生成中');return;}
 var liked=isLiked(curRd);
 if(!liked){showToast('请先点击 ❤️ 收藏后才能续写哦～');return;}
+var colBook3=cols.books.find(function(b){return b.id===curRd.id;});
+if(colBook3&&colBook3.status==='complete'){
+showToast('此作品已完结，无法续写。可以使用「番外篇」功能',4000);
+return;
+}
 var cfg=getCurApi();
 if(!cfg.url||!cfg.key){showToast('请先在设置中配置API');return;}
 
@@ -18278,7 +18423,7 @@ document.getElementById('rdMeta').innerHTML =
   '<span onclick="showChapterWordStats()" style="cursor:pointer;color:var(--accent2)">📊 字数统计</span>';
 document.getElementById('btnUndo').style.display='inline-block';
 showToast('第'+chNum+'章创作完成！✨');
-try{renderContQualityCard(fullText||result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
+try{renderContQualityCard(result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 return;
 }
 await callAPIStream(messages,
@@ -19037,9 +19182,14 @@ document.getElementById('ttsSettings').classList.toggle('show');
 }
 
 function loadTtsParas(){
-const content=document.getElementById('rdContent');
-if(!content)return;
-ttsParas=Array.from(content.querySelectorAll('p')).map(p=>p.textContent.trim()).filter(t=>t);
+if(!curRd){ttsParas=[];ttsCurrentPara=0;updateTtsInfo();return;}
+var text='';
+if(curRd.type==='long'&&curRd.chapters){
+text=curRd.chapters[curCh]||'';
+}else{
+text=curRd.content||'';
+}
+ttsParas=text.split(/\n+/).map(function(p){return p.trim();}).filter(function(t){return t;});
 ttsCurrentPara=0;
 updateTtsInfo();
 }
@@ -20823,7 +20973,7 @@ ringName = ld('bj_ringName', '');
 ringVolume_ = ld('bj_ringVolume', 0.8);
 devMode = ld('bj_devMode', false);
 rpChars = ld('bj_rpChars', []);
-rpSettings = ld('bj_rpSettings', {userDesc:'',contextLen:10,bg:''});
+rpSettings = ld('bj_rpSettings', {userDesc:'',contextLen:10,bg:'',autoSumEnabled:false,autoSumInterval:20});
 rpCurrentCharId = ld('bj_rpCurrentCharId', '');
 // 从 dbCache 刷新核心数据（IndexedDB已在splash阶段加载完毕）
 ws = ld(K.ws, ws || []);
@@ -20980,7 +21130,7 @@ if(lastSeenVer!==UPDATE_VER){
 '━━━━━━━━━━━━━━━━━━━━\n'+
 '📅 更新计划\n'+
 '━━━━━━━━━━━━━━━━━━━━\n\n'+
-'笔记AI会保持每月至少更新一次的节奏。\n\n'+
+'笔记AI会保持每月大概更新一次的节奏。\n\n'+
 '你的每一条反馈我都会认真看——\n'+
 '无论是功能建议、bug报告、还是使用困惑，\n'+
 '都可以通过以下方式找到我：\n\n'+
@@ -21167,8 +21317,8 @@ function exportAllCrWorks(){
 // ==================== 主题背景功能 ====================
 function setRdThemeBg(id){
 // 如果设置了背景图，提示先清除
-  if(ap.crBg && id && id!=='0'){
-    showToast('请先在页面美化中清除背景图后再设置主题背景',3000);
+  if(rdBgImg && id && id!=='0'){
+    showToast('请先在页面美化中清除阅读背景图后再设置主题背景',3000);
     return;
   }
   if(id==='0'||!id){
@@ -21186,7 +21336,7 @@ function setRdThemeBg(id){
     var oldImg=readerContainer.querySelector('.rd-custom-bg-layer');
     if(oldImg)oldImg.remove();
     // 重新应用背景（优先使用写作图片）
-    if(ap.crBg){
+    if(rdBgImg){
       var imgBg2=document.createElement('div');
       imgBg2.className='rd-custom-bg-layer';
       imgBg2.style.cssText='position:absolute;inset:0;z-index:0;background-image:url('+rdBgImg+');background-size:cover;background-position:center;opacity:0.35;pointer-events:none;';
@@ -22469,6 +22619,13 @@ let fwAbortFlag = false;
 
 function openFanwai(){
   if(!curRd){showToast('请先打开一篇文章');return;}
+  if(curRd.type==='long'){
+    var colBook=cols.books.find(function(b){return b.id===curRd.id;});
+    if(!colBook||colBook.status!=='complete'){
+      showToast('长篇作品需要标记为「已完结」后才能续写番外\n\n请在收藏页点击「状态」按钮将其标记为已完结',5000);
+      return;
+    }
+  }
   fwArticle = curRd;
   fwCount = 2;
   fwOutlines = ['',''];
@@ -22649,7 +22806,6 @@ async function startFanwaiGen(){
     if(fwResults[s] && fwResults[s].trim()){
       startIdx = s + 1;
     } else {
-      startIdx = s;
       break;
     }
   }
@@ -22998,7 +23154,11 @@ function getFanwaiData(articleId){
 let _rdOvSearchMatches = [];
 let _rdOvSearchIdx = -1;
 let _rdOvSearchTimer = null;
-
+function _rdSearchDebounce(){}
+function rdSearchNext(){}
+function rdSearchPrev(){}
+function openRdSearch(){}
+function closeRdSearch(){}
 function _rdOvDoSearch(){
   if(_rdOvSearchTimer) clearTimeout(_rdOvSearchTimer);
   _rdOvSearchTimer = setTimeout(_rdOvDoSearchNow, 200);
