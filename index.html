@@ -1793,14 +1793,15 @@ display:none;
 .ed-modal.immersive .immersive-exit{display:block;}
 .ed-modal{
 display:none;position:fixed;inset:0;z-index:510;
-background:var(--bg);overflow-y:auto;
+background:var(--bg);overflow:hidden;
+flex-direction:column;
 }
+.ed-modal.show{display:flex;animation:slideUp .3s ease;}
 .cr-bg{
 position:fixed;inset:0;z-index:0;
 background-size:cover;background-position:center;
 opacity:.35;pointer-events:none;display:none;
 }
-.ed-modal.show{display:block;animation:slideUp .3s ease;}
 .ed-hdr{
 position:sticky;top:0;z-index:10;background:rgba(15,15,20,.9);
 padding:10px 14px;display:flex;align-items:center;
@@ -1854,7 +1855,7 @@ align-items:center;transition:all .3s;
 .tool-bar-panel{
 display:none;margin-top:8px;padding:12px;
 background:var(--card);border:1px solid var(--border);
-border-radius:14px;animation:fadeIn .2s ease;
+border-radius:14px;
 }
 .tool-bar-panel.open{display:block;}
 #crToolPanel.open{display:block;}
@@ -1915,6 +1916,8 @@ body.theme-light .tool-bar-panel{background:#fff;}
   border:1px solid var(--border);
   border-radius:0 0 14px 14px;
   padding:12px;
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
 }
 body.theme-light .tool-item{background:#f8f8fc;}
 .ed-ch-bar{
@@ -1933,14 +1936,18 @@ padding:5px 10px;border-radius:8px;border:1px dashed var(--border);
 background:transparent;color:var(--accent2);font-size:11px;cursor:pointer;
 white-space:nowrap;flex-shrink:0;
 }
-.ed-body{padding:14px;position:relative;z-index:1;}
+.ed-body{padding:0;position:relative;z-index:1;flex:1;overflow:hidden;display:flex;flex-direction:column;}
 .ed-textarea{
-width:100%;min-height:calc(100vh - 200px);padding:16px 20px;
+width:100%;flex:1;padding:16px 20px;
 border-radius:0;border:none;
 background:transparent;color:var(--text);
 font-size:var(--ed-fontsize,15px);line-height:var(--ed-lineheight,2);
 letter-spacing:var(--ed-letterspacing,0px);
 outline:none;resize:none;font-family:inherit;
+overflow-y:auto;
+-webkit-overflow-scrolling:touch;
+overscroll-behavior:contain;
+min-height:0;
 }
 .ed-textarea:focus{border:none;box-shadow:none;}
 .ed-textarea::placeholder{color:var(--text2);}
@@ -1972,6 +1979,22 @@ outline:none;resize:none;font-family:inherit;
 padding:10px 14px;border-top:1px solid var(--border);
 display:flex;justify-content:space-between;align-items:center;
 font-size:10px;color:var(--text2);
+cursor:pointer;
+position:relative;
+}
+.ed-footer .ef-details{
+display:none;
+}
+.ed-footer.expanded .ef-details{
+display:contents;
+}
+.ed-footer .ef-tap-hint{
+display:flex;align-items:center;gap:4px;
+color:var(--text2);font-size:10px;
+transition:opacity .2s;
+}
+.ed-footer.expanded .ef-tap-hint{
+display:none;
 }
 .ed-wc{font-weight:600;color:var(--accent2);}
 
@@ -3082,16 +3105,23 @@ body.theme-light .ed-reader-footer{background:var(--bg);}
     border-radius:18px 18px 0 0!important;
     box-shadow:0 -10px 40px rgba(0,0,0,.5)!important;
     transform:translateY(100%);
-    transition:transform .3s cubic-bezier(.4,0,.2,1)!important;
+    transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s ease,visibility .3s ease!important;
     display:block!important;
     visibility:hidden;
+    opacity:0;
     z-index:620!important;
+    pointer-events:none;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    will-change:transform,opacity;
   }
   #edToolPanel.open{
     transform:translateY(0)!important;
     visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto;
   }
-  #crToolPanel{
+    #crToolPanel{
     position:fixed!important;
     top:auto!important;
     bottom:0!important;
@@ -3101,14 +3131,21 @@ body.theme-light .ed-reader-footer{background:var(--bg);}
     border-radius:18px 18px 0 0!important;
     box-shadow:0 -10px 40px rgba(0,0,0,.5)!important;
     transform:translateY(100%);
-    transition:transform .3s cubic-bezier(.4,0,.2,1)!important;
+    transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s ease,visibility .3s ease!important;
     display:block!important;
     visibility:hidden;
+    opacity:0;
     z-index:620!important;
+    pointer-events:none;
+    -webkit-backface-visibility:hidden;
+    backface-visibility:hidden;
+    will-change:transform,opacity;
   }
   #crToolPanel.open{
     transform:translateY(0)!important;
     visibility:visible!important;
+    opacity:1!important;
+    pointer-events:auto;
   }
   #rdToolPanel{
     position:fixed!important;
@@ -4804,11 +4841,12 @@ body.theme-light .more-menu-panel {
 <div id="edWordBar" style="height:2px;background:var(--border);margin:0 14px">
 <div id="edWordBarInner" style="height:100%;width:0%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .3s;border-radius:1px"></div>
 </div>
-<div class="ed-footer">
-<span>字数：<span class="ed-wc" id="edWc">0</span> <span id="edWordTarget" style="font-size:9px;color:var(--text2)"></span></span>
-<span id="edReadTime" style="margin-left:10px;font-size:9px;color:var(--text2)"></span>
-<span id="edTokenEst" style="margin-left:10px;font-size:9px;color:var(--text2)" title="估算Token数（含系统提示词）"></span>
-<span id="edSaveStatus">未保存</span>
+<div class="ed-footer" id="edFooter" onclick="toggleEdFooter(event)">
+<span class="ef-tap-hint">📊 点击查看详情 · <span id="edSaveStatus2">未保存</span></span>
+<span class="ef-details">字数：<span class="ed-wc" id="edWc">0</span> <span id="edWordTarget" style="font-size:9px;color:var(--text2)"></span></span>
+<span class="ef-details" id="edReadTime" style="margin-left:10px;font-size:9px;color:var(--text2)"></span>
+<span class="ef-details" id="edTokenEst" style="margin-left:10px;font-size:9px;color:var(--text2)" title="估算Token数（含系统提示词）"></span>
+<span class="ef-details" id="edSaveStatus">未保存</span>
 </div>
 </div>
 <!-- ARTICLE REWRITE -->
@@ -13498,13 +13536,17 @@ function showToolOverlay(){
 document.getElementById('toolOverlay').style.display='block';
 }
 function toggleEdToolbar(){
-const panel=document.getElementById('edToolPanel');
-const btn=document.getElementById('edToolToggle');
-const hint=document.getElementById('edToolHint');
-const overlay=document.getElementById('toolOverlay');
-const isOpen=panel.classList.contains('open');
+var panel=document.getElementById('edToolPanel');
+var btn=document.getElementById('edToolToggle');
+var hint=document.getElementById('edToolHint');
+var overlay=document.getElementById('toolOverlay');
+if(!panel)return;
+var isOpen=panel.classList.contains('open');
 if(!isOpen){
+panel.style.opacity='0';
 panel.classList.add('open');
+panel.offsetHeight;
+setTimeout(function(){panel.style.opacity='';},20);
 btn.innerHTML='🛠 收起工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:12px;height:12px;transform:rotate(180deg)"><path d="M6 9l6 6 6-6"/></svg>';
 if(hint)hint.style.display='none';
 if(overlay)overlay.style.display='none';
@@ -13852,6 +13894,7 @@ const idx=crWorks.findIndex(w=>w.id===curEd.id);
 if(idx>-1)crWorks[idx]=curEd;
 sv('bj_crWorks',crWorks);
 const edStatusEl=document.getElementById('edSaveStatus'); if(edStatusEl)edStatusEl.textContent='已保存 ✓';
+try{var s2b=document.getElementById('edSaveStatus2');if(s2b)s2b.textContent='已保存 ✓';}catch(e){}
 // 计算新增字数，记录到创作目标
 let newWc=0;
 if(curEd.type==='novel'&&curEd.chapters){
@@ -13863,6 +13906,28 @@ recordManualWrite(addedWords,0);
 }
 }
 let _edWcTimer = null;
+function toggleEdFooter(e){
+var footer=document.getElementById('edFooter');
+if(!footer)return;
+if(footer.classList.contains('expanded')){
+footer.classList.remove('expanded');
+}else{
+footer.classList.add('expanded');
+// 点击其他区域自动收起
+setTimeout(function(){
+var handler=function(ev){
+if(!footer.contains(ev.target)){
+footer.classList.remove('expanded');
+document.removeEventListener('click',handler);
+document.removeEventListener('touchstart',handler);
+}
+};
+document.addEventListener('click',handler);
+document.addEventListener('touchstart',handler);
+},50);
+}
+e.stopPropagation();
+}
 function onEditorInput(){
     // 字数统计用200ms防抖，避免每次按键都计算
     if(_edWcTimer) clearTimeout(_edWcTimer);
@@ -13870,11 +13935,13 @@ function onEditorInput(){
     
     const statusEl=document.getElementById('edSaveStatus');
     if(statusEl)statusEl.textContent='编辑中...';
+    try{var s2c=document.getElementById('edSaveStatus2');if(s2c)s2c.textContent='编辑中...';}catch(e){}
     if(edAutoSaveTimer)clearTimeout(edAutoSaveTimer);
     edAutoSaveTimer=setTimeout(()=>{
         saveEditorContent();
         const s2=document.getElementById('edSaveStatus');
         if(s2)s2.textContent='已自动保存 ✓';
+        try{var s2d=document.getElementById('edSaveStatus2');if(s2d)s2d.textContent='已自动保存 ✓';}catch(e){}
     },2000);
 }
 // ==================== 写作排版设置 ====================
@@ -13978,6 +14045,7 @@ targetEl.textContent='/ '+minWords+'字 ('+pct2+'%)';
 targetEl.textContent='';
 }
 }
+try{var s2=document.getElementById('edSaveStatus2');var s1=document.getElementById('edSaveStatus');if(s2&&s1)s2.textContent=s1.textContent;}catch(e){}
 }
 function copyEditorContent(){
 if(!curEd)return;
