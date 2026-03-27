@@ -416,9 +416,16 @@ background:linear-gradient(135deg,var(--accent),var(--accent2));
 opacity:0;transition:opacity .3s;z-index:-1;
 }
 .tag.act{color:#fff;border-color:var(--accent);box-shadow:0 3px 12px rgba(108,92,231,.35);}
-body.theme-light .tag.act{color:#fff;text-shadow:0 1px 2px rgba(0,0,0,0.2);}
+body.theme-light .tag.act{color:#fff;text-shadow:0 1px 3px rgba(0,0,0,0.4);}
 body.theme-light .tag{color:var(--text2);}
+body.theme-light .note-tag-btn.act{background:var(--accent)!important;color:#fff!important;border-color:var(--accent)!important;}
+body.theme-light .note-sel-tag.act{background:rgba(108,92,231,.15)!important;color:var(--accent)!important;border-color:var(--accent)!important;}
+body.theme-light .phrase-chip:active{border-color:var(--accent);color:var(--accent);}
+body.theme-light .ttab.act{color:var(--accent);}
+body.theme-light .cr-tab.act{color:var(--accent);}
+body.theme-light .res-tab.act{color:var(--accent);}
 .tag.act::before{opacity:1;}
+body.theme-light .tag.act::before{background:linear-gradient(135deg,var(--accent),var(--accent));}
 .tag:active{transform:scale(.95);}
 .tag .tdel{
 width:13px;height:13px;display:none;align-items:center;justify-content:center;
@@ -1668,7 +1675,7 @@ font-size:12px;font-weight:600;cursor:pointer;
 .dlg-ok{background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;}
 .dlg-danger{background:var(--danger);color:#fff;}
 .inp-ov{
-display:none;position:fixed;inset:0;z-index:800;
+display:none;position:fixed;inset:0;z-index:1000;
 background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:28px;
 }
 .inp-ov.show{display:flex;}
@@ -3888,6 +3895,15 @@ body.theme-light .more-menu-panel {
 <div class="set-entry-left"><span class="set-entry-icon">🏷</span><div class="set-entry-info"><h3>自定义系统提示词</h3><p>高级用户自定义AI指令</p></div></div>
 <span class="set-entry-arrow">›</span>
 </div>
+<div class="set-entry" style="cursor:default">
+<div class="set-entry-left"><span class="set-entry-icon">📊</span><div class="set-entry-info"><h3>续写质量反馈</h3><p>续写后自动检测万能副词、禁用词等</p></div></div>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleContQualitySwitch()">
+<input type="checkbox" id="contQualityOn" style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s" id="contQualityTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="contQualityThumb"></div>
+</div>
+</div>
+</div>
 <div class="set-entry" onclick="openSetModal('theme')">
 <div class="set-entry-left"><span class="set-entry-icon">🎨</span><div class="set-entry-info"><h3>页面美化</h3><p>主题、字体、背景</p></div></div>
 <span class="set-entry-arrow">›</span>
@@ -4759,12 +4775,8 @@ body.theme-light .more-menu-panel {
 <h3 style="display:flex;justify-content:space-between;align-items:center">💬 快捷短语
 <button onclick="closePhraseModal()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px">✕</button>
 </h3>
-<p style="font-size:11px;color:var(--text2);margin-bottom:12px">点击短语插入到作坊输入框，长按删除</p>
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px">点击插入到作坊 · 长按编辑 · 管理模式可删除</p>
 <div id="phraseListModal" style="flex:1;overflow-y:auto;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start"></div>
-<div style="display:flex;gap:8px;flex-shrink:0">
-<input class="fi" id="phraseAddInputModal" placeholder="输入新短语..." style="flex:1" onkeydown="if(event.key==='Enter'){event.preventDefault();addPhraseFromModal();}">
-<button class="btn-p" onclick="addPhraseFromModal()" style="margin:0;width:auto;padding:9px 16px">+ 添加</button>
-</div>
 </div>
 </div>
 <!-- DIALOGS -->
@@ -9285,15 +9297,24 @@ function jumpToFavSource(id){
   }, 300);
 }
 // ==================== 快捷短语收藏 ====================
-let savedPhrases=ld('bj_savedPhrases',[
-  '文风细腻，注重心理描写',
-  '多写感官细节（声音、气味、触感）',
-  '对话口语化，避免书面腔',
-  '节奏快一些，减少冗余描写',
-  '结尾要有悬念',
-  '保持甜蜜氛围，不要虐',
-  '加入环境描写烘托气氛'
-]);
+let savedPhrases=ld('bj_savedPhrases',[]);
+// 兼容旧数据：如果旧数据是字符串数组，自动升级为对象数组
+if(savedPhrases.length>0&&typeof savedPhrases[0]==='string'){
+  savedPhrases=savedPhrases.map(function(s){return{title:'',content:s};});
+  sv('bj_savedPhrases',savedPhrases);
+}
+if(savedPhrases.length===0){
+  savedPhrases=[
+    {title:'心理描写',content:'文风细腻，注重心理描写'},
+    {title:'感官细节',content:'多写感官细节（声音、气味、触感）'},
+    {title:'口语对话',content:'对话口语化，避免书面腔'},
+    {title:'快节奏',content:'节奏快一些，减少冗余描写'},
+    {title:'留悬念',content:'结尾要有悬念'},
+    {title:'甜蜜向',content:'保持甜蜜氛围，不要虐'},
+    {title:'氛围感',content:'加入环境描写烘托气氛'}
+  ];
+  sv('bj_savedPhrases',savedPhrases);
+}
 let phraseEditMode=false;
 
 function openPhraseModal(){
@@ -9309,7 +9330,7 @@ function closePhraseModal(){
 }
 
 function renderPhraseListModal(){
-  const container=document.getElementById('phraseListModal');
+  var container=document.getElementById('phraseListModal');
   if(!container)return;
   if(savedPhrases.length===0){
     container.innerHTML='<div style="width:100%;text-align:center;padding:30px;color:var(--text2);font-size:12px">还没有保存的短语<br>在下方输入框添加常用短语</div>';
@@ -9317,27 +9338,36 @@ function renderPhraseListModal(){
   }
   container.innerHTML='';
   savedPhrases.forEach(function(phrase,idx){
-    const chip=document.createElement('span');
-    chip.className='phrase-chip'+(phraseEditMode?' edit-mode':'');
-    chip.innerHTML=esc(phrase)+'<span class="phrase-chip-del" onclick="event.stopPropagation();deletePhraseAnim('+idx+',this)">✕</span>';
+    var p=typeof phrase==='string'?{title:'',content:phrase}:phrase;
+    var chip=document.createElement('div');
+    chip.style.cssText='display:flex;flex-direction:column;padding:10px 14px;border-radius:12px;border:1px solid var(--border);background:linear-gradient(135deg,var(--card),rgba(108,92,231,.03));cursor:pointer;transition:all .25s;position:relative;min-width:0;max-width:100%;box-sizing:border-box';
+    
+    var titleHtml=p.title?'<div style="font-size:11px;font-weight:700;color:var(--accent2);margin-bottom:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.title)+'</div>':'';
+    var contentPreview=p.content.length>40?p.content.substring(0,40)+'...':p.content;
+    chip.innerHTML=titleHtml+'<div style="font-size:12px;color:var(--text);line-height:1.5;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">'+esc(contentPreview)+'</div>';
+    
+    if(phraseEditMode){
+      chip.innerHTML+='<div style="position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--danger);color:#fff;font-size:11px;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 2px 6px rgba(255,107,107,.4);z-index:2;line-height:1" onclick="event.stopPropagation();confirmDeletePhrase('+idx+',this.parentElement)">✕</div>';
+    }
 
-    // 点击插入
     chip.onclick=function(e){
-      if(phraseEditMode)return;
-      insertPhraseToSearch(phrase);
+      if(phraseEditMode){
+        openEditPhraseDialog(idx);
+        return;
+      }
+      insertPhraseToSearch(p.content);
     };
 
-    // 长按删除
-    let lpTimer=null;
-    let moved=false;
-    let sx=0,sy=0;
+    var lpTimer=null;
+    var moved=false;
+    var sx=0,sy=0;
     chip.addEventListener('touchstart',function(e){
       moved=false;
       if(e.touches.length>0){sx=e.touches[0].clientX;sy=e.touches[0].clientY;}
       lpTimer=setTimeout(function(){
         if(moved)return;
         if(navigator.vibrate)navigator.vibrate(30);
-        confirmDeletePhrase(idx,chip);
+        openEditPhraseDialog(idx);
       },500);
     },{passive:true});
     chip.addEventListener('touchmove',function(e){
@@ -9349,53 +9379,57 @@ function renderPhraseListModal(){
     },{passive:true});
     chip.addEventListener('touchend',function(){clearTimeout(lpTimer);});
     chip.addEventListener('touchcancel',function(){clearTimeout(lpTimer);});
-
-    // PC右键删除
     chip.addEventListener('contextmenu',function(e){
       e.preventDefault();
-      confirmDeletePhrase(idx,chip);
+      openEditPhraseDialog(idx);
     });
 
     container.appendChild(chip);
   });
 
-  // 添加编辑模式切换按钮
-  const editBtn=document.createElement('span');
-  editBtn.className='phrase-chip';
-  editBtn.style.cssText='border-style:dashed;color:var(--accent2);border-color:var(--accent)';
-  editBtn.textContent=phraseEditMode?'✓ 完成':'✏️ 管理';
+  btnRow=document.createElement('div');
+  btnRow.style.cssText='display:flex;gap:8px;width:100%';
+
+  var addBtn=document.createElement('div');
+  addBtn.style.cssText='flex:1;display:flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;border:1px solid var(--accent);background:rgba(108,92,231,.08);color:var(--accent2);cursor:pointer;font-size:12px;transition:all .2s;font-weight:600';
+  addBtn.textContent='＋ 添加短语';
+  addBtn.onclick=function(){
+    openAddPhraseDialog();
+  };
+  btnRow.appendChild(addBtn);
+
+  var editBtn=document.createElement('div');
+  editBtn.style.cssText='flex:1;display:flex;align-items:center;justify-content:center;padding:10px 14px;border-radius:12px;border:1px dashed '+(phraseEditMode?'var(--accent)':'var(--border)')+';color:'+(phraseEditMode?'var(--accent2)':'var(--text2)')+';cursor:pointer;font-size:12px;transition:all .2s';
+  editBtn.textContent=phraseEditMode?'✓ 完成编辑':'✏️ 管理短语';
   editBtn.onclick=function(){
     phraseEditMode=!phraseEditMode;
     renderPhraseListModal();
   };
-  container.appendChild(editBtn);
+  btnRow.appendChild(editBtn);
+
+  container.appendChild(btnRow);
 }
 
 function confirmDeletePhrase(idx,chipEl){
   if(idx<0||idx>=savedPhrases.length)return;
-  // 动画效果
-  chipEl.classList.add('deleting');
-  setTimeout(function(){
-    showDlg('删除短语','确定要删除「'+savedPhrases[idx]+'」吗？',function(){
-      savedPhrases.splice(idx,1);
-      sv('bj_savedPhrases',savedPhrases);
-      renderPhraseListModal();
-      showToast('短语已删除');
-    },true);
-    chipEl.classList.remove('deleting');
-  },400);
+  var p=typeof savedPhrases[idx]==='string'?savedPhrases[idx]:savedPhrases[idx].content;
+  var label=p.length>20?p.substring(0,20)+'...':p;
+  showDlg('删除短语','确定要删除「'+label+'」吗？',function(){
+    savedPhrases.splice(idx,1);
+    sv('bj_savedPhrases',savedPhrases);
+    // 如果编辑弹窗打开中，先关闭
+    try{closeInp();restoreInpField();}catch(e){}
+    renderPhraseListModal();
+    showToast('短语已删除');
+  },true);
 }
 
 function deletePhraseAnim(idx,delBtn){
   if(idx<0||idx>=savedPhrases.length)return;
-  const chip=delBtn.parentElement;
-  chip.classList.add('deleting');
-  setTimeout(function(){
-    savedPhrases.splice(idx,1);
-    sv('bj_savedPhrases',savedPhrases);
-    renderPhraseListModal();
-    showToast('短语已删除');
-  },300);
+  savedPhrases.splice(idx,1);
+  sv('bj_savedPhrases',savedPhrases);
+  renderPhraseListModal();
+  showToast('短语已删除');
 }
 
 function insertPhraseToSearch(phrase){
@@ -9411,26 +9445,171 @@ function insertPhraseToSearch(phrase){
   updateGenBtnState();
   showToast('已插入：'+phrase);
 }
-
+function openAddPhraseDialog(){
+  var ov=document.getElementById('inpOv');
+  document.getElementById('inpTitle').textContent='＋ 添加快捷短语';
+  
+  var box=document.getElementById('inpField').parentElement;
+  var oldField=document.getElementById('inpField');
+  
+  var container=document.createElement('div');
+  container.id='inpField';
+  container.style.cssText='display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:13px';
+  container.innerHTML=
+    '<div>'+
+      '<label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500">标题（可选，最多10字）</label>'+
+      '<input id="newPhraseTitle" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;box-sizing:border-box" placeholder="如：心理描写、快节奏..." maxlength="10">'+
+    '</div>'+
+    '<div>'+
+      '<label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500">内容（必填，最多100字）</label>'+
+      '<textarea id="newPhraseContent" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;min-height:80px;resize:vertical;font-family:inherit;line-height:1.6;box-sizing:border-box" placeholder="输入短语内容..." maxlength="100"></textarea>'+
+      '<div style="font-size:10px;color:var(--text2);text-align:right;margin-top:4px" id="newPhraseCount">0/100</div>'+
+    '</div>';
+  
+  oldField.replaceWith(container);
+  
+  setTimeout(function(){
+    var contentTa=document.getElementById('newPhraseContent');
+    if(contentTa){
+      contentTa.oninput=function(){
+        var c=document.getElementById('newPhraseCount');
+        if(c)c.textContent=this.value.length+'/100';
+        if(this.value.length>100){this.value=this.value.substring(0,100);if(navigator.vibrate)navigator.vibrate(10);}
+      };
+    }
+    var titleInput=document.getElementById('newPhraseTitle');
+    if(titleInput){
+      titleInput.oninput=function(){
+        if(this.value.length>10){this.value=this.value.substring(0,10);if(navigator.vibrate)navigator.vibrate(10);}
+      };
+      titleInput.focus();
+    }
+  },50);
+  
+  document.getElementById('inpOkBtn').textContent='💾 保存';
+  document.getElementById('inpOkBtn').onclick=function(){
+    var title=(document.getElementById('newPhraseTitle').value||'').trim();
+    var content=(document.getElementById('newPhraseContent').value||'').trim();
+    if(!content){showToast('内容不能为空');return;}
+    if(content.length>100){showToast('内容最多100字');return;}
+    if(title.length>10){showToast('标题最多10字');return;}
+    var exists=savedPhrases.some(function(p){var c=typeof p==='string'?p:p.content;return c===content;});
+    if(exists){showToast('这条短语已存在');return;}
+    savedPhrases.push({title:title,content:content});
+    sv('bj_savedPhrases',savedPhrases);
+    closeInp();
+    restoreInpField();
+    renderPhraseListModal();
+    showToast('短语已保存 💬');
+  };
+  
+  var cancelBtn=ov.querySelector('.dlg-cancel');
+  cancelBtn.onclick=function(){
+    closeInp();
+    restoreInpField();
+  };
+  
+  ov.classList.add('show');
+}
 function addPhraseFromModal(){
-  const input=document.getElementById('phraseAddInputModal');
-  const val=(input.value||'').trim();
+  var input=document.getElementById('phraseAddInputModal');
+  var val=(input.value||'').trim();
   if(!val){showToast('请输入短语内容');return;}
-  if(val.length>50){showToast('短语最多50个字');return;}
-  if(savedPhrases.includes(val)){showToast('这条短语已存在');return;}
-  savedPhrases.push(val);
+  if(val.length>100){showToast('短语内容最多100个字');return;}
+  var exists=savedPhrases.some(function(p){
+    var c=typeof p==='string'?p:p.content;
+    return c===val;
+  });
+  if(exists){showToast('这条短语已存在');return;}
+  savedPhrases.push({title:'',content:val});
   sv('bj_savedPhrases',savedPhrases);
   input.value='';
   renderPhraseListModal();
   showToast('短语已保存 💬');
 }
 
+function openEditPhraseDialog(idx){
+  if(idx<0||idx>=savedPhrases.length)return;
+  var p=typeof savedPhrases[idx]==='string'?{title:'',content:savedPhrases[idx]}:savedPhrases[idx];
+  
+  var ov=document.getElementById('inpOv');
+  document.getElementById('inpTitle').textContent='✏️ 编辑短语';
+  
+  var box=document.getElementById('inpField').parentElement;
+  var oldField=document.getElementById('inpField');
+  
+  var container=document.createElement('div');
+  container.id='inpField';
+  container.style.cssText='display:flex;flex-direction:column;gap:10px;width:100%;margin-bottom:13px';
+  container.innerHTML=
+    '<div>'+
+      '<label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500">标题（可选，最多10字）</label>'+
+      '<input id="phraseEditTitle" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;box-sizing:border-box" placeholder="如：心理描写、快节奏..." maxlength="10" value="'+esc(p.title||'')+'">'+
+    '</div>'+
+    '<div>'+
+      '<label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500">内容（最多100字）</label>'+
+      '<textarea id="phraseEditContent" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;min-height:80px;resize:vertical;font-family:inherit;line-height:1.6;box-sizing:border-box" placeholder="输入短语内容..." maxlength="100">'+esc(p.content||'')+'</textarea>'+
+      '<div style="font-size:10px;color:var(--text2);text-align:right;margin-top:4px" id="phraseEditCount">'+(p.content||'').length+'/100</div>'+
+    '</div>'+
+    '<button onclick="event.preventDefault();confirmDeletePhrase('+idx+',null)" style="padding:8px;border-radius:9px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:11px;cursor:pointer;width:100%">🗑️ 删除这条短语</button>';
+  
+  oldField.replaceWith(container);
+  
+  setTimeout(function(){
+    var contentTa=document.getElementById('phraseEditContent');
+    if(contentTa){
+      contentTa.oninput=function(){
+        var c=document.getElementById('phraseEditCount');
+        if(c)c.textContent=this.value.length+'/100';
+        if(this.value.length>100){
+          this.value=this.value.substring(0,100);
+          if(navigator.vibrate)navigator.vibrate(10);
+        }
+      };
+    }
+    var titleInput=document.getElementById('phraseEditTitle');
+    if(titleInput){
+      titleInput.oninput=function(){
+        if(this.value.length>10){
+          this.value=this.value.substring(0,10);
+          if(navigator.vibrate)navigator.vibrate(10);
+        }
+      };
+    }
+  },50);
+  
+  document.getElementById('inpOkBtn').textContent='💾 保存';
+  document.getElementById('inpOkBtn').onclick=function(){
+    var title=(document.getElementById('phraseEditTitle').value||'').trim();
+    var content=(document.getElementById('phraseEditContent').value||'').trim();
+    if(!content){showToast('内容不能为空');return;}
+    if(content.length>100){showToast('内容最多100字');return;}
+    if(title.length>10){showToast('标题最多10字');return;}
+    savedPhrases[idx]={title:title,content:content};
+    sv('bj_savedPhrases',savedPhrases);
+    closeInp();
+    restoreInpField();
+    renderPhraseListModal();
+    showToast('短语已更新 ✨');
+  };
+  
+  var cancelBtn=ov.querySelector('.dlg-cancel');
+  cancelBtn.onclick=function(){
+    closeInp();
+    restoreInpField();
+  };
+  
+  ov.classList.add('show');
+}
+
 // 获取短语列表HTML（用于嵌入到其他弹窗，如长按编辑描述弹窗）
 function getPhraseChipsHtml(targetId){
   if(savedPhrases.length===0)return'';
-  let html='<div style="margin-top:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:6px">💬 快捷短语（点击插入）</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
-  savedPhrases.forEach(function(p,i){
-    html+='<span class="phrase-chip" onclick="insertPhraseToTarget(\''+targetId+'\','+i+')" style="font-size:11px;padding:5px 10px">'+esc(p)+'</span>';
+  var html='<div style="margin-top:8px"><div style="font-size:10px;color:var(--text2);margin-bottom:6px">💬 快捷短语（点击插入）</div><div style="display:flex;flex-wrap:wrap;gap:6px">';
+  savedPhrases.forEach(function(phrase,i){
+    var p=typeof phrase==='string'?{title:'',content:phrase}:phrase;
+    var label=p.title||p.content.substring(0,15);
+    html+='<span class="phrase-chip" onclick="insertPhraseToTarget(\''+targetId+'\','+i+')" style="font-size:11px;padding:5px 10px" title="'+esc(p.content)+'">'+esc(label)+'</span>';
   });
   html+='</div></div>';
   return html;
@@ -9438,17 +9617,17 @@ function getPhraseChipsHtml(targetId){
 
 function insertPhraseToTarget(targetId,phraseIdx){
   if(phraseIdx<0||phraseIdx>=savedPhrases.length)return;
-  const phrase=savedPhrases[phraseIdx];
-  const el=document.getElementById(targetId);
+  var p=typeof savedPhrases[phraseIdx]==='string'?savedPhrases[phraseIdx]:savedPhrases[phraseIdx].content;
+  var el=document.getElementById(targetId);
   if(!el)return;
-  const cur=(el.value||'').trim();
+  var cur=(el.value||'').trim();
   if(cur){
-    el.value=cur+'，'+phrase;
+    el.value=cur+'，'+p;
   }else{
-    el.value=phrase;
+    el.value=p;
   }
   el.focus();
-  showToast('已插入：'+phrase);
+  showToast('已插入：'+(p.length>20?p.substring(0,20)+'...':p));
 }
 function updateGenBtnState(){
   const btn=document.getElementById('btnGen');
@@ -11864,7 +12043,7 @@ document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！✨');
 setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
-try{renderContQualityCard(result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
+try{if(ld('bj_contQualityOn',true))renderContQualityCard(result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 return;
 }
 
@@ -11895,7 +12074,7 @@ document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！✨');
 setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
-try{renderContQualityCard(fullText,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
+try{if(ld('bj_contQualityOn',true))renderContQualityCard(fullText,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 },
 (errMsg)=>{
 setIsGen(false);btn.disabled=false;btn.textContent='📝 继续连载下一章';
@@ -13066,6 +13245,7 @@ loadFont(ap.fontUrl);
 
 // 同步“简洁模式”开关按钮的样式
 updateSimpleUiSwitch();
+try{updateContQualityUI();}catch(e){}
 }
 
 function loadFont(url){
@@ -20246,7 +20426,7 @@ document.getElementById('rdMeta').innerHTML =
 document.getElementById('btnUndo').style.display='inline-block';
 showToast('第'+chNum+'章创作完成！✨');
 setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
-try{renderContQualityCard(result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
+try{if(ld('bj_contQualityOn',true))renderContQualityCard(result,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 return;
 }
 await callAPIStream(messages,
@@ -20287,6 +20467,8 @@ document.getElementById('rdMeta').innerHTML=
 document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
+setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
+try{if(ld('bj_contQualityOn',true))renderContQualityCard(finalText,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 });
 }else{
 curRd.chapters.push(finalText);
@@ -20299,6 +20481,8 @@ document.getElementById('rdMeta').innerHTML=
 document.getElementById('btnUndo').style.display='inline-block';
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
+setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
+try{if(ld('bj_contQualityOn',true))renderContQualityCard(finalText,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 }
 },
 (errMsg)=>{
@@ -20631,8 +20815,9 @@ function renderContQualityCard(text,container){
     '<div style="font-size:10px;color:var(--text2)">'+countWords(text)+'字</div></div>'+
     issuesHtml+
     '<div class="cq-acts">'+
-    '<button class="primary" onclick="aiPolishCurrentChapter()">✨ AI润色本章</button>'+
-    '<button onclick="this.closest(\'.cont-quality-card\').remove()">关闭</button></div>';
+'<button class="primary" onclick="aiPolishCurrentChapter()">✨ AI润色本章</button>'+
+'<button onclick="this.closest(\'.cont-quality-card\').remove()">关闭</button>'+
+'<button onclick="sv(\'bj_contQualityOn\',false);this.closest(\'.cont-quality-card\').remove();showToast(\'已关闭续写质量反馈，可在设置中重新开启\')" style="color:var(--text2);border-color:var(--border)">不再显示</button></div>';
   container.appendChild(card);
 }
 
@@ -22143,7 +22328,9 @@ function clearCustomSysPrompt(){
 
 function previewFullSysPrompt(){
   var full=buildSysPrompt();
-  showDlg('完整系统提示词预览',full,function(){});
+  var tokens=estimateTokens(full);
+  var title='完整系统提示词预览 (Token: ~'+tokens+')';
+  showDlg(title,full,function(){});
   setTimeout(function(){
     var p=document.getElementById('dlgMsg');
     if(p){
@@ -22157,6 +22344,7 @@ function previewFullSysPrompt(){
     }
   },100);
 }
+
 function insertSysPromptTemplate(type){
   var templates={
     detail:'- 场景描写要包含视觉、听觉、嗅觉等多感官细节\n- 人物动作要具体，避免使用"缓缓""慢慢"等万能副词\n- 每个场景至少有一处环境细节描写',
@@ -23458,6 +23646,23 @@ function applyCrThemeBg(){
     el.removeAttribute('data-bg');
     el.style.opacity='0';
   }
+}
+function toggleContQualitySwitch(){
+  var cur=ld('bj_contQualityOn',true);
+  var next=!cur;
+  sv('bj_contQualityOn',next);
+  updateContQualityUI();
+  showToast(next?'已开启续写质量反馈':'已关闭续写质量反馈');
+}
+function updateContQualityUI(){
+  var on=ld('bj_contQualityOn',true);
+  var cb=document.getElementById('contQualityOn');
+  var track=document.getElementById('contQualityTrack');
+  var thumb=document.getElementById('contQualityThumb');
+  if(!cb||!track||!thumb)return;
+  cb.checked=on;
+  if(on){track.style.background='var(--accent)';thumb.style.left='22px';}
+  else{track.style.background='var(--border)';thumb.style.left='2px';}
 }
 function quickThemeSwitch(){
     const themes = ['default','warm','green','blue','light'];
