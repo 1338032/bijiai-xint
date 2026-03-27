@@ -6237,9 +6237,15 @@ body.theme-light .more-menu-panel {
 </div>
 </div>
 <!-- GEN LOG VIEWER 生成日志查看 -->
-<div class="res-exp-ov" id="genLogOv" onclick="if(event.target===this)closeGenLog()">
-  <div class="res-exp-box" style="max-width:520px;max-height:90vh;display:flex;flex-direction:column">
-    <h3>📜 生成日志</h3>
+<div class="set-modal" id="genLogOv" style="z-index:850">
+  <div class="set-modal-hdr" style="position:sticky;top:0;z-index:10;background:var(--bg);padding:14px 18px;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--border)">
+    <button onclick="closeGenLog()" style="background:none;border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:4px;display:flex;align-items:center;gap:5px">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M15 18l-6-6 6-6"/></svg>返回
+    </button>
+    <h2 style="font-size:16px;font-weight:700;flex:1">📜 生成日志</h2>
+    <span style="font-size:11px;color:var(--text2);padding:5px 10px;background:var(--card);border-radius:8px" id="genLogCount">0条</span>
+  </div>
+  <div class="set-modal-body" style="padding:18px">
     <p style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.7">
       这里记录“生成短篇/长篇/续写”时发给AI的 system + user 上下文。不会记录导入导出。
     </p>
@@ -6259,13 +6265,14 @@ body.theme-light .more-menu-panel {
       </select>
     </div>
 
-    <div id="genLogList" style="flex:1;overflow-y:auto"></div>
+    <div id="genLogList" style="flex:1;overflow-y:auto;max-height:calc(100vh - 280px)"></div>
 
-    <div class="res-exp-btns" style="margin-top:12px">
-      <button class="dlg-cancel" onclick="closeGenLog()">关闭</button>
+    <div style="margin-top:12px;text-align:center">
+      <button class="dlg-cancel" onclick="closeGenLog()" style="padding:8px 20px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text)">关闭</button>
     </div>
   </div>
 </div>
+
 <!-- LOCK SETTINGS -->
 <div class="res-exp-ov" id="lockSetOv" onclick="if(event.target===this)closeLockSettings()" style="z-index:900">
   <div class="res-exp-box" style="max-width:420px">
