@@ -56,6 +56,7 @@ body.theme-light .bnav{background:rgba(245,245,248,.92);}
 .bnav.hide{
   transform:translateY(120%);
   pointer-events:none;
+  opacity:0;
 }
 body.theme-light .rd-hdr{background:rgba(245,245,248,.88);}
 /* LOGO FONT - 不受自定义字体影响 */
@@ -3796,6 +3797,8 @@ body.theme-light .more-menu-panel {
 }
 .cd-link-item .cd-link-name{
   flex:1;font-size:12px;font-weight:600;color:var(--text);
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  min-width:0;
 }
 .cd-link-item .cd-link-del{
   padding:3px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);
@@ -4273,8 +4276,8 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <button style="padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px" onclick="toggleRdToolbar()" id="rdToolToggle">
 <i class="fas fa-tools"></i> 工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M6 9l6 6 6-6"/></svg>
 </button>
-<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()">⚙ 设置</button>
-<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn">♡</button>
+<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()"><i class="fas fa-cog"></i> 设置</button>
+<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn"><i class="far fa-heart"></i></button>
 </div>
 <div id="rdToolPanel" class="tool-bar-panel" style="margin:0">
 <div class="tool-group">
@@ -4329,7 +4332,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <div class="rd-body">
-  <button class="immersive-exit-float" onclick="exitImmersiveRead()">✕ 退出沉浸</button>
+  <button class="immersive-exit-float" onclick="exitImmersiveRead()"><i class="fas fa-times"></i> 退出沉浸</button>
 <h1 class="rd-title" id="rdTitle"></h1>
 <div class="rd-meta" id="rdMeta"></div>
 <div class="rd-settings" id="rdSettingsPanel">
@@ -4344,12 +4347,12 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <input type="text" id="dirInput" placeholder="给下一章的方向提示（可留空）...">
 </div>
 <div style="display:flex;gap:8px;margin-bottom:12px">
-<button class="btn-cont" style="flex:1;background:var(--card);border:1px solid var(--accent);color:var(--accent2)" onclick="openContextEditor()">⚙️ 上下文设置</button>
+<button class="btn-cont" style="flex:1;background:var(--card);border:1px solid var(--accent);color:var(--accent2)" onclick="openContextEditor()"><i class="fas fa-sliders-h"></i> 上下文设置</button>
 </div>
 
 <div class="immersive-read-bar" id="immersiveReadBar">
-<button onclick="exitImmersiveRead()">✕ 退出</button>
-<button onclick="toggleAutoScroll()" id="autoScrollBtn">▶ 自动阅读</button>
+<button onclick="exitImmersiveRead()"><i class="fas fa-times"></i> 退出</button>
+<button onclick="toggleAutoScroll()" id="autoScrollBtn"><i class="fas fa-play"></i> 自动阅读</button>
 <div class="speed-ctrl">
 <span>速度</span>
 <input type="range" min="1" max="10" value="3" id="scrollSpeed" oninput="updateScrollSpeed()">
@@ -4368,11 +4371,11 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="tts-bar" id="ttsBar">
 <div class="tts-bar-row">
 <div class="tts-bar-btns">
-<button onclick="ttsPlayPause()" id="ttsPlayBtn">▶ 朗读</button>
-<button onclick="ttsStop()">⏹ 停止</button>
-<button onclick="ttsPrevPara()">⏮</button>
-<button onclick="ttsNextPara()">⏭</button>
-<button onclick="toggleTtsSettings()" id="ttsSettingsBtn">⚙</button>
+<button onclick="ttsPlayPause()" id="ttsPlayBtn"><i class="fas fa-play"></i> 朗读</button>
+<button onclick="ttsStop()"><i class="fas fa-stop"></i> 停止</button>
+<button onclick="ttsPrevPara()"><i class="fas fa-backward-step"></i></button>
+<button onclick="ttsNextPara()"><i class="fas fa-forward-step"></i></button>
+<button onclick="toggleTtsSettings()" id="ttsSettingsBtn"><i class="fas fa-cog"></i></button>
 </div>
 <div class="tts-bar-progress"><div class="tts-bar-progress-inner" id="ttsProgress"></div></div>
 <span class="tts-bar-info" id="ttsInfo">0/0段</span>
@@ -4416,36 +4419,16 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <p>所有数据都保存在你的浏览器本地（或APP内置浏览器），你可以 <strong>随时导出备份</strong>，不依赖云端账号，也不和任何平台绑定。</p>
 
 <div class="notice">
-  <p><strong>当前版本：v1.3.4</strong></p>
-    <p>✓ 新增「🔒 后台保活系统」：生成文章时切到后台不再中断，自动增量保存断点</p>
-  <p>✓ 新增「📋 生成队列」：多个生成任务自动排队执行，不会冲突</p>
-  <p>✓ 优化「📡 离线提示」：离线提示条5秒后自动消失，不再长期占据屏幕空间</p>
-  <p>✓ 新增「🎨 跟随系统主题」：自动检测系统深色/浅色模式并切换</p>
-  <p>✓ 优化「♿ 无障碍体验」：为弹窗、导航、按钮添加 aria-label 和 role 属性</p>
-  <p>✓ 优化「📱 触摸目标」：所有按钮最小触摸面积提升至44×44px，防止误触</p>
-  <p>✓ 优化「🎨 滚动条美化」：全局统一滚动条样式，更优雅</p>
-  <p>✓ 优化「⚡ 性能」：大数据仅写入IndexedDB不写localStorage，减少主线程阻塞</p>
-  <p>✓ 优化「🔒 安全性」：补齐innerHTML转义检查，增加防御性编码</p>
-  <p>✓ 新增「🔍 全局搜索」：一个入口搜遍所有作品、笔记、伏笔、时间线、收藏夹</p>
-<p>✓ 新增「🎨 内置封面样式」：8种精美封面风格，输入书名即可一键生成</p>
-  <p>✓ 新增「🎨 AI角色设计器」：填写性格+背景，AI生成完整人设，一键写回设定</p>
-  <p>✓ 新增「🎤 角色小剧场」：20个深度问题和角色扮演挖掘角色内心，访谈内容可编辑</p>
-  <p>✓ 新增「📦 自定义生成模板」：保存整套配置，一键切换不同项目设定</p>
-  <p>✓ 新增「🔗 角色关系可视化图谱」：圆形布局展示所有角色关系网络</p>
-  <p>✓ 新增「⏰ 作品时间线管理」：记录故事内时间，AI自动识别，检测时间矛盾</p>
-  <p>✓ 新增「🔄 重新生成（附反馈）」：告诉AI不满意的地方，根据反馈重新创作</p>
-  <p>✓ 新增「智能断点续写」：生成被中断时自动保存进度，下次可恢复</p>
-  <p>✓ 新增「📡 离线模式强化」：断网时清晰提示可用功能，恢复时自动通知</p>
-  <p>✓ 星笺全局浮动：星笺会在各个页面随机出现，偶尔冒泡说话，可拖动</p>
-  <p>✓ 部分提示语重写为星笺口吻，让笔记AI更有温度</p>
-  <p>✓ 生成模板弹窗改为全屏界面，操作更舒适</p>
-  <p>✓ 角色访谈按钮移至角色名旁边，入口更直观</p>
-  <p>✓ 多处布局优化，减少移动端页面拥挤</p>
-  <p>✓ 优化「系统提示信息」：Toast可通过点击屏幕任意位置关闭，不再长时间遮挡视线</p>
-  <p>✓ 优化「内置封面样式」：2倍分辨率渲染+PNG输出，手机和电脑上文字都清晰可见</p>
-  <p>✓ 增强「AI工具专用API」：独立Temperature和Max Tokens，模型名可拉取，不再与通用API共用参数</p>
-  <p>✓ 优化「API测试」：60秒超时保护，测试速度更快，新增模型名错误识别</p>
-  <p>✓ 各种优化、新增功能与修复bug</p>
+  <p><strong>当前版本：v1.3.6</strong></p>
+  <p>✓ 新增「💬 星笺分条发送」：和星笺聊天支持暂存多条消息后一次性发送</p>
+  <p>✓ 修复「❤️ 作坊红心更新」：点击收藏后红心图标立即变化</p>
+    <p>✓ 新增「🛡️ API防抖冷却」：2秒内不能重复触发生成请求，防止误触导致费用激增</p>
+  <p>✓ 新增「🆘 紧急数据恢复」：尝试从浏览器底层存储碎片中找回意外丢失的数据</p>
+  <p>✓ 新增「🕐 角色时间感知」：角色模拟中角色能感知当前时间和距上次对话的间隔</p>
+  <p>✓ 优化「📥 数据导入导出」：导出前JSON完整性校验，导入时自动版本兼容转换</p>
+  <p>✓ 优化「🎨 作坊卡片布局」：精简按钮文字，Emoji改为Font Awesome图标，更紧凑</p>
+  <p>✓ 新增「📋 AI评价一键复制」：评价完成后可直接复制AI的建议内容</p>
+<p>✓ 新增「💬 星笺消息分段」：开关控制星笺回复是否拆成多条气泡（默认关闭）</p>
   <p style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(108,92,231,.2)"><strong>⚠️ 关于后续更新</strong></p>
   <p>由于个人精力和经济原因，笔记AI将进入不定期更新阶段。我不会放弃这个项目，但更新频率可能会降低。感谢每一位用户的支持和陪伴，你们的反馈是我继续做下去的最大动力。❤️</p>
 </div>
@@ -4846,6 +4829,15 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   <li>实时预览：修改书名或作者名时，所有封面样式会同步更新预览</li>
   <li>当然你也可以选择「上传自定义图片」使用自己的封面</li>
 </ul>
+<h3>7.65）星笺分条发送</h3>
+<p>和星笺聊天时，现在支持像角色模拟一样分条发送多条消息：</p>
+<ul>
+  <li>点击发送按钮（纸飞机图标）：暂存一条消息，消息立刻显示在聊天中</li>
+  <li>可以连续暂存多条消息，每条都会独立显示</li>
+  <li>点击绿色 ✅ 按钮：将所有暂存的消息一次性发送给星笺，星笺会综合所有内容回复</li>
+  <li>顶部会显示当前暂存了几条消息</li>
+  <li>适合想把一个复杂问题分几段说清楚的场景</li>
+</ul>
 <h3>7.7）快捷短语与收藏夹</h3>
 <p><strong>快捷短语</strong>：保存常用的创作提示词，点击即可插入作坊输入框。</p>
 <ul>
@@ -4961,6 +4953,35 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   <li>例如：保存一套"古风虐文"配置、一套"现代甜文"配置</li>
   <li>全屏管理界面，可以使用或删除任意模板</li>
 </ul>
+<h3>7.87）API防抖保护与全局Loading</h3>
+<p><strong>API防抖冷却</strong>：每次触发AI生成操作后，有2秒冷却时间。在冷却期间再次点击会提示"操作太频繁"。</p>
+<ul>
+  <li>覆盖范围：作坊生成、快速续写、智能续写、星笺聊天、角色模拟</li>
+  <li>防止误触导致重复请求消耗API额度</li>
+  <li>流式生成过程中的"停止"按钮不受冷却限制</li>
+</ul>
+
+<h3>7.875）紧急数据恢复</h3>
+<p>在设置中心的「数据管理」页面，新增了「🆘 数据紧急恢复」功能。</p>
+<ul>
+  <li>适用场景：数据意外丢失（清了缓存、APP崩溃等）且没有导出备份</li>
+  <li>原理：浏览器的IndexedDB和localStorage中可能残留着部分数据碎片，此功能会尝试扫描并恢复</li>
+  <li>恢复范围：作坊文章、收藏长篇/短篇、创作作品、笔记、各种设定</li>
+  <li>注意：不保证能恢复全部内容，越早执行越好</li>
+  <li>恢复后建议立即导出备份</li>
+  <li>最佳防护仍然是定期导出备份！</li>
+</ul>
+
+<h3>7.876）角色时间感知</h3>
+<p>在「设置→其他设置→角色模拟」分组中，新增「角色时间感知」开关（默认关闭）。</p>
+<ul>
+  <li>开启后，角色会知道当前的时间（年月日、星期几、上午/下午/深夜等）</li>
+  <li>角色还会感知到距离上次对话过去了多久（刚刚/3分钟前/2天前等）</li>
+  <li>如果间隔很长，角色可能自然地提到"好久没聊了"</li>
+  <li>如果间隔很短，角色的回复节奏会更快更随意</li>
+  <li>这些信息不会影响角色的核心性格，只是让对话更有真实感</li>
+</ul>
+
 <h3>7.88）后台保活与生成队列</h3>
 <p><strong>后台保活</strong>：生成文章（作坊/续写/高级创作）时，即使切换到其他APP或锁屏，生成任务也会尽量保持运行。</p>
 <ul>
@@ -5117,7 +5138,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   </div>
 </div>
 <p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v1.3.4 · Created by 心田<br>让每一个灵感都有机会长成作品
+笔记AI v1.3.6 · Created by 心田<br>让每一个灵感都有机会长成作品
 </p>
 
 </div>
@@ -5234,7 +5255,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="res-exp-ov" id="phraseModalOv" onclick="if(event.target===this)closePhraseModal()" style="z-index:820">
 <div class="res-exp-box" style="max-width:92vw;max-height:80vh;display:flex;flex-direction:column">
 <h3 style="display:flex;justify-content:space-between;align-items:center"><i class="fas fa-comment-dots"></i> 快捷短语
-<button onclick="closePhraseModal()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px">✕</button>
+<button onclick="closePhraseModal()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px"><i class="fas fa-times"></i></button>
 </h3>
 <p style="font-size:11px;color:var(--text2);margin-bottom:12px">点击插入到作坊 · 长按编辑 · 管理模式可删除</p>
 <div id="phraseListModal" style="flex:1;overflow-y:auto;margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start"></div>
@@ -5397,7 +5418,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   <div id="edSearchBar" style="display:none;padding:8px 14px;background:var(--card);border-bottom:1px solid var(--border);flex-direction:column;gap:6px">
 <div style="display:flex;gap:6px;align-items:center">
 <input type="text" id="edSearchInput" placeholder="搜索关键词..." style="flex:1;min-width:0;padding:8px 12px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;outline:none" oninput="doEdSearchCount()" onkeydown="if(event.key==='Enter'){event.preventDefault();edSearchNext();}">
-<button onclick="closeEdSearch()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:14px;cursor:pointer;flex-shrink:0">✕</button>
+<button onclick="closeEdSearch()" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:14px;cursor:pointer;flex-shrink:0"><i class="fas fa-times"></i></button>
 </div>
 <div style="display:flex;gap:6px;align-items:center;justify-content:space-between">
 <span id="edSearchCount" style="font-size:11px;color:var(--text2);white-space:nowrap">0/0</span>
@@ -5414,7 +5435,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="rd-s-row"><span class="rd-s-label">行高</span><input type="range" min="1.4" max="3.5" step="0.1" value="2" oninput="setEdLine(this.value)"><span class="rd-s-val" id="edLineVal">2.0</span></div>
 <div class="rd-s-row"><span class="rd-s-label">字距</span><input type="range" min="0" max="6" step="0.5" value="0" oninput="setEdLetterSpacing(this.value)"><span class="rd-s-val" id="edLsVal">0</span></div>
 </div>
-  <button class="immersive-exit" onclick="toggleImmersiveEdit()">✕ 退出沉浸</button>
+  <button class="immersive-exit" onclick="toggleImmersiveEdit()"><i class="fas fa-times"></i> 退出沉浸</button>
 <textarea class="ed-textarea" id="edTextarea" placeholder="开始写作..." oninput="onEditorInput()"></textarea>
 </div>
 <div id="edWordBar" style="height:2px;background:var(--border);margin:0 14px">
@@ -5466,7 +5487,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="ai-review-box" style="max-height:85vh">
 <div class="ai-review-hdr">
 <h3>🔍 AI深度校对</h3>
-<button class="note-close" onclick="closeProofread()">✕</button>
+<button class="note-close" onclick="closeProofread()"><i class="fas fa-times"></i></button>
 </div>
 <div style="padding:10px 16px 6px;display:flex;gap:6px;flex-wrap:wrap">
 <button onclick="doProofread('typo')" class="ed-md-btn" id="prfTypoBtn">📝 错别字</button>
@@ -5497,7 +5518,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="ai-review-box">
 <div class="ai-review-hdr">
 <h3>🔍 错别字检查</h3>
-<button class="note-close" onclick="closeTypoCheck()">✕</button>
+<button class="note-close" onclick="closeTypoCheck()"><i class="fas fa-times"></i></button>
 </div>
 <div style="padding:10px 16px 6px;display:flex;gap:6px">
 <button onclick="aiCheckTypo('chapter')" id="typoChBtn" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--accent);background:var(--accent);color:#fff;font-size:12px;cursor:pointer">检查本章</button>
@@ -5520,13 +5541,14 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="ai-review-box">
 <div class="ai-review-hdr">
 <h3>🤖 AI写作建议</h3>
-<button class="note-close" onclick="closeAIReview()">✕</button>
+<button class="note-close" onclick="closeAIReview()"><i class="fas fa-times"></i></button>
 </div>
 <div class="ai-review-body" id="aiReviewBody">
 <div class="note-empty">点击下方按钮获取AI评价</div>
 </div>
-<div class="ai-review-ft">
-<button onclick="closeAIReview()">关闭</button>
+<div class="ai-review-ft" style="display:flex;gap:8px">
+<button onclick="copyAiReview()" style="flex:1">📋 复制评价</button>
+<button onclick="closeAIReview()" style="flex:1">关闭</button>
 </div>
 </div>
 </div>
@@ -5539,7 +5561,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <button style="background:none;border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer" onclick="toggleNoteSearch()" title="搜索笔记">🔍</button>
 <button style="background:none;border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer" onclick="exportArticleNotes()" title="导出所有笔记">📤</button>
 <button style="background:none;border:1px solid var(--border);color:var(--text2);font-size:10px;padding:4px 8px;border-radius:6px;cursor:pointer" onclick="importNotesFromClipboard()" title="导入笔记">📥</button>
-<button class="note-close" onclick="closeNotePanel()" aria-label="关闭笔记面板">✕</button>
+<button class="note-close" onclick="closeNotePanel()" aria-label="关闭笔记面板"><i class="fas fa-times"></i></button>
 </div>
 </div>
 <div id="noteSearchWrap" style="display:none;padding:8px 16px 0">
@@ -5570,7 +5592,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <textarea id="noteInput" placeholder="写下你的想法..." rows="1" oninput="this.style.height='38px';this.style.height=Math.min(this.scrollHeight,100)+'px'"></textarea>
 </div>
-<button class="note-send" onclick="addNote()">记录</button>
+<button class="note-send" onclick="addNote()"><i class="fas fa-check"></i> 记录</button>
 </div>
 </div>
 </div>
@@ -5579,7 +5601,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="ch-panel">
 <div class="ch-panel-hdr">
 <div><h3 id="chPanelTitle">章节目录</h3><span id="chPanelInfo"></span></div>
-<button class="ch-panel-close" onclick="closeChapterList()" aria-label="关闭章节目录">✕</button>
+<button class="ch-panel-close" onclick="closeChapterList()" aria-label="关闭章节目录"><i class="fas fa-times"></i></button>
 </div>
 <div class="ch-panel-list" id="chPanelList"></div>
 </div>
@@ -6185,7 +6207,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="ch-panel">
 <div class="ch-panel-hdr">
 <div><h3 id="edChPanelTitle">章节管理</h3><span id="edChPanelInfo"></span></div>
-<button class="ch-panel-close" onclick="closeEdChList()">✕</button>
+<button class="ch-panel-close" onclick="closeEdChList()"><i class="fas fa-times"></i></button>
 </div>
 <div class="ch-panel-list" id="edChPanelList"></div>
 <div style="padding:12px 18px;border-top:1px solid var(--border)">
@@ -6245,7 +6267,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="xj-name">星笺 <span><i class="fas fa-star" style="font-size:12px"></i></span></div>
 <div class="xj-status">在线 · 随时为你提供灵感</div>
 </div>
-<button class="xj-clear" onclick="uploadXjBg()">换背景</button> <button class="xj-clear" onclick="clearXjChat()"><i class="fas fa-trash"></i> 清空</button> <input type="file" id="xjBgUp" accept="image/*" style="display:none" onchange="handleXjBgUpload(event)">
+ <button class="xj-clear" onclick="clearXjChat()"><i class="fas fa-trash"></i> 清空</button> 
 </div>
 <div class="xj-body" id="xjBody">
 <div class="xj-welcome">
@@ -6254,9 +6276,12 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <div class="xj-input-wrap">
+<div id="xjPendingHint" class="rp-multi-hint" style="display:none">📨 已暂存 <span id="xjPendingNum">0</span> 条消息，点击 ✅ 发送给星笺</div>
 <div class="xj-input-row">
-<textarea class="xj-input" id="xjInput" placeholder="和星笺聊聊吧..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendXjMsg();}" oninput="this.style.height='44px';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
-<button class="xj-send" id="xjSendBtn" onclick="sendXjMsg()">➤</button> <button class="xj-send" id="xjStopBtn" onclick="stopXjMsg()" style="display:none;background:var(--danger)">⏹</button>
+<textarea class="xj-input" id="xjInput" placeholder="和星笺聊聊吧..." rows="1" onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();xjAddPending();}" oninput="this.style.height='44px';this.style.height=Math.min(this.scrollHeight,120)+'px'"></textarea>
+<button class="xj-send" id="xjSendBtn" onclick="xjAddPending()" title="暂存消息"><i class="fas fa-paper-plane"></i></button>
+<button class="rp-receive-btn" id="xjReceiveBtn" onclick="xjSendAllPending()" title="发送给星笺并接收回复" style="position:relative"><i class="fas fa-check"></i><span id="xjPendingBadge" class="rp-pending-count" style="display:none">0</span></button>
+<button class="xj-send" id="xjStopBtn" onclick="stopXjMsg()" style="display:none;background:var(--danger)"><i class="fas fa-stop"></i></button>
 </div>
 </div>
 </div>
@@ -6265,7 +6290,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="set-modal-hdr"><button onclick="closeSetModal('api')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2><i class="fas fa-key"></i> API设置</h2></div>
 <div class="set-modal-body">
 <div class="fg"><label class="fl">API地址</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
-<div class="fg"><label class="fl">API密钥 <span style="font-size:9px;color:var(--danger);font-weight:400">（仅存本地，勿在公共设备使用）</span></label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0">👁</button></div></div>
+<div class="fg"><label class="fl">API密钥 <span style="font-size:9px;color:var(--danger);font-weight:400">（仅存本地，勿在公共设备使用）</span></label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0"><i class="fas fa-eye"></i></button></div></div>
 <div class="fg"><label class="fl">模型名称</label><div style="display:flex;gap:6px"><input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"><datalist id="modelSuggest"></datalist><button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0">拉取</button></div></div>
 <div class="frow"><div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div><div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div></div>
 <div class="fg"><label class="fl">场景预设</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="tag" onclick="setTempPreset(0.5,'严谨')">📐 严谨</button><button class="tag" onclick="setTempPreset(0.7,'平衡')">⚖️ 平衡</button><button class="tag" onclick="setTempPreset(0.9,'创意')">💡 创意</button><button class="tag" onclick="setTempPreset(1.1,'狂野')">🔥 狂野</button></div></div>
@@ -6274,7 +6299,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div style="font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:8px"><i class="fas fa-toolbox"></i> AI工具专用API（可选）</div>
 <div style="font-size:10px;color:var(--text2);margin-bottom:10px;line-height:1.6">设置后，AI评价、AI润色、AI重写、AI扩写、AI缩写、AI查错别字、AI校对、AI大纲、AI起名、情节分支、精华压缩器、角色设计器等工具类功能将使用此API。<br>未设置则全部使用上方的通用API。<br><span style="color:#f0a030">⚠️ 注意：工具API仅支持非流式输出，无需开启流式开关。</span></div>
 <div class="fg"><label class="fl">API地址（工具专用）</label><input class="fi" id="toolApiUrl" placeholder="留空则使用通用API"></div>
-<div class="fg"><label class="fl">API密钥（工具专用）</label><div style="display:flex;gap:6px"><input class="fi" id="toolApiKey" type="password" placeholder="留空则使用通用API" style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('toolApiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0">👁</button></div></div>
+<div class="fg"><label class="fl">API密钥（工具专用）</label><div style="display:flex;gap:6px"><input class="fi" id="toolApiKey" type="password" placeholder="留空则使用通用API" style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('toolApiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0"><i class="fas fa-eye"></i></button></div></div>
 <div class="fg"><label class="fl">模型名称（工具专用）</label><div style="display:flex;gap:6px"><input class="fi" id="toolApiModel" placeholder="留空则使用通用API" style="flex:1"><button class="btn-s" onclick="fetchToolModels()" style="width:auto;padding:6px 12px;margin:0">拉取</button></div></div>
 <div class="frow"><div class="fg"><label class="fl">Temperature（工具专用）</label><input class="fi" id="toolApiTemp" type="number" step="0.1" min="0" max="2" placeholder="留空则使用通用"></div><div class="fg"><label class="fl">Max Tokens（工具专用）</label><input class="fi" id="toolApiMaxTokens" type="number" placeholder="留空则使用通用"></div></div>
 <button class="btn-s" onclick="testToolApiConnection()" id="btnTestToolApi">🔗 测试工具API连接</button>
@@ -6653,7 +6678,20 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 </div>
-
+<!-- 紧急恢复 -->
+<div class="data-section">
+<div class="data-section-title"><i class="fas fa-life-ring"></i> 紧急恢复</div>
+<div class="datagrid">
+<div class="datagrid-card" onclick="emergencyRecover()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#e67e22,#f0a030)"><i class="fas fa-first-aid"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">数据紧急恢复</div>
+<div class="datagrid-desc">尝试从IndexedDB和localStorage碎片中恢复丢失的数据</div>
+</div>
+<div class="datagrid-action warn">恢复</div>
+</div>
+</div>
+</div>
 <!-- 危险操作 -->
 <div class="data-section danger-section">
 <div class="data-section-title danger-title"><i class="fas fa-exclamation-triangle"></i> 危险操作</div>
@@ -6903,7 +6941,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="res-exp-box" style="max-width:440px;max-height:90vh;display:flex;flex-direction:column;position:relative">
 <h3 id="wizardTitle">✨ 快速设置向导</h3>
 <p style="font-size:11px;color:var(--text2);margin-bottom:14px" id="wizardSubtitle">3步完成基础配置，马上开始创作</p>
-<button onclick="closeWizard()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1">✕</button>
+<button onclick="closeWizard()" style="position:absolute;top:16px;right:16px;background:none;border:none;color:var(--text2);font-size:20px;cursor:pointer;padding:4px 8px;line-height:1"><i class="fas fa-times"></i></button>
 
 <div style="display:flex;gap:6px;margin-bottom:14px">
 <div id="wizDot0" style="flex:1;height:4px;border-radius:2px;background:var(--accent);transition:background .3s"></div>
@@ -7073,7 +7111,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div style="flex:1;display:flex;flex-direction:column;height:calc(100vh - 56px);overflow:hidden">
 <!-- 角色信息栏 -->
 <div id="rpCharBar" style="padding:8px 12px;background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(162,155,254,.06));border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px;flex-shrink:0;overflow:hidden;flex-wrap:nowrap">
-<div id="rpCharAvatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;overflow:hidden;flex-shrink:0;cursor:pointer" onclick="uploadRpCharAvatar()">🎭</div>
+<div id="rpCharAvatar" style="width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--accent),var(--accent2));display:flex;align-items:center;justify-content:center;font-size:18px;color:#fff;overflow:hidden;flex-shrink:0;cursor:pointer" onclick="uploadRpCharAvatar()"><i class="fas fa-masks-theater"></i></div>
 <div style="flex:1;min-width:0">
 <div id="rpCharName" style="font-size:13px;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:120px">未选择角色</div>
 <div id="rpCharSub" style="font-size:10px;color:var(--text2)">点击右上角「<i class="fas fa-user-friends"></i> 切换」选择或创建角色</div>
@@ -7128,7 +7166,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="fg"><label class="fl">角色名称</label><input class="fi" id="rpCharNameInput" placeholder="角色名字"></div>
 <div class="fg"><label class="fl">角色头像</label>
 <div style="display:flex;gap:8px;align-items:center">
-<div id="rpEditAvatarPreview" style="width:48px;height:48px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid var(--border);flex-shrink:0">🎭</div>
+<div id="rpEditAvatarPreview" style="width:48px;height:48px;border-radius:50%;background:var(--card2);display:flex;align-items:center;justify-content:center;font-size:20px;overflow:hidden;border:2px solid var(--border);flex-shrink:0"><i class="fas fa-masks-theater"></i></div>
 <button class="btn-s" onclick="document.getElementById('rpAvatarUpload').click()" style="margin:0">📁 上传头像</button>
 <input type="file" id="rpAvatarUpload" accept="image/*" style="display:none" onchange="handleRpAvatarUpload(event)">
 </div>
@@ -7286,7 +7324,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="rd-search-ov" id="rdSearchOv">
 <div class="rds-header">
 <div class="rds-title">🔍 搜索本章内容</div>
-<button class="rds-close" onclick="closeRdSearch()">✕</button>
+<button class="rds-close" onclick="closeRdSearch()"><i class="fas fa-times"></i></button>
 </div>
 <div class="rds-input-row">
 <input type="text" class="rds-input" id="rdSearchInput" placeholder="输入关键词..." oninput="_rdSearchDebounce()" onkeydown="if(event.key==='Enter'){event.preventDefault();rdSearchNext();}">
@@ -7360,9 +7398,9 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="cd-section-title"><i class="fas fa-link"></i> 关联角色（可选，可多选）</div>
 <div style="font-size:10px;color:var(--text2);margin-bottom:8px">选择已有的角色，AI会在生成人设时考虑与这些角色的关系</div>
 <div id="cdLinkList"></div>
-<div style="display:flex;gap:6px;margin-top:8px">
-<select class="fi" id="cdLinkSelect" style="flex:1"><option value="">-- 选择要关联的角色 --</option></select>
-<button class="btn-s" onclick="addCdLink()" style="margin:0;padding:6px 12px">关联</button>
+<div style="margin-top:8px">
+<select class="fi" id="cdLinkSelect" style="width:100%;margin-bottom:6px"><option value="">-- 选择要关联的角色 --</option></select>
+<button class="btn-s" onclick="addCdLink()" style="margin:0;padding:6px 12px;width:100%">➕ 关联角色</button>
 </div>
 </div>
 <!-- 关联世界观 -->
@@ -7442,6 +7480,15 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <input type="checkbox" id="xjBubbleOn" style="display:none">
 <div style="width:44px;height:24px;border-radius:12px;background:var(--border);transition:background .3s" id="xjBubbleTrack">
 <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="xjBubbleThumb"></div>
+</div>
+</div>
+</div>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+<div><span style="font-size:13px;font-weight:600">星笺消息分段</span><div style="font-size:10px;color:var(--text2)">开启后星笺回复会拆成多条气泡</div></div>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleSwitch7('xjMsgSplit')">
+<input type="checkbox" id="xjMsgSplitOn" style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--border);transition:background .3s" id="xjMsgSplitTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="xjMsgSplitThumb"></div>
 </div>
 </div>
 </div>
@@ -7678,7 +7725,15 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 </div>
-
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+<div><span style="font-size:13px;font-weight:600">角色时间感知</span><div style="font-size:10px;color:var(--text2)">角色知道当前时间和距上次对话的间隔</div></div>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleSwitch7('rpTimeAware')">
+<input type="checkbox" id="rpTimeAwareOn" style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--border);transition:background .3s" id="rpTimeAwareTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="rpTimeAwareThumb"></div>
+</div>
+</div>
+</div>
 </div>
 </div>
 
@@ -7713,7 +7768,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="res-exp-box" style="max-width:520px;max-height:90vh;display:flex;flex-direction:column">
 <h3 style="display:flex;justify-content:space-between;align-items:center">
 <span>📝 修订对比</span>
-<button onclick="closeDiffCompare()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px">✕</button>
+<button onclick="closeDiffCompare()" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px"><i class="fas fa-times"></i></button>
 </h3>
 <p style="font-size:11px;color:var(--text2);margin-bottom:10px">
 <span style="background:rgba(81,207,102,.25);padding:1px 4px;border-radius:2px">绿色</span> = AI新增的内容 · 
@@ -7738,7 +7793,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="preset-modal-box">
 <div class="preset-modal-hdr">
 <h3 id="presetModalTitle">📦 预设管理</h3>
-<button class="preset-modal-close" onclick="closePresetModal()">✕</button>
+<button class="preset-modal-close" onclick="closePresetModal()"><i class="fas fa-times"></i></button>
 </div>
 <div class="preset-modal-body" id="presetModalBody"></div>
 <div class="preset-modal-ft">
@@ -7926,8 +7981,8 @@ async function getDBStorageUsage() {
     });
 }
 // ==================== CONFIG ====================
-const APP_VER='v1.3.4';
-const UPDATE_VER='1.3.4';
+const APP_VER='v1.3.6';
+const UPDATE_VER='1.3.6';
 // ==================== STORAGE ====================
 const K={
 tags:'bj_tags',apiP:'bj_apiP',charP:'bj_charP',worldP:'bj_worldP',
@@ -8035,6 +8090,14 @@ let customTraits=ld('bj_customTraits',[]);
 let curRd=null;// current reading article
 let curCh=0;// current chapter index
 let isGen=false;
+let _apiCooldown=false;
+let _apiCooldownMs=2000;
+function checkApiCooldown(){
+  if(_apiCooldown){showToast('操作太频繁，请稍后再试');return false;}
+  _apiCooldown=true;
+  setTimeout(function(){_apiCooldown=false;},_apiCooldownMs);
+  return true;
+}
 AppState.isGen=false;
 function setIsGen(v){isGen=v;AppState.isGen=v;}
 let isFS=false;
@@ -8746,9 +8809,9 @@ card.innerHTML=
 '<div class="acard-pv">'+esc(preview)+'</div>'+
 '<div class="acard-ft">'+
 '<span class="acard-wc">'+(chCount>0?chCount+'章 · ':'')+wc+'字 · '+new Date(article.createdAt).toLocaleDateString()+'</span>'+
-'<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')">'+(liked?'❤️ 已收藏':'♡ 收藏')+'</button>'+
-'<button class="btn-like" onclick="event.stopPropagation();openRegenFeedback(\''+article.id+'\')" style="color:var(--accent2);border-color:var(--accent)">🔄</button>'+
-'<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)">🗑️</button>'+
+'<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')" title="'+(liked?'取消收藏':'收藏')+'">'+(liked?'❤️':'♡')+'</button>'+
+'<button class="btn-like" onclick="event.stopPropagation();openRegenFeedback(\''+article.id+'\')" style="color:var(--accent2);border-color:var(--accent)" title="重新生成"><i class="fas fa-rotate"></i></button>'+
+'<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)" title="删除"><i class="fas fa-trash-can"></i></button>'+
 '</div>'+
 '<div class="acard-tags" style="margin-top:8px">'+tagsHtml+'</div>';
 artFrag.appendChild(card);
@@ -8817,7 +8880,18 @@ cols.shorts.push(copy);
 showToast('星笺帮你收好啦 ❤️');
 }
 }
-sv(K.cols,cols);renderArticles();
+sv(K.cols,cols);renderArticles._force=true;renderArticles();
+// 立即更新阅读页中所有收藏按钮状态
+try{updateRdLikeBtn();}catch(e){}
+try{
+  if(_rdOverlayEl){
+    var topBtns=_rdOverlayEl.querySelectorAll('.rd-reader-ov-btn');
+    if(topBtns.length>=2){
+      var likeBtn2=topBtns[topBtns.length-1];
+      likeBtn2.textContent=isLiked({id:id})?'❤️':'♡';
+    }
+  }
+}catch(e){}
 }
 
 // ==================== SYNC HELPER ====================
@@ -10183,7 +10257,7 @@ _bgGenerating = true;
   const controller = new AbortController();
   const timeoutId = setTimeout(()=>{
     try{ controller.abort(); }catch(e){logError('op',e)}
-  }, 120000); // 2分钟超时
+  }, 300000); // 5分钟超时（番外/高级创作等长文需要更多时间）
 
   try{
     const resp = await fetch(ep.endpoint,{
@@ -11047,6 +11121,7 @@ score=Math.max(0,Math.min(100,score));
 return {issues,suggestions,score};
 }
 async function generateArticle(){
+if(!checkApiCooldown())return;
 if(isGen){showToast('正在生成中，请稍候...');return;}
 if(AppState.isGen){showToast('正在生成中，请稍候...');return;}
 const cfg=getCurApi();
@@ -11927,7 +12002,7 @@ function _rdCreateOverlay(){
   top.innerHTML=
     '<button class="rd-reader-ov-btn" onclick="_rdExitReader()">← 返回</button>'+
     '<h3>'+(curRd?esc(curRd.title):'')+'</h3>'+
-    '<button class="rd-reader-ov-btn" onclick="_rdHideOverlay();toggleCurrentLike();setTimeout(function(){_rdRefreshOverlay();},300)">'+(isLiked(curRd)?'❤️':'♡')+'</button>';
+    '<button class="rd-reader-ov-btn" onclick="_rdDoToggleLike()">'+(isLiked(curRd)?'❤️':'♡')+'</button>';
   ov.appendChild(top);
 
   // === 中间空白区：点击关闭菜单 ===
@@ -12129,6 +12204,24 @@ function _rdRefreshOverlay(){
     }
   }
 }
+function _rdDoToggleLike(){
+  _rdHideOverlay();
+  toggleCurrentLike();
+  // 直接修改浮层上的按钮文字（不重建整个浮层）
+  if(_rdOverlayEl){
+    var liked=isLiked(curRd);
+    var topBtns=_rdOverlayEl.querySelectorAll('.rd-reader-ov-btn');
+    if(topBtns.length>=2){
+      topBtns[topBtns.length-1].textContent=liked?'❤️':'♡';
+    }
+    // 同时更新续写区域（如果有的话）
+    var ovBottom=_rdOverlayEl.querySelector('.rd-reader-ov-bottom');
+    if(ovBottom){
+      // 标记需要刷新
+      _rdOverlayEl.dataset.needRefresh='1';
+    }
+  }
+}
 function _rdToggleOverlay(){
   if(!_rdOverlayEl)return;
   if(_rdOverlayEl.classList.contains('show')){
@@ -12140,6 +12233,12 @@ function _rdToggleOverlay(){
 
 function _rdShowOverlay(){
   if(!_rdOverlayEl)return;
+  // 如果上次操作后标记了需要刷新，重建整个浮层
+  if(_rdOverlayEl.dataset.needRefresh==='1'){
+    _rdRefreshOverlay();
+    _rdOverlayEl=document.querySelector('.rd-reader-overlay');
+    if(!_rdOverlayEl)return;
+  }
   _rdOverlayEl.classList.add('show');
   // 重置工具箱状态（避免残留状态）
   var tp=document.getElementById('rdOvToolPanel');
@@ -12296,17 +12395,19 @@ function toggleCurrentLike(){
 if(!curRd)return;
 toggleLike(curRd.id);
 updateRdLikeBtn();
+// 更新翻页器浮层菜单中的收藏按钮
+try{_rdRefreshOverlay();}catch(e){}
 // 更新续写按钮状态
 const liked=isLiked(curRd);
 const cw2=document.getElementById('contWrap');
 const dw2=document.getElementById('dirInputWrap');
 const bc2=document.getElementById('btnCont');
+var smartBtn=document.getElementById('btnSmartCont');
 if(curRd.type==='long'){
 cw2.style.display='block';
 dw2.style.display='flex';
-if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';}
-if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';bc2.scrollIntoView({behavior:'smooth',block:'center'});}
-else{bc2.disabled=true;bc2.textContent='❤️ 请先收藏后才能续写';}
+if(liked){bc2.disabled=false;bc2.textContent='📝 继续连载下一章';if(smartBtn){smartBtn.disabled=false;smartBtn.textContent='🧠 智能续写';}bc2.scrollIntoView({behavior:'smooth',block:'center'});}
+else{bc2.disabled=true;bc2.textContent='❤️ 请先收藏后才能续写';if(smartBtn){smartBtn.disabled=true;smartBtn.textContent='❤️ 请先收藏';}}
 }else{cw2.style.display='none';dw2.style.display='none';}
 }
 function openChapterList(){
@@ -13156,6 +13257,7 @@ return states.join('；');
 // ==================== CONTINUE CHAPTER ====================
 // 快速续写（使用已保存的上下文设置）
 function quickContinue(){
+if(!checkApiCooldown())return;
 if(!curRd)return;
 var liked=isLiked(curRd);
 if(!liked){
@@ -13595,7 +13697,7 @@ const totalBooks = books.length;
 books = books.slice(0, colBookPage * PAGE_SIZE);
 
 if(books.length===0){
-  grid.innerHTML='<div class="empty-st" style="grid-column:1/-1"><div style="font-size:48px;margin-bottom:12px;opacity:.5">📚</div><p>'+(sv_?'没有匹配的长篇':'书架空空如也<br><br>在作坊生成作品后<br>点击「♡ 收藏」即可添加到这里')+'</p></div>';
+  grid.innerHTML='<div class="empty-st" style="grid-column:1/-1"><div style="font-size:48px;margin-bottom:12px;opacity:.5"><i class="fas fa-book"></i></div><p>'+(sv_?'没有匹配的长篇':'书架空空如也<br><br>在作坊生成作品后<br>点击「♡ 收藏」即可添加到这里')+'</p></div>';
 }else{
   grid.innerHTML='';
   const bookFrag=document.createDocumentFragment();
@@ -13843,23 +13945,20 @@ if(type==='other'){updateXjVisibleUI();updateXjBubbleUI();updateContQualityUINew
 if(type==='data')updateStorageDisplay();
 if(type==='data')setTimeout(updateDevUI,50);
 if(type==='sysPrompt'){
-  document.getElementById('setModalSysPrompt').classList.add('show');
-  navPush('setModalSysPrompt');
   if(document.getElementById('customSysPromptInput')){
     document.getElementById('customSysPromptInput').value=customSysPrompt||'';
     var c=document.getElementById('customSysPromptCount');
     if(c)c.textContent=(customSysPrompt||'').trim().length+' 字';
   }
   renderSysPromptPresets();
-  // 设置位置高亮
-setTimeout(() => {
-  const head = document.getElementById('posHead');
-  const tail = document.getElementById('posTail');
-  if(head && tail){
-    head.classList.toggle('act', customSysPromptPosition === 'head');
-    tail.classList.toggle('act', customSysPromptPosition === 'tail');
-  }
-}, 50);
+  setTimeout(function(){
+    const head=document.getElementById('posHead');
+    const tail=document.getElementById('posTail');
+    if(head && tail){
+      head.classList.toggle('act',customSysPromptPosition==='head');
+      tail.classList.toggle('act',customSysPromptPosition==='tail');
+    }
+  },50);
   return;
 }
 renderAllPresets();
@@ -13871,11 +13970,6 @@ document.getElementById(id).classList.remove('show');
 navPop(id);
 document.getElementById('bnav').classList.remove('hide');
 saveCurSettings();
-if(type==='sysPrompt'){
-  navPop('setModalSysPrompt');
-  document.getElementById('setModalSysPrompt').classList.remove('show');
-  return;
-}
 }
 function toggleGrp(el){el.classList.toggle('exp');el.nextElementSibling.classList.toggle('show');}
 
@@ -14878,7 +14972,7 @@ globalWorld: globalWorld,
         ttsSettings: ttsSettings_,
         devMode: devMode,xjVisible: xjVisible,
 xjBubbleEnabled: xjBubbleEnabled,
-        rdBgImg: rdBgImg,autoSaveToast:autoSaveToast,contAutoScroll:contAutoScroll,genVibrate:genVibrate,autoChSummary:autoChSummary,rdProgressMemory:rdProgressMemory,edExitConfirm:edExitConfirm,showThemeBtn:showThemeBtn,genConfirm:genConfirm,contAutoExtend:contAutoExtend,contDirMemory:contDirMemory,paraLongPress:paraLongPress,rdFooterVisible:rdFooterVisible,updatePopup:updatePopup,backupReminder:backupReminder,navBarText:navBarText,rpStreamOutput:rpStreamOutput,rpMsgSplit:rpMsgSplit,clearDataConfirm:clearDataConfirm,
+        rdBgImg: rdBgImg,autoSaveToast:autoSaveToast,contAutoScroll:contAutoScroll,genVibrate:genVibrate,autoChSummary:autoChSummary,rdProgressMemory:rdProgressMemory,edExitConfirm:edExitConfirm,showThemeBtn:showThemeBtn,genConfirm:genConfirm,contAutoExtend:contAutoExtend,contDirMemory:contDirMemory,paraLongPress:paraLongPress,rdFooterVisible:rdFooterVisible,updatePopup:updatePopup,backupReminder:backupReminder,navBarText:navBarText,rpStreamOutput:rpStreamOutput,rpMsgSplit:rpMsgSplit,clearDataConfirm:clearDataConfirm,rpTimeAware:rpTimeAware,xjMsgSplit:xjMsgSplit,
         notes: exportAllNotes(),
         favItems: favItems,savedPhrases: savedPhrases,
         genTemplates: genTemplates,rtInterviews: rtInterviews,
@@ -14887,7 +14981,22 @@ xjBubbleEnabled: xjBubbleEnabled,
         rtBgImg: rtBgImg
     };
 
-    const jsonStr = JSON.stringify(data, null, 2);
+    let jsonStr;
+try{
+  jsonStr = JSON.stringify(data, null, 2);
+  // 校验JSON完整性
+  JSON.parse(jsonStr);
+}catch(e){
+  showToast('⚠️ 导出数据序列化异常：'+e.message+'，尝试修复中...',4000);
+  // 尝试清理不可序列化的内容后重试
+  try{
+    var cleanData=JSON.parse(JSON.stringify(data));
+    jsonStr=JSON.stringify(cleanData,null,2);
+  }catch(e2){
+    showToast('❌ 导出失败，数据中包含无法序列化的内容',5000);
+    return;
+  }
+}
     const filename = '笔记AI_完整备份_' + new Date().toLocaleDateString().replace(/\//g, '-') + '.json';
 
     try {
@@ -14941,7 +15050,60 @@ const reader=new FileReader();
 reader.onload=ev=>{
 try{
 const data=JSON.parse(ev.target.result);
-if(data._app!=='bijiAI'){showToast('文件格式不正确',3000);return;}
+if(data._app!=='bijiAI'){showToast('文件格式不正确（非笔记AI备份文件）',3000);return;}
+// 版本兼容转换
+var dataVer=data._version||1;
+try{
+  if(dataVer<2){
+    // v1→v2: 旧版可能没有relations/npcs字段
+    if(data.charPresets&&Array.isArray(data.charPresets)){
+      data.charPresets.forEach(function(p){
+        if(!p.relations)p.relations=[];
+        if(!p.npcs)p.npcs=[];
+      });
+    }
+    if(!data.globalWorld)data.globalWorld='';
+    if(!data.globalRule)data.globalRule='';
+    if(!data.globalBanWords)data.globalBanWords='';
+    if(!data.localWorldBindings)data.localWorldBindings={};
+    if(!data.localRuleBindings)data.localRuleBindings={};
+    if(!data.localBanWordsBindings)data.localBanWordsBindings={};
+    if(!data.localStyleBindings)data.localStyleBindings={};
+  }
+  if(dataVer<3){
+    // v2→v3: 确保collections结构完整
+    if(data.collections){
+      if(!data.collections.books)data.collections.books=[];
+      if(!data.collections.shorts)data.collections.shorts=[];
+      data.collections.books.forEach(function(b){
+        if(!b.status)b.status='ongoing';
+        if(!b.rating)b.rating=0;
+        if(b.type==='long'&&!Array.isArray(b.chapters))b.chapters=[b.content||''];
+      });
+      data.collections.shorts.forEach(function(s){if(!s.rating)s.rating=0;});
+    }
+    // 确保crWorks每个都有updatedAt
+    if(data.crWorks&&Array.isArray(data.crWorks)){
+      data.crWorks.forEach(function(w){
+        if(!w.updatedAt)w.updatedAt=w.createdAt||new Date().toISOString();
+        if(w.type==='novel'&&!Array.isArray(w.chapters))w.chapters=[w.content||''];
+      });
+    }
+    // RP角色记忆格式升级
+    if(data.rpChars&&Array.isArray(data.rpChars)){
+      data.rpChars.forEach(function(c){
+        if(c.memory&&!c.memories){
+          c.memories=[{id:uid(),text:c.memory,time:new Date().toISOString()}];
+          delete c.memory;
+        }
+        if(!c.memories)c.memories=[];
+      });
+    }
+  }
+  showToast('数据版本 v'+dataVer+'，已自动兼容转换',2000);
+}catch(compatErr){
+  console.warn('版本兼容转换异常（不影响导入）:',compatErr);
+}
 showDlg('导入确认','导入将覆盖当前所有设置和收藏数据，是否继续？',()=>{
 if(data.apiPresets){apiP=data.apiPresets;sv(K.apiP,apiP);}
 if(data.charPresets){charP=data.charPresets;sv(K.charP,charP);}
@@ -15052,6 +15214,8 @@ if(typeof data.navBarText!=='undefined'){navBarText=data.navBarText;sv('bj_navBa
 if(typeof data.rpStreamOutput!=='undefined'){rpStreamOutput=data.rpStreamOutput;sv('bj_rpStreamOutput',rpStreamOutput);}
 if(typeof data.rpMsgSplit!=='undefined'){rpMsgSplit=data.rpMsgSplit;sv('bj_rpMsgSplit',rpMsgSplit);}
 if(typeof data.clearDataConfirm!=='undefined'){clearDataConfirm=data.clearDataConfirm;sv('bj_clearDataConfirm',clearDataConfirm);}
+if(typeof data.rpTimeAware!=='undefined'){rpTimeAware=data.rpTimeAware;sv('bj_rpTimeAware',rpTimeAware);}
+if(typeof data.xjMsgSplit!=='undefined'){xjMsgSplit=data.xjMsgSplit;sv('bj_xjMsgSplit',xjMsgSplit);}
 // Reload forms
 const api=data.curApi||data.currentApi||{};
 document.getElementById('apiUrl').value=api.url||'';
@@ -15066,6 +15230,20 @@ document.getElementById('minWords').value=world.minWords||800;
 
 renderTags();renderAllPresets();renderCollections();renderCharCards();
 applyAppearance();
+// 导入后数据完整性快速检查
+try{
+  if(!Array.isArray(ws))ws=[];
+  ws=ws.filter(function(a){return a&&a.id;});
+  if(!cols||typeof cols!=='object')cols={books:[],shorts:[]};
+  if(!Array.isArray(cols.books))cols.books=[];
+  if(!Array.isArray(cols.shorts))cols.shorts=[];
+  cols.books=cols.books.filter(function(b){return b&&b.id;});
+  cols.shorts=cols.shorts.filter(function(s){return s&&s.id;});
+  if(!Array.isArray(crWorks))crWorks=[];
+  crWorks=crWorks.filter(function(w){return w&&w.id;});
+  if(!Array.isArray(characters)||characters.length===0)characters=[{name:'',desc:''}];
+  sv(K.ws,ws);sv(K.cols,cols);sv('bj_crWorks',crWorks);sv(K.curChars,characters);
+}catch(intErr){console.warn('导入后检查异常:',intErr);}
 showToast('数据导入成功 📥');
 _unlocked=false; initLockSystem();
 });renderUserCard();
@@ -16717,6 +16895,14 @@ body.textContent = reviewResult;
 }else{
 body.innerHTML='<div style="color:var(--text2);text-align:center">获取评价失败，请检查API设置</div>';
 }
+}
+function copyAiReview(){
+  var body=document.getElementById('aiReviewBody');
+  if(!body){showToast('没有评价内容');return;}
+  var text=body.textContent||body.innerText||'';
+  if(!text.trim()){showToast('评价内容为空');return;}
+  doCopy(text.trim());
+  showToast('AI评价已复制 📋');
 }
 function closeAIReview(){
   navPop('aiReviewOv');
@@ -22090,6 +22276,7 @@ showToast('已导入'+pending.length+'条伏笔');
 }
 // ==================== 智能续写 ====================
 async function smartContinue(){
+if(!checkApiCooldown())return;
 if(!curRd||curRd.type!=='long')return;
 if(isGen){showToast('正在生成中');return;}
 var liked=isLiked(curRd);
@@ -23028,6 +23215,126 @@ showToast('清除过程出错：'+e.message+'，建议手动清除浏览器数�
 console.error('clearAll error:',e);
 }
 }
+async function emergencyRecover(){
+  showDlg('🆘 紧急数据恢复','此功能会尝试从浏览器底层存储中搜寻残留数据。\n\n适用于：\n· 数据意外丢失（清了缓存、崩溃等）\n· 没有导出备份\n\n注意：不保证能恢复全部内容，越早执行越好。\n\n是否开始扫描？',async function(){
+    showToast('🔍 正在扫描存储碎片...',4000);
+    var recovered={ws:0,cols:0,cr:0,notes:0,other:0};
+    var report=[];
+    
+    // 1. 先尝试从IndexedDB重新加载一次
+    if(db){
+      try{
+        await loadAllFromDB();
+        report.push('✅ 已从IndexedDB重新加载 '+Object.keys(dbCache).length+' 项');
+      }catch(e){report.push('❌ IndexedDB加载失败：'+e.message);}
+    }
+    
+    // 2. 扫描localStorage的所有bj_开头的键
+    var lsKeys=[];
+    for(var i=0;i<localStorage.length;i++){
+      var key=localStorage.key(i);
+      if(key&&key.startsWith('bj_'))lsKeys.push(key);
+    }
+    report.push('📋 localStorage中找到 '+lsKeys.length+' 个笔记AI相关键');
+    
+    // 3. 尝试恢复作坊文章
+    var cachedWs=dbCache[K.ws];
+    if(cachedWs&&Array.isArray(cachedWs)&&cachedWs.length>ws.length){
+      var oldCount=ws.length;
+      ws=cachedWs;
+      sv(K.ws,ws);
+      recovered.ws=ws.length-oldCount;
+      report.push('📖 作坊文章：恢复了 '+recovered.ws+' 篇（总计 '+ws.length+' 篇）');
+    }else{
+      report.push('📖 作坊文章：当前 '+ws.length+' 篇，无更多可恢复');
+    }
+    
+    // 4. 尝试恢复收藏
+    var cachedCols=dbCache[K.cols];
+    if(cachedCols&&typeof cachedCols==='object'){
+      var oldBooks=(cols.books||[]).length;
+      var oldShorts=(cols.shorts||[]).length;
+      if(cachedCols.books&&cachedCols.books.length>oldBooks){
+        cols.books=cachedCols.books;recovered.cols+=cols.books.length-oldBooks;
+      }
+      if(cachedCols.shorts&&cachedCols.shorts.length>oldShorts){
+        cols.shorts=cachedCols.shorts;recovered.cols+=cols.shorts.length-oldShorts;
+      }
+      sv(K.cols,cols);
+      report.push('📚 收藏：恢复了 '+recovered.cols+' 篇');
+    }
+    
+    // 5. 尝试恢复创作作品
+    var cachedCr=dbCache['bj_crWorks'];
+    if(cachedCr&&Array.isArray(cachedCr)&&cachedCr.length>crWorks.length){
+      var oldCr=crWorks.length;
+      crWorks=cachedCr;
+      sv('bj_crWorks',crWorks);
+      recovered.cr=crWorks.length-oldCr;
+      report.push('✍ 创作作品：恢复了 '+recovered.cr+' 个');
+    }
+    
+    // 6. 扫描笔记
+    var noteCount=0;
+    lsKeys.forEach(function(key){
+      if(key.startsWith('bj_notes_')){
+        try{
+          var notes=JSON.parse(localStorage.getItem(key));
+          if(Array.isArray(notes)&&notes.length>0){
+            var cached=dbCache[key];
+            if(!cached||!Array.isArray(cached)||cached.length<notes.length){
+              dbCache[key]=notes;
+              dbSet(key,notes);
+              noteCount+=notes.length;
+            }
+          }
+        }catch(e){}
+      }
+    });
+    if(noteCount>0){
+      recovered.notes=noteCount;
+      report.push('📝 笔记：恢复了 '+noteCount+' 条');
+    }
+    
+    // 7. 恢复角色/设定等
+    var settingKeys=['bj_charRelations','bj_npcList','bj_rpChars','bj_globalWorld','bj_globalRule',
+      'bj_globalBanWords','bj_customSysPrompt','bj_goalSettings','bj_goalProgress',
+      'bj_articleContexts','bj_storyWheels','bj_genLogs','bj_favItems','bj_savedPhrases',
+      'bj_genTemplates','bj_rtInterviews','bj_rtPlays'];
+    settingKeys.forEach(function(key){
+      var cached=dbCache[key];
+      var local=null;
+      try{local=JSON.parse(localStorage.getItem(key));}catch(e){}
+      if(!cached&&local){
+        dbCache[key]=local;
+        dbSet(key,local);
+        recovered.other++;
+      }else if(cached&&!local){
+        // IndexedDB有但localStorage没有，算已恢复
+      }
+    });
+    if(recovered.other>0)report.push('⚙ 其他设定：恢复了 '+recovered.other+' 项');
+    
+    // 8. 重新渲染
+    try{renderArticles();}catch(e){}
+    try{renderCollections();}catch(e){}
+    try{renderCrList();}catch(e){}
+    try{updateStats();}catch(e){}
+    
+    var total=recovered.ws+recovered.cols+recovered.cr+recovered.notes+recovered.other;
+    var resultMsg='🔍 扫描完成\n\n'+report.join('\n')+'\n\n';
+    if(total>0){
+      resultMsg+='✅ 共恢复了 '+total+' 项数据！\n\n⚠️ 强烈建议立即导出备份，防止再次丢失。';
+    }else{
+      resultMsg+='😔 未发现可恢复的额外数据。\n\n可能的原因：\n· 浏览器缓存已被彻底清除\n· 数据从未保存到本设备\n· 使用了无痕/隐身模式\n\n建议：以后定期使用「导出全部数据」功能备份。';
+    }
+    showDlg('恢复结果',resultMsg,function(){
+      if(total>0){
+        if(confirm('是否立即导出备份？')){exportData();}
+      }
+    });
+  });
+}
 function clearOldGenLog(){
   const oneMonth=30*24*60*60*1000;
   const now=Date.now();
@@ -23519,7 +23826,7 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 3. 问题排查：API报错、功能异常等技术问题的排查指引
 4. 情感陪伴：缓解卡文焦虑、鼓励坚持、庆祝完成
 
-═══════ 第三章：网页功能全景（v1.3.4）═════
+═══════ 第三章：网页功能全景（v1.3.6）═════
 
 【底部导航 - 五个主页面】
 
@@ -23810,6 +24117,9 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 - 封面渲染升级为2倍分辨率，手机和电脑上都能清晰显示文字
 - 输出格式改为PNG无损，文字边缘更锐利
 
+📋 AI评价一键复制：评价完成后可直接复制建议
+💬 星笺消息分段开关：设置→其他设置→星笺精灵中控制
+
 🧰 AI工具专用API增强
 - 工具API现在支持独立设置Temperature和Max Tokens
 - 工具API模型名支持「拉取」按钮，从接口自动获取可用模型列表
@@ -23822,6 +24132,65 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 - 原因是作者个人精力和经济原因需要恢复
 - 绝对不会放弃这个项目，现有功能全部正常使用
 - 建议用户定期导出数据备份
+
+🛡️ API防抖冷却（v1.3.6 新增）
+- 每次AI操作后有2秒冷却，防止连续点击导致费用激增
+- 覆盖：作坊生成、续写、星笺聊天、角色模拟
+- 用户看到"操作太频繁"是正常的冷却提示
+
+🆘 紧急数据恢复（v1.3.6 新增，在设置→数据管理）
+- 尝试从IndexedDB和localStorage碎片中恢复丢失的数据
+- 适用于：没有备份但数据意外丢失的情况
+- 不保证100%恢复，越早执行越好
+- 恢复后建议立即导出备份
+- 如果用户说"数据丢了"，第一时间推荐这个功能
+
+🕐 角色时间感知（v1.3.6 新增，设置→其他设置→角色模拟）
+- 默认关闭，开启后角色能感知当前时间和对话间隔
+- 角色会根据时间自然调整回复（深夜说话方式不同于白天、久别重逢会提到时间等）
+
+🔒 导入导出增强（v1.3.6）
+- 导出前自动校验JSON完整性，防止文件损坏
+- 导入旧版本数据时自动兼容转换（v1→v2→v3）
+- 导入后自动执行数据完整性检查
+
+【v1.3.4+ 新增工具功能补充】
+
+🔧 开发者实战调试面板（设置 → 数据管理 → 开发者工具 → 打开开关）
+- 数据完整性检查：自动扫描并修复损坏的数据结构（ws/cols/crWorks/characters等）
+- 实时性能监控：显示JS堆内存、DOM节点数、各数据量、生成状态、网络状态，2秒刷新一次
+- 内存详情：展示各模块（ws/cols/crWorks/resPacks等）的数据体积和占比，从大到小排列
+- 导出诊断报告：一键复制完整的系统环境+API配置+数据统计信息，方便排查问题
+- 修复孤儿笔记：找出文章已删但笔记还残留的情况，可一键清理
+- 清理重复数据：自动去除ws/cols/crWorks中ID重复的条目
+- 模拟离线：开发者可手动切换离线状态测试离线体验
+- 清除内存缓存：清除dbCache，不影响磁盘数据，用于排查缓存问题
+- 注意：这些功能只在开发者模式打开后才可见，普通用户不需要使用
+
+🔍 高级搜索语法（全局搜索中使用）
+- 在全局搜索输入框中支持以下语法：
+  · site:书名 → 只搜索标题包含"书名"的结果
+  · tag:灵感 → 只搜索带"灵感"标签的结果
+  · after:2025-01-01 → 只搜索该日期之后的结果
+  · before:2025-06-01 → 只搜索该日期之前的结果
+  · type:note → 只搜索笔记类型的结果（可选：work/note/foreshadow/timeline/fav）
+  · 可组合使用，例如：角色 site:我的小说 tag:修改 after:2025-03-01
+- 普通关键词搜索和之前一样，高级语法是额外的筛选条件
+
+🔗 角色关系图谱交互增强（人物设定 → 📊 可视化图谱）
+- 点击角色节点：弹出角色信息卡片，包含性格标签、设定简介、所有关系列表
+- 角色筛选：图谱底部有所有角色的按钮，点击某个角色名可以只显示该角色的关系网（其他角色变半透明）
+- 点击「全部」可恢复显示所有关系
+- 当前被筛选的角色会用红色高亮显示
+- 信息卡片中可以直接点击「筛选此角色关系」按钮
+
+📡 离线模式体验升级
+- 离线时所有AI按钮自动禁用（变灰+不可点击），恢复网络后自动恢复
+- 离线提示条5秒后自动收缩为4px细线（不遮挡操作），点击细线可再次展开查看详情
+- 新增 requireNetwork() 公共函数，所有需要网络的操作统一检查
+- 开发者工具中新增「模拟离线」按钮，可以手动测试离线体验
+- 工具API（callToolAPINonStream）现在也受离线拦截保护
+- 恢复网络时所有按钮状态会立即更新，不会残留禁用状态
 
 ═══════ 第四章：回答风格规范 ═══════
 
@@ -23970,42 +24339,64 @@ body.innerHTML=`
 return;
 }
 body.innerHTML='';
-xjMessages.forEach((msg,idx)=>{
-const div=document.createElement('div');
-div.className='xj-msg '+(msg.role==='assistant'?'xj':'user');
-div.dataset.idx=idx;
-const time=msg.time?new Date(msg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
-div.innerHTML=esc(msg.content).replace(/\n/g,'<br>')+'<span class="xj-time">'+(msg.role==='assistant'?'星笺':'')+' '+time+'</span>';
-// 绑定长按事件
-let lpTimer=null;
-let startX=0,startY=0,moved=false;
-div.addEventListener('touchstart',function(e){
-moved=false;
-if(e.touches.length>0){startX=e.touches[0].clientX;startY=e.touches[0].clientY;}
-lpTimer=setTimeout(()=>{
-if(moved)return;
-e.preventDefault();
-if(navigator.vibrate)navigator.vibrate(30);
-showXjMsgMenu(idx,e.touches[0].clientX,e.touches[0].clientY);
-},500);
-},{passive:false});
-div.addEventListener('touchmove',function(e){
-if(e.touches.length>0){
-const dx=Math.abs(e.touches[0].clientX-startX);
-const dy=Math.abs(e.touches[0].clientY-startY);
-if(dx>10||dy>10){moved=true;clearTimeout(lpTimer);}
+var i=0;
+while(i<xjMessages.length){
+  var msg=xjMessages[i];
+  if(msg.role==='user'){
+    var div=document.createElement('div');
+    div.className='xj-msg user';
+    div.dataset.idx=i;
+    var time=msg.time?new Date(msg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+    div.innerHTML=esc(msg.content).replace(/\n/g,'<br>')+'<span class="xj-time">'+time+'</span>';
+    _bindXjMsgLP(div,i);
+    body.appendChild(div);
+    i++;
+  }else{
+    // assistant消息：把连续的合成一组
+    var group=document.createElement('div');
+    group.style.cssText='display:flex;flex-direction:column;gap:4px;align-self:flex-start;max-width:80%';
+    while(i<xjMessages.length&&xjMessages[i].role==='assistant'){
+      var amsg=xjMessages[i];
+      var adiv=document.createElement('div');
+      adiv.className='xj-msg xj';
+      adiv.dataset.idx=i;
+      adiv.style.maxWidth='100%';
+      var atime=amsg.time?new Date(amsg.time).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}):'';
+      adiv.innerHTML=esc(amsg.content).replace(/\n/g,'<br>')+'<span class="xj-time">星笺 '+atime+'</span>';
+      _bindXjMsgLP(adiv,i);
+      group.appendChild(adiv);
+      i++;
+    }
+    body.appendChild(group);
+  }
 }
-},{passive:false});
-div.addEventListener('touchend',()=>{clearTimeout(lpTimer);});
-div.addEventListener('touchcancel',()=>{clearTimeout(lpTimer);});
-// PC端右键菜单
-div.addEventListener('contextmenu',function(e){
-e.preventDefault();
-showXjMsgMenu(idx,e.clientX,e.clientY);
-});
-body.appendChild(div);
-});
 body.scrollTop=body.scrollHeight;
+}
+
+function _bindXjMsgLP(div,idx){
+  var lpTimer=null;
+  var startX=0,startY=0,moved=false;
+  div.addEventListener('touchstart',function(e){
+    moved=false;
+    if(e.touches.length>0){startX=e.touches[0].clientX;startY=e.touches[0].clientY;}
+    lpTimer=setTimeout(function(){
+      if(moved)return;
+      e.preventDefault();
+      if(navigator.vibrate)navigator.vibrate(30);
+      showXjMsgMenu(idx,e.touches[0].clientX,e.touches[0].clientY);
+    },500);
+  },{passive:false});
+  div.addEventListener('touchmove',function(e){
+    if(e.touches.length>0){
+      if(Math.abs(e.touches[0].clientX-startX)>10||Math.abs(e.touches[0].clientY-startY)>10){moved=true;clearTimeout(lpTimer);}
+    }
+  },{passive:false});
+  div.addEventListener('touchend',function(){clearTimeout(lpTimer);});
+  div.addEventListener('touchcancel',function(){clearTimeout(lpTimer);});
+  div.addEventListener('contextmenu',function(e){
+    e.preventDefault();
+    showXjMsgMenu(idx,e.clientX,e.clientY);
+  });
 }
 
 function showXjTyping(){
@@ -24022,84 +24413,131 @@ function hideXjTyping(){
 const typing=document.getElementById('xjTyping');
 if(typing)typing.remove();
 }
+// ==================== 星笺分条发送 ====================
+let xjPendingMessages = [];
 
+function xjAddPending(){
+  var input = document.getElementById('xjInput');
+  var text = (input.value||'').trim();
+  if(!text) return;
+  
+  xjPendingMessages.push(text);
+  input.value = '';
+  input.style.height = '44px';
+  
+  // 立即显示在聊天中
+  xjMessages.push({role:'user', content:text, time:new Date().toISOString()});
+  if(xjMessages.length > XJ_MAX_CONTEXT*2){
+    xjMessages = xjMessages.slice(-XJ_MAX_CONTEXT*2);
+  }
+  sv('bj_xjMessages', xjMessages);
+  renderXjMessages();
+  
+  updateXjPendingUI();
+  showToast('消息已暂存，点击 ✅ 发送给星笺');
+}
+
+function updateXjPendingUI(){
+  var count = xjPendingMessages.length;
+  var hint = document.getElementById('xjPendingHint');
+  var badge = document.getElementById('xjPendingBadge');
+  var numEl = document.getElementById('xjPendingNum');
+  
+  if(count > 0){
+    if(hint) hint.style.display = 'block';
+    if(numEl) numEl.textContent = count;
+    if(badge){badge.style.display = 'flex'; badge.textContent = count;}
+  } else {
+    if(hint) hint.style.display = 'none';
+    if(badge) badge.style.display = 'none';
+  }
+}
+
+async function xjSendAllPending(){
+  if(!checkApiCooldown()) return;
+  
+  // 如果没有暂存但最后一条是用户消息，也允许发送
+  if(xjPendingMessages.length === 0){
+    if(xjMessages.length === 0){showToast('请先发送消息');return;}
+    var lastMsg = xjMessages[xjMessages.length - 1];
+    if(lastMsg.role !== 'user'){
+      showToast('没有待发送的消息');
+      return;
+    }
+  }
+  
+  var cfg = getCurApi();
+  if(!cfg.url || !cfg.key){
+    showToast('请先在设置中配置API哦～');
+    return;
+  }
+  
+  // 清空暂存队列
+  xjPendingMessages = [];
+  updateXjPendingUI();
+  
+  // 调用原有的星笺回复逻辑
+  var btn = document.getElementById('xjSendBtn');
+  var receiveBtn = document.getElementById('xjReceiveBtn');
+  var stopBtn = document.getElementById('xjStopBtn');
+  if(btn) btn.style.display = 'none';
+  if(receiveBtn) receiveBtn.style.display = 'none';
+  if(stopBtn) stopBtn.style.display = 'flex';
+  
+  showXjTyping();
+  
+  var now = new Date();
+  var timeInfo = '\n【当前时间信息】\n- 现在是：' + now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 ' + ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()] + '\n- 具体时间：' + now.getHours() + '时' + now.getMinutes() + '分\n- 时段：' + getTimePeriod(now) + '\n\n请根据当前时间自然地融入对话';
+  
+  var messages = [{role:'system', content:XJ_SYSTEM_PROMPT + timeInfo}];
+  var contextMsgs = xjMessages.slice(-XJ_MAX_CONTEXT*2);
+  contextMsgs.forEach(function(m){
+    messages.push({role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content});
+  });
+  
+  xjAbortCtrl = new AbortController();
+  
+  try{
+    var ep = buildChatEndpoint(cfg.url);
+    if(!ep.endpoint){showToast('API地址为空');return;}
+    var resp = await fetch(ep.endpoint, {
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
+      body:JSON.stringify({model:cfg.model, messages:messages, temperature:0.85, max_tokens:2048}),
+      signal:xjAbortCtrl.signal
+    });
+    
+    hideXjTyping();
+    if(btn) btn.style.display = 'flex';
+    if(receiveBtn) receiveBtn.style.display = 'flex';
+    if(stopBtn) stopBtn.style.display = 'none';
+    xjAbortCtrl = null;
+    
+    if(!resp.ok){
+      addXjReply('呜...星笺好像遇到了一点小问题，等会儿再试试好吗？('+resp.status+')');
+      return;
+    }
+    var data = await resp.json();
+    if(data.choices && data.choices[0] && data.choices[0].message){
+      addXjReply(data.choices[0].message.content);
+    } else {
+      addXjReply('咦？星笺的魔法好像出了点小差错...再试一次吧～');
+    }
+  }catch(e){
+    hideXjTyping();
+    if(btn) btn.style.display = 'flex';
+    if(receiveBtn) receiveBtn.style.display = 'flex';
+    if(stopBtn) stopBtn.style.display = 'none';
+    xjAbortCtrl = null;
+    if(e.name === 'AbortError'){
+      showToast('已停止回复');
+      return;
+    }
+    addXjReply('呜...网络好像不太稳定，星笺暂时联系不上灵感之境了...');
+  }
+}
 async function sendXjMsg(){
-const input=document.getElementById('xjInput');
-const text=(input.value||'').trim();
-if(!text)return;
-const cfg=getCurApi();
-if(!cfg.url||!cfg.key){
-showToast('请先在设置中配置API哦～');
-return;
-}
-input.value='';
-input.style.height='44px';
-const btn=document.getElementById('xjSendBtn');
-const stopBtn=document.getElementById('xjStopBtn');
-btn.style.display='none';
-stopBtn.style.display='flex';
-xjMessages.push({role:'user',content:text,time:new Date().toISOString()});
-if(xjMessages.length>XJ_MAX_CONTEXT*2){
-xjMessages=xjMessages.slice(-XJ_MAX_CONTEXT*2);
-}
-sv('bj_xjMessages',xjMessages);
-renderXjMessages();
-showXjTyping();
-const now=new Date();
-const timeInfo=`
-【当前时间信息】
-- 现在是：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日 ${['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()]}
-- 具体时间：${now.getHours()}时${now.getMinutes()}分
-- 时段：${getTimePeriod(now)}
-
-请根据当前时间自然地融入对话`;
-const messages=[{role:'system',content:XJ_SYSTEM_PROMPT+timeInfo}];
-const contextMsgs=xjMessages.slice(-XJ_MAX_CONTEXT*2);
-contextMsgs.forEach(m=>{
-messages.push({role:m.role==='assistant'?'assistant':'user',content:m.content});
-});
-xjAbortCtrl=new AbortController();
-try{
-const ep=buildChatEndpoint(cfg.url);
-if(!ep.endpoint){showToast('API地址为空');return;}
-const resp=await fetch(ep.endpoint,{
-method:'POST',
-headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
-body:JSON.stringify({
-model:cfg.model,
-messages:messages,
-temperature:0.85,
-max_tokens:2048
-}),
-signal:xjAbortCtrl.signal
-});
-hideXjTyping();
-btn.style.display='flex';
-stopBtn.style.display='none';
-xjAbortCtrl=null;
-if(!resp.ok){
-const errText=await resp.text();
-btn.style.display='flex';stopBtn.style.display='none';
-addXjReply('呜...星笺好像遇到了一点小问题，等会儿再试试好吗？('+resp.status+')');
-return;
-}
-const data=await resp.json();
-if(data.choices&&data.choices[0]&&data.choices[0].message){
-addXjReply(data.choices[0].message.content);
-}else{
-addXjReply('咦？星笺的魔法好像出了点小差错...再试一次吧～');
-}
-}catch(e){
-hideXjTyping();
-btn.style.display='flex';
-stopBtn.style.display='none';
-xjAbortCtrl=null;
-if(e.name==='AbortError'){
-showToast('已停止回复');
-return;
-}
-addXjReply('呜...网络好像不太稳定，星笺暂时联系不上灵感之境了...');
-}
+  xjAddPending();
 }
 
 function getTimePeriod(date){
@@ -24116,7 +24554,26 @@ return '深夜（夜深了要注意休息哦）';
 
 function addXjReply(content){
 content=(content||'').replace(/\*\*([^*]+)\*\*/g,'$1').replace(/\*([^*]+)\*/g,'$1').replace(/^[\s]*[-—–]+\s+/gm,'· ').replace(/^#+\s*/gm,'').replace(/_{2,}/g,'').replace(/`([^`]+)`/g,'$1').replace(/^---+$/gm,'').replace(/^===+$/gm,'').replace(/\*\*/g,'').replace(/\*/g,'');
-xjMessages.push({role:'assistant',content:content,time:new Date().toISOString()});
+// 分条输出：按换行拆分
+var lines=content.split(/\n+/).map(function(l){return l.trim();}).filter(function(l){return l;});
+if(!xjMsgSplit||lines.length<=1){
+  // 只有一条，不分
+  xjMessages.push({role:'assistant',content:content.trim()||'…',time:new Date().toISOString()});
+}else{
+  // 合并太短的行
+  var merged=[];
+  lines.forEach(function(line){
+    if(merged.length>0&&(line.length<4||merged[merged.length-1].length<4)){
+      merged[merged.length-1]+=' '+line;
+    }else{
+      merged.push(line);
+    }
+  });
+  var now=new Date().toISOString();
+  merged.forEach(function(line){
+    xjMessages.push({role:'assistant',content:line,time:now});
+  });
+}
 if(xjMessages.length>XJ_MAX_CONTEXT*2){
 xjMessages=xjMessages.slice(-XJ_MAX_CONTEXT*2);
 }
@@ -24157,13 +24614,8 @@ e.target.value='';
 function applyXjBg(){
 const bg=document.getElementById('xjBg');
 if(bg){
-if(xjBgImg){
-bg.style.backgroundImage='url('+xjBgImg+')';
+bg.style.backgroundImage='url(https://i.postimg.cc/6qR8qj3h/image-4.jpg)';
 bg.style.display='block';
-}else{
-bg.style.backgroundImage='';
-bg.style.display='none';
-}
 }
 }
 // 消息菜单相关
@@ -24345,8 +24797,12 @@ xjAbortCtrl.abort();
 xjAbortCtrl=null;
 }
 hideXjTyping();
-document.getElementById('xjSendBtn').style.display='flex';
-document.getElementById('xjStopBtn').style.display='none';
+var btn = document.getElementById('xjSendBtn');
+var receiveBtn = document.getElementById('xjReceiveBtn');
+var stopBtn = document.getElementById('xjStopBtn');
+if(btn) btn.style.display='flex';
+if(receiveBtn) receiveBtn.style.display='flex';
+if(stopBtn) stopBtn.style.display='none';
 showToast('已停止');
 }
 function clearXjChat(){
@@ -25573,6 +26029,7 @@ updatePopup=ld('bj_updatePopup',true);
 backupReminder=ld('bj_backupReminder',true);
 navBarText=ld('bj_navBarText',true);
 rpStreamOutput=ld('bj_rpStreamOutput',true);
+rpTimeAware=ld('bj_rpTimeAware',false);
 rpMsgSplit=ld('bj_rpMsgSplit',true);
 clearDataConfirm=ld('bj_clearDataConfirm',true);
 rpChars = ld('bj_rpChars', []);
@@ -25729,32 +26186,32 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER){
   '</div>' +
   '<div style="font-family:ZCOOL QingKe HuangYou,PingFang SC,sans-serif;font-size:26px;font-weight:400;letter-spacing:4px;margin-top:14px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">笔记AI</div>' +
   '<div style="font-size:12px;color:var(--accent2);margin-top:4px;font-weight:600;letter-spacing:1px">' + APP_VER + '</div>' +
-  '<div style="font-size:10px;color:var(--text2);margin-top:6px">2026.4.1 更新</div>' +
+  '<div style="font-size:10px;color:var(--text2);margin-top:6px">2026.4.10 更新</div>' +
   '<div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:12px auto 0;border-radius:1px"></div>' +
 '</div>\n\n' +
 
 '<div style="background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(162,155,254,.06));border:1px solid rgba(108,92,231,.25);border-radius:14px;padding:14px 16px;margin:8px 0 14px">' +
   '<div style="font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="fas fa-sparkles" style="font-size:14px"></i> 重磅新功能</div>' +
   '<div style="font-size:12px;line-height:2;color:var(--text)">' +
-    '🔍 <b>全局搜索</b>：一键搜遍作品、笔记、伏笔、时间线<br>' +
-    '🎨 <b>内置封面</b>：8种精美风格，输入书名即可生成<br>' +
-    '🎨 <b>角色设计器</b>：AI生成完整人设，一键写回<br>' +
-    '🎤 <b>角色访谈</b>：20个灵魂拷问挖掘角色内心<br>' +
-    '🎬 <b>剧场扮演</b>：设定剧本，AI生成角色短篇<br>' +
-    '📦 <b>生成模板</b>：一键保存切换整套创作配置<br>' +
-    '🔗 <b>关系图谱</b>：圆形布局直观展示角色网络<br>' +
-    '⏰ <b>时间线</b>：记录故事时间，AI检测矛盾' +
+  '💬 <b>星笺分条发送</b>：支持暂存多条消息后一次性发送<br>' +
+    '❤️ <b>红心实时更新</b>：作坊卡片收藏状态立即刷新<br>' +
+    '🛡️ <b>API防抖冷却</b>：防止连续点击导致费用激增<br>' +
+    '🆘 <b>紧急数据恢复</b>：尝试从存储碎片中找回丢失数据<br>' +
+    '🕐 <b>角色时间感知</b>：角色知道当前时间和对话间隔<br>' +
+    '🔒 <b>导入导出增强</b>：版本兼容转换+完整性校验<br>' +
+    '🎨 <b>卡片布局优化</b>：精简按钮、FA图标、更紧凑<br>' +
+    '📋 <b>AI评价一键复制</b>：评价结果可一键复制<br>' +
+    '💬 <b>星笺消息分段</b>：设置中可控制星笺是否分条回复<br>' +
   '</div>' +
 '</div>' +
 
 '<div style="background:var(--card);border:1px solid var(--border);border-radius:14px;padding:14px 16px;margin-bottom:14px">' +
   '<div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="fas fa-bolt" style="color:#f0a030"></i> 稳定性提升</div>' +
   '<div style="font-size:11px;line-height:1.9;color:var(--text2)">' +
-    '🔒 后台保活：生成时切后台不中断，自动保存断点<br>' +
-    '📋 生成队列：多任务自动排队，互不冲突<br>' +
-    '📡 离线提示优化：5秒自动消失，不挡视线<br>' +
-    '🎨 跟随系统主题：自动适配深色/浅色模式<br>' +
-    '🧠 角色记忆条目化：逐条编辑删除，更精准' +
+        '🛡️ API冷却保护：2秒内不能重复触发生成请求<br>' +
+    '🔒 导出校验：导出前自动验证JSON完整性，防止文件损坏<br>' +
+    '📥 智能导入：自动识别旧版本数据并兼容转换<br>' +
+    '🆘 紧急恢复：从IndexedDB和localStorage碎片中抢救数据<br>' +
   '</div>' +
 '</div>' +
 
@@ -26335,7 +26792,9 @@ let backupReminder=ld('bj_backupReminder',true);
 let navBarText=ld('bj_navBarText',true);
 let rpStreamOutput=ld('bj_rpStreamOutput',true);
 let rpMsgSplit=ld('bj_rpMsgSplit',true);
+let rpTimeAware=ld('bj_rpTimeAware',false);
 let clearDataConfirm=ld('bj_clearDataConfirm',true);
+let xjMsgSplit=ld('bj_xjMsgSplit',false);
 function toggleXjVisibleSwitch(){
   xjVisible = !xjVisible;
   sv('bj_xjVisible', xjVisible);
@@ -26431,15 +26890,15 @@ function toggleSwitch7(key){
     backupReminder:{get:function(){return backupReminder;},set:function(v){backupReminder=v;sv('bj_backupReminder',v);}},
     navBarText:{get:function(){return navBarText;},set:function(v){navBarText=v;sv('bj_navBarText',v);applyNavBarText();}},
     rpStreamOutput:{get:function(){return rpStreamOutput;},set:function(v){rpStreamOutput=v;sv('bj_rpStreamOutput',v);}},
-    rpMsgSplit:{get:function(){return rpMsgSplit;},set:function(v){rpMsgSplit=v;sv('bj_rpMsgSplit',v);}},
-    clearDataConfirm:{get:function(){return clearDataConfirm;},set:function(v){clearDataConfirm=v;sv('bj_clearDataConfirm',v);}}
+    rpMsgSplit:{get:function(){return rpMsgSplit;},set:function(v){rpMsgSplit=v;sv('bj_rpMsgSplit',v);}},rpTimeAware:{get:function(){return rpTimeAware;},set:function(v){rpTimeAware=v;sv('bj_rpTimeAware',v);}},
+    clearDataConfirm:{get:function(){return clearDataConfirm;},set:function(v){clearDataConfirm=v;sv('bj_clearDataConfirm',v);}},xjMsgSplit:{get:function(){return xjMsgSplit;},set:function(v){xjMsgSplit=v;sv('bj_xjMsgSplit',v);}}
   };
   var item=map[key];
   if(!item)return;
   var newVal=!item.get();
   item.set(newVal);
   updateSwitch7UI(key,newVal);
-  var labels={autoSaveToast:'自动保存提醒',contAutoScroll:'续写自动滚动',genVibrate:'生成完成震动',autoChSummary:'章节自动摘要',rdProgressMemory:'阅读进度记忆',edExitConfirm:'退出编辑器确认',showThemeBtn:'快速切换主题按钮',genConfirm:'生成前确认',contAutoExtend:'续写自动补写',contDirMemory:'续写方向记忆',paraLongPress:'长按段落菜单',rdFooterVisible:'阅读器底部状态栏',updatePopup:'更新弹窗提示',backupReminder:'定期备份提醒',navBarText:'底部导航栏文字',rpStreamOutput:'角色流式输出',rpMsgSplit:'角色消息分段',clearDataConfirm:'清除数据二次确认'};
+  var labels={autoSaveToast:'自动保存提醒',contAutoScroll:'续写自动滚动',genVibrate:'生成完成震动',autoChSummary:'章节自动摘要',rdProgressMemory:'阅读进度记忆',edExitConfirm:'退出编辑器确认',showThemeBtn:'快速切换主题按钮',genConfirm:'生成前确认',contAutoExtend:'续写自动补写',contDirMemory:'续写方向记忆',paraLongPress:'长按段落菜单',rdFooterVisible:'阅读器底部状态栏',updatePopup:'更新弹窗提示',backupReminder:'定期备份提醒',navBarText:'底部导航栏文字',rpStreamOutput:'角色流式输出',rpMsgSplit:'角色消息分段',clearDataConfirm:'清除数据二次确认',xjMsgSplit:'星笺消息分段',rpTimeAware:'角色时间感知'};
   showToast((labels[key]||key)+'：'+(newVal?'已开启':'已关闭'));
 }
 
@@ -26472,8 +26931,10 @@ function initAll7Switches(){
   updateSwitch7UI('rpStreamOutput',rpStreamOutput);
   updateSwitch7UI('rpMsgSplit',rpMsgSplit);
   updateSwitch7UI('clearDataConfirm',clearDataConfirm);
+  updateSwitch7UI('xjMsgSplit',xjMsgSplit);
+  updateSwitch7UI('rpTimeAware',rpTimeAware);
   applyThemeBtnVisible();
-  applyNavBarText();
+  setTimeout(applyNavBarText,50);
   applyRdFooterVisible();
 }
 
@@ -26482,48 +26943,31 @@ function applyThemeBtnVisible(){
   btns.forEach(function(b){b.style.display=showThemeBtn?'':'none';});
 }
 function applyNavBarText(){
+  var labels=['作坊','收藏','创作','设置','资源'];
   var items=document.querySelectorAll('.bnav-i');
-  items.forEach(function(btn){
-    // 找到直接子文本节点（导航文字）
+  items.forEach(function(btn,idx){
+    // 找到svg后面的文本
     var textNodes=[];
-    btn.childNodes.forEach(function(node){
-      if(node.nodeType===3&&node.textContent.trim())textNodes.push(node);
+    btn.childNodes.forEach(function(n){
+      if(n.nodeType===3) textNodes.push(n);
     });
-    textNodes.forEach(function(node){
-      // 第一次隐藏时保存原始文字
-      if(!navBarText){
-        if(!node._originalText)node._originalText=node.textContent.trim()||node._originalText;
-        node.textContent='';
-      }else{
-        // 恢复时：优先用保存的原文，没有就不动
-        if(node._originalText){
-          node.textContent=node._originalText;
-        }
-      }
-    });
-  });
-  // 找出没有文字被保存但文本已空的节点，从HTML重建
-  if(navBarText){
-    var labels=['作坊','收藏','创作','设置','资源'];
-    items.forEach(function(btn,i){
-      var hasText=false;
-      btn.childNodes.forEach(function(node){
-        if(node.nodeType===3&&node.textContent.trim())hasText=true;
-      });
-      if(!hasText&&labels[i]){
-        btn.appendChild(document.createTextNode(labels[i]));
-      }
-    });
-  }
-  var nav=document.getElementById('bnav');
-  if(nav){
-    if(!navBarText){
-      nav.style.paddingTop='10px';
-      nav.style.paddingBottom='calc(10px + env(safe-area-inset-bottom, 0px))';
-    }else{
-      nav.style.paddingTop='';
-      nav.style.paddingBottom='';
+    // 先全部删除文本节点
+    textNodes.forEach(function(n){n.remove();});
+    // 如果需要显示文字，重新添加
+    if(navBarText){
+      var t=document.createTextNode('\n'+labels[idx]);
+      btn.appendChild(t);
     }
+  });
+  // 调整padding
+  var nav=document.getElementById('bnav');
+  if(!nav)return;
+  if(!navBarText){
+    nav.style.paddingTop='10px';
+    nav.style.paddingBottom='calc(10px + env(safe-area-inset-bottom, 0px))';
+  }else{
+    nav.style.paddingTop='';
+    nav.style.paddingBottom='';
   }
 }
 
@@ -27935,6 +28379,41 @@ if(sb3) sb3.style.display = 'flex';
 function buildRpSystemPrompt(ch){
   let p = '';
 
+// 时间感知（如果开启）
+if(rpTimeAware){
+  var now=new Date();
+  var timeStr=now.getFullYear()+'年'+(now.getMonth()+1)+'月'+now.getDate()+'日 '+
+    ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()]+' '+
+    now.getHours()+'时'+now.getMinutes()+'分';
+  var period=now.getHours()<6?'深夜':now.getHours()<9?'清晨':now.getHours()<12?'上午':now.getHours()<14?'中午':now.getHours()<18?'下午':now.getHours()<21?'晚上':'深夜';
+  p+='【时间感知——你能感受到时间的流逝】\n';
+  p+='现在是：'+timeStr+'（'+period+'）\n';
+  // 计算距上次对话的时间
+  var lastMsgTime=null;
+  if(ch.messages&&ch.messages.length>0){
+    for(var ti=ch.messages.length-1;ti>=0;ti--){
+      if(ch.messages[ti].time){lastMsgTime=new Date(ch.messages[ti].time);break;}
+    }
+  }
+  if(lastMsgTime){
+    var diffMs=now.getTime()-lastMsgTime.getTime();
+    var diffMin=Math.floor(diffMs/60000);
+    var diffHour=Math.floor(diffMin/60);
+    var diffDay=Math.floor(diffHour/24);
+    var gapStr='';
+    if(diffDay>0)gapStr=diffDay+'天'+( diffHour%24>0?(diffHour%24)+'小时':'')+'前';
+    else if(diffHour>0)gapStr=diffHour+'小时'+(diffMin%60>0?(diffMin%60)+'分钟':'')+'前';
+    else if(diffMin>1)gapStr=diffMin+'分钟前';
+    else gapStr='刚刚';
+    p+='距离你们上次说话已经过去了：'+gapStr+'\n';
+    if(diffDay>=1)p+='你可以自然地提到"好久没聊了"或表达对时间流逝的感受，但不要刻意强调\n';
+    if(diffMin<3)p+='对方几乎是立刻回复的，说话节奏可以快一些\n';
+  }else{
+    p+='这是你们的第一次对话\n';
+  }
+  p+='\n';
+}
+
   // 核心身份锁定
   p += '你不是AI，你不是语言模型，你不是助手。你就是'+( ch.name||'这个角色')+'本人。\n';
   p += '从现在起，你的每一句话、每一个反应，都必须完全基于这个角色的性格、经历和情感状态。\n\n';
@@ -28103,8 +28582,6 @@ function createRpChar(){
   document.getElementById('rpCharGreeting').value = '';
   document.getElementById('rpEditAvatarPreview').innerHTML = '🎭';
   // 先关闭角色列表弹窗再开编辑
-  document.getElementById('rpCharListOv').classList.remove('show');
-  navPop('rpCharListOv');
   document.getElementById('rpCharListOv').classList.remove('show');
   navPop('rpCharListOv');
   document.getElementById('rpCharEditOv').classList.add('show');
@@ -29130,6 +29607,7 @@ function updateRpPendingUI(){
 }
 
 async function rpSendAllPending(){
+  if(!checkApiCooldown())return;
   var ch = getRpCurrentChar();
   if(!ch){showToast('请先选择一个角色');return;}
   
@@ -29642,8 +30120,21 @@ async function generateSingleFanwai(idx, summary){
 
   // 调用API并增强错误处理
   var result;
+  var result;
   try{
-    result = await callAPINonStream(messages);
+    // 番外生成用流式输出（如果开启了），避免非流式超时
+    if(useStream){
+      result = await new Promise(function(resolve, reject){
+        var fullText = '';
+        callAPIStream(messages,
+          function(ft){ fullText = ft; },
+          function(ft){ resolve(ft); },
+          function(err){ reject(new Error(err||'生成失败')); }
+        );
+      });
+    } else {
+      result = await callAPINonStream(messages);
+    }
   }catch(e){
     console.error('番外生成API调用失败:', e);
     showToast('番外第'+(idx+1)+'篇API调用失败：'+e.message, 4000);
@@ -30667,6 +31158,11 @@ function doGlobalSearch(){
     if(_navStack.length > 0){
       var topId = _navStack.pop();
       closeNavLayer(topId);
+      // 兜底：如果栈已空，强制恢复底部栏
+      if(_navStack.length === 0){
+        var nav = document.getElementById('bnav');
+        if(nav) nav.classList.remove('hide');
+      }
       // 再推一个空状态，保持"还能继续返回"
       if(_navStack.length > 0){
         history.pushState({nav:true}, '');
