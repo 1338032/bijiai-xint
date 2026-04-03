@@ -30632,22 +30632,69 @@ async function generateSingleFanwai(idx, summary){
   // 构建系统提示词（番外专用，精简版，避免token超限）
   var sysMsg = '你是一位才华横溢的小说家，擅长为已完结的作品续写番外篇。\n\n';
   
-  // 只注入核心人设（精简）
+// 注入完整人设
   var validChars = characters.filter(function(c){return c.name;});
   if(validChars.length > 0){
     sysMsg += '【核心角色】\n';
     validChars.forEach(function(c){
-      sysMsg += '· ' + c.name;
-      if(c.traits && c.traits.length > 0) sysMsg += '（' + c.traits.slice(0,3).join('·') + '）';
-      if(c.desc) sysMsg += '：' + c.desc.substring(0, 200);
+      sysMsg += '◆ ' + c.name;
+      if(c.traits && c.traits.length > 0) sysMsg += '（' + c.traits.join('·') + '）';
+      if(c.priority) sysMsg += ' [' + c.priority + ']';
+      sysMsg += '\n';
+      if(c.desc) sysMsg += c.desc.substring(0, 2000) + '\n';
+    });
+    sysMsg += '\n';
+  }
+
+  // NPC信息
+  if(npcList && npcList.length > 0){
+    sysMsg += '【配角/NPC】\n';
+    npcList.forEach(function(n){
+      if(!n.name) return;
+      sysMsg += '· ' + n.name + '[' + (n.role||'NPC') + ']';
+      if(n.traits && n.traits.length > 0) sysMsg += '（' + n.traits.join('·') + '）';
+      sysMsg += '\n';
+      if(n.desc) sysMsg += '  ' + n.desc.substring(0, 500) + '\n';
+    });
+    sysMsg += '\n';
+  }
+
+  // 人物关系
+  if(charRelations && charRelations.length > 0){
+    sysMsg += '【人物关系】\n';
+    charRelations.forEach(function(r){
+      var dir = r.direction==='A→B' ? '→' : r.direction==='B→A' ? '←' : '↔';
+      sysMsg += '· ' + r.charA + ' ' + dir + ' ' + r.charB + '：' + (r.type||'');
+      if(r.desc) sysMsg += '（' + r.desc.substring(0, 100) + '）';
       sysMsg += '\n';
     });
     sysMsg += '\n';
   }
-  
+
+  // 世界观
+  var fwGlobalWorld = (document.getElementById('globalWorldDesc') && document.getElementById('globalWorldDesc').value || globalWorld || '').trim();
+  var fwLocalWorld = (document.getElementById('worldDesc') && document.getElementById('worldDesc').value || '').trim();
+  var fwWorldAll = [fwGlobalWorld, fwLocalWorld].filter(Boolean).join('\n');
+  if(fwWorldAll) sysMsg += '【世界观】\n' + fwWorldAll.substring(0, 2000) + '\n\n';
+
   // 文风
   var fwStyleD = (document.getElementById('styleDesc') && document.getElementById('styleDesc').value || ap.curStyle || '').trim();
-  if(fwStyleD) sysMsg += '【文风】' + fwStyleD.substring(0, 300) + '\n\n';
+  if(fwStyleD) sysMsg += '【文风】\n' + fwStyleD.substring(0, 1000) + '\n\n';
+
+  // 规则
+  var fwGlobalRule = (document.getElementById('globalRuleDesc') && document.getElementById('globalRuleDesc').value || globalRule || '').trim();
+  var fwLocalRule = (document.getElementById('ruleDesc') && document.getElementById('ruleDesc').value || curRule || '').trim();
+  var fwRuleAll = [fwGlobalRule, fwLocalRule].filter(Boolean).join('\n');
+  if(fwRuleAll) sysMsg += '【创作规则】\n' + fwRuleAll.substring(0, 1000) + '\n\n';
+
+  // 禁用词
+  var fwGlobalBan = (document.getElementById('globalBanWordsInput') && document.getElementById('globalBanWordsInput').value || globalBanWords || '').trim();
+  var fwLocalBan = (document.getElementById('banWordsInput') && document.getElementById('banWordsInput').value || banWords || '').trim();
+  var fwBanAll = [fwGlobalBan, fwLocalBan].filter(Boolean).join('\n');
+  if(fwBanAll){
+    var fwBanList = fwBanAll.split('\n').map(function(w){return w.trim();}).filter(function(w){return w;}).slice(0, 30);
+    if(fwBanList.length > 0) sysMsg += '【避免使用】' + fwBanList.join('、') + '\n\n';
+  }
 
   sysMsg += '【番外篇写作原则】\n';
   sysMsg += '1. 角色性格和说话方式必须和原作一致\n';
