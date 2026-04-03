@@ -27229,8 +27229,6 @@ function openRelGraph(){
     showToast('至少需要2个有名字的角色才能显示图谱');
     return;
   }
-  // 关闭人物设定弹窗
-  closeSetModal('char');
   
   _rgmScale = 1;
   _rgmOffX = 0;
@@ -27253,9 +27251,6 @@ function openRelGraph(){
 function closeRelGraphModal(){
   navPop('relGraphModal');
   document.getElementById('relGraphModal').classList.remove('show');
-  document.getElementById('bnav').classList.remove('hide');
-  // 重新打开人物设定
-  setTimeout(function(){ openSetModal('char'); }, 200);
 }
 
 function rgmInitCanvas(){
