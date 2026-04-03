@@ -1580,6 +1580,74 @@ border:1px solid var(--border);position:relative;
 background:none;border:none;color:var(--danger);font-size:10px;cursor:pointer;
 padding:3px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);
 }
+/* 全屏关系图谱弹窗 */
+.rel-graph-modal{
+  display:none;position:fixed;inset:0;z-index:700;
+  background:var(--bg);overflow:hidden;
+  flex-direction:column;
+}
+.rel-graph-modal.show{display:flex;animation:slideUp .3s ease;}
+.rel-graph-modal .rgm-hdr{
+  position:sticky;top:0;z-index:10;
+  padding:14px 18px;display:flex;align-items:center;gap:12px;
+  border-bottom:1px solid var(--border);
+  background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(162,155,254,.06));
+  backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);
+  flex-shrink:0;
+}
+.rel-graph-modal .rgm-hdr h2{flex:1;font-size:17px;font-weight:700;margin:0;}
+.rel-graph-modal .rgm-body{
+  flex:1;overflow:hidden;position:relative;
+  touch-action:none;
+  -webkit-user-select:none;user-select:none;
+}
+.rel-graph-modal .rgm-canvas-wrap{
+  position:absolute;inset:0;
+  overflow:hidden;
+}
+.rel-graph-modal canvas{
+  display:block;
+  transform-origin:0 0;
+}
+.rel-graph-modal .rgm-controls{
+  position:absolute;bottom:16px;right:16px;z-index:5;
+  display:flex;flex-direction:column;gap:6px;
+}
+.rel-graph-modal .rgm-ctrl-btn{
+  width:40px;height:40px;border-radius:50%;
+  border:1px solid var(--border);background:var(--card);
+  color:var(--text);font-size:18px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 2px 10px rgba(0,0,0,.2);
+  transition:all .2s;
+}
+.rel-graph-modal .rgm-ctrl-btn:active{transform:scale(.9);border-color:var(--accent);}
+.rel-graph-modal .rgm-zoom-info{
+  position:absolute;top:14px;right:16px;z-index:5;
+  padding:4px 10px;border-radius:8px;
+  background:var(--card);border:1px solid var(--border);
+  font-size:10px;color:var(--text2);
+  pointer-events:none;
+}
+.rel-graph-modal .rgm-legend{
+  position:absolute;bottom:16px;left:16px;z-index:5;
+  background:var(--card);border:1px solid var(--border);
+  border-radius:12px;padding:10px 14px;
+  max-width:calc(100vw - 100px);
+  max-height:40vh;overflow-y:auto;
+  font-size:10px;color:var(--text2);line-height:1.6;
+  box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+.rel-graph-modal .rgm-filter-bar{
+  display:flex;flex-wrap:wrap;gap:4px;margin-top:6px;
+}
+.rel-graph-modal .rgm-filter-btn{
+  padding:2px 8px;border-radius:8px;font-size:9px;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--text2);transition:all .2s;
+}
+.rel-graph-modal .rgm-filter-btn.act{border-color:var(--accent);background:rgba(108,92,231,.15);color:var(--accent2);}
+.rel-graph-modal .rgm-filter-btn:active{transform:scale(.92);}
 /* 人物关系图 */
 .rel-graph{padding:14px;background:var(--bg);border-radius:12px;border:1px solid var(--border);margin-top:12px;}
 .rel-graph-title{font-size:12px;font-weight:600;color:var(--accent2);margin-bottom:10px;display:flex;justify-content:space-between;align-items:center;}
@@ -7347,6 +7415,28 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <div class="landscape-hint" id="landscapeHint">📱 横屏阅读体验更佳</div>
+<!-- REL GRAPH FULLSCREEN 全屏关系图谱 -->
+<div class="rel-graph-modal" id="relGraphModal">
+<div class="rgm-hdr">
+<button onclick="closeRelGraphModal()" style="background:none;border:none;color:var(--accent2);font-size:13px;cursor:pointer;padding:4px;display:flex;align-items:center;gap:5px">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:18px;height:18px"><path d="M15 18l-6-6 6-6"/></svg>返回
+</button>
+<h2>🔗 角色关系图谱</h2>
+<button onclick="rgmResetView()" style="padding:6px 12px;border-radius:8px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;cursor:pointer">重置视图</button>
+</div>
+<div class="rgm-body" id="rgmBody">
+<div class="rgm-canvas-wrap" id="rgmCanvasWrap">
+<canvas id="rgmCanvas"></canvas>
+</div>
+<div class="rgm-zoom-info" id="rgmZoomInfo">100%</div>
+<div class="rgm-controls">
+<button class="rgm-ctrl-btn" onclick="rgmZoomIn()">＋</button>
+<button class="rgm-ctrl-btn" onclick="rgmZoomOut()">－</button>
+<button class="rgm-ctrl-btn" onclick="rgmResetView()">⊙</button>
+</div>
+<div class="rgm-legend" id="rgmLegend"></div>
+</div>
+</div>
 <!-- CHAR DESIGNER 角色设计器 -->
 <div class="char-designer-ov" id="charDesignerOv">
 <div class="cd-hdr">
@@ -27120,43 +27210,84 @@ function applyRegenResult(article, fullText, feedback){
   showToast('🎉 已根据反馈重新生成！' + countWords(content) + '字', 3000);
 }
 
-// ==================== 角色关系可视化图谱 ====================
+// ==================== 全屏关系图谱（重构版） ====================
+let _rgmScale = 1;
+let _rgmOffX = 0;
+let _rgmOffY = 0;
+let _rgmIsDragging = false;
+let _rgmLastX = 0;
+let _rgmLastY = 0;
+let _rgmPinchDist = 0;
+let _rgmNodes = [];
+let _rgmFilter = '';
+let _rgmCanvasW = 0;
+let _rgmCanvasH = 0;
+
 function openRelGraph(){
-  if(!characters || characters.filter(function(c){return c.name;}).length < 2){
+  var allNames = getAllCharNames();
+  if(!allNames || allNames.length < 2){
     showToast('至少需要2个有名字的角色才能显示图谱');
     return;
   }
-  // 创建弹窗
-  var ov = document.createElement('div');
-  ov.id = 'relGraphOv';
-  ov.style.cssText = 'display:flex;position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:16px;animation:fadeIn .25s ease';
-  ov.onclick = function(e){if(e.target === ov){ov.remove();navPop('relGraphOv');}};
-
-  var box = document.createElement('div');
-  box.style.cssText = 'background:var(--card);border-radius:18px;width:100%;max-width:500px;max-height:90vh;border:1px solid var(--border);padding:16px;display:flex;flex-direction:column;overflow:hidden';
-
-  box.innerHTML =
-    '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">' +
-      '<h3 style="font-size:15px;font-weight:700;margin:0">🔗 角色关系图谱</h3>' +
-      '<button onclick="document.getElementById(\'relGraphOv\').remove();navPop(\'relGraphOv\')" style="background:none;border:none;color:var(--text2);font-size:18px;cursor:pointer;padding:4px 8px">✕</button>' +
-    '</div>' +
-    '<canvas id="relGraphCanvas" style="width:100%;border-radius:12px;background:var(--bg);border:1px solid var(--border)"></canvas>' +
-    '<div style="margin-top:10px;font-size:10px;color:var(--text2);line-height:1.6" id="relGraphLegend"></div>';
-
-  ov.appendChild(box);
-  document.body.appendChild(ov);
-  navPush('relGraphOv');
-
-  // 等DOM渲染后画图
+  // 关闭人物设定弹窗
+  closeSetModal('char');
+  
+  _rgmScale = 1;
+  _rgmOffX = 0;
+  _rgmOffY = 0;
+  _rgmFilter = '';
+  
+  document.getElementById('relGraphModal').classList.add('show');
+  navPush('relGraphModal');
+  document.getElementById('bnav').classList.add('hide');
+  
   requestAnimationFrame(function(){
-    setTimeout(function(){ drawRelGraph(); }, 100);
+    setTimeout(function(){
+      rgmInitCanvas();
+      rgmDraw();
+      rgmBindGestures();
+    }, 150);
   });
 }
 
-function drawRelGraph(){
-  var canvas = document.getElementById('relGraphCanvas');
-  if(!canvas) return;
+function closeRelGraphModal(){
+  navPop('relGraphModal');
+  document.getElementById('relGraphModal').classList.remove('show');
+  document.getElementById('bnav').classList.remove('hide');
+  // 重新打开人物设定
+  setTimeout(function(){ openSetModal('char'); }, 200);
+}
 
+function rgmInitCanvas(){
+  var wrap = document.getElementById('rgmCanvasWrap');
+  var canvas = document.getElementById('rgmCanvas');
+  if(!wrap || !canvas) return;
+  var rect = wrap.getBoundingClientRect();
+  var dpr = window.devicePixelRatio || 1;
+  _rgmCanvasW = rect.width;
+  _rgmCanvasH = rect.height;
+  canvas.style.width = _rgmCanvasW + 'px';
+  canvas.style.height = _rgmCanvasH + 'px';
+  canvas.width = _rgmCanvasW * dpr;
+  canvas.height = _rgmCanvasH * dpr;
+  var ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+}
+
+function rgmDraw(){
+  var canvas = document.getElementById('rgmCanvas');
+  if(!canvas) return;
+  var dpr = window.devicePixelRatio || 1;
+  var ctx = canvas.getContext('2d');
+  ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  ctx.clearRect(0, 0, _rgmCanvasW, _rgmCanvasH);
+  
+  // 应用缩放和平移
+  ctx.save();
+  ctx.translate(_rgmOffX, _rgmOffY);
+  ctx.scale(_rgmScale, _rgmScale);
+  
+  // 收集角色
   var names = [];
   var nameSet = new Set();
   (characters || []).forEach(function(c){
@@ -27171,50 +27302,37 @@ function drawRelGraph(){
       nameSet.add(n.name);
     }
   });
-
-  if(names.length < 2){showToast('角色太少');return;}
-
-  var dpr = window.devicePixelRatio || 1;
-  var rect = canvas.getBoundingClientRect();
-  var W = rect.width;
-  var H = Math.max(350, Math.min(W, 450));
-  canvas.style.height = H + 'px';
-  canvas.width = W * dpr;
-  canvas.height = H * dpr;
-  var ctx = canvas.getContext('2d');
-  ctx.scale(dpr, dpr);
-  ctx.clearRect(0, 0, W, H);
-
-  var cx = W / 2;
-  var cy = H / 2;
-  var radius = Math.min(cx, cy) - 50;
+  
+  if(names.length < 2){ ctx.restore(); return; }
+  
+  // 计算布局 - 根据人数动态调整
   var count = names.length;
-
-  // 计算位置（支持拖动后的自定义位置）
+  var cx = _rgmCanvasW / (2 * _rgmScale);
+  var cy = _rgmCanvasH / (2 * _rgmScale);
+  // 大圆半径根据人数和画布大小动态计算
+  var baseR = Math.min(cx, cy) - 60;
+  var radius = count <= 6 ? baseR * 0.7 : count <= 12 ? baseR * 0.85 : baseR;
+  // 人数非常多时加大半径
+  if(count > 15) radius = Math.max(radius, 180);
+  if(count > 25) radius = Math.max(radius, 250);
+  
   var positions = [];
   for(var i = 0; i < count; i++){
     var angle = (Math.PI * 2 * i / count) - Math.PI / 2;
-    var saved = names[i]._pos;
-    if(saved){
-      positions.push({x:saved.x, y:saved.y, angle:angle});
-    }else{
-      positions.push({
-        x: cx + radius * Math.cos(angle),
-        y: cy + radius * Math.sin(angle),
-        angle: angle
-      });
-    }
+    positions.push({
+      x: cx + radius * Math.cos(angle),
+      y: cy + radius * Math.sin(angle)
+    });
   }
-
+  
   var relColors = {
     '恋人':'#ff6b6b','暗恋':'#ff9ff3','朋友':'#51cf66','青梅竹马':'#2ecc71',
     '敌对':'#e67e22','宿敌':'#d35400','亲属':'#a29bfe','师徒':'#f1c40f',
     '主仆':'#f1c40f','同事':'#3498db'
   };
-
-  // 筛选模式：_relGraphFilter 如果设置了，只画和该角色相关的线
-  var filterName = window._relGraphFilter || '';
-
+  
+  var filterName = _rgmFilter || '';
+  
   // 画关系连线
   var pairCount = {};
   (charRelations || []).forEach(function(rel){
@@ -27224,102 +27342,99 @@ function drawRelGraph(){
       if(names[j].name === rel.charB) idxB = j;
     }
     if(idxA < 0 || idxB < 0) return;
-
-    // 筛选模式
     if(filterName && rel.charA !== filterName && rel.charB !== filterName) return;
-
+    
     var posA = positions[idxA];
     var posB = positions[idxB];
     var color = relColors[rel.type] || '#9090a8';
-
+    
+    // 同对角色多条关系的偏移
     var pairKey = [Math.min(idxA,idxB), Math.max(idxA,idxB)].join('_');
     if(!pairCount[pairKey]) pairCount[pairKey] = 0;
     var offsetIdx = pairCount[pairKey];
     pairCount[pairKey]++;
-
+    
     var dx = posB.x - posA.x;
     var dy = posB.y - posA.y;
     var len = Math.sqrt(dx*dx + dy*dy);
     var nx = len > 0 ? -dy/len : 0;
     var ny = len > 0 ? dx/len : 0;
     var offsetAmount = (offsetIdx - (pairCount[pairKey]-1)/2) * 12;
-
+    
     var ax = posA.x + nx * offsetAmount;
     var ay = posA.y + ny * offsetAmount;
     var bx = posB.x + nx * offsetAmount;
     var by = posB.y + ny * offsetAmount;
-
+    
     ctx.beginPath();
     ctx.moveTo(ax, ay);
     ctx.lineTo(bx, by);
     ctx.strokeStyle = color;
     ctx.lineWidth = 2;
-    ctx.globalAlpha = filterName ? (rel.charA===filterName||rel.charB===filterName ? 0.9 : 0.15) : 0.7;
+    ctx.globalAlpha = filterName ? (rel.charA===filterName||rel.charB===filterName ? 0.9 : 0.12) : 0.7;
     ctx.stroke();
     ctx.globalAlpha = 1;
-
-    // 箭头
+    
+    // 箭头（单向关系）
     if(rel.direction === 'A→B' || rel.direction === 'B→A'){
-      var adx2 = (rel.direction === 'A→B' ? bx : ax) - (rel.direction === 'A→B' ? ax : bx);
-      var ady2 = (rel.direction === 'A→B' ? by : ay) - (rel.direction === 'A→B' ? ay : by);
-      var alen2 = Math.sqrt(adx2*adx2 + ady2*ady2);
-      if(alen2 > 0){
-        var anx3 = adx2/alen2, any3 = ady2/alen2;
-        var arrowX2 = (rel.direction === 'A→B' ? ax : bx) + adx2 * 0.6;
-        var arrowY2 = (rel.direction === 'A→B' ? ay : by) + ady2 * 0.6;
+      var adx = (rel.direction === 'A→B' ? bx : ax) - (rel.direction === 'A→B' ? ax : bx);
+      var ady = (rel.direction === 'A→B' ? by : ay) - (rel.direction === 'A→B' ? ay : by);
+      var alen = Math.sqrt(adx*adx + ady*ady);
+      if(alen > 0){
+        var anx = adx/alen, any = ady/alen;
+        var arrowX = (rel.direction === 'A→B' ? ax : bx) + adx * 0.6;
+        var arrowY = (rel.direction === 'A→B' ? ay : by) + ady * 0.6;
         ctx.beginPath();
-        ctx.moveTo(arrowX2 + anx3*8, arrowY2 + any3*8);
-        ctx.lineTo(arrowX2 - any3*5, arrowY2 + anx3*5);
-        ctx.lineTo(arrowX2 + any3*5, arrowY2 - anx3*5);
+        ctx.moveTo(arrowX + anx*8, arrowY + any*8);
+        ctx.lineTo(arrowX - any*5, arrowY + anx*5);
+        ctx.lineTo(arrowX + any*5, arrowY - anx*5);
         ctx.closePath();
         ctx.fillStyle = color;
         ctx.fill();
       }
     }
-
+    
     // 关系标签
     var midX = (ax + bx) / 2;
     var midY = (ay + by) / 2;
-    ctx.font = '10px sans-serif';
+    var labelText = rel.type || '';
+    var fontSize = count > 15 ? 9 : 10;
+    ctx.font = fontSize + 'px sans-serif';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
-    var labelText = rel.type || '';
     var tw = ctx.measureText(labelText).width;
-    if(document.body.classList.contains('theme-light')){
-      ctx.fillStyle = 'rgba(245,245,248,0.85)';
-    } else {
-      ctx.fillStyle = 'rgba(26,26,36,0.85)';
-    }
+    var isLight = document.body.classList.contains('theme-light');
+    ctx.fillStyle = isLight ? 'rgba(245,245,248,0.9)' : 'rgba(26,26,36,0.9)';
     ctx.fillRect(midX - tw/2 - 4, midY - 7, tw + 8, 14);
     ctx.fillStyle = color;
     ctx.fillText(labelText, midX, midY);
   });
-
+  
   // 画角色节点
-  // 存储节点位置用于点击检测
-  window._relGraphNodes = [];
+  _rgmNodes = [];
+  var nodeR = count > 20 ? 18 : count > 12 ? 22 : 24;
+  var npcNodeR = count > 20 ? 15 : count > 12 ? 18 : 19;
+  
   for(var k = 0; k < count; k++){
     var pos = positions[k];
     var info = names[k];
-    var nodeRadius = info.type === 'main' ? 24 : 19;
-
-    // 筛选模式下，非关联角色半透明
+    var r = info.type === 'main' ? nodeR : npcNodeR;
+    
+    // 筛选模式半透明
     var isFiltered = false;
     if(filterName){
-      if(info.name === filterName){
-        isFiltered = false;
-      }else{
-        var hasRel = (charRelations||[]).some(function(r){
-          return (r.charA===filterName&&r.charB===info.name)||(r.charB===filterName&&r.charA===info.name);
+      if(info.name !== filterName){
+        var hasRel = (charRelations||[]).some(function(rl){
+          return (rl.charA===filterName&&rl.charB===info.name)||(rl.charB===filterName&&rl.charA===info.name);
         });
         isFiltered = !hasRel;
       }
     }
-
-    ctx.globalAlpha = isFiltered ? 0.2 : 1;
-
+    ctx.globalAlpha = isFiltered ? 0.15 : 1;
+    
+    // 画圆
     ctx.beginPath();
-    ctx.arc(pos.x, pos.y, nodeRadius, 0, Math.PI * 2);
+    ctx.arc(pos.x, pos.y, r, 0, Math.PI * 2);
     if(info.name === filterName){
       ctx.fillStyle = '#e74c3c';
     }else if(info.priority === '核心'){
@@ -27333,78 +27448,249 @@ function drawRelGraph(){
     ctx.strokeStyle = '#fff';
     ctx.lineWidth = 2;
     ctx.stroke();
-
+    
+    // 名字
     var displayName = info.name.length > 4 ? info.name.substring(0,4) + '..' : info.name;
-    ctx.font = (info.type === 'main' ? 'bold ' : '') + '11px sans-serif';
+    var nameFontSize = count > 20 ? 9 : count > 12 ? 10 : 11;
+    ctx.font = (info.type === 'main' ? 'bold ' : '') + nameFontSize + 'px sans-serif';
     ctx.fillStyle = '#fff';
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.fillText(displayName, pos.x, pos.y);
-
+    
     ctx.globalAlpha = 1;
-
-    // 存储节点信息用于点击事件
-    window._relGraphNodes.push({
-      idx: k,
-      name: info.name,
-      x: pos.x,
-      y: pos.y,
-      r: nodeRadius,
+    
+    // 存储节点位置（需要转换为屏幕坐标供点击检测）
+    _rgmNodes.push({
+      idx: k, name: info.name,
+      x: pos.x, y: pos.y, r: r,
       info: info
     });
   }
-
-  // 图例
-  var legendEl = document.getElementById('relGraphLegend');
-  if(legendEl){
-    var html = '<div style="display:flex;flex-wrap:wrap;gap:8px;align-items:center">';
-    html += '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#6c5ce7"></span> 核心 ';
-    html += '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#3498db"></span> 普通 ';
-    html += '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#27ae60"></span> NPC ';
-    if(filterName){
-      html += '<span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:#e74c3c"></span> 当前筛选 ';
-    }
-    var usedTypes = {};
-    (charRelations || []).forEach(function(r){ if(r.type) usedTypes[r.type] = relColors[r.type] || '#9090a8'; });
-    for(var t in usedTypes){
-      html += '<span style="color:' + usedTypes[t] + '">— ' + t + '</span> ';
-    }
-    html += '</div>';
-    // 筛选操作栏
-    html += '<div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;align-items:center">';
-    html += '<span style="font-size:10px;color:var(--text2)">点击角色查看详情 · 筛选：</span>';
-    html += '<span class="tag' + (!filterName?' act':'') + '" onclick="relGraphSetFilter(\'\')" style="font-size:9px;padding:2px 8px">全部</span>';
-    names.forEach(function(n){
-      html += '<span class="tag' + (filterName===n.name?' act':'') + '" onclick="relGraphSetFilter(\'' + esc(n.name.replace(/'/g,"\\'")) + '\')" style="font-size:9px;padding:2px 8px">' + esc(n.name) + '</span>';
-    });
-    html += '</div>';
-    legendEl.innerHTML = html;
-  }
-
-  // 绑定canvas点击事件
-  canvas.onclick = function(e){
-    var crect = canvas.getBoundingClientRect();
-    var mx = e.clientX - crect.left;
-    var my = e.clientY - crect.top;
-    var clicked = null;
-    (window._relGraphNodes||[]).forEach(function(node){
-      var dx2 = mx - node.x;
-      var dy2 = my - node.y;
-      if(Math.sqrt(dx2*dx2 + dy2*dy2) <= node.r + 5){
-        clicked = node;
-      }
-    });
-    if(clicked){
-      showRelGraphCharCard(clicked);
-    }
-  };
+  
+  ctx.restore();
+  
+  // 更新缩放显示
+  document.getElementById('rgmZoomInfo').textContent = Math.round(_rgmScale * 100) + '%';
+  
+  // 更新图例
+  rgmRenderLegend(names);
 }
 
-function relGraphSetFilter(name){
-  window._relGraphFilter = name;
-  drawRelGraph();
-  if(name){
-    showToast('已筛选「'+name+'」的关系网');
+function rgmRenderLegend(names){
+  var el = document.getElementById('rgmLegend');
+  if(!el) return;
+  var html = '<div style="display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:4px">';
+  html += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#6c5ce7"></span>核心 ';
+  html += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#3498db"></span>普通 ';
+  html += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#27ae60"></span>NPC ';
+  if(_rgmFilter) html += '<span style="display:inline-block;width:10px;height:10px;border-radius:50%;background:#e74c3c"></span>筛选 ';
+  
+  var usedTypes = {};
+  (charRelations || []).forEach(function(r){
+    if(r.type){
+      var c = ({'恋人':'#ff6b6b','暗恋':'#ff9ff3','朋友':'#51cf66','青梅竹马':'#2ecc71','敌对':'#e67e22','宿敌':'#d35400','亲属':'#a29bfe','师徒':'#f1c40f','主仆':'#f1c40f','同事':'#3498db'})[r.type]||'#9090a8';
+      usedTypes[r.type] = c;
+    }
+  });
+  for(var t in usedTypes){
+    html += '<span style="color:' + usedTypes[t] + '">—' + t + '</span> ';
+  }
+  html += '</div>';
+  
+  // 筛选栏
+  html += '<div class="rgm-filter-bar">';
+  html += '<span class="rgm-filter-btn' + (!_rgmFilter?' act':'') + '" onclick="rgmSetFilter(\'\')">全部</span>';
+  (names||[]).forEach(function(n){
+    html += '<span class="rgm-filter-btn' + (_rgmFilter===n.name?' act':'') + '" onclick="rgmSetFilter(\'' + esc(n.name.replace(/'/g,"\\'")) + '\')">' + esc(n.name.length>5?n.name.substring(0,5)+'..':n.name) + '</span>';
+  });
+  html += '</div>';
+  
+  el.innerHTML = html;
+}
+
+function rgmSetFilter(name){
+  _rgmFilter = name;
+  rgmDraw();
+}
+
+function rgmZoomIn(){
+  _rgmScale = Math.min(5, _rgmScale * 1.3);
+  rgmDraw();
+}
+
+function rgmZoomOut(){
+  _rgmScale = Math.max(0.2, _rgmScale / 1.3);
+  rgmDraw();
+}
+
+function rgmResetView(){
+  _rgmScale = 1;
+  _rgmOffX = 0;
+  _rgmOffY = 0;
+  _rgmFilter = '';
+  rgmDraw();
+  showToast('视图已重置');
+}
+
+function rgmBindGestures(){
+  var wrap = document.getElementById('rgmCanvasWrap');
+  var canvas = document.getElementById('rgmCanvas');
+  if(!wrap || !canvas) return;
+  
+  // 触摸拖动
+  var isDrag = false;
+  var startX = 0, startY = 0;
+  var startOffX = 0, startOffY = 0;
+  var moved = false;
+  var pinching = false;
+  var pinchStartDist = 0;
+  var pinchStartScale = 1;
+  
+  wrap.addEventListener('touchstart', function(e){
+    if(e.touches.length === 2){
+      // 双指缩放
+      pinching = true;
+      var dx = e.touches[0].clientX - e.touches[1].clientX;
+      var dy = e.touches[0].clientY - e.touches[1].clientY;
+      pinchStartDist = Math.sqrt(dx*dx + dy*dy);
+      pinchStartScale = _rgmScale;
+      return;
+    }
+    if(e.touches.length === 1){
+      isDrag = true;
+      moved = false;
+      startX = e.touches[0].clientX;
+      startY = e.touches[0].clientY;
+      startOffX = _rgmOffX;
+      startOffY = _rgmOffY;
+    }
+  }, {passive:true});
+  
+  wrap.addEventListener('touchmove', function(e){
+    if(pinching && e.touches.length === 2){
+      e.preventDefault();
+      var dx = e.touches[0].clientX - e.touches[1].clientX;
+      var dy = e.touches[0].clientY - e.touches[1].clientY;
+      var dist = Math.sqrt(dx*dx + dy*dy);
+      var newScale = pinchStartScale * (dist / pinchStartDist);
+      _rgmScale = Math.max(0.2, Math.min(5, newScale));
+      rgmDraw();
+      return;
+    }
+    if(isDrag && e.touches.length === 1){
+      var dx2 = e.touches[0].clientX - startX;
+      var dy2 = e.touches[0].clientY - startY;
+      if(Math.abs(dx2) > 5 || Math.abs(dy2) > 5) moved = true;
+      _rgmOffX = startOffX + dx2;
+      _rgmOffY = startOffY + dy2;
+      rgmDraw();
+    }
+  }, {passive:false});
+  
+  wrap.addEventListener('touchend', function(e){
+    if(pinching){
+      pinching = false;
+      return;
+    }
+    if(isDrag && !moved){
+      // 点击检测
+      var tx = startX;
+      var ty = startY;
+      var rect = canvas.getBoundingClientRect();
+      var mx = tx - rect.left;
+      var my = ty - rect.top;
+      // 转换为画布坐标
+      var canvasX = (mx - _rgmOffX) / _rgmScale;
+      var canvasY = (my - _rgmOffY) / _rgmScale;
+      
+      var clicked = null;
+      (_rgmNodes||[]).forEach(function(node){
+        var ddx = canvasX - node.x;
+        var ddy = canvasY - node.y;
+        if(Math.sqrt(ddx*ddx + ddy*ddy) <= node.r + 8){
+          clicked = node;
+        }
+      });
+      if(clicked){
+        showRelGraphCharCard(clicked);
+      }
+    }
+    isDrag = false;
+    moved = false;
+  }, {passive:true});
+  
+  wrap.addEventListener('touchcancel', function(){
+    isDrag = false;
+    pinching = false;
+  });
+  
+  // 鼠标滚轮缩放（PC端）
+  wrap.addEventListener('wheel', function(e){
+    e.preventDefault();
+    if(e.deltaY < 0){
+      _rgmScale = Math.min(5, _rgmScale * 1.1);
+    } else {
+      _rgmScale = Math.max(0.2, _rgmScale / 1.1);
+    }
+    rgmDraw();
+  }, {passive:false});
+  
+  // 鼠标拖动（PC端）
+  var mouseDown = false;
+  var mStartX = 0, mStartY = 0;
+  var mStartOffX = 0, mStartOffY = 0;
+  var mMoved = false;
+  
+  wrap.addEventListener('mousedown', function(e){
+    mouseDown = true;
+    mMoved = false;
+    mStartX = e.clientX;
+    mStartY = e.clientY;
+    mStartOffX = _rgmOffX;
+    mStartOffY = _rgmOffY;
+    wrap.style.cursor = 'grabbing';
+  });
+  
+  wrap.addEventListener('mousemove', function(e){
+    if(!mouseDown) return;
+    var dx3 = e.clientX - mStartX;
+    var dy3 = e.clientY - mStartY;
+    if(Math.abs(dx3) > 3 || Math.abs(dy3) > 3) mMoved = true;
+    _rgmOffX = mStartOffX + dx3;
+    _rgmOffY = mStartOffY + dy3;
+    rgmDraw();
+  });
+  
+  wrap.addEventListener('mouseup', function(e){
+    if(mouseDown && !mMoved){
+      var rect2 = canvas.getBoundingClientRect();
+      var mx2 = e.clientX - rect2.left;
+      var my2 = e.clientY - rect2.top;
+      var canvasX2 = (mx2 - _rgmOffX) / _rgmScale;
+      var canvasY2 = (my2 - _rgmOffY) / _rgmScale;
+      var clicked2 = null;
+      (_rgmNodes||[]).forEach(function(node){
+        var ddx2 = canvasX2 - node.x;
+        var ddy2 = canvasY2 - node.y;
+        if(Math.sqrt(ddx2*ddx2 + ddy2*ddy2) <= node.r + 8) clicked2 = node;
+      });
+      if(clicked2) showRelGraphCharCard(clicked2);
+    }
+    mouseDown = false;
+    wrap.style.cursor = '';
+  });
+  
+  wrap.addEventListener('mouseleave', function(){
+    mouseDown = false;
+    wrap.style.cursor = '';
+  });
+}
+
+function drawRelGraph(){
+  // 兼容旧调用：如果全屏弹窗已打开就画全屏版，否则什么都不做
+  if(document.getElementById('relGraphModal').classList.contains('show')){
+    rgmDraw();
   }
 }
 
@@ -27452,8 +27738,8 @@ function showRelGraphCharCard(node){
 
   // 操作按钮
   html += '<div style="display:flex;gap:8px;margin-top:12px">';
-  html += '<button onclick="closeDlg();relGraphSetFilter(\''+esc(name.replace(/'/g,"\\'"))+'\')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--accent);background:rgba(108,92,231,.1);color:var(--accent2);font-size:11px;cursor:pointer;font-weight:600">🔍 筛选此角色关系</button>';
-  html += '<button onclick="closeDlg();relGraphSetFilter(\'\')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;cursor:pointer">👁 显示全部</button>';
+  html += '<button onclick="closeDlg();rgmSetFilter(\''+esc(name.replace(/'/g,"\\'"))+'\')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--accent);background:rgba(108,92,231,.1);color:var(--accent2);font-size:11px;cursor:pointer;font-weight:600">🔍 筛选此角色关系</button>';
+  html += '<button onclick="closeDlg();rgmSetFilter(\'\')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;cursor:pointer">👁 显示全部</button>';
   html += '</div>';
 
   showDlg('👤 '+esc(name), html, function(){}, false, true);
