@@ -248,7 +248,24 @@ animation:rotateSlow 25s linear infinite reverse;
 from{transform:rotate(0deg);}
 to{transform:rotate(360deg);}
 }
-
+/* 新用户问名字 */
+#splashNameBox{display:none;text-align:center;margin-top:24px;animation:fadeIn .5s ease;}
+.splash-ask{font-size:15px;color:rgba(255,255,255,.85);letter-spacing:1px;margin-bottom:18px;line-height:2;}
+.splash-name-inp{
+width:200px;padding:10px 16px;border-radius:12px;
+border:1px solid rgba(108,92,231,.5);background:rgba(255,255,255,.06);
+color:#fff;font-size:14px;outline:none;text-align:center;
+}
+.splash-name-inp::placeholder{color:rgba(255,255,255,.3);}
+.splash-name-inp:focus{border-color:var(--accent2);}
+.splash-name-confirm{
+display:block;margin:12px auto 0;padding:10px 32px;
+border-radius:12px;border:none;
+background:linear-gradient(135deg,var(--accent),var(--accent2));
+color:#fff;font-size:14px;font-weight:600;cursor:pointer;
+box-shadow:0 4px 15px rgba(108,92,231,.4);transition:all .3s;
+}
+.splash-name-confirm:active{transform:scale(.95);}
 /* APP */
 .app{opacity:0;transition:opacity .5s .2s;padding-bottom:68px;}
 .app.show{opacity:1;}
@@ -4024,8 +4041,13 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <span class="splash-dot"></span>
 <span id="splashTxt">正在初始化...</span>
 </div>
+<div id="splashNameBox">
+<div class="splash-ask">✦ 请问你叫什么名字呢？<br>创作者</div>
+<input class="splash-name-inp" id="splashNameInput" type="text" maxlength="20" placeholder="输入你的名字">
+<button class="splash-name-confirm" onclick="splashConfirmName()">确 定</button>
 </div>
-<div class="splash-ver" id="splashVer">.9.9</div>
+</div>
+<div class="splash-ver" id="splashVer">v1.3.6</div>
 </div>
 
 <!-- APP -->
@@ -8279,7 +8301,7 @@ document.addEventListener('visibilitychange', function(){
     // 自动保存所有数据
     saveCurSettings();
     autoSaveAll();
-    if(_flushSv) _flushSv(); // 立即刷新写入队列
+    try{if(typeof _flushSv==='function'){if(_svTimer){clearTimeout(_svTimer);_svTimer=null;}_flushSv();}}catch(e){}
   } else {
     // 从后台回来
     if(_bgGenerating || isGen){
@@ -8866,7 +8888,7 @@ el.classList.add('act');renderArticles();
 let _lastRenderArticlesHash='';
 function renderArticles(){
 const list=document.getElementById('articleList');
-const hash=curType+'_'+ws.length+'_'+wsDisplayCount+'_'+selTags.join(',');
+const hash=curType+'_'+ws.length+'_'+wsDisplayCount+'_'+selTags.join(',')+'_'+cols.books.length+'_'+cols.shorts.length;
 if(hash===_lastRenderArticlesHash&&!renderArticles._force){return;}
 _lastRenderArticlesHash=hash;
 renderArticles._force=false;
@@ -9075,6 +9097,17 @@ function getToolApi(){
     maxTokens: toolMaxTokens !== '' ? parseInt(toolMaxTokens) : base.maxTokens
   };
 }
+// 统一的API错误友好提示
+function friendlyApiErr(status) {
+  if(status===401) return '🔑 API密钥不对或没有权限，去设置里检查一下密钥';
+  if(status===403) return '🔒 访问被拒绝，密钥可能没有权限调用这个模型';
+  if(status===404) return '🔍 接口地址找不到，API地址或模型名可能填错了';
+  if(status===429) return '⏳ 请求太频繁或余额不足，稍等一会儿再试';
+  if(status===500) return '🌩️ AI服务器开小差了，不是你的问题，过一会儿再试';
+  if(status===502||status===503) return '🌩️ AI服务暂时不可用，请稍后再试';
+  if(status>=500)  return '🌩️ AI服务器出错了（'+status+'），请稍后再试';
+  return '⚠️ 请求出了点问题（'+status+'），请检查API设置';
+}
 
 // 用工具API调用（非流式）
 async function callToolAPINonStream(messages, _retryLeft){
@@ -9105,7 +9138,7 @@ async function callToolAPINonStream(messages, _retryLeft){
   await new Promise(function(r){setTimeout(r,3000);});
   return callToolAPINonStream(messages,_retryLeft-1);
 }
-showToast('工具API请求失败('+resp.status+')'+(detail?'：'+detail:''),4000);
+showToast(friendlyApiErr(resp.status),4000);
 return null;
     }
     var rawText=await resp.text();
@@ -9125,9 +9158,9 @@ return null;
     return stripMetaThinking(content);
   }catch(err){
     clearTimeout(timeoutId);
-    if(err.name==='AbortError'){showToast('工具API请求超时');return null;}
-    if(!navigator.onLine){showToast('网络断开');return null;}
-    showToast('工具API失败：'+err.message);
+    if(err.name==='AbortError'){showToast('⏱️ 请求超时，网络可能较慢，稍后再试');return null;}
+    if(!navigator.onLine){showToast('📡 网络断开了，请检查网络连接');return null;}
+    showToast('AI功能出了点小问题，请稍后再试');
     return null;
   }
 }
@@ -10456,7 +10489,7 @@ _bgGenerating = true;
     }else if(!navigator.onLine){
       showToastForce('网络似乎断开了，请检查网络连接',4000);
     }else{
-      showToast('请求失败：'+err.message,3000);
+      showToast('网络出了点问题，请稍后再试',3000);
     }
     return null;
   }
@@ -11785,8 +11818,15 @@ function _rdDoPaginate(paras,contentArea){
   const availH=rect.height-paddingTop-paddingBottom;
 
   if(availH<80||availW<50){
-    setTimeout(()=>_rdDoPaginate(paras,contentArea),100);
-    return;
+    if(!_rdDoPaginate._retryCount) _rdDoPaginate._retryCount=0;
+    _rdDoPaginate._retryCount++;
+    if(_rdDoPaginate._retryCount>20){
+      _rdDoPaginate._retryCount=0;
+      console.warn('分页重试超限，使用当前尺寸');
+    }else{
+      setTimeout(()=>_rdDoPaginate(paras,contentArea),100);
+      return;
+    }
   }
 
   const fontSize=ap.rdFontSize||15;
@@ -13384,6 +13424,7 @@ if(savedBp&&savedBp.articleId===curRd.id&&savedBp.partialText&&savedBp.partialTe
       var msgEl=document.getElementById('dlgMsg');
       if(msgEl){
         msgEl.innerHTML+='<div style="margin-top:12px"><button onclick="closeDlg();_streamBreakpoint={};try{localStorage.removeItem(\'bj_streamBreakpoint\')}catch(e){};continueChapterWithContext();" style="width:100%;padding:10px;border-radius:10px;border:1px solid var(--accent);background:rgba(108,92,231,.1);color:var(--accent2);font-size:12px;font-weight:600;cursor:pointer">🔄 丢弃断点，重新续写</button></div>';
+        msgEl.innerHTML+='<div style="margin-top:8px"><button onclick="closeDlg();clearStreamBreakpoint();showToast(\'断点已忽略\')" style="width:100%;padding:8px;border-radius:10px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer">🚫 忽略断点，以后不再提醒</button></div>';
       }
     },50);
     return;
@@ -13806,7 +13847,7 @@ if(books.length===0){
       if(book.cover) covHtml+='<img src="'+book.cover+'" alt="封面">';
       else covHtml+='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
     }else{
-      if(book.cover) covHtml='<img src="'+book.cover+'" alt="封面" loading="lazy">';
+      if(book.cover) covHtml='<img src="'+book.cover+'" alt="封面" loading="lazy" onerror="this.style.display=\'none\';this.nextElementSibling&&(this.nextElementSibling.style.display=\'\')">';
       else covHtml='<div class="bcov-ph"><span style="font-size:24px">📖</span><span>'+esc(book.title.substring(0,4))+'</span></div>';
     }
     const statusClass=book.status||'ongoing';
@@ -15078,8 +15119,10 @@ xjBubbleEnabled: xjBubbleEnabled,
     let jsonStr;
 try{
   jsonStr = JSON.stringify(data, null, 2);
-  // 校验JSON完整性
-  JSON.parse(jsonStr);
+  // 基本完整性校验（避免大数据时完整解析卡顿）
+  if(!jsonStr || jsonStr.length<10 || jsonStr[0]!=='{'){
+    throw new Error('序列化结果异常');
+  }
 }catch(e){
   showToast('⚠️ 导出数据序列化异常：'+e.message+'，尝试修复中...',4000);
   // 尝试清理不可序列化的内容后重试
@@ -15996,7 +16039,7 @@ e.stopPropagation();
 function onEditorInput(){
     // 字数统计用200ms防抖，避免每次按键都计算
     if(_edWcTimer) clearTimeout(_edWcTimer);
-    _edWcTimer = setTimeout(updateEdWc, 500);
+    _edWcTimer = setTimeout(updateEdWc, 200);
     
     const statusEl=document.getElementById('edSaveStatus');
     if(statusEl)statusEl.textContent='编辑中...';
@@ -16411,8 +16454,14 @@ function _edRdDoPaginate(paras,contentArea){
   var availH=rect.height-paddingH;
   
   if(availH<80||availW<50){
-    setTimeout(function(){_edRdDoPaginate(paras,contentArea);},100);
-    return;
+    if(!_edRdDoPaginate._retryCount) _edRdDoPaginate._retryCount=0;
+    _edRdDoPaginate._retryCount++;
+    if(_edRdDoPaginate._retryCount>20){
+      _edRdDoPaginate._retryCount=0;
+    }else{
+      setTimeout(function(){_edRdDoPaginate(paras,contentArea);},100);
+      return;
+    }
   }
   
   // 创建测量容器
@@ -18916,6 +18965,7 @@ contentEl.value='生成失败，请检查API设置';
 }
 }
 async function doCompress(){
+  if(!requireNetwork()) return;
   var cfg = getCurApi();
   if(!cfg.url || !cfg.key){
     showToast('请先配置API');
@@ -19085,7 +19135,7 @@ async function doCompress(){
 
     if(!resp.ok){
       var errText = await resp.text();
-      showToast('压缩失败('+resp.status+'): '+errText.slice(0,80),4000);
+      showToast('压缩失败：'+friendlyApiErr(resp.status),4000);
       return;
     }
 
@@ -19101,7 +19151,7 @@ async function doCompress(){
     if(err.name === 'AbortError'){
       return;
     }
-    showToast('压缩失败：'+err.message,4000);
+    showToast('压缩时遇到了网络问题，请稍后再试',4000);
     return;
   }finally{
     cmpIsRunning = false;
@@ -19609,7 +19659,7 @@ statusEl.textContent='重写已取消';
 (errMsg)=>{
 ta.disabled=false;
 statusEl.textContent='重写失败';
-showToast('重写失败：'+errMsg,3000);
+showToast('重写遇到了点问题，请检查API设置后再试',3000);
 }
 );
 }else{
@@ -20120,7 +20170,7 @@ closeRewriteOv();
 },
 (errMsg)=>{
 closeRewriteOv();
-showToast('重写失败：'+errMsg,3000);
+showToast('重写遇到了点问题，请检查API设置后再试',3000);
 }
 );
 }else{
@@ -22573,7 +22623,8 @@ continueChapterWithContext();
 }catch(e){
 btn.disabled=false;
 btn.textContent='🧠 智能续写';
-showToast('分析失败：'+e.message+' ，切换为快速续写',3000);
+var errMsg=(e&&e.message)?e.message:'未知错误';
+showToast('分析失败：'+errMsg+'，切换为快速续写',3000);
 continueChapterWithContext();
 }
 }
@@ -24687,7 +24738,7 @@ async function xjSendAllPending(){
       return;
     }
   }
-  
+  if(!requireNetwork()) return;
   var cfg = getCurApi();
   if(!cfg.url || !cfg.key){
     showToast('请先在设置中配置API哦～');
@@ -24711,7 +24762,8 @@ async function xjSendAllPending(){
   var now = new Date();
   var timeInfo = '\n【当前时间信息】\n- 现在是：' + now.getFullYear() + '年' + (now.getMonth()+1) + '月' + now.getDate() + '日 ' + ['星期日','星期一','星期二','星期三','星期四','星期五','星期六'][now.getDay()] + '\n- 具体时间：' + now.getHours() + '时' + now.getMinutes() + '分\n- 时段：' + getTimePeriod(now) + '\n\n请根据当前时间自然地融入对话';
   
-  var messages = [{role:'system', content:XJ_SYSTEM_PROMPT + timeInfo}];
+  var xjUserName = userCard.name ? '\n\n【用户信息】\n- 用户的名字叫：' + userCard.name + '\n- 请在对话中偶尔自然地叫ta的名字，不要每句都叫' : '';
+  var messages = [{role:'system', content:XJ_SYSTEM_PROMPT + timeInfo + xjUserName}];
   var contextMsgs = xjMessages.slice(-XJ_MAX_CONTEXT*2);
   contextMsgs.forEach(function(m){
     messages.push({role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content});
@@ -24736,7 +24788,7 @@ async function xjSendAllPending(){
     xjAbortCtrl = null;
     
     if(!resp.ok){
-      addXjReply('呜...星笺好像遇到了一点小问题，等会儿再试试好吗？('+resp.status+')');
+      addXjReply('呜...'+friendlyApiErr(resp.status)+'，等会儿再找星笺聊吧～');
       return;
     }
     var data = await resp.json();
@@ -24975,7 +25027,8 @@ const timeInfo=`
 - 现在是：${now.getFullYear()}年${now.getMonth()+1}月${now.getDate()}日
 - 具体时间：${now.getHours()}时${now.getMinutes()}分
 - 时段：${getTimePeriod(now)}`;
-const messages=[{role:'system',content:XJ_SYSTEM_PROMPT+timeInfo}];
+const xjUserName2 = userCard.name ? '\n\n【用户信息】\n- 用户的名字叫：' + userCard.name + '\n- 请在对话中偶尔自然地叫ta的名字，不要每句都叫' : '';
+const messages=[{role:'system',content:XJ_SYSTEM_PROMPT+timeInfo+xjUserName2}];
 xjMessages.forEach(m=>{
 messages.push({role:m.role==='assistant'?'assistant':'user',content:m.content});
 });
@@ -26509,6 +26562,8 @@ switchPage('settings',document.querySelectorAll('.bnav-i')[3]);
 window.addEventListener('beforeunload',()=>{
 saveCurSettings();
 autoSaveAll();
+if(_svTimer){clearTimeout(_svTimer);_svTimer=null;}
+_flushSv();
 });
 document.addEventListener('visibilitychange',()=>{
 if(document.visibilityState==='hidden'){
@@ -26793,6 +26848,44 @@ if(e.reason&&e.reason.message&&e.reason.message.includes('QuotaExceeded')){
 showToast('⚠️ 存储空间已满，请导出备份后清理数据',5000);
 }
 };
+function splashConfirmName() {
+    var inp = document.getElementById('splashNameInput');
+    var name = inp.value.trim();
+    if (!name) { inp.focus(); return; }
+
+    // ========== 彩蛋：禁止取名为“星笺” ==========
+    if (name === '星笺') {
+        alert('不要取我的名字啦！✨');
+        inp.value = '';
+        inp.focus();
+        return;   // 直接结束，不继续保存名字
+    }
+    // =========================================
+
+    // 保存名字
+    userCard.name = name;
+    sv('bj_userCard', userCard);
+
+    // 显示欢迎语
+    document.getElementById('splashNameBox').innerHTML =
+        '<div class="splash-ask" style="font-size:16px;margin-top:10px">' +
+        '欢迎你来到笔记AI！<br>' +
+        '<span style="color:var(--accent2);font-weight:600;font-size:20px">' + name + '</span>！' +
+        '</div>';
+
+    // 1.5秒后进入主界面
+    setTimeout(function() {
+        renderUserCard();
+        var splash = document.getElementById('splash');
+        var app = document.getElementById('app');
+        splash.classList.add('hide');
+        app.classList.add('show');
+        setTimeout(function() {
+            splash.style.display = 'none';
+            try { splash.innerHTML = ''; } catch(e) {}
+        }, 800);
+    }, 1500);
+}
 
 document.addEventListener('DOMContentLoaded', async () => {
     const splash = document.getElementById('splash');
@@ -26846,18 +26939,24 @@ document.addEventListener('DOMContentLoaded', async () => {
         txt.textContent = '灵感已就位，开始创作吧 ✨';
         bar.style.width = '100%';
 
-        // 5. 隐藏启动页
+        // 5. 判断新老用户
         setTimeout(() => {
-            splash.classList.add('hide');
-            app.classList.add('show');
-        }, 300);
-
-        setTimeout(() => {
-            splash.style.display = 'none';
-            try{
-              splash.innerHTML='';
-            }catch(e){}
-        }, 1000);
+            if (!userCard.name) {
+                // 新用户：隐藏进度条和状态文字，显示问名字界面
+                document.querySelector('.splash-progress').style.display = 'none';
+                document.querySelector('.splash-status').style.display = 'none';
+                document.querySelector('.splash-sub').style.display = 'none';
+                document.getElementById('splashNameBox').style.display = 'block';
+            } else {
+                // 老用户：直接进入
+                splash.classList.add('hide');
+                app.classList.add('show');
+                setTimeout(() => {
+                    splash.style.display = 'none';
+                    try { splash.innerHTML = ''; } catch(e) {}
+                }, 800);
+            }
+        }, 400);
     } catch (e) {
         console.error('初始化失败:', e);
         txt.textContent = '初始化失败，尝试进入...';
@@ -28507,7 +28606,7 @@ function quickThemeSwitch(){
     ap.theme = newTheme;
     sv(K.ap, ap);
     
-    const themeMap={default:'t0',warm:'t1',green:'t2',blue:'t3',light:'t4'};
+    const themeMap={default:'t0',warm:'t1',green:'t2',blue:'t3',light:'t4',auto:'t5'};
     document.querySelectorAll('.t-opt').forEach(o=>o.classList.remove('act'));
     const target=document.querySelector('.t-opt.'+(themeMap[newTheme]||'t0'));
     if(target)target.classList.add('act');
@@ -29726,7 +29825,7 @@ async function rpRegenerateFrom(idx){
     const typingEl=document.getElementById('rpTyping');if(typingEl)typingEl.remove();
     if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
     rpAbortCtrl=null;
-    if(!resp.ok){showToast('重说失败('+resp.status+')');return;}
+    if(!resp.ok){showToast('重新回答失败：'+friendlyApiErr(resp.status));return;}
     const data=await resp.json();
     if(!data.choices||!data.choices[0]||!data.choices[0].message){showToast('返回异常');return;}
     let reply=(data.choices[0].message.content||'').trim();
@@ -29759,7 +29858,7 @@ async function rpRegenerateFrom(idx){
     const t2=document.getElementById('rpTyping');if(t2)t2.remove();
     if(sendBtn)sendBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
     rpAbortCtrl=null;
-    if(e.name!=='AbortError')showToast('重说失败：'+e.message);
+    if(e.name!=='AbortError')showToast('重新回答时出了点问题，请稍后再试');
   }
 }
 
@@ -30103,7 +30202,7 @@ async function rpSendAllPending(){
     }
     // 有未回复的user消息，直接触发回复
   }
-  
+  if(!requireNetwork()) return;
   var cfg = getCurApi();
   if(!cfg.url || !cfg.key){showToast('请先在设置中配置API');return;}
   
@@ -30147,7 +30246,7 @@ async function rpSendAllPending(){
       var typingEl = document.getElementById('rpTyping');if(typingEl)typingEl.remove();
       if(sendBtn)sendBtn.style.display='flex';if(receiveBtn)receiveBtn.style.display='flex';if(stopBtn)stopBtn.style.display='none';
       rpAbortCtrl=null;
-      showToast('请求失败('+resp.status+')');
+      showToast(friendlyApiErr(resp.status));
       return;
     }
     
@@ -30247,7 +30346,7 @@ async function rpSendAllPending(){
     if(receiveBtn)receiveBtn.style.display='flex';
     if(stopBtn)stopBtn.style.display='none';
     rpAbortCtrl = null;
-    if(e.name!=='AbortError') showToast('请求失败：'+e.message);
+    if(e.name!=='AbortError') showToast('角色回复时出了点问题，请稍后再试');
   }
 }
 // ==================== 番外篇续写系统 ====================
@@ -30474,7 +30573,7 @@ async function startFanwaiGen(){
       return;
     }
 
-    if(result){
+    if(result && result.trim()){
       fwResults[i] = result;
       renderFwOutlineList();
       renderFwResultList();
