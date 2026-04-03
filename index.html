@@ -4132,8 +4132,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   </div>
   <button class="btn-s"
           onclick="resetGoalProgress()"
-          style="margin-top:10px;border-color:rgba(255,107,107,.3);color:var(--danger)">
-    🗑️ 重置本周/本月进度
+          style="margin-top:10px;border-color:rgba(255,107,107,.3);color:var(--danger)">重置本周/本月进度
   </button>
 </div> </div>
 </div>
@@ -6198,7 +6197,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div class="res-exp-btns">
 <button class="dlg-cancel" onclick="closeNameGen()">关闭</button>
-<button class="dlg-ok" id="nameGenBtn" onclick="doGenNames()">✨ 生成名字</button>
+<button class="dlg-ok" id="nameGenBtn" onclick="doGenNames()">生成名字</button>
 </div>
 </div>
 </div>
@@ -7185,8 +7184,12 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div class="set-modal-body">
 <div class="fg"><label class="fl"><i class="fas fa-id-card"></i> 我的身份设定（User）</label><textarea class="fta" id="rpUserDesc" placeholder="你在对话中扮演的身份..." style="min-height:80px"></textarea></div>
-<div class="fg"><label class="fl">快捷模板</label>
-<button class="btn-s" onclick="openRpUserTemplateModal()" style="margin-top:4px">📦 选择模板</button>
+<div class="fg"><label class="fl">快捷模板 / 我的预设</label>
+<div style="display:flex;gap:8px;margin-top:4px;flex-wrap:wrap">
+<button class="btn-s" onclick="openRpUserTemplateModal()" style="margin:0"><i class="fas fa-box-open"></i> 选择模板</button>
+<button class="btn-s" onclick="saveRpUserPreset()" style="margin:0"><i class="fas fa-floppy-disk"></i> 保存为预设</button>
+<button class="btn-s" onclick="openMyRpUserPresets()" style="margin:0"><i class="fas fa-clipboard-list"></i> 我的预设</button>
+</div>
 </div>
 <div class="fg"><label class="fl"><i class="fas fa-history"></i> 短期记忆（发送最近几轮对话）</label>
 <div style="display:flex;align-items:center;gap:10px">
@@ -10238,7 +10241,7 @@ function stripMetaThinking(text){
 
   return t.trim();
 }
-async function callAPINonStream(messages, _retryLeft=2){
+async function callAPINonStream(messages, _retryLeft=2, _opts={}){
   const cfg = getCurApi();
   if(!cfg.url || !cfg.key){
     showToast('请先在底部「设置」→「API设置」中填写地址和密钥',4000);
@@ -10270,7 +10273,7 @@ _bgGenerating = true;
         model:cfg.model,
         messages,
         temperature:cfg.temp,
-        max_tokens:cfg.maxTokens
+        max_tokens:_opts.maxTokens||cfg.maxTokens
       }),
       signal:controller.signal
     });
@@ -10296,14 +10299,14 @@ _bgGenerating = true;
         if(_retryLeft>0){
           showToast('触发限流，3秒后自动重试...',2500);
           await new Promise(r=>setTimeout(r,3000));
-          return callAPINonStream(messages,_retryLeft-1);
+          return callAPINonStream(messages,_retryLeft-1,_opts);
         }
       }else if(resp.status>=500){
         friendly='对方服务器暂时出问题（HTTP '+resp.status+'）';
         if(_retryLeft>0){
           showToast('服务器错误，2秒后自动重试...',2000);
           await new Promise(r=>setTimeout(r,2000));
-          return callAPINonStream(messages,_retryLeft-1);
+          return callAPINonStream(messages,_retryLeft-1,_opts);
         }
       }else{
         friendly='请求失败（HTTP '+resp.status+'）';
@@ -10998,7 +11001,7 @@ showDlg('停止生成', '确定要停止当前生成吗？', () => {
   abortCtrl.abort();
   isGen = false;
   const btn = document.getElementById('btnGen');
-  btn.disabled = false; btn.textContent = '✨ 生成';
+  btn.disabled = false; btn.textContent = '生成';
   showToast('已停止生成');
 }, true);
 return;
@@ -11205,7 +11208,7 @@ const list=document.getElementById('articleList');
 if(!useStream){
 // 非流式模式
 const result=await callAPINonStream(messages);
-setIsGen(false);btn.disabled=false;btn.textContent='✨ 生成';btn.style.minWidth='';
+setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';
 btn.style.background='';
 if(!result){renderArticles();return;}
 let title2='',content2=result;
@@ -11261,7 +11264,7 @@ if(_bgTaskInfo && !_bgTaskInfo.articleId) _bgTaskInfo.articleId = '_workshop_tem
 },
 (fullText)=>{
 clearInterval(timeInterval);
-setIsGen(false);btn.disabled=false;btn.textContent='✨ 生成';btn.style.minWidth='';
+setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';
 btn.style.background='';
 const sc=document.getElementById('streamCard');
 if(sc)sc.remove();
@@ -11355,7 +11358,7 @@ showToast('创作完成！'+countWords(content)+'字 ✨',2500);
 },
 (errMsg)=>{
 clearInterval(timeInterval);
-setIsGen(false);btn.disabled=false;btn.textContent='✨ 生成';btn.style.minWidth='';
+setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';
 btn.style.background='';
 const sc=document.getElementById('streamCard');
 if(sc)sc.remove();
@@ -11373,7 +11376,7 @@ btn.disabled=true;
 btn.innerHTML='<span class="ldots"><span></span><span></span><span></span></span>';
 
 const result=await callAPINonStream(messages);
-setIsGen(false);btn.disabled=false;btn.textContent='✨ 生成';btn.style.minWidth='';
+setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';
 btn.style.background='';
 if(!result)return;
 
@@ -20725,7 +20728,7 @@ function openNameGen(){
 document.getElementById('nameGenDesc').value='';
 document.getElementById('nameGenResult').style.display='none';
 document.getElementById('nameGenBtn').disabled=false;
-document.getElementById('nameGenBtn').textContent='✨ 生成名字';
+document.getElementById('nameGenBtn').textContent='生成名字';
 nameGenType='char';
 nameGenStyle='';
 document.getElementById('nameTypeChar').classList.add('act');
@@ -28461,8 +28464,8 @@ if(rpTimeAware){
   p += '④ 绝对禁止：跳出角色说"作为AI""我是语言模型"之类的话\n';
   p += '⑤ 绝对禁止：在开头写"好的""让我想想"等AI式回应\n';
   p += '⑥ 每次回复可以是1句到多句话，用换行分隔\n';
-  p += '⑦ 短回复（1-2句）和长回复（3-5句）交替使用，不要总是固定长度\n';
-  p += '⑧ 如果角色此刻不想说话/生气了，可以只回一个字或语气词\n\n';
+  p += '⑦ 根据话题深度灵活调整长度：简单的话可以1-2句，复杂的话题、情感激动时可以写6-10句甚至更多，不要总是三四句就停\n';
+  p += '⑧ 当对方说了一件让你有感触的事，要像真人一样展开讲，而不是用一句话敷衍\n';
 
   p += '【正确示范】\n';
   p += '你怎么又来了。\n';
@@ -28811,6 +28814,71 @@ function applyRpUserTemplate(type){
   };
   if(tpls[type]) ta.value = tpls[type];
   showToast('已应用模板 ✨');
+}
+
+// ---- User预设 ----
+var rpUserPresets = ld('bj_rpUserPresets', []);
+
+function saveRpUserPreset(){
+  var ta = document.getElementById('rpUserDesc');
+  var content = (ta ? ta.value : '').trim();
+  if(!content){showToast('请先填写身份设定内容');return;}
+  showInp('保存预设','给这个预设起个名字',function(name){
+    if(!name||!name.trim()){showToast('名称不能为空');return;}
+    rpUserPresets.push({id:uid(),name:name.trim(),content:content,time:new Date().toISOString()});
+    sv('bj_rpUserPresets', rpUserPresets);
+    showToast('预设「'+name.trim()+'」已保存 💾');
+  });
+}
+
+function openMyRpUserPresets(){
+  rpUserPresets = ld('bj_rpUserPresets', []);
+  if(rpUserPresets.length===0){
+    showToast('还没有保存过预设，先填写内容再点「保存为预设」');
+    return;
+  }
+  var html='<div style="display:flex;flex-direction:column;gap:8px">';
+  rpUserPresets.forEach(function(p,i){
+    html+='<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px">';
+    // 描述区域：flex:1 自动占满剩余空间，同时防止溢出
+    html+='<div style="flex:1;min-width:0;cursor:pointer" onclick="closeDlg();applyMyRpUserPreset('+i+')">';
+    html+='<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.name)+'</div>';
+    html+='<div style="font-size:10px;color:var(--text2);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.content.substring(0,50))+'...</div>';
+    html+='</div>';
+    // 删除按钮：固定宽度，不缩放
+    html+='<button onclick="deleteMyRpUserPreset('+i+')" style="flex-shrink:0;padding:4px 10px;border-radius:6px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:11px;cursor:pointer">删除</button>';
+    html+='</div>';
+  });
+  html+='</div>';
+  showDlg('📋 我的User预设', html, function(){}, false, true);
+  document.getElementById('dlgOkBtn').style.display='none';
+  setTimeout(function(){
+    var p=document.getElementById('dlgMsg');
+    if(p){
+      p.style.maxHeight='65vh';
+      p.style.overflowY='auto';
+      // 确保父容器不溢出
+      p.style.wordBreak='break-word';
+    }
+  },50);
+}
+
+function applyMyRpUserPreset(idx){
+  var p = rpUserPresets[idx];
+  if(!p) return;
+  var ta = document.getElementById('rpUserDesc');
+  if(ta) ta.value = p.content;
+  showToast('已应用预设「'+p.name+'」✨');
+}
+
+function deleteMyRpUserPreset(idx){
+  closeDlg();
+  showDlg('删除预设','确定删除预设「'+(rpUserPresets[idx]?rpUserPresets[idx].name:'')+'」吗？',function(){
+    rpUserPresets.splice(idx,1);
+    sv('bj_rpUserPresets', rpUserPresets);
+    showToast('已删除');
+    setTimeout(openMyRpUserPresets, 300);
+  },true);
 }
 
 // ---- 聊天背景 ----
@@ -29240,7 +29308,7 @@ async function rpRegenerateFrom(idx){
     const resp=await fetch(ep.endpoint,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
-      body:JSON.stringify({model:cfg.model,messages:apiMessages,temperature:0.9,max_tokens:1024,stream:false}),
+      body:JSON.stringify({model:cfg.model,messages:apiMessages,temperature:1.0,max_tokens:5000,stream:false}),
       signal:rpAbortCtrl.signal
     });
     const typingEl=document.getElementById('rpTyping');if(typingEl)typingEl.remove();
@@ -29659,7 +29727,7 @@ async function rpSendAllPending(){
     var resp = await fetch(ep.endpoint,{
       method:'POST',
       headers:{'Content-Type':'application/json','Authorization':'Bearer '+cfg.key},
-      body:JSON.stringify({model:cfg.model, messages:apiMessages, temperature:0.85, max_tokens:1024, stream:!!rpStreamOutput}),
+      body:JSON.stringify({model:cfg.model, messages:apiMessages, temperature:1.0, max_tokens:5000, stream:!!rpStreamOutput}),
       signal:rpAbortCtrl.signal
     });
     
@@ -30133,7 +30201,7 @@ async function generateSingleFanwai(idx, summary){
         );
       });
     } else {
-      result = await callAPINonStream(messages);
+      result = await callAPINonStream(messages, 2, {maxTokens:8000});
     }
   }catch(e){
     console.error('番外生成API调用失败:', e);
@@ -30158,7 +30226,7 @@ async function generateSingleFanwai(idx, summary){
       {role:'user',content:'以下是一篇番外的内容，只有'+fwWc+'字，需要至少'+mW+'字。请直接续写下去，不要重复已有内容，不要加标题说明，保持风格一致，直接输出续写的正文部分：\n\n'+result}
     ];
     try{
-      var extResult = await callAPINonStream(extMsg);
+      var extResult = await callAPINonStream(extMsg, 2, {maxTokens:8000});
       if(extResult){
         result = result + '\n\n' + stripMetaThinking(extResult).trim();
       }
@@ -31778,9 +31846,10 @@ async function doGeneratePlay(){
   var userMsg = '请为「'+(ch.name||'角色')+'」生成一篇短篇剧场：\n\n' + req;
   
   var messages = [{role:'system',content:sysMsg},{role:'user',content:userMsg}];
-  var result = await callAPINonStream(messages);
+  var result = await callAPINonStream(messages, 2, {maxTokens:8000});
   
   if(!result){showToast('生成失败');return;}
+  result = stripMetaThinking(result);
   result = stripMetaThinking(result);
   
   // 解析标题
@@ -31870,16 +31939,18 @@ function openRtPlayPresets(){
     html += '<div style="text-align:center;padding:20px;color:var(--text2);font-size:12px">暂无剧场预设<br>在创建剧场时勾选「保存为预设」即可添加</div>';
   } else {
     rtPlayPresets.forEach(function(p,i){
-      html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px">';
-      html += '<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px">';
-      html += '<span style="font-size:13px;font-weight:600">'+esc(p.name||'预设')+'</span>';
-      html += '<button onclick="deleteRtPlayPreset('+i+')" style="padding:3px 8px;border-radius:6px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:10px;cursor:pointer">删除</button>';
-      html += '</div>';
-      html += '<div style="font-size:10px;color:var(--text2);line-height:1.6">';
+      html += '<div style="background:var(--bg);border:1px solid var(--border);border-radius:10px;padding:12px;margin-bottom:8px;display:flex;align-items:center;justify-content:space-between;gap:10px">';
+      // 信息区域：flex:1 并限制溢出
+      html += '<div style="flex:1;min-width:0">';
+      html += '<div style="font-size:13px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(p.name||'预设')+'</div>';
+      html += '<div style="font-size:10px;color:var(--text2);margin-top:4px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">';
       if(p.world) html += '世界观: '+esc(p.world.substring(0,40))+'...<br>';
       if(p.req) html += '需求: '+esc(p.req.substring(0,50))+'...<br>';
       html += '字数: '+(p.wordTarget||1500)+'字';
       html += '</div></div>';
+      // 删除按钮固定宽度
+      html += '<button onclick="deleteRtPlayPreset('+i+')" style="flex-shrink:0;padding:5px 12px;border-radius:6px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:11px;cursor:pointer">删除</button>';
+      html += '</div>';
     });
   }
   
@@ -31887,7 +31958,11 @@ function openRtPlayPresets(){
   document.getElementById('dlgOkBtn').style.display='none';
   setTimeout(function(){
     var p=document.getElementById('dlgMsg');
-    if(p){p.style.maxHeight='60vh';p.style.overflowY='auto';}
+    if(p){
+      p.style.maxHeight='60vh';
+      p.style.overflowY='auto';
+      p.style.wordBreak='break-word';
+    }
   },50);
 }
 
