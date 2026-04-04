@@ -7284,8 +7284,8 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div class="fg"><label class="fl"><i class="fas fa-history"></i> 短期记忆（发送最近几轮对话）</label>
 <div style="display:flex;align-items:center;gap:10px">
-<input type="range" id="rpContextLen" min="2" max="50" value="10" style="flex:1;accent-color:var(--accent)" oninput="document.getElementById('rpContextLenVal').textContent=this.value+'轮'">
-<span id="rpContextLenVal" style="font-size:12px;color:var(--accent2);width:40px">10轮</span>
+<input type="number" id="rpContextLen" min="1" max="999" value="10" style="width:80px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;text-align:center;outline:none">
+<span style="font-size:12px;color:var(--text2)">轮</span>
 </div>
 </div>
 <div class="fg"><label class="fl"><i class="fas fa-robot"></i> 自动总结记忆</label>
@@ -7300,8 +7300,8 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div style="display:flex;align-items:center;gap:10px;margin-top:8px">
 <span style="font-size:10px;color:var(--text2);flex-shrink:0">间隔轮数</span>
-<input type="range" id="rpAutoSumInterval" min="5" max="50" value="20" style="flex:1;accent-color:var(--accent)" oninput="document.getElementById('rpAutoSumIntervalVal').textContent=this.value+'轮'">
-<span id="rpAutoSumIntervalVal" style="font-size:12px;color:var(--accent2);width:40px">20轮</span>
+<input type="number" id="rpAutoSumInterval" min="1" max="9999" value="20" style="width:80px;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:14px;text-align:center;outline:none">
+<span style="font-size:12px;color:var(--text2)">轮</span>
 </div>
 <div style="font-size:9px;color:var(--text2);margin-top:4px">开启后，每发送N轮对话会自动调用AI总结记忆（消耗一次API请求）</div>
 </div>
@@ -8926,7 +8926,6 @@ card.innerHTML=
 '<div class="acard-ft">'+
 '<span class="acard-wc">'+(chCount>0?chCount+'章 · ':'')+wc+'字 · '+new Date(article.createdAt).toLocaleDateString()+'</span>'+
 '<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')" title="'+(liked?'取消收藏':'收藏')+'">'+(liked?'❤️':'♡')+'</button>'+
-'<button class="btn-like" onclick="event.stopPropagation();openRegenFeedback(\''+article.id+'\')" style="color:var(--accent2);border-color:var(--accent)" title="重新生成"><i class="fas fa-rotate"></i></button>'+
 '<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)" title="删除"><i class="fas fa-trash-can"></i></button>'+
 '</div>'+
 '<div class="acard-tags" style="margin-top:8px">'+tagsHtml+'</div>';
@@ -23277,6 +23276,7 @@ function openGenLog(){
   genLogSelectedId = '';
   document.getElementById('genLogSearch').value='';
   document.getElementById('genLogFilter').value='all';
+  document.getElementById('genLogCount').textContent=(genLogs||[]).length+'条';
   renderGenLogList();
 }
 
@@ -23288,6 +23288,7 @@ function closeGenLog(){
 
 function renderGenLogList(){
   const list=document.getElementById('genLogList');
+  try{document.getElementById('genLogCount').textContent=(genLogs||[]).length+'条';}catch(e){}
   const kw=(document.getElementById('genLogSearch').value||'').trim().toLowerCase();
   const filter=document.getElementById('genLogFilter').value;
 
@@ -28793,9 +28794,13 @@ function updateRpMemoryBadge(){
   if(!badge) return;
   if(!ch){badge.textContent='🧠 记忆';return;}
   const lastIdx = ch.lastSumIdx || 0;
-  const totalMsgs = (ch.messages||[]).length;
-  const unsumRounds = Math.floor((totalMsgs - lastIdx) / 2);
-  const memCount = (ch.memories||[]).length;
+  const msgs = ch.messages||[];
+  var unsumRounds = 0;
+  var _su1 = false;
+  for(var ri=lastIdx;ri<msgs.length;ri++){
+    if(msgs[ri].role==='user'){_su1=true;}
+    else if(msgs[ri].role==='char'&&_su1){unsumRounds++;_su1=false;}
+  }
   if(unsumRounds > 0){
     badge.textContent = '🧠 ' + unsumRounds + '轮未总结';
     badge.style.background = 'rgba(255,165,0,.2)';
@@ -29244,8 +29249,6 @@ function updateRpAutoSumUI(){
   else{track.style.background='var(--border)';thumb.style.left='2px';}
   var slider=document.getElementById('rpAutoSumInterval');
   if(slider)slider.value=rpSettings.autoSumInterval||20;
-  var valEl=document.getElementById('rpAutoSumIntervalVal');
-  if(valEl)valEl.textContent=(rpSettings.autoSumInterval||20)+'轮';
 }
 
 async function checkRpAutoSummarize(){
@@ -29253,8 +29256,13 @@ async function checkRpAutoSummarize(){
   var ch=getRpCurrentChar();
   if(!ch)return;
   var lastIdx=ch.lastSumIdx||0;
-  var totalMsgs=(ch.messages||[]).length;
-  var unsumRounds=Math.floor((totalMsgs-lastIdx)/2);
+  var msgs2=ch.messages||[];
+  var unsumRounds=0;
+  var _su2=false;
+  for(var ri2=lastIdx;ri2<msgs2.length;ri2++){
+    if(msgs2[ri2].role==='user'){_su2=true;}
+    else if(msgs2[ri2].role==='char'&&_su2){unsumRounds++;_su2=false;}
+  }
   var interval=rpSettings.autoSumInterval||20;
   if(unsumRounds>=interval){
     showToast('🧠 自动总结记忆中...',3000);
@@ -29264,7 +29272,6 @@ async function checkRpAutoSummarize(){
 function openRpSettings(){
   document.getElementById('rpUserDesc').value = rpSettings.userDesc || '';
   document.getElementById('rpContextLen').value = rpSettings.contextLen || 10;
-  document.getElementById('rpContextLenVal').textContent = (rpSettings.contextLen||10) + '轮';
   updateRpAutoSumUI();
   document.getElementById('rpSettingsOv').classList.add('show');
   navPush('rpSettingsOv');
@@ -29460,8 +29467,13 @@ function renderRpMemoryPanel(){
   if(!ch.memories) ch.memories = [];
   
   const lastIdx = ch.lastSumIdx || 0;
-  const totalMsgs = (ch.messages||[]).length;
-  const unsumRounds = Math.max(0, Math.floor((totalMsgs - lastIdx) / 2));
+  const msgs = ch.messages||[];
+  var unsumRounds = 0;
+  var _su3=false;
+  for(var ri=lastIdx;ri<msgs.length;ri++){
+    if(msgs[ri].role==='user'){_su3=true;}
+    else if(msgs[ri].role==='char'&&_su3){unsumRounds++;_su3=false;}
+  }
   
   const body = document.getElementById('rpMemoryOv');
   body.innerHTML = `
