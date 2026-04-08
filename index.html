@@ -4695,6 +4695,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="hb-hdr">
 <button onclick="closeHandbookUnified()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button>
 <h2><i class="fas fa-book"></i> 手册与协议</h2>
+<button onclick="downloadApk()" style="margin-left:auto;flex-shrink:0;background:rgba(108,92,231,.15);border:1px solid rgba(108,92,231,.4);border-radius:8px;color:var(--accent2);padding:6px 11px;font-size:12px;display:flex;align-items:center;gap:5px;cursor:pointer;white-space:nowrap;"><i class="fas fa-download"></i> 安装APP</button>
 </div>
 <div style="padding:0 20px">
 <div class="hb-tabs">
@@ -16193,7 +16194,7 @@ card.onclick=e=>{if(!e.target.closest('.cr-card-acts'))openEditor(work.id);};
 var _lpT=null,_moved=false,_sx=0,_sy=0,_pinDone=false;
 cardEl.addEventListener('touchstart',function(e){
 _moved=false;_pinDone=false;if(e.touches.length>0){_sx=e.touches[0].clientX;_sy=e.touches[0].clientY;}
-_lpT=setTimeout(function(){if(_moved)return;_pinDone=true;_suppressSelect(cardEl);if(navigator.vibrate)navigator.vibrate(30);toggleCrPin(workId);setTimeout(function(){_restoreSelect(cardEl);},500);},600);
+_lpT=setTimeout(function(){if(_moved)return;_pinDone=true;window._crPinJustDone=Date.now();_suppressSelect(cardEl);if(navigator.vibrate)navigator.vibrate(30);toggleCrPin(workId);setTimeout(function(){_restoreSelect(cardEl);},500);},600);
 },{passive:true});
 cardEl.addEventListener('touchmove',function(e){
 if(e.touches.length>0&&(Math.abs(e.touches[0].clientX-_sx)>10||Math.abs(e.touches[0].clientY-_sy)>10))_moved=true;
@@ -16201,7 +16202,7 @@ if(_moved&&_lpT){clearTimeout(_lpT);_lpT=null;}
 },{passive:true});
 cardEl.addEventListener('touchend',function(){if(_lpT){clearTimeout(_lpT);_lpT=null;}});
 cardEl.addEventListener('touchcancel',function(){if(_lpT){clearTimeout(_lpT);_lpT=null;}_pinDone=false;});
-cardEl.addEventListener('contextmenu',function(e){e.preventDefault();if(_pinDone)return;toggleCrPin(workId);});
+cardEl.addEventListener('contextmenu',function(e){e.preventDefault();if(_pinDone)return;if(window._crPinJustDone&&Date.now()-window._crPinJustDone<1000)return;toggleCrPin(workId);});
 })(card,work.id);
 list.appendChild(card);
 });
@@ -34608,6 +34609,18 @@ function deleteRtPlayPreset(idx){
     // 重新打开预设列表
     setTimeout(openRtPlayPresets, 300);
   },true);
+}
+</script>
+<script>
+function downloadApk(){
+  if(confirm('此为安卓安装包，确定下载吗？')){
+    var a=document.createElement('a');
+    a.href='./笔记AI.apk';
+    a.download='笔记AI.apk';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
 }
 </script>
 <script>
