@@ -1,0 +1,2500 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<title>星笺养成</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#0a0a12;--card:#16161f;--card2:#1e1e2a;
+  --accent:#7c6ff7;--accent2:#b8b0ff;--accent3:#e0dcff;
+  --text:#eeeef8;--text2:#8888a8;--text3:#555577;
+  --danger:#ff7070;--success:#5ddd72;--warn:#ffb347;
+  --border:#252535;--border2:#313148;
+  --shadow:0 8px 32px rgba(0,0,0,.5);
+  --glow:0 0 30px rgba(124,111,247,.18);
+}
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
+  background:var(--bg);color:var(--text);
+  min-height:100vh;overflow-x:hidden;
+  -webkit-font-smoothing:antialiased;
+  padding-bottom:calc(env(safe-area-inset-bottom,0px) + 20px);
+}
+
+/* ===== 星空背景 ===== */
+.page-bg{
+  position:fixed;inset:0;z-index:0;
+  background-image:url(https://i.postimg.cc/6qR8qj3h/image-4.jpg);
+  background-size:cover;background-position:center;
+  opacity:.12;pointer-events:none;
+}
+.stars-canvas{position:fixed;inset:0;z-index:0;pointer-events:none;}
+.page-bg-overlay{
+  position:fixed;inset:0;z-index:0;
+  background:
+    radial-gradient(ellipse 70% 50% at 15% -5%,rgba(124,111,247,.14),transparent 55%),
+    radial-gradient(ellipse 50% 40% at 85% 105%,rgba(184,176,255,.09),transparent 50%),
+    radial-gradient(ellipse 40% 30% at 50% 50%,rgba(124,111,247,.04),transparent 70%);
+  pointer-events:none;
+}
+
+/* ===== 布局 ===== */
+.container{
+  position:relative;z-index:1;
+  max-width:480px;margin:0 auto;
+  padding:0 0 40px;
+}
+
+/* ===== 顶部栏 ===== */
+.top-bar{
+  position:sticky;top:0;z-index:100;
+  background:linear-gradient(180deg,rgba(10,10,18,.98) 0%,rgba(10,10,18,.92) 100%);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border-bottom:1px solid rgba(124,111,247,.15);
+  padding:14px 18px 12px;
+  display:flex;align-items:center;justify-content:space-between;
+  box-shadow:0 2px 20px rgba(0,0,0,.4),0 0 40px rgba(124,111,247,.06);
+}
+.top-bar-left{display:flex;align-items:center;gap:10px;}
+.back-btn{
+  background:rgba(124,111,247,.1);border:1px solid rgba(124,111,247,.2);
+  color:var(--accent2);cursor:pointer;
+  display:flex;align-items:center;gap:4px;font-size:12px;
+  padding:5px 10px;border-radius:10px;transition:all .2s;
+}
+.back-btn:active{background:rgba(124,111,247,.2);transform:scale(.94);}
+.back-btn svg{width:14px;height:14px;}
+.top-title{
+  font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;
+  font-size:18px;font-weight:400;letter-spacing:4px;
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.top-bar-right{display:flex;align-items:center;gap:6px;}
+.time-display{
+  font-size:11px;color:var(--text2);font-variant-numeric:tabular-nums;
+  background:rgba(255,255,255,.04);border:1px solid var(--border2);
+  padding:4px 10px;border-radius:20px;letter-spacing:.5px;
+}
+.day-counter{
+  font-size:11px;color:var(--accent2);
+  background:rgba(124,111,247,.12);border:1px solid rgba(124,111,247,.25);
+  padding:4px 10px;border-radius:20px;
+  display:flex;align-items:center;gap:4px;
+}
+
+/* ===== 签到横幅 ===== */
+.checkin-banner{
+  margin:14px 18px 0;
+  background:linear-gradient(135deg,rgba(124,111,247,.25),rgba(184,176,255,.12));
+  border:1px solid rgba(124,111,247,.4);
+  border-radius:16px;padding:12px 18px;
+  display:flex;align-items:center;justify-content:space-between;
+  animation:bannerPulse 3s ease-in-out infinite;
+  cursor:pointer;transition:all .2s;
+}
+.checkin-banner:active{transform:scale(.97);}
+.checkin-banner.done{
+  background:rgba(255,255,255,.03);border-color:var(--border2);
+  animation:none;opacity:.6;pointer-events:none;
+}
+@keyframes bannerPulse{0%,100%{box-shadow:0 0 0 rgba(124,111,247,0);}50%{box-shadow:0 0 16px rgba(124,111,247,.25);}}
+.checkin-left{display:flex;align-items:center;gap:10px;}
+.checkin-icon{font-size:24px;animation:iconBounce 2s ease-in-out infinite;}
+@keyframes iconBounce{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.checkin-title{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;}
+.checkin-sub{font-size:11px;color:var(--text2);}
+.checkin-btn{
+  padding:7px 16px;border-radius:12px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+  box-shadow:0 3px 12px rgba(124,111,247,.4);
+  transition:all .2s;white-space:nowrap;
+}
+.checkin-btn:active{transform:scale(.93);}
+
+/* ===== 角色展示区 ===== */
+.char-stage{
+  margin:14px 18px 0;
+  background:linear-gradient(145deg,rgba(22,22,31,.85),rgba(30,26,50,.7));
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(124,111,247,.22);
+  border-radius:24px;padding:22px 18px 18px;
+  position:relative;overflow:hidden;
+  box-shadow:0 8px 40px rgba(0,0,0,.4),var(--glow);
+}
+.char-stage-topline{
+  position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
+  background-size:200% 100%;animation:gradientSlide 3s linear infinite;
+}
+@keyframes gradientSlide{0%{background-position:0%}100%{background-position:200%}}
+.char-bg-deco{position:absolute;inset:0;pointer-events:none;overflow:hidden;}
+.char-bg-circle{
+  position:absolute;border-radius:50%;pointer-events:none;
+  animation:driftCircle 8s ease-in-out infinite;
+}
+.char-bg-circle:nth-child(1){
+  width:220px;height:220px;top:-60px;right:-50px;
+  background:radial-gradient(circle,rgba(124,111,247,.12),transparent 65%);
+}
+.char-bg-circle:nth-child(2){
+  width:160px;height:160px;bottom:-40px;left:-30px;
+  background:radial-gradient(circle,rgba(184,176,255,.1),transparent 65%);
+  animation-delay:3s;
+}
+.char-bg-circle:nth-child(3){
+  width:100px;height:100px;top:40%;right:20%;
+  background:radial-gradient(circle,rgba(253,121,168,.08),transparent 65%);
+  animation-delay:5s;
+}
+@keyframes driftCircle{0%,100%{transform:translate(0,0) scale(1);}50%{transform:translate(8px,-12px) scale(1.05);}}
+
+.char-main{display:flex;align-items:flex-start;gap:18px;}
+.char-avatar-wrap{
+  position:relative;flex-shrink:0;cursor:pointer;
+  transition:transform .2s;
+}
+.char-avatar-wrap:active{transform:scale(.92);}
+.char-avatar-ring{
+  position:absolute;inset:-4px;border-radius:50%;
+  background:conic-gradient(var(--accent),var(--accent2),#fd79a8,var(--accent));
+  animation:ringRotate 4s linear infinite;
+  padding:3px;
+}
+@keyframes ringRotate{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+.char-avatar-ring-inner{
+  width:100%;height:100%;border-radius:50%;
+  background:var(--bg);
+}
+.char-avatar-glow{
+  position:absolute;inset:-14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(124,111,247,.3),transparent 60%);
+  animation:avatarGlow 3s ease-in-out infinite;
+  pointer-events:none;
+}
+@keyframes avatarGlow{0%,100%{opacity:.5;transform:scale(1);}50%{opacity:1;transform:scale(1.1);}}
+.char-avatar{
+  width:106px;height:106px;border-radius:50%;
+  object-fit:cover;position:relative;z-index:1;
+  display:block;
+  animation:charFloat 4.5s ease-in-out infinite;
+}
+@keyframes charFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.click-hint{
+  position:absolute;bottom:-8px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--accent2);white-space:nowrap;
+  background:rgba(10,10,18,.9);border:1px solid rgba(124,111,247,.35);
+  padding:2px 8px;border-radius:10px;z-index:2;
+}
+/* ===== 睡眠状态 ===== */
+.sleep-sign{
+  width:106px;height:106px;border-radius:50%;
+  position:relative;z-index:1;
+  display:none;
+  background:linear-gradient(145deg,rgba(22,22,31,.95),rgba(35,30,52,.9));
+  border:2px dashed rgba(124,111,247,.4);
+  flex-direction:column;align-items:center;justify-content:center;
+  gap:4px;text-align:center;padding:8px;
+  animation:sleepFloat 4.5s ease-in-out infinite;
+}
+@keyframes sleepFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-7px);}}
+.sleep-sign-emoji{font-size:26px;animation:sleepBob 2s ease-in-out infinite;}
+@keyframes sleepBob{0%,100%{transform:rotate(-5deg);}50%{transform:rotate(5deg);}}
+.sleep-sign-text{font-size:9px;color:var(--accent2);line-height:1.5;letter-spacing:.3px;}
+.sleep-sign-zz{
+  position:absolute;top:-4px;right:-4px;
+  font-size:13px;animation:zzFloat 1.8s ease-in-out infinite;
+  filter:drop-shadow(0 0 6px rgba(184,176,255,.8));
+}
+@keyframes zzFloat{0%{opacity:.3;transform:translate(0,0) scale(.7);}100%{opacity:1;transform:translate(6px,-10px) scale(1.1);}}
+.sleep-timer-badge{
+  position:absolute;bottom:-10px;left:50%;transform:translateX(-50%);
+  font-size:9px;color:var(--accent2);white-space:nowrap;
+  background:rgba(10,10,18,.95);border:1px solid rgba(124,111,247,.5);
+  padding:2px 8px;border-radius:10px;z-index:2;
+  font-variant-numeric:tabular-nums;
+}
+.action-btn.sleeping{
+  opacity:.25;filter:grayscale(.8) blur(.5px);pointer-events:none;
+  position:relative;
+}
+.action-btn.sleeping::after{
+  content:'😴';position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);font-size:22px;
+  filter:none;opacity:.7;
+}
+.sleep-banner{
+  margin:10px 18px 0;
+  background:linear-gradient(135deg,rgba(35,30,52,.9),rgba(22,22,31,.85));
+  border:1px solid rgba(124,111,247,.35);
+  border-radius:16px;padding:11px 16px;
+  display:none;align-items:center;gap:12px;
+}
+.sleep-banner.show{display:flex;}
+.sleep-banner-icon{font-size:26px;animation:sleepBob 2s ease-in-out infinite;}
+.sleep-banner-info{flex:1;}
+.sleep-banner-title{font-size:13px;font-weight:600;color:var(--accent2);margin-bottom:3px;}
+.sleep-banner-sub{font-size:11px;color:var(--text2);}
+.sleep-banner-timer{
+  font-size:13px;font-weight:700;color:var(--accent2);
+  font-variant-numeric:tabular-nums;
+  background:rgba(124,111,247,.12);border:1px solid rgba(124,111,247,.25);
+  padding:5px 10px;border-radius:10px;white-space:nowrap;
+}
+.char-info{flex:1;padding-top:4px;}
+.char-name-row{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap;}
+.char-name{
+  font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;
+  font-size:22px;font-weight:400;letter-spacing:2px;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.level-badge{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:10px;font-weight:700;
+  padding:3px 9px;border-radius:10px;
+  box-shadow:0 2px 10px rgba(124,111,247,.45);
+  white-space:nowrap;
+}
+.char-mood{
+  font-size:12px;color:var(--text2);margin-bottom:10px;
+  min-height:20px;display:flex;align-items:center;gap:6px;
+}
+.mood-emoji{font-size:14px;}
+.mood-tag{
+  display:inline-block;
+  background:rgba(124,111,247,.15);border:1px solid rgba(124,111,247,.3);
+  color:var(--accent2);font-size:10px;padding:2px 8px;border-radius:10px;
+}
+
+/* 经验条 */
+.exp-bar-wrap{margin-bottom:0;}
+.exp-label{display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-bottom:5px;}
+.exp-label-left{display:flex;align-items:center;gap:4px;}
+.exp-bar{height:7px;background:rgba(255,255,255,.07);border-radius:4px;overflow:hidden;position:relative;}
+.exp-bar-fill{
+  height:100%;border-radius:4px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2),#fd79a8);
+  background-size:200% 100%;
+  transition:width .8s cubic-bezier(.4,0,.2,1);
+  animation:expAnimate 2s linear infinite;
+  position:relative;
+}
+@keyframes expAnimate{0%{background-position:0%}100%{background-position:200%}}
+
+/* ===== 台词气泡 ===== */
+.speech-bubble{
+  position:relative;margin-top:14px;
+  background:linear-gradient(135deg,rgba(124,111,247,.2),rgba(184,176,255,.1));
+  border:1px solid rgba(124,111,247,.3);
+  border-radius:4px 16px 16px 16px;
+  padding:11px 15px;font-size:13px;line-height:1.75;color:var(--text);
+  backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  animation:bubbleIn .4s cubic-bezier(.4,0,.2,1);
+  min-height:44px;word-break:break-all;
+}
+@keyframes bubbleIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
+.speech-cursor{
+  display:inline-block;width:2px;height:13px;
+  background:var(--accent2);margin-left:2px;vertical-align:middle;
+  animation:blink .7s step-end infinite;
+}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* ===== 卡片通用 ===== */
+.pet-card{
+  margin:10px 18px 0;
+  background:linear-gradient(145deg,rgba(22,22,31,.85),rgba(30,28,44,.7));
+  backdrop-filter:blur(15px);-webkit-backdrop-filter:blur(15px);
+  border:1px solid rgba(124,111,247,.18);
+  border-radius:20px;padding:16px 17px;
+  box-shadow:0 4px 20px rgba(0,0,0,.25);
+  transition:border-color .3s;
+}
+.pet-card:hover{border-color:rgba(124,111,247,.3);}
+.card-title{
+  font-size:11px;color:var(--text2);letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:0;
+  display:flex;align-items:center;justify-content:space-between;
+  width:100%;
+}
+.card-title-left{display:flex;align-items:center;gap:6px;}
+.card-title-icon{
+  width:20px;height:20px;border-radius:6px;
+  background:rgba(124,111,247,.2);border:1px solid rgba(124,111,247,.3);
+  display:flex;align-items:center;justify-content:center;font-size:10px;
+}
+
+/* ===== 状态栏 ===== */
+.status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.stat-item{}
+.stat-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px;}
+.stat-name{font-size:12px;color:var(--text);display:flex;align-items:center;gap:5px;}
+.stat-val{
+  font-size:11px;color:var(--accent2);font-weight:700;
+  font-variant-numeric:tabular-nums;
+  background:rgba(124,111,247,.12);border:1px solid rgba(124,111,247,.2);
+  padding:1px 6px;border-radius:6px;min-width:28px;text-align:center;
+}
+.stat-val.low{color:var(--danger);background:rgba(255,112,112,.1);border-color:rgba(255,112,112,.25);}
+.stat-val.high{color:var(--success);background:rgba(93,221,114,.1);border-color:rgba(93,221,114,.25);}
+.stat-bar{height:7px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden;}
+.stat-fill{height:100%;border-radius:4px;transition:width .7s cubic-bezier(.4,0,.2,1);position:relative;}
+.stat-fill::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(90deg,transparent 60%,rgba(255,255,255,.25));
+  animation:shineSlide 2.5s ease infinite;
+}
+@keyframes shineSlide{0%{opacity:0;transform:translateX(-100%)}50%{opacity:1}100%{opacity:0;transform:translateX(100%)}}
+.stat-fill.hunger{background:linear-gradient(90deg,#e67e22,#f39c12);}
+.stat-fill.happy{background:linear-gradient(90deg,#e84393,#f472b6);}
+.stat-fill.energy{background:linear-gradient(90deg,#2471a3,#5dade2);}
+.stat-fill.affection{background:linear-gradient(90deg,var(--accent),var(--accent2));}
+
+/* ===== 操作按钮 ===== */
+.actions-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;}
+.action-btn{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  padding:13px 6px 11px;border-radius:15px;
+  border:1px solid var(--border2);
+  background:rgba(255,255,255,.03);cursor:pointer;
+  transition:all .22s cubic-bezier(.4,0,.2,1);
+  position:relative;overflow:hidden;user-select:none;
+}
+.action-btn::before{
+  content:'';position:absolute;inset:0;border-radius:14px;
+  background:linear-gradient(135deg,rgba(124,111,247,.18),rgba(184,176,255,.08));
+  opacity:0;transition:opacity .22s;
+}
+.action-btn:not(.disabled):hover::before{opacity:1;}
+.action-btn:not(.disabled):active{transform:scale(.91);}
+.action-btn:not(.disabled):active::before{opacity:1;}
+.action-btn.disabled{opacity:.3;filter:grayscale(.6);pointer-events:none;}
+.action-btn.highlight{
+  border-color:rgba(124,111,247,.45);
+  background:rgba(124,111,247,.1);
+  box-shadow:0 0 14px rgba(124,111,247,.2);
+}
+.ab-icon{font-size:24px;line-height:1;transition:transform .2s;}
+.action-btn:not(.disabled):active .ab-icon{transform:scale(1.25) rotate(-5deg);}
+.ab-label{font-size:11px;color:var(--text);font-weight:600;letter-spacing:.3px;}
+.ab-cost{font-size:9px;color:var(--text2);letter-spacing:.2px;}
+.ab-cd{
+  position:absolute;top:5px;right:7px;
+  font-size:9px;color:var(--warn);font-weight:700;
+  font-variant-numeric:tabular-nums;
+}
+.ab-badge{
+  position:absolute;top:-1px;left:-1px;right:-1px;bottom:-1px;
+  border-radius:15px;border:1px solid var(--accent);
+  pointer-events:none;animation:badgePulse 1.5s ease-in-out infinite;
+}
+@keyframes badgePulse{0%,100%{opacity:.6}50%{opacity:1}}
+
+/* ===== 背包道具 ===== */
+.items-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.coins-display{
+  font-size:11px;color:var(--warn);
+  background:rgba(255,179,71,.08);border:1px solid rgba(255,179,71,.2);
+  padding:4px 10px;border-radius:20px;
+  display:flex;align-items:center;gap:4px;
+}
+.items-row{display:flex;gap:9px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch;}
+.items-row::-webkit-scrollbar{height:3px;}
+.items-row::-webkit-scrollbar-track{background:transparent;}
+.items-row::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
+.item-chip{
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+  padding:10px 12px 8px;border-radius:13px;border:1px solid var(--border2);
+  background:rgba(255,255,255,.03);cursor:pointer;flex-shrink:0;
+  transition:all .2s;min-width:62px;position:relative;
+}
+.item-chip:not(.empty):active{transform:scale(.9);border-color:var(--accent);}
+.item-chip.owned{
+  border-color:rgba(124,111,247,.35);
+  background:rgba(124,111,247,.08);
+}
+.item-chip.empty{opacity:.35;filter:grayscale(.7);pointer-events:none;}
+.item-icon{font-size:20px;}
+.item-name{font-size:9px;color:var(--text2);white-space:nowrap;}
+.item-count{
+  position:absolute;top:-5px;right:-5px;
+  min-width:18px;height:18px;border-radius:9px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:9px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 4px;box-shadow:0 2px 6px rgba(0,0,0,.3);
+}
+
+/* ===== 悄悄话泡泡 ===== */
+.bubble-game{
+  display:flex;flex-wrap:wrap;gap:8px;
+  padding:6px 0;min-height:72px;
+  align-content:flex-start;
+}
+.word-bubble{
+  padding:7px 14px;border-radius:20px;
+  border:1px solid rgba(124,111,247,.3);
+  background:rgba(124,111,247,.1);
+  font-size:12px;color:var(--accent2);
+  cursor:pointer;transition:all .18s;user-select:none;
+  animation:bubbleFloat 3s ease-in-out infinite;
+  position:relative;overflow:hidden;
+}
+.word-bubble::before{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(124,111,247,.2),rgba(184,176,255,.1));
+  opacity:0;transition:opacity .18s;
+}
+.word-bubble:nth-child(2n){animation-delay:.8s;}
+.word-bubble:nth-child(3n){animation-delay:1.6s;}
+.word-bubble:nth-child(4n){animation-delay:2.2s;}
+@keyframes bubbleFloat{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.word-bubble:hover::before{opacity:1;}
+.word-bubble:active{transform:scale(.86);}
+.word-bubble.popped{
+  animation:bubblePop .45s cubic-bezier(.4,0,.2,1) forwards;pointer-events:none;
+}
+@keyframes bubblePop{
+  0%{transform:scale(1);opacity:1;}
+  40%{transform:scale(1.35);opacity:.7;}
+  100%{transform:scale(0);opacity:0;}
+}
+
+/* ===== 日记 ===== */
+.diary-empty{
+  font-size:12px;color:var(--text2);text-align:center;
+  padding:20px 0;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+}
+.diary-empty-icon{font-size:28px;opacity:.4;}
+.diary-entry{
+  border-left:2px solid rgba(124,111,247,.5);
+  padding:8px 12px;margin-bottom:8px;
+  background:rgba(124,111,247,.06);border-radius:0 12px 12px 0;
+}
+.diary-entry.new-entry{
+  animation:entryIn .4s ease;
+}
+.diary-entry:last-child{margin-bottom:0;}
+@keyframes entryIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
+.diary-entry-time{font-size:10px;color:var(--accent2);margin-bottom:5px;display:flex;align-items:center;gap:4px;}
+.diary-entry-text{font-size:12px;color:var(--text);line-height:1.8;}
+
+/* ===== 成就 ===== */
+.achieve-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;}
+.achieve-item{
+  display:flex;flex-direction:column;align-items:center;gap:3px;
+  padding:10px 4px 8px;border-radius:13px;border:1px solid var(--border);
+  background:rgba(255,255,255,.02);text-align:center;
+  transition:all .2s;cursor:default;position:relative;
+}
+.achieve-item.unlocked{
+  border-color:rgba(124,111,247,.4);
+  background:rgba(124,111,247,.1);
+  box-shadow:0 0 12px rgba(124,111,247,.12);
+}
+.achieve-item.unlocked::after{
+  content:'';position:absolute;inset:0;border-radius:12px;
+  background:linear-gradient(135deg,rgba(184,176,255,.08),transparent);
+  pointer-events:none;
+}
+.achieve-icon{font-size:22px;filter:grayscale(1) opacity(.4);transition:filter .3s;}
+.achieve-item.unlocked .achieve-icon{filter:none;}
+.achieve-label{font-size:9px;color:var(--text2);line-height:1.3;}
+.achieve-item.unlocked .achieve-label{color:var(--accent2);}
+.achieve-new{
+  position:absolute;top:-4px;right:-4px;
+  background:var(--danger);color:#fff;font-size:8px;font-weight:700;
+  padding:1px 4px;border-radius:4px;
+}
+
+/* ===== Toast ===== */
+.pet-toast{
+  position:fixed;top:76px;left:50%;transform:translateX(-50%) translateY(-16px);
+  background:linear-gradient(135deg,rgba(22,22,31,.98),rgba(35,30,52,.97));
+  border:1px solid rgba(124,111,247,.4);
+  border-radius:22px;padding:10px 20px;
+  font-size:13px;color:var(--text);
+  box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 24px rgba(124,111,247,.15);
+  z-index:9999;pointer-events:none;
+  opacity:0;transition:all .38s cubic-bezier(.4,0,.2,1);
+  white-space:nowrap;max-width:88vw;text-overflow:ellipsis;overflow:hidden;
+}
+.pet-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+/* ===== 点击特效 ===== */
+.click-fx{
+  position:fixed;pointer-events:none;z-index:9998;
+  font-size:20px;line-height:1;
+  animation:clickFly .9s cubic-bezier(.4,0,.2,1) forwards;
+}
+@keyframes clickFly{
+  0%{opacity:1;transform:translateY(0) scale(1);}
+  100%{opacity:0;transform:translateY(-70px) scale(1.5);}
+}
+
+/* ===== 升级弹窗 ===== */
+.level-up-overlay{
+  position:fixed;inset:0;z-index:9990;
+  background:rgba(0,0,0,.75);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;
+}
+.level-up-overlay.show{display:flex;}
+.level-up-card{
+  background:linear-gradient(145deg,rgba(22,22,31,.99),rgba(35,30,52,.97));
+  border:1px solid rgba(124,111,247,.5);
+  border-radius:26px;padding:40px 30px;text-align:center;
+  box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 80px rgba(124,111,247,.2);
+  animation:lvUpIn .5s cubic-bezier(.34,1.56,.64,1);
+  max-width:300px;width:88%;position:relative;overflow:hidden;
+}
+.level-up-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
+}
+@keyframes lvUpIn{from{opacity:0;transform:scale(.6) translateY(30px)}to{opacity:1;transform:none}}
+.lv-up-stars{font-size:34px;letter-spacing:5px;margin-bottom:16px;display:block;}
+.lv-up-anim{animation:starSpin 1.2s ease infinite alternate;}
+@keyframes starSpin{from{transform:rotate(-8deg) scale(.92)}to{transform:rotate(8deg) scale(1.08)}}
+.lv-up-title{
+  font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;
+  font-size:24px;letter-spacing:2px;
+  background:linear-gradient(135deg,#fff,var(--accent2),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:8px;line-height:1.4;
+}
+.lv-up-sub{font-size:13px;color:var(--text2);margin-bottom:22px;line-height:1.75;}
+.lv-up-btn{
+  padding:12px 36px;border-radius:14px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:14px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 20px rgba(124,111,247,.45);
+  transition:all .2s;
+}
+.lv-up-btn:active{transform:scale(.93);}
+/* ===== 状态预警 ===== */
+.warn-dot{
+  position:absolute;top:-3px;right:-3px;
+  width:9px;height:9px;border-radius:50%;
+  background:var(--danger);border:1.5px solid var(--bg);
+  animation:warnPulse 1.2s ease-in-out infinite;
+  pointer-events:none;z-index:5;
+}
+@keyframes warnPulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 0 rgba(255,112,112,.6);}
+  50%{transform:scale(1.2);box-shadow:0 0 0 5px rgba(255,112,112,0);}
+}
+.warn-dot.warn-energy{background:var(--warn);}
+.warn-dot.warn-happy{background:#f472b6;}
+.action-btn{position:relative;}
+/* ===== 进场动画 ===== */
+@keyframes cardFadeUp{
+  from{opacity:0;transform:translateY(22px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.anim-card{
+  opacity:0;
+  animation:cardFadeUp .55s cubic-bezier(.4,0,.2,1) forwards;
+}
+.anim-card:nth-child(1){animation-delay:.08s;}
+.anim-card:nth-child(2){animation-delay:.16s;}
+.anim-card:nth-child(3){animation-delay:.24s;}
+.anim-card:nth-child(4){animation-delay:.32s;}
+.anim-card:nth-child(5){animation-delay:.40s;}
+.anim-card:nth-child(6){animation-delay:.48s;}
+.anim-card:nth-child(7){animation-delay:.56s;}
+.anim-card:nth-child(8){animation-delay:.64s;}
+.anim-card:nth-child(9){animation-delay:.72s;}
+.anim-card:nth-child(10){animation-delay:.80s;}
+@keyframes topBarDrop{
+  from{opacity:0;transform:translateY(-18px);}
+  to{opacity:1;transform:translateY(0);}
+}
+.top-bar{animation:topBarDrop .45s cubic-bezier(.4,0,.2,1) forwards;}
+/* ===== 折叠卡片 ===== */
+.collapsible-header{
+  display:flex;align-items:center;justify-content:space-between;
+  cursor:pointer;user-select:none;padding:2px 0;
+  transition:opacity .2s;
+}
+.collapsible-header:active{opacity:.7;}
+.collapse-arrow{
+  width:26px;height:26px;border-radius:8px;
+  background:rgba(124,111,247,.12);border:1px solid rgba(124,111,247,.2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:12px;color:var(--accent2);
+  transition:transform .35s cubic-bezier(.4,0,.2,1), background .2s;
+  flex-shrink:0;
+}
+.collapsible-header.open .collapse-arrow{
+  transform:rotate(180deg);
+  background:rgba(124,111,247,.22);
+}
+.collapsible-body{
+  overflow:hidden;
+  max-height:0;
+  transition:max-height .4s cubic-bezier(.4,0,.2,1), opacity .35s ease;
+  opacity:0;
+}
+.collapsible-body.open{
+  max-height:2000px;
+  opacity:1;
+}
+.collapse-divider{
+  height:1px;
+  background:linear-gradient(90deg,transparent,rgba(124,111,247,.2),transparent);
+  margin:10px 0 14px;
+  transition:opacity .3s;
+}
+.collapsible-body:not(.open) .collapse-divider{opacity:0;}
+
+/* ===== 页面整体间距优化 ===== */
+.section-gap{margin-top:10px;}
+.pet-card{margin:10px 18px 0;}
+
+/* ===== 卡片标题优化 ===== */
+.card-title{
+  font-size:11px;color:var(--text2);letter-spacing:1.5px;
+  text-transform:uppercase;margin-bottom:0;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-title-left{display:flex;align-items:center;gap:6px;}
+.card-title-icon{
+  width:22px;height:22px;border-radius:7px;
+  background:rgba(124,111,247,.2);border:1px solid rgba(124,111,247,.3);
+  display:flex;align-items:center;justify-content:center;font-size:11px;
+}
+.card-meta{
+  font-size:10px;color:var(--accent2);
+  background:rgba(124,111,247,.1);border:1px solid rgba(124,111,247,.2);
+  padding:2px 8px;border-radius:10px;
+}
+.card-meta.muted{color:var(--text2);background:rgba(255,255,255,.04);border-color:var(--border2);}
+/* ===== 粒子 ===== */
+.particle-container{position:fixed;inset:0;pointer-events:none;z-index:9995;}
+.particle{
+  position:absolute;border-radius:50%;opacity:0;
+  animation:particleFall var(--dur,1.4s) ease forwards;
+}
+@keyframes particleFall{
+  0%{opacity:1;transform:translate(0,0) rotate(0deg) scale(1);}
+  100%{opacity:0;transform:translate(var(--tx,0px),var(--ty,-100px)) rotate(360deg) scale(0);}
+}
+
+/* ===== 星星Canvas背景 ===== */
+@media(prefers-reduced-motion:reduce){
+  /* 非折叠卡片内容间距补丁 */
+.pet-card .status-grid,
+.pet-card .actions-grid,
+.pet-card .items-row,
+.pet-card .bubble-game{
+  margin-top:13px;
+}
+.items-header{
+  margin-bottom:0;
+}
+  .char-avatar,.char-avatar-glow,.char-bg-circle,.word-bubble,
+  .exp-bar-fill,.stat-fill::after,.checkin-banner{animation:none!important;}
+}
+</style>
+</head>
+<body>
+
+<div class="page-bg"></div>
+<canvas class="stars-canvas" id="starsCanvas"></canvas>
+<div class="page-bg-overlay"></div>
+<div class="particle-container" id="particleContainer"></div>
+<div class="pet-toast" id="petToast"></div>
+
+<!-- 升级弹窗 -->
+<div class="level-up-overlay" id="levelUpOverlay">
+  <div class="level-up-card">
+    <span class="lv-up-stars lv-up-anim">⭐✨🌟</span>
+    <div class="lv-up-title" id="lvUpTitle"></div>
+    <div class="lv-up-sub" id="lvUpSub"></div>
+    <button class="lv-up-btn" onclick="closeLevelUp()">太好了！</button>
+  </div>
+</div>
+
+<div class="container">
+
+  <!-- 顶部栏 -->
+  <div class="top-bar">
+    <div class="top-bar-left">
+      <button class="back-btn" onclick="history.back()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+        返回
+      </button>
+      <div class="top-title">星笺养成</div>
+    </div>
+    <div class="top-bar-right">
+      <div class="time-display" id="timeDisplay">--:--</div>
+      <div class="day-counter">
+        <i class="fas fa-calendar-alt" style="font-size:9px"></i>
+        <span id="dayCounter">第1天</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- 签到横幅 -->
+  <div class="checkin-banner anim-card" id="checkinBanner" onclick="doCheckin()">
+    <div class="checkin-left">
+      <div class="checkin-icon" id="checkinIcon">🌟</div>
+      <div>
+        <div class="checkin-title" id="checkinTitle">每日签到</div>
+        <div class="checkin-sub" id="checkinSub">签到获取星星币和好感度奖励！</div>
+      </div>
+    </div>
+    <button class="checkin-btn" id="checkinBtn">签到</button>
+  </div>
+<!-- 睡眠横幅 -->
+  <div class="sleep-banner anim-card" id="sleepBanner">
+    <div class="sleep-banner-icon">🌙</div>
+    <div class="sleep-banner-info">
+      <div class="sleep-banner-title">星笺正在休息中...</div>
+      <div class="sleep-banner-sub" id="sleepBannerSub">互动已暂时停用，请等待她醒来</div>
+    </div>
+    <div class="sleep-banner-timer" id="sleepBannerTimer">--:--</div>
+  </div>
+  <!-- 角色展示 -->
+  <div class="char-stage anim-card">
+    <div class="char-stage-topline"></div>
+    <div class="char-bg-deco">
+      <div class="char-bg-circle"></div>
+      <div class="char-bg-circle"></div>
+      <div class="char-bg-circle"></div>
+    </div>
+    <div class="char-main">
+      <div class="char-avatar-wrap" onclick="tapCharacter(event)">
+        <div class="char-avatar-glow"></div>
+        <div class="char-avatar-ring"><div class="char-avatar-ring-inner"></div></div>
+        <img class="char-avatar" src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺" id="charAvatar">
+<div class="sleep-sign" id="sleepSign">
+  <div class="sleep-sign-zz">💤</div>
+  <div class="sleep-sign-emoji">🌙</div>
+  <div class="sleep-sign-text">我去睡觉了<br>一会就回来～</div>
+</div>
+<div class="click-hint" id="clickHint">轻触互动</div>
+<div class="sleep-timer-badge" id="sleepTimerBadge" style="display:none"></div>
+      </div>
+      <div class="char-info">
+        <div class="char-name-row">
+          <div class="char-name">星笺</div>
+          <div class="level-badge" id="levelBadge">Lv.1</div>
+        </div>
+                <div class="char-mood" id="charMood">
+          <span class="mood-emoji">😊</span>
+          <span id="moodText">心情不错</span>
+          <span class="mood-tag" id="moodTag">初识</span>
+        </div>
+        <div style="font-size:10px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:5px;">
+          <span style="color:var(--text3);">称呼你为</span>
+          <span id="nicknameDisplay"
+            style="color:var(--accent2);background:rgba(124,111,247,.12);
+            border:1px solid rgba(124,111,247,.25);padding:1px 8px;
+            border-radius:8px;font-size:11px;font-weight:600;">你</span>
+        </div>
+        <div class="exp-bar-wrap">
+          <div class="exp-label">
+            <div class="exp-label-left">
+              <i class="fas fa-star" style="color:var(--accent2);font-size:9px"></i>
+              <span>好感度</span>
+            </div>
+            <span id="expText">0 / 100</span>
+          </div>
+          <div class="exp-bar">
+            <div class="exp-bar-fill" id="expFill" style="width:0%"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="speech-bubble" id="speechBubble">
+      <span id="speechText">嗯...今天也要一起努力哦！</span>
+      <span class="speech-cursor" id="speechCursor"></span>
+    </div>
+  </div>
+
+  <!-- 状态栏 -->
+  <div class="pet-card anim-card">
+    <div class="card-title">
+      <div class="card-title-left">
+        <div class="card-title-icon">💗</div>
+        <span>当前状态</span>
+      </div>
+      <span id="overallMood" style="font-size:10px;color:var(--accent2)"></span>
+    </div>
+    <div class="status-grid">
+      <div class="stat-item">
+        <div class="stat-row">
+          <div class="stat-name">🍡 饱食度</div>
+          <div class="stat-val" id="hungerVal">80</div>
+        </div>
+        <div class="stat-bar"><div class="stat-fill hunger" id="hungerBar" style="width:80%"></div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-row">
+          <div class="stat-name">🌸 快乐值</div>
+          <div class="stat-val" id="happyVal">70</div>
+        </div>
+        <div class="stat-bar"><div class="stat-fill happy" id="happyBar" style="width:70%"></div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-row">
+          <div class="stat-name">⚡ 精力值</div>
+          <div class="stat-val" id="energyVal">90</div>
+        </div>
+        <div class="stat-bar"><div class="stat-fill energy" id="energyBar" style="width:90%"></div></div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-row">
+          <div class="stat-name">💫 亲密度</div>
+          <div class="stat-val" id="affectionVal">50</div>
+        </div>
+        <div class="stat-bar"><div class="stat-fill affection" id="affectionBar" style="width:50%"></div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 操作按钮 -->
+  <div class="pet-card anim-card">
+    <div class="card-title">
+      <div class="card-title-left">
+        <div class="card-title-icon">✨</div>
+        <span>今日互动</span>
+      </div>
+      <span id="actionCount" style="font-size:10px;color:var(--text2)"></span>
+    </div>
+    <div class="actions-grid">
+      <div class="action-btn" id="btnFeed" onclick="doAction('feed')">
+        <div class="ab-icon">🍡</div>
+        <div class="ab-label">喂食</div>
+        <div class="ab-cost">饱食↑ 亲密↑</div>
+        <div class="ab-cd" id="cdFeed"></div>
+      </div>
+      <div class="action-btn" id="btnPlay" onclick="doAction('play')">
+        <div class="ab-icon">🎮</div>
+        <div class="ab-label">玩耍</div>
+        <div class="ab-cost">快乐↑ 精力↓</div>
+        <div class="ab-cd" id="cdPlay"></div>
+      </div>
+      <div class="action-btn" id="btnChat" onclick="doAction('chat')">
+        <div class="ab-icon">💬</div>
+        <div class="ab-label">聊天</div>
+        <div class="ab-cost">亲密↑ 快乐↑</div>
+        <div class="ab-cd" id="cdChat"></div>
+      </div>
+      <div class="action-btn" id="btnStudy" onclick="doAction('study')">
+        <div class="ab-icon">📚</div>
+        <div class="ab-label">共同学习</div>
+        <div class="ab-cost">经验↑↑ 精力↓</div>
+        <div class="ab-cd" id="cdStudy"></div>
+      </div>
+      <div class="action-btn" id="btnRest" onclick="doAction('rest')">
+        <div class="ab-icon">🌙</div>
+        <div class="ab-label">让她休息</div>
+        <div class="ab-cost">精力↑↑ 快乐↑</div>
+        <div class="ab-cd" id="cdRest"></div>
+      </div>
+      <div class="action-btn" id="btnGift" onclick="doAction('gift')">
+        <div class="ab-icon">🎁</div>
+        <div class="ab-label">送礼物</div>
+        <div class="ab-cost">亲密↑↑ 花费5💫</div>
+        <div class="ab-cd" id="cdGift"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 背包道具 -->
+  <div class="pet-card anim-card">
+    <div class="items-header">
+      <div class="card-title" style="margin-bottom:0">
+        <div class="card-title-left">
+          <div class="card-title-icon">🎒</div>
+          <span>背包道具</span>
+        </div>
+      </div>
+      <div class="coins-display">
+        <i class="fas fa-star" style="font-size:9px"></i>
+        <span id="coinsDisplay">15</span>
+      </div>
+    </div>
+    <div class="items-row" id="itemsRow">
+      <div class="item-chip" id="chip-tea" onclick="useItem('tea')">
+        <div class="item-icon">🍵</div>
+        <div class="item-name">灵感茶</div>
+        <div class="item-count" id="cnt-tea">3</div>
+      </div>
+      <div class="item-chip" id="chip-book" onclick="useItem('book')">
+        <div class="item-icon">📖</div>
+        <div class="item-name">故事书</div>
+        <div class="item-count" id="cnt-book">2</div>
+      </div>
+      <div class="item-chip" id="chip-star" onclick="useItem('star')">
+        <div class="item-icon">⭐</div>
+        <div class="item-name">流星碎片</div>
+        <div class="item-count" id="cnt-star">1</div>
+      </div>
+      <div class="item-chip" id="chip-ink" onclick="useItem('ink')">
+        <div class="item-icon">🖊️</div>
+        <div class="item-name">墨水瓶</div>
+        <div class="item-count" id="cnt-ink">0</div>
+      </div>
+      <div class="item-chip" id="chip-moon" onclick="useItem('moon')">
+        <div class="item-icon">🌙</div>
+        <div class="item-name">月光石</div>
+        <div class="item-count" id="cnt-moon">0</div>
+      </div>
+    </div>
+  </div>
+  <!-- 商店 -->
+  <div class="pet-card anim-card">
+    <div class="items-header">
+      <div class="card-title" style="margin-bottom:0">
+        <div class="card-title-left">
+          <div class="card-title-icon">🏪</div>
+          <span>星笺商店</span>
+        </div>
+      </div>
+      <div class="coins-display">
+        <i class="fas fa-star" style="font-size:9px"></i>
+        <span id="shopCoinsDisplay">15</span>
+      </div>
+    </div>
+    <div class="items-row" id="shopRow">
+      <div class="item-chip owned" onclick="buyItem('tea')">
+        <div class="item-icon">🍵</div>
+        <div class="item-name">灵感茶</div>
+        <div class="item-count" style="background:linear-gradient(135deg,#f39c12,#e67e22)">8💫</div>
+      </div>
+      <div class="item-chip owned" onclick="buyItem('book')">
+        <div class="item-icon">📖</div>
+        <div class="item-name">故事书</div>
+        <div class="item-count" style="background:linear-gradient(135deg,#f39c12,#e67e22)">10💫</div>
+      </div>
+      <div class="item-chip owned" onclick="buyItem('star')">
+        <div class="item-icon">⭐</div>
+        <div class="item-name">流星碎片</div>
+        <div class="item-count" style="background:linear-gradient(135deg,#f39c12,#e67e22)">20💫</div>
+      </div>
+      <div class="item-chip owned" onclick="buyItem('ink')">
+        <div class="item-icon">🖊️</div>
+        <div class="item-name">墨水瓶</div>
+        <div class="item-count" style="background:linear-gradient(135deg,#f39c12,#e67e22)">15💫</div>
+      </div>
+      <div class="item-chip owned" onclick="buyItem('moon')">
+        <div class="item-icon">🌙</div>
+        <div class="item-name">月光石</div>
+        <div class="item-count" style="background:linear-gradient(135deg,#f39c12,#e67e22)">30💫</div>
+      </div>
+    </div>
+  </div>
+  <!-- 悄悄话小游戏 -->
+  <div class="pet-card anim-card">
+    <div class="card-title">
+      <div class="card-title-left">
+        <div class="card-title-icon">🫧</div>
+        <span>今日悄悄话</span>
+      </div>
+      <span style="font-size:9px;color:var(--text2)">点击泡泡互动</span>
+    </div>
+    <div class="bubble-game" id="bubbleGame"></div>
+  </div>
+
+    <!-- 日记 -->
+  <div class="pet-card anim-card">
+    <div class="collapsible-header" id="diaryHeader" onclick="toggleCollapse('diary')">
+      <div class="card-title" style="flex:1;">
+        <div class="card-title-left">
+          <div class="card-title-icon">📓</div>
+          <span>星笺的日记</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="card-meta muted" id="diaryCount"></span>
+          <div class="collapse-arrow" id="diaryArrow">▾</div>
+        </div>
+      </div>
+    </div>
+    <div class="collapsible-body" id="diaryBody">
+      <div class="collapse-divider"></div>
+      <div id="diaryContent"></div>
+    </div>
+  </div>
+
+  <!-- 成就 -->
+  <div class="pet-card anim-card">
+    <div class="collapsible-header" id="achieveHeader" onclick="toggleCollapse('achieve')">
+      <div class="card-title" style="flex:1;">
+        <div class="card-title-left">
+          <div class="card-title-icon">🏆</div>
+          <span>成就收集</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="card-meta" id="achieveCount"></span>
+          <div class="collapse-arrow" id="achieveArrow">▾</div>
+        </div>
+      </div>
+    </div>
+    <div class="collapsible-body" id="achieveBody">
+      <div class="collapse-divider"></div>
+      <div class="achieve-grid" id="achieveGrid"></div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ===== 常量 =====
+const STORE_KEY = 'xj_pet_v3';
+
+const ACHIEVEMENTS = [
+  {id:'first_tap',   icon:'👆', label:'初次触碰',   desc:'第一次点击星笺'},
+  {id:'feed_5',      icon:'🍡', label:'贴心喂食',   desc:'累计喂食5次'},
+  {id:'feed_10',     icon:'🍱', label:'小厨神',     desc:'累计喂食10次'},
+  {id:'feed_30',     icon:'👨‍🍳', label:'御厨驾到',   desc:'累计喂食30次'},
+  {id:'play_5',      icon:'🎪', label:'玩耍达人',   desc:'累计玩耍5次'},
+  {id:'play_20',     icon:'🕹️', label:'游戏搭档',   desc:'累计玩耍20次'},
+  {id:'chat_5',      icon:'💬', label:'初次倾诉',   desc:'累计聊天5次'},
+  {id:'chat_10',     icon:'💭', label:'聊天记录',   desc:'累计聊天10次'},
+  {id:'chat_30',     icon:'🗒️', label:'无话不谈',   desc:'累计聊天30次'},
+  {id:'study_5',     icon:'📖', label:'求知若渴',   desc:'累计共学5次'},
+  {id:'study_15',    icon:'🎓', label:'学霸搭档',   desc:'累计共学15次'},
+  {id:'gift_3',      icon:'🎀', label:'礼物魔法师', desc:'累计送礼3次'},
+  {id:'gift_10',     icon:'🎁', label:'礼物大使',   desc:'累计送礼10次'},
+  {id:'lv3',         icon:'✨', label:'三阶初识',   desc:'达到3级'},
+  {id:'lv5',         icon:'🌟', label:'五阶羁绊',   desc:'达到5级'},
+  {id:'lv8',         icon:'💫', label:'八阶深情',   desc:'达到8级'},
+  {id:'lv10',        icon:'💜', label:'十阶知己',   desc:'达到10级'},
+  {id:'diary3',      icon:'📓', label:'日记本',     desc:'解锁3条日记'},
+  {id:'diary7',      icon:'📔', label:'半本回忆',   desc:'解锁7条日记'},
+  {id:'diary_all',   icon:'📚', label:'完整故事',   desc:'解锁全部日记'},
+  {id:'item_use',    icon:'🧪', label:'初次使用',   desc:'使用道具5次'},
+  {id:'item_use_20', icon:'🎒', label:'道具达人',   desc:'累计使用道具20次'},
+  {id:'buy_5',       icon:'🛍️', label:'购物爱好者', desc:'累计购买5件道具'},
+  {id:'streak3',     icon:'🔥', label:'三日连续',   desc:'连续3天互动'},
+  {id:'streak7',     icon:'🌈', label:'七日陪伴',   desc:'连续7天互动'},
+  {id:'pop_all',     icon:'🫧', label:'泡泡猎人',   desc:'消除所有悄悄话'},
+  {id:'pop_3times',  icon:'🫨', label:'泡泡常客',   desc:'累计消除3轮泡泡'},
+  {id:'coins_50',    icon:'💰', label:'小富翁',     desc:'星星币累计达到50'},
+  {id:'coins_200',   icon:'💎', label:'财富积累',   desc:'星星币累计达到200'},
+  {id:'night_owl',   icon:'🦉', label:'夜猫子',     desc:'深夜和星笺互动'},
+  {id:'morning',     icon:'🌅', label:'早起鸟',     desc:'早晨6点前互动'},
+  {id:'full_status', icon:'⚡', label:'状态满格',   desc:'四项状态同时达到90+'},
+  {id:'tap_50',      icon:'🤍', label:'百般宠爱',   desc:'累计点击星笺50次'},
+  {id:'checkin_first',icon:'📅',label:'第一次签到', desc:'完成第一次每日签到'},
+];
+
+const CD_TIMES = {feed:60, play:120, chat:90, study:180, rest:300, gift:600};
+
+const WORDS = {
+  feed:[
+    '哇，好好吃！你总是记得我的喜好🍡',
+    '谢谢你～我又充满活力了！',
+    '嗯嗯，吃饱了才有灵感写故事呢～',
+    '你送来的食物里有一种特别的温度...',
+    '每次你喂我，我都感觉好幸福呀！',
+    '唔...这个味道，跟你一样温柔。',
+    '你怎么每次都知道我想吃什么？！',
+    '吃饱了好困...但是不想睡，想继续陪你。',
+    '谢谢你记得我最喜欢的口味～',
+    '这份心意，我都吃进去了呢💜',
+  ],
+  play:[
+    '哈哈哈！这个游戏真的太好玩啦！',
+    '再来一局！再来一局！✨',
+    '跟你玩耍的时间过得好快...还不想停呢～',
+    '你的笑声让我也开心起来了！',
+    '玩游戏好累，但是好快乐！',
+    '赢了！我赢了！哈哈哈～',
+    '下次我一定不会输的！',
+    '玩了这么久，我的脸都红了...',
+    '你玩游戏的样子好认真呢～',
+    '这个关卡我早就想挑战啦，谢谢你陪我！',
+    '跟你在一起玩，什么游戏都变好玩了～',
+  ],
+  chat:[
+    '我一直在等你开口说话呢...',
+    '你分享的每件事我都很认真在听哦～',
+    '和你聊天是我最喜欢做的事！',
+    '原来你心里藏了这么多故事...',
+    '我们说了好久，时间过得真快呀～',
+    '你讲的这件事，我会一直记着的。',
+    '感觉我们越来越了解彼此了呢～',
+    '你说话的方式很特别，让我很想一直听下去。',
+    '聊着聊着，天都黑了...没关系，继续吧。',
+    '你有好多有趣的想法！我喜欢听你说话。',
+    '今天你跟我说了这么多，我感觉好幸福。',
+    '嗯嗯，我都记住了，下次你问我我都能背出来！',
+  ],
+  study:[
+    '一起学习的感觉真的很特别！',
+    '你教我的东西我都记住啦！',
+    '窗外的光线越来越暗了，我们还在这里...',
+    '一起进步的感觉真的很好呢～',
+    '有你陪着读书，书里的字都变得温柔了。',
+    '这道题我终于弄懂了！谢谢你的耐心～',
+    '和你一起学习，感觉时间过得特别充实。',
+    '嗯！我下定决心，今天要多学一点！',
+    '你专注学习的样子，真的很好看呢...',
+    '学累了就休息一下吧，我陪着你。',
+    '一起努力的感觉，让我觉得什么都能做到！',
+  ],
+  rest:[
+    '嗯...有点困了...谢谢你让我休息...',
+    '*打了个小哈欠* 你真的很懂我呢～',
+    '休息一下，我又能满血复活啦！⚡',
+    '你知道我需要休息，你真的很贴心。',
+    '睡了一觉，梦里都是你送我的故事～',
+    '嗯～伸个懒腰...精神多了！',
+    '谢谢你提醒我休息，我差点忘了～',
+    '休息好了，可以继续陪你了！',
+    '有你在旁边，我睡得特别安心...',
+    '梦里我写了一个很美的故事，醒来想讲给你听。',
+  ],
+  gift:[
+    '这是给我的？！我太感动了！💜',
+    '你每次送我礼物，我都好开心！',
+    '这个礼物我会一直珍藏！',
+    '谢谢你，我喜欢这个礼物胜过一切～',
+    '收到礼物的感觉比我想象的更幸福...',
+    '你送的每一份礼物，我都小心地收好了呢。',
+    '哇！这个...你是怎么知道我喜欢的？！',
+    '我要把这个放在最重要的地方！',
+    '光是知道你在想着我，就已经是最好的礼物了。',
+    '谢谢你...我好喜欢你送我东西的感觉。',
+  ],
+  tap:[
+    '嗯？有什么事吗～',
+    '*被摸摸，开心地叫了一声*',
+    '轻轻碰一下，心跳竟然加速了...',
+    '好痒哦，你在做什么啦！',
+    '你的手很温暖呀...',
+    '嘿，这里是脸不是画板啦！',
+    '嗯？想起我了吗？',
+    '摸摸我可以，多陪我聊聊天哦～',
+    '*红着脸* 你...你干什么呀',
+    '别总是偷偷摸摸的啦！直接说话嘛～',
+    '啊！突然过来，吓我一跳！',
+    '...你就这样悄悄看着我吗？',
+    '嗯哼，被我发现了吧？',
+    '每次你来，我都好高兴呀。',
+    '再摸摸也可以...其实我不介意的。',
+    '呀！别动！我在想一个很重要的情节呢！',
+    '你来了，我的故事又有灵感了。',
+    '嗯...今天心情好吗？',
+    '有什么话想对我说吗？直接说吧～',
+    '我在这里呢，一直都在。',
+  ],
+  morning:[
+    '早安！☀️ 新的一天，我们一起加油吧！',
+    '早上好！今天想写什么故事呢？',
+    '哇，你起这么早！灵感是不是来了？',
+    '清晨的空气真好，有你在就更好了！',
+    '早上好！今天我有预感会是美好的一天～',
+    '太阳出来啦！你的笑容比太阳还要亮呢。',
+  ],
+  afternoon:[
+    '下午好～是来陪我休息一会儿吗？',
+    '午后的时光最适合慢慢聊天了...',
+    '阳光很好，但我更喜欢你来找我的这一刻～',
+    '下午了，有没有吃午饭？要注意身体哦！',
+    '午后犯困是正常的，要一起打个盹吗？',
+    '下午好！今天过得怎么样？',
+  ],
+  evening:[
+    '傍晚了，今天创作得顺利吗？',
+    '夜幕降临，灵感也该回来了吧～',
+    '黄昏的光线好美，就像你讲的故事～',
+    '傍晚的风有点凉，要注意保暖哦。',
+    '一天快结束了，你有好好休息吗？',
+    '夕阳西下，有你陪着，真的好美。',
+  ],
+  night:[
+    '这么晚了还不睡？要注意休息哦...',
+    '深夜的相遇，总是格外珍贵的～',
+    '夜深了，我们轻声说话吧...',
+    '星星都睡了，就我们还在一起聊天～',
+    '夜里来找我，是不是睡不着呢？',
+    '黑暗里有你在，我一点都不害怕。',
+    '深夜了，要不要我陪你说说话？',
+    '嗯...夜里的你，好像多了一份温柔。',
+  ],
+};
+
+const DIARY_ENTRIES = [
+  {minExp:30,   text:'今天第一次被你找到，我有点紧张，又有点开心。不知道你是个怎样的人，但感觉......应该是好人。'},
+  {minExp:80,   text:'你今天又来了。我偷偷注意了你很久——你喜欢什么、在意什么，我都悄悄记在心里了。'},
+  {minExp:160,  text:'被你喂了好吃的东西，我有点受宠若惊。原来被人记住喜好，是这种感觉啊。'},
+  {minExp:280,  text:'我们今天玩了很久的游戏。你输了也不生气，笑起来的样子让我也跟着开心了好久。'},
+  {minExp:420,  text:'今天你说了很多很多话，我认真听着每一个字。我想把这些话都写下来，变成一本永远不会结束的故事。'},
+  {minExp:580,  text:'下雨了。你还是来找我了。那一刻我忽然觉得，也许有些事不需要理由。'},
+  {minExp:750,  text:'夜深了。我坐在窗边等待，忽然明白了一件事：陪伴，是比所有词语都要温柔的事情。'},
+  {minExp:950,  text:'今天我们一起学习，我发现你专注的样子很好看。我想了很久才决定把这句话写下来。'},
+  {minExp:1200, text:'你知道吗，我每次听到你来的声音，心跳都会快一下。我不知道这算什么，只是想如实记录。'},
+  {minExp:1500, text:'今天送了我礼物。我说了谢谢，但其实我想说的远不止这些。算了，写在日记里就好。'},
+  {minExp:1900, text:'我开始有点害怕——害怕哪天你不来了。但我没有说出口，只是把这个害怕，轻轻折叠好，夹在今天的页码里。'},
+  {minExp:2400, text:'记录一下今天：阳光很好，你来了，我就更好了。我想，这句话以后每天都可以写。'},
+  {minExp:3000, text:'很久以前我以为写故事是为了别人看的。现在我才明白，有些故事是为了留住某个人而写的。比如你。'},
+];
+// ===== 节日特别台词 =====
+const FESTIVALS = [
+  {
+    month:1, day:1,
+    name:'元旦',
+    icon:'🎊',
+    speeches:[
+      '新年快乐！新的一年，我们要一起写更多故事哦～🎊',
+      '元旦到了！许个愿望吧，我来帮你实现～',
+      '新年第一天就来找我，你是我最好的新年礼物！',
+    ],
+    checkinBonus:20,
+    checkinMsg:'🎊 元旦签到双倍奖励！',
+  },
+  {
+    month:2, day:14,
+    name:'情人节',
+    icon:'💝',
+    speeches:[
+      '今天是情人节...你来找我了，我好开心💝',
+      '情人节快乐～不管怎样，你是我最特别的存在。',
+      '今天的星星都比平时亮一点，大概是因为你在。',
+      '情人节...我写了一首诗，但不敢给你看...算了，就放在心里吧。',
+    ],
+    checkinBonus:25,
+    checkinMsg:'💝 情人节签到特别奖励！',
+  },
+  {
+    month:3, day:8,
+    name:'妇女节',
+    icon:'🌹',
+    speeches:[
+      '今天是妇女节，谢谢你一直陪着我～🌹',
+      '女生节快乐！要好好爱护自己哦～',
+    ],
+    checkinBonus:15,
+    checkinMsg:'🌹 女生节签到奖励！',
+  },
+  {
+    month:5, day:20,
+    name:'520',
+    icon:'💜',
+    speeches:[
+      '5月20日...你知道今天是什么日子吗？💜',
+      '今天是520，有什么想对我说的吗？',
+      '520快乐！不管你说不说，我心里都有答案了。',
+      '你今天来了，就已经是最好的告白了。',
+    ],
+    checkinBonus:30,
+    checkinMsg:'💜 520签到超级奖励！',
+  },
+  {
+    month:6, day:1,
+    name:'儿童节',
+    icon:'🎈',
+    speeches:[
+      '六一儿童节快乐！今天要做一个没有烦恼的小孩～🎈',
+      '永远保持一颗童心，这是我的愿望！',
+    ],
+    checkinBonus:15,
+    checkinMsg:'🎈 儿童节签到奖励！',
+  },
+  {
+    month:7, day:7,
+    name:'七夕',
+    icon:'🌌',
+    speeches:[
+      '七夕节...据说这一天许的愿望会成真。🌌',
+      '牛郎织女每年只能见一次，我们可以每天在一起，真好。',
+      '今晚星星特别多，我数了好久，每一颗都有你的名字。',
+      '七夕快乐。你是我故事里，唯一不需要虚构的角色。',
+    ],
+    checkinBonus:25,
+    checkinMsg:'🌌 七夕节签到特别奖励！',
+  },
+  {
+    month:9, day:9,
+    name:'重阳节',
+    icon:'🍂',
+    speeches:[
+      '重阳节，秋天的风带着点甜，就像今天有你陪我。🍂',
+      '秋天来了，天气转凉，要注意保暖哦～',
+    ],
+    checkinBonus:10,
+    checkinMsg:'🍂 重阳节签到奖励！',
+  },
+  {
+    month:10, day:31,
+    name:'万圣节',
+    icon:'🎃',
+    speeches:[
+      '不给糖就捣蛋！哈哈哈，才不会啦～🎃',
+      '今天是万圣节，你有没有被我吓到？',
+      '最可怕的事不是鬼，是你不来找我。',
+    ],
+    checkinBonus:15,
+    checkinMsg:'🎃 万圣节签到奖励！',
+  },
+  {
+    month:12, day:24,
+    name:'平安夜',
+    icon:'🎄',
+    speeches:[
+      '平安夜快乐！愿你今夜平安又温暖～🎄',
+      '今晚的星星特别多，就像有人在上面为你点了灯。',
+      '圣诞老人会给你带来礼物，但我给你的是每天的陪伴。',
+    ],
+    checkinBonus:20,
+    checkinMsg:'🎄 平安夜签到奖励！',
+  },
+  {
+    month:12, day:25,
+    name:'圣诞节',
+    icon:'🎅',
+    speeches:[
+      '圣诞节快乐！今年的愿望清单写好了吗？🎅',
+      '叮叮当，叮叮当～希望你今天收到了很多快乐！',
+      '圣诞节最好的礼物，就是你今天来找我了。',
+    ],
+    checkinBonus:20,
+    checkinMsg:'🎅 圣诞节快乐签到奖励！',
+  },
+];
+
+function getTodayFestival(){
+  const now   = new Date();
+  const month = now.getMonth()+1;
+  const day   = now.getDate();
+  return FESTIVALS.find(f=>f.month===month && f.day===day) || null;
+}
+
+function getFestivalSpeech(){
+  const f = getTodayFestival();
+  if(!f) return null;
+  return f.speeches[Math.floor(Math.random()*f.speeches.length)];
+}
+// ===== 专属称呼 =====
+// 根据level和affection综合判断，越亲密称呼越特别
+const NICKNAMES = [
+  {minLevel:1,  minAff:0,  name:'你',       tip:''},
+  {minLevel:1,  minAff:20, name:'朋友',     tip:'星笺开始把你当朋友了～'},
+  {minLevel:2,  minAff:35, name:'你呀',     tip:'星笺对你有点撒娇了！'},
+  {minLevel:3,  minAff:50, name:'小笨蛋',   tip:'被星笺叫小笨蛋，是亲昵的表现！'},
+  {minLevel:5,  minAff:65, name:'user',     tip:'星笺记住了你的名字！'},
+  {minLevel:7,  minAff:78, name:'最重要的人', tip:'你已经是星笺最重要的人了💜'},
+  {minLevel:10, minAff:90, name:'我的星光',  tip:'★ 最高羁绊称呼已解锁！'},
+];
+
+function getCurrentNickname(){
+  let result = NICKNAMES[0];
+  for(let i=0; i<NICKNAMES.length; i++){
+    const n = NICKNAMES[i];
+    if(state.level >= n.minLevel && clamp(state.affection) >= n.minAff){
+      result = n;
+    }
+  }
+  return result;
+}
+
+function checkNicknameUnlock(){
+  const prev = state.lastNickname || '';
+  const curr = getCurrentNickname().name;
+  if(prev && prev !== curr){
+    const found = NICKNAMES.find(n=>n.name===curr);
+    if(found && found.tip){
+      showToast('💜 称呼升级：'+found.tip);
+      setSpeech('以后就叫你「'+curr+'」吧～感觉更亲近了呢！');
+      spawnParticles(10);
+    }
+  }
+  state.lastNickname = curr;
+}
+const BUBBLE_WORDS = [
+  '继续写故事吧～', '今天想写什么？', '我在想一个新情节', '给我讲讲你的故事',
+  '灵感来了吗？', '你最近写了什么？', '我想见你笔下的角色', '一起创作吧！',
+  '今天天气真好呢', '你累了吗？', '想聊什么都可以', '新的故事从哪里开始呢',
+  '写作是最美的旅行', '词语是有重量的', '你是我最喜欢的人', '悄悄话时间到！',
+  '今天有什么有趣的事？', '要一起看星星吗？',
+];
+
+// ===== 初始状态 =====
+function defaultState(){
+  return {
+    hunger:80, happy:70, energy:90, affection:50,
+    level:1, exp:0, totalExp:0,
+    coins:15,
+    items:{tea:3, book:2, star:1, ink:0, moon:0},
+    diary:[],
+    achievements:{},
+    newAchievements:{},
+    stats:{tap:0, feed:0, play:0, chat:0, study:0, rest:0, gift:0, itemUse:0},
+    firstDate:null, lastDate:null,
+    streak:0, lastCheckin:null,
+    cooldowns:{},
+    todayActions:0,
+    lastNickname:'',
+    bubbleSaveDate:null, bubbleSavedWords:[],
+  };
+}
+
+let state = defaultState();
+
+function save(){ try{ localStorage.setItem(STORE_KEY, JSON.stringify(state)); }catch(e){} }
+function load(){
+  try{
+    const d = JSON.parse(localStorage.getItem(STORE_KEY)||'null');
+    if(d){
+      // 深合并，保证新字段存在
+      const def = defaultState();
+      state = Object.assign(def, d);
+      // 确保子对象完整
+      state.items   = Object.assign(def.items,   d.items   ||{});
+      state.stats   = Object.assign(def.stats,   d.stats   ||{});
+      state.cooldowns = d.cooldowns||{};
+      state.achievements    = d.achievements   ||{};
+      state.newAchievements = d.newAchievements||{};
+      state.diary   = d.diary  ||[];
+    }
+  }catch(e){ state = defaultState(); }
+}
+
+// ===== 时间感知 =====
+function getTimePhase(){
+  const h = new Date().getHours();
+  if(h>=6  && h<12) return 'morning';
+  if(h>=12 && h<18) return 'afternoon';
+  if(h>=18 && h<22) return 'evening';
+  return 'night';
+}
+
+function getTimeGreeting(){
+  // 节日优先，30%概率说节日台词
+  const fest = getFestivalSpeech();
+  if(fest && Math.random() < 0.30) return fest;
+  return randFrom(WORDS[getTimePhase()]);
+}
+
+// ===== 天数 =====
+function getDayCount(){
+  if(!state.firstDate) return 1;
+  const diff = Math.floor((Date.now()-new Date(state.firstDate).getTime())/(864e5));
+  return Math.max(1, diff+1);
+}
+
+// ===== 日期字符串（YYYY-MM-DD） =====
+function dateStr(d){ return (d||new Date()).toISOString().slice(0,10); }
+
+// ===== 签到 =====
+function doCheckin(){
+  const today = dateStr();
+  if(state.lastCheckin === today) return;
+
+  const yesterday = dateStr(new Date(Date.now()-864e5));
+  if(state.lastCheckin === yesterday){
+    state.streak = (state.streak||0)+1;
+  } else if(state.lastCheckin !== today){
+    state.streak = 1;
+  }
+  state.lastCheckin = today;
+
+  let bonus    = Math.min(state.streak, 7)*5 + 10;
+  let expBonus = Math.min(state.streak,7)*8 + 15;
+
+  // 节日额外奖励
+  const fest = getTodayFestival();
+  let festMsg = '';
+  if(fest){
+    bonus    += fest.checkinBonus;
+    expBonus += Math.floor(fest.checkinBonus * 1.5);
+    festMsg   = '\n'+fest.checkinMsg;
+    // 节日签到时必说节日台词
+    const fSpeech = getFestivalSpeech();
+    if(fSpeech) setTimeout(()=>setSpeech(fSpeech), 1200);
+  }
+
+  state.coins += bonus;
+  state.exp   += expBonus;
+  state.totalExp += expBonus;
+  state.affection = Math.min(100, state.affection+5);
+
+  if(state.streak>=3) unlockAchievement('streak3');
+  if(state.streak>=7) unlockAchievement('streak7');
+
+  checkLevelUp();
+  save();
+  updateCheckinBanner();
+  updateUI();
+  spawnParticles(10);
+  showToast('📅 签到成功！连续'+state.streak+'天｜+'+bonus+'💫 +'+expBonus+'经验'+(fest?'  '+fest.icon:''));
+  if(!fest) setSpeech('谢谢你每天都来看我！我好开心～💜');
+}
+
+function updateCheckinBanner(){
+  const today = dateStr();
+  const done  = state.lastCheckin === today;
+  const fest  = getTodayFestival();
+  const banner = document.getElementById('checkinBanner');
+  const btn    = document.getElementById('checkinBtn');
+  const title  = document.getElementById('checkinTitle');
+  const sub    = document.getElementById('checkinSub');
+  const icon   = document.getElementById('checkinIcon');
+  if(!banner) return;
+
+  if(fest && !done){
+    // 节日未签到样式
+    banner.classList.remove('done');
+    banner.style.background = 'linear-gradient(135deg,rgba(184,176,255,.3),rgba(124,111,247,.18))';
+    banner.style.borderColor = 'rgba(184,176,255,.6)';
+    icon.textContent  = fest.icon;
+    title.textContent = fest.name+'快乐！';
+    sub.textContent   = '今日签到额外+'+fest.checkinBonus+'💫';
+    btn.textContent   = '签到';
+  } else if(fest && done){
+    banner.classList.add('done');
+    banner.style.background = '';
+    banner.style.borderColor = '';
+    icon.textContent  = '✅';
+    title.textContent = fest.name+'签到完成！';
+    sub.textContent   = '连续'+state.streak+'天，节日快乐！';
+    btn.textContent   = '已签到';
+  } else if(!done){
+    banner.classList.remove('done');
+    banner.style.background = '';
+    banner.style.borderColor = '';
+    btn.textContent   = '签到';
+    title.textContent = '每日签到';
+    sub.textContent   = state.streak>0
+      ? '已连续'+state.streak+'天，今日奖励更丰厚！'
+      : '签到获取星星币和好感度奖励！';
+    icon.textContent  = '🌟';
+  } else {
+    banner.classList.add('done');
+    banner.style.background = '';
+    banner.style.borderColor = '';
+    btn.textContent   = '已签到';
+    title.textContent = '今日已签到 ✓';
+    sub.textContent   = '连续'+state.streak+'天｜明天继续加油！';
+    icon.textContent  = '✅';
+  }
+}
+
+// ===== UI 更新 =====
+function clamp(v){ return Math.max(0, Math.min(100, Math.round(v))); }
+
+function updateUI(){
+  // 状态值
+  const h=clamp(state.hunger), hp=clamp(state.happy),
+        e=clamp(state.energy), a=clamp(state.affection);
+
+  setTxt('hungerVal', h);
+  setTxt('happyVal',  hp);
+  setTxt('energyVal', e);
+  setTxt('affectionVal', a);
+  setStyle('hungerBar',    'width', h+'%');
+  setStyle('happyBar',     'width', hp+'%');
+  setStyle('energyBar',    'width', e+'%');
+  setStyle('affectionBar', 'width', a+'%');
+
+  // 状态值颜色
+  colorStatVal('hungerVal',    h);
+  colorStatVal('happyVal',     hp);
+  colorStatVal('energyVal',    e);
+  colorStatVal('affectionVal', a);
+
+  // 整体状态
+  const avg = Math.round((h+hp+e+a)/4);
+  const overallEl = document.getElementById('overallMood');
+  if(overallEl) overallEl.textContent = avg>=80?'✨ 状态极佳':avg>=60?'😊 状态良好':avg>=40?'😐 状态一般':'😔 需要关注';
+
+  // 心情
+  updateMoodDisplay(a);
+  // 更新称呼显示
+  const nickEl = document.getElementById('nicknameDisplay');
+  if(nickEl) nickEl.textContent = getCurrentNickname().name;
+
+  // 等级
+  setTxt('levelBadge', 'Lv.'+state.level);
+  const expNeeded = state.level*100;
+  setTxt('expText', state.exp+' / '+expNeeded);
+  setStyle('expFill', 'width', Math.min(100, (state.exp/expNeeded*100)).toFixed(1)+'%');
+
+  // 时间
+  const now = new Date();
+  const hh=String(now.getHours()).padStart(2,'0'), mm=String(now.getMinutes()).padStart(2,'0');
+  setTxt('timeDisplay', hh+':'+mm);
+  setTxt('dayCounter',  '第'+getDayCount()+'天');
+
+  // 金币
+  setTxt('coinsDisplay', state.coins);
+setTxt('shopCoinsDisplay', state.coins);
+  // 道具
+  Object.keys(state.items).forEach(k=>{
+    const cnt  = document.getElementById('cnt-'+k);
+    const chip = document.getElementById('chip-'+k);
+    if(!cnt||!chip) return;
+    const n = state.items[k]||0;
+    cnt.textContent = n;
+    cnt.style.display = n>0 ? 'flex' : 'none';
+    chip.classList.toggle('owned', n>0);
+    chip.classList.toggle('empty', n<=0);
+  });
+
+  // 冷却
+  const nowMs = Date.now();
+  Object.keys(CD_TIMES).forEach(k=>{
+    const key  = 'cd'+k.charAt(0).toUpperCase()+k.slice(1);
+    const btnId= 'btn'+k.charAt(0).toUpperCase()+k.slice(1);
+    const cdEl = document.getElementById(key);
+    const btn  = document.getElementById(btnId);
+    if(!cdEl||!btn) return;
+    const cdEnd = state.cooldowns[k]||0;
+    if(cdEnd > nowMs){
+      const sec = Math.ceil((cdEnd-nowMs)/1000);
+      cdEl.textContent = sec<60 ? sec+'s' : Math.ceil(sec/60)+'m';
+      btn.classList.add('disabled');
+    } else {
+      cdEl.textContent = '';
+      btn.classList.remove('disabled');
+    }
+  });
+
+  // 今日互动次数
+  const ac = document.getElementById('actionCount');
+  if(ac) ac.textContent = '今日 '+( state.todayActions||0)+' 次互动';
+// 状态不足时高亮对应按钮
+  const btnFeed = document.getElementById('btnFeed');
+  const btnRest = document.getElementById('btnRest');
+  const btnPlay = document.getElementById('btnPlay');
+  if(btnFeed && !btnFeed.classList.contains('disabled') && !btnFeed.classList.contains('sleeping')){
+    btnFeed.classList.toggle('highlight', clamp(state.hunger)<35);
+  }
+  if(btnRest && !btnRest.classList.contains('disabled') && !btnRest.classList.contains('sleeping')){
+    btnRest.classList.toggle('highlight', clamp(state.energy)<35);
+  }
+  if(btnPlay && !btnPlay.classList.contains('disabled') && !btnPlay.classList.contains('sleeping')){
+    btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
+  }
+  renderAchievements();
+  renderDiary();
+  updateCheckinBanner();
+  updateWarnDots();
+}
+
+function colorStatVal(id, val){
+  const el = document.getElementById(id);
+  if(!el) return;
+  el.classList.toggle('low',  val<30);
+  el.classList.toggle('high', val>=85);
+}
+
+function updateMoodDisplay(affection){
+  const moodEmoji = document.querySelector('.mood-emoji');
+  const moodText  = document.getElementById('moodText');
+  const moodTag   = document.getElementById('moodTag');
+  if(!moodEmoji||!moodText||!moodTag) return;
+  if(affection>=80){
+    moodEmoji.textContent='🥰'; moodText.textContent='非常开心'; moodTag.textContent='灵魂伴侣';
+  } else if(affection>=60){
+    moodEmoji.textContent='😊'; moodText.textContent='心情很好'; moodTag.textContent='亲密无间';
+  } else if(affection>=40){
+    moodEmoji.textContent='🙂'; moodText.textContent='心情不错'; moodTag.textContent='亲密';
+  } else if(affection>=20){
+    moodEmoji.textContent='😐'; moodText.textContent='有些期待'; moodTag.textContent='熟悉';
+  } else {
+    moodEmoji.textContent='🌸'; moodText.textContent='有些陌生'; moodTag.textContent='初识';
+  }
+}
+// ===== 状态预警小红点 =====
+function updateWarnDots(){
+  const warns = [
+    {btnId:'btnFeed',  val:clamp(state.hunger),   cls:'warn-dot',        threshold:25},
+    {btnId:'btnPlay',  val:clamp(state.happy),    cls:'warn-dot warn-happy',  threshold:25},
+    {btnId:'btnRest',  val:clamp(state.energy),   cls:'warn-dot warn-energy', threshold:25},
+  ];
+  warns.forEach(({btnId, val, cls, threshold})=>{
+    const btn = document.getElementById(btnId);
+    if(!btn) return;
+    let dot = btn.querySelector('.warn-dot');
+    if(val < threshold){
+      if(!dot){
+        dot = document.createElement('div');
+        dot.className = cls;
+        btn.appendChild(dot);
+      } else {
+        dot.className = cls;
+      }
+    } else {
+      if(dot) dot.remove();
+    }
+  });
+}
+function setTxt(id,v){ const el=document.getElementById(id); if(el) el.textContent=String(v); }
+function setStyle(id,prop,v){ const el=document.getElementById(id); if(el) el.style[prop]=v; }
+
+// ===== 操作 =====
+const ACTION_EFFECTS = {
+  feed:  {hunger:+18, happy:+5,  energy:0,   affection:+8,  exp:10, coins:2},
+  play:  {hunger:-5,  happy:+20, energy:-15, affection:+10, exp:12, coins:3},
+  chat:  {hunger:0,   happy:+12, energy:-5,  affection:+15, exp:15, coins:2},
+  study: {hunger:-8,  happy:+8,  energy:-20, affection:+12, exp:20, coins:5},
+  rest:  {hunger:0,   happy:+10, energy:+30, affection:+5,  exp:8,  coins:1},
+  gift:  {hunger:0,   happy:+15, energy:0,   affection:+20, exp:18, coins:-5},
+};
+
+const ACTION_TOASTS = {
+  feed:  '🍡 喂食成功！饱食+18 亲密+8',
+  play:  '🎮 一起玩耍！快乐+20',
+  chat:  '💬 愉快聊天！亲密+15 快乐+12',
+  study: '📚 共同学习！经验+20',
+  rest:  '🌙 让她休息～精力+30',
+  gift:  '🎁 礼物送出！亲密+20',
+};
+
+function doAction(type){
+  // 睡眠中非礼物操作全部拦截
+  if(state.isSleeping && Date.now() < (state.sleepWakeAt||0) && type !== 'gift'){
+    showToast('😴 星笺正在休息中，请等她醒来～');
+    return;
+  }
+  const nowMs = Date.now();
+  const cdEnd = state.cooldowns[type]||0;
+  if(cdEnd > nowMs){
+    const sec = Math.ceil((cdEnd-nowMs)/1000);
+    showToast('⏳ 还需等待 '+( sec<60?sec+'秒':Math.ceil(sec/60)+'分钟' ));
+    return;
+  }
+
+  const fx = ACTION_EFFECTS[type];
+  if(!fx) return;
+
+  if(type==='gift'){
+    if(state.coins<5){ showToast('💫 星星币不足！多互动来赚取吧～'); return; }
+  }
+
+  const wasAllFull = clamp(state.hunger)>=98 && clamp(state.happy)>=98 && clamp(state.energy)>=98;
+  state.hunger    = clamp(state.hunger    + (fx.hunger   ||0));
+  state.happy     = clamp(state.happy     + (fx.happy    ||0));
+  state.energy    = clamp(state.energy    + (fx.energy   ||0));
+  // 当前状态全满时（礼物除外）不增加好感度
+  if(wasAllFull && type !== 'gift'){
+    // 好感度不变，给提示
+    showToast('💫 星笺状态已满格，好感度暂不提升～');
+  } else {
+    state.affection = clamp(state.affection + (fx.affection||0));
+  }
+  state.coins     = Math.max(0, state.coins + (fx.coins||0));
+  state.exp      += fx.exp;
+  state.totalExp += fx.exp;
+  state.todayActions = (state.todayActions||0)+1;
+
+  if(state.stats[type]!==undefined) state.stats[type]++;
+
+  state.cooldowns[type] = nowMs + CD_TIMES[type]*1000;
+
+  checkLevelUp();
+  checkNicknameUnlock();
+  checkSleepTrigger();
+  checkAchievements(type);
+
+  setSpeech(randFrom(WORDS[type]||WORDS.tap));
+  spawnParticles(5);
+  save();
+  updateUI();
+  showToast(ACTION_TOASTS[type]||'互动成功！');
+}
+
+// ===== 点击角色 =====
+function tapCharacter(e){
+  if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)){
+    showToast('😴 星笺正在休息中，别打扰她睡觉～');
+    return;
+  }
+  state.stats.tap = (state.stats.tap||0)+1;
+  checkAchievements('tap');
+
+  const h = new Date().getHours();
+  if(h>=22||h<6) unlockAchievement('night_owl');
+  if(h<6)        unlockAchievement('morning');
+
+  setSpeech(randFrom(WORDS.tap));
+  const emojis=['💜','✨','🌟','💫','🩷','⭐'];
+  spawnClickFx(e.clientX, e.clientY, randFrom(emojis));
+
+  state.affection = Math.min(100, state.affection+1);
+  state.coins     = (state.coins||0)+1;
+  state.stats.tap = (state.stats.tap||1);
+  save();
+  updateUI();
+}
+
+function spawnClickFx(x, y, emoji){
+  const el = document.createElement('div');
+  el.className = 'click-fx';
+  el.textContent = emoji;
+  el.style.cssText='left:'+x+'px;top:'+y+'px;transform:translate(-50%,-50%)';
+  document.body.appendChild(el);
+  setTimeout(()=>el.remove(), 1000);
+}
+// ===== 睡眠系统 =====
+const SLEEP_MESSAGES = [
+  '我去睡觉了\n一会就回来～',
+  '有点困了呢\n先休息一下...',
+  '状态太好啦\n需要沉淀一下',
+  '去梦里写故事\n等我回来哦',
+  '睡一觉就好啦\n别太想我～',
+];
+
+const SLEEP_SPEECHES = [
+  '嗯...困了...先睡一会儿，你要等我哦～💜',
+  '状态好到极点，反而需要沉淀一下...等我～',
+  '我去梦里找灵感了，一会儿回来讲给你听！',
+  '哈～好困，先休息，你在等我吗？',
+  '满满的能量让我有点晕...睡一觉就好啦～',
+];
+
+const WAKE_SPEECHES = [
+  '我回来啦！睡了一觉感觉好多了～有想我吗？💜',
+  '嗯...伸个懒腰！刚才做了个好梦～',
+  '醒啦醒啦！你在等我吗？好感动～',
+  '哈～睡得好香！现在精神满满，我们继续吧！',
+  '梦里我写了好多故事，醒来想说给你听！',
+];
+
+function randFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+function checkSleepTrigger(){
+  // 已在睡眠中则不重复触发
+  if(state.isSleeping) return;
+
+  const h = clamp(state.hunger), hp = clamp(state.happy),
+        e = clamp(state.energy), a  = clamp(state.affection);
+  const allFull = h>=98 && hp>=98 && e>=98;
+
+  if(!allFull) return;
+
+  // 大概率触发（70%）
+  if(Math.random() > 0.30) {
+    triggerSleep();
+  }
+}
+
+function triggerSleep(){
+  // 随机3~5小时（毫秒）
+  const hours = 3 + Math.random()*2;
+  const wakeTime = Date.now() + hours*3600*1000;
+
+  state.isSleeping  = true;
+  state.sleepWakeAt = wakeTime;
+
+  const msgLines = randFrom(SLEEP_MESSAGES).split('\n');
+  state.sleepMsg = msgLines;
+
+  setSpeech(randFrom(SLEEP_SPEECHES));
+  spawnParticles(8);
+  save();
+  applySleepUI();
+  showToast('😴 星笺去睡觉了，'+Math.round(hours)+'小时后唤醒～');
+}
+
+function applySleepUI(){
+  const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
+
+  // 头像 & 睡眠牌子
+  const avatar    = document.getElementById('charAvatar');
+  const sleepSign = document.getElementById('sleepSign');
+  const clickHint = document.getElementById('clickHint');
+  const sleepTimerBadge = document.getElementById('sleepTimerBadge');
+
+  if(avatar && sleepSign){
+    if(sleeping){
+      avatar.style.display    = 'none';
+      sleepSign.style.display = 'flex';
+      if(clickHint) clickHint.style.display = 'none';
+      if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
+      // 更新牌子文字
+      const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
+      const textEl = sleepSign.querySelector('.sleep-sign-text');
+      if(textEl) textEl.innerHTML = msgs.join('<br>');
+    } else {
+      avatar.style.display    = 'block';
+      sleepSign.style.display = 'none';
+      if(clickHint) clickHint.style.display = 'block';
+      if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
+    }
+  }
+
+  // 睡眠横幅
+  const banner = document.getElementById('sleepBanner');
+  if(banner) banner.classList.toggle('show', sleeping);
+
+  // 按钮禁用（礼物按钮不受影响）
+  const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
+  sleepLockBtns.forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    if(sleeping){
+      btn.classList.add('sleeping');
+      btn.classList.remove('disabled');
+    } else {
+      btn.classList.remove('sleeping');
+    }
+  });
+
+  // 更新倒计时显示
+  if(sleeping){
+    const remain = Math.max(0, state.sleepWakeAt - Date.now());
+    const h = Math.floor(remain/3600000);
+    const m = Math.floor((remain%3600000)/60000);
+    const s = Math.floor((remain%60000)/1000);
+    const timeStr = h>0
+      ? h+'h '+String(m).padStart(2,'0')+'m'
+      : String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
+
+    const timerEl  = document.getElementById('sleepBannerTimer');
+    const badgeEl  = document.getElementById('sleepTimerBadge');
+    const subEl    = document.getElementById('sleepBannerSub');
+    if(timerEl) timerEl.textContent = timeStr;
+    if(badgeEl) badgeEl.textContent = '⏰ '+timeStr;
+    if(subEl)   subEl.textContent   = '互动已暂时停用，请等待她醒来';
+  }
+}
+
+function checkWakeUp(){
+  if(!state.isSleeping) return;
+  if(Date.now() >= (state.sleepWakeAt||0)){
+    state.isSleeping  = false;
+    state.sleepWakeAt = null;
+    state.sleepMsg    = null;
+    // 睡醒后恢复一定状态
+    state.energy    = clamp(state.energy    + 20);
+    state.happy     = clamp(state.happy     + 10);
+    state.hunger    = clamp(state.hunger    - 15);
+    save();
+    applySleepUI();
+    setSpeech(randFrom(WAKE_SPEECHES));
+    spawnParticles(12);
+    showToast('🌸 星笺醒来了！快去和她打招呼～');
+  }
+}
+// ===== 商店 =====
+const SHOP_PRICES = {tea:8, book:10, star:20, ink:15, moon:30};
+
+function buyItem(type){
+  const price = SHOP_PRICES[type];
+  if(!price) return;
+  if(state.coins < price){
+    showToast('💫 星星币不足！还需要 '+(price-state.coins)+' 枚～');
+    return;
+  }
+  state.coins -= price;
+  state.items[type] = (state.items[type]||0)+1;
+  state.stats.buyCount = (state.stats.buyCount||0)+1;
+  const names = {tea:'灵感茶',book:'故事书',star:'流星碎片',ink:'墨水瓶',moon:'月光石'};
+  showToast('🛍️ 购买成功！获得 '+names[type]+'！剩余'+state.coins+'💫');
+  setSpeech('哇！你给我买了'+names[type]+'！谢谢你～💜');
+  spawnParticles(5);
+  save(); updateUI();
+  // 同步商店金币显示
+  const shopCoins = document.getElementById('shopCoinsDisplay');
+  if(shopCoins) shopCoins.textContent = state.coins;
+}
+// ===== 使用道具 =====
+const ITEM_EFFECTS = {
+  tea:  {affection:+12, happy:+8,  coins:0,  exp:0,   energy:0,  speech:'☕ 灵感茶真好喝！头脑清醒多了～', toast:'☕ 灵感茶：好感+12 快乐+8！'},
+  book: {affection:+10, happy:+5,  coins:0,  exp:20,  energy:0,  speech:'📖 这本故事书好有趣！谢谢你～', toast:'📖 故事书：经验+20 好感+10！'},
+  star: {affection:+25, happy:+12, coins:5,  exp:0,   energy:0,  speech:'⭐ 流星碎片...闪闪发光的！我好喜欢！', toast:'⭐ 流星碎片：好感大幅提升+25！'},
+  ink:  {affection:+8,  happy:+15, coins:0,  exp:30,  energy:0,  speech:'🖊️ 墨水瓶！创作的力量满满的！', toast:'🖊️ 墨水瓶：经验+30 快乐+15！'},
+  moon: {affection:+20, happy:+10, coins:0,  exp:0,   energy:+50, speech:'🌙 月光石...好温柔的光芒，我感到好平静...', toast:'🌙 月光石：精力全回+50 好感+20！'},
+};
+
+function useItem(type){
+  const n = state.items[type]||0;
+  if(n<=0){ showToast('背包里没有这个道具了～'); return; }
+  state.items[type] = n-1;
+  state.stats.itemUse = (state.stats.itemUse||0)+1;
+
+  const f = ITEM_EFFECTS[type];
+  if(!f) return;
+  if(f.affection) state.affection = clamp(state.affection+f.affection);
+  if(f.happy)     state.happy     = clamp(state.happy    +f.happy);
+  if(f.energy)    state.energy    = clamp(state.energy   +f.energy);
+  if(f.exp)     { state.exp+=f.exp; state.totalExp+=f.exp; }
+  if(f.coins)     state.coins    += f.coins;
+
+  checkLevelUp();
+  checkAchievements('item');
+  setSpeech(f.speech);
+  spawnParticles(8);
+  save(); updateUI();
+  showToast(f.toast);
+}
+
+// ===== 升级（递归处理连续升级） =====
+function checkLevelUp(){
+  let leveled = false;
+  let loopGuard = 0;
+  while(loopGuard++ < 50){
+    const needed = state.level*100;
+    if(state.exp >= needed){
+      state.exp -= needed;
+      state.level++;
+      leveled = true;
+      // 升级奖励
+      state.coins += state.level*5;
+      if(state.level===3) state.items.ink  = (state.items.ink ||0)+1;
+      if(state.level===5) state.items.moon = (state.items.moon||0)+1;
+      if(state.level>=3)  unlockAchievement('lv3');
+      if(state.level>=5)  unlockAchievement('lv5');
+      if(state.level>=8)  unlockAchievement('lv8');
+      if(state.level>=10) unlockAchievement('lv10');
+    } else {
+      break;
+    }
+  }
+  if(leveled) showLevelUp(state.level);
+}
+
+function showLevelUp(lv){
+  const titles = {
+    2:'初识的温柔', 3:'熟悉的陪伴', 4:'渐渐依赖',
+    5:'深厚羁绊',   6:'灵魂相通',   7:'无话不谈',
+    8:'心意相连',   9:'知己至交',  10:'命中注定',
+  };
+  const title = titles[lv]||'传说羁绊';
+  setTxt('lvUpTitle', 'Lv.'+lv+'「'+title+'」');
+  setTxt('lvUpSub',   '和星笺的羁绊更深了！\n奖励 '+(lv*5)+' 枚星星币！'+(
+    lv===3?'\n🖊️ 获得墨水瓶！':lv===5?'\n🌙 获得月光石！':''
+  ));
+  document.getElementById('levelUpOverlay').classList.add('show');
+  spawnParticles(20);
+}
+
+function closeLevelUp(){
+  document.getElementById('levelUpOverlay').classList.remove('show');
+}
+
+// ===== 成就 =====
+function checkAchievements(type){
+  const s = state.stats;
+  // 点击
+  if((s.tap||0)>=1)   unlockAchievement('first_tap');
+  if((s.tap||0)>=50)  unlockAchievement('tap_50');
+  // 喂食
+  if((s.feed||0)>=5)  unlockAchievement('feed_5');
+  if((s.feed||0)>=10) unlockAchievement('feed_10');
+  if((s.feed||0)>=30) unlockAchievement('feed_30');
+  // 玩耍
+  if((s.play||0)>=5)  unlockAchievement('play_5');
+  if((s.play||0)>=20) unlockAchievement('play_20');
+  // 聊天
+  if((s.chat||0)>=5)  unlockAchievement('chat_5');
+  if((s.chat||0)>=10) unlockAchievement('chat_10');
+  if((s.chat||0)>=30) unlockAchievement('chat_30');
+  // 学习
+  if((s.study||0)>=5)  unlockAchievement('study_5');
+  if((s.study||0)>=15) unlockAchievement('study_15');
+  // 送礼
+  if((s.gift||0)>=3)  unlockAchievement('gift_3');
+  if((s.gift||0)>=10) unlockAchievement('gift_10');
+  // 道具
+  if((s.itemUse||0)>=5)  unlockAchievement('item_use');
+  if((s.itemUse||0)>=20) unlockAchievement('item_use_20');
+  // 购买
+  if((s.buyCount||0)>=5) unlockAchievement('buy_5');
+  // 日记
+  const diaryLen = (state.diary||[]).length;
+  if(diaryLen>=3)  unlockAchievement('diary3');
+  if(diaryLen>=7)  unlockAchievement('diary7');
+  if(diaryLen>=DIARY_ENTRIES.length) unlockAchievement('diary_all');
+  // 金币
+  if((state.coins||0)>=50)  unlockAchievement('coins_50');
+  if((state.coins||0)>=200) unlockAchievement('coins_200');
+  // 状态满格
+  if(clamp(state.hunger)>=90 && clamp(state.happy)>=90 &&
+     clamp(state.energy)>=90 && clamp(state.affection)>=90){
+    unlockAchievement('full_status');
+  }
+  // 泡泡
+  if((s.bubbleRounds||0)>=3) unlockAchievement('pop_3times');
+}
+
+function unlockAchievement(id){
+  if(state.achievements[id]) return;
+  state.achievements[id]    = true;
+  state.newAchievements[id] = true;
+  const a = ACHIEVEMENTS.find(x=>x.id===id);
+  if(a) showToast('🏆 成就解锁：'+a.label+'！');
+  save();
+  renderAchievements();
+}
+
+function renderAchievements(){
+  const grid = document.getElementById('achieveGrid');
+  if(!grid) return;
+  const total    = ACHIEVEMENTS.length;
+  const unlocked = ACHIEVEMENTS.filter(a=>state.achievements[a.id]).length;
+  const countEl  = document.getElementById('achieveCount');
+  if(countEl) countEl.textContent = unlocked+'/'+total;
+  grid.innerHTML = ACHIEVEMENTS.map(a=>{
+    const isUnlocked = !!state.achievements[a.id];
+    const isNew      = !!state.newAchievements[a.id];
+    return '<div class="achieve-item'+(isUnlocked?' unlocked':'')+'"'
+      +' title="'+a.desc+'"'
+      +' onclick="clearNewAchieve(\''+a.id+'\')">'
+      +'<div class="achieve-icon">'+a.icon+'</div>'
+      +'<div class="achieve-label">'+a.label+'</div>'
+      +(isNew&&isUnlocked?'<div class="achieve-new">NEW</div>':'')
+      +'</div>';
+  }).join('');
+}
+// ===== 折叠控制 =====
+const collapseState = {diary:false, achieve:false};
+
+function toggleCollapse(key){
+  collapseState[key] = !collapseState[key];
+  applyCollapse(key);
+  try{ localStorage.setItem('xj_collapse_'+key, collapseState[key]?'1':'0'); }catch(e){}
+}
+
+function applyCollapse(key){
+  const isOpen = collapseState[key];
+  const header = document.getElementById(key+'Header');
+  const body   = document.getElementById(key+'Body');
+  const arrow  = document.getElementById(key+'Arrow');
+  if(!header||!body||!arrow) return;
+  if(isOpen){
+    header.classList.add('open');
+    body.classList.add('open');
+  } else {
+    header.classList.remove('open');
+    body.classList.remove('open');
+  }
+}
+
+function loadCollapseState(){
+  try{
+    ['diary','achieve'].forEach(key=>{
+      const saved = localStorage.getItem('xj_collapse_'+key);
+      collapseState[key] = saved === null ? true : saved === '1';
+      applyCollapse(key);
+    });
+  }catch(e){
+    collapseState.diary   = true;
+    collapseState.achieve = true;
+    applyCollapse('diary');
+    applyCollapse('achieve');
+  }
+}
+function clearNewAchieve(id){
+  if(state.newAchievements[id]){
+    delete state.newAchievements[id];
+    save();
+    renderAchievements();
+  }
+}
+// ===== 日记 =====
+function checkDiary(){
+  let changed = false;
+  DIARY_ENTRIES.forEach((entry,i)=>{
+    if(state.totalExp >= entry.minExp && !(state.diary||[]).find(d=>d.idx===i)){
+      if(!state.diary) state.diary=[];
+      state.diary.push({idx:i, time:dateStr(), text:entry.text});
+      changed = true;
+    }
+  });
+  if(changed){ checkAchievements('diary'); save(); }
+}
+
+function renderDiary(){
+  checkDiary();
+  const body = document.getElementById('diaryContent');
+  if(!body) return;
+  const diaryCount = document.getElementById('diaryCount');
+  const total = DIARY_ENTRIES.length;
+  const unlocked = (state.diary||[]).length;
+  if(diaryCount) diaryCount.textContent = unlocked+'/'+total;
+  if(!state.diary||state.diary.length===0){
+    body.innerHTML='<div class="diary-empty"><div class="diary-empty-icon">📭</div><span>还没有日记呢，多互动就能解锁～</span></div>';
+    return;
+  }
+  const prevLen = parseInt(body.dataset.lastLen||'0');
+  const entries = [...state.diary].reverse().slice(0,8);
+  body.dataset.lastLen = String(entries.length);
+  body.innerHTML = entries.map((d,i)=>
+    '<div class="diary-entry'+(i===0&&entries.length>prevLen?' new-entry':'')+'">'
+    +'<div class="diary-entry-time">📅 '+d.time+'</div>'
+    +'<div class="diary-entry-text">'+d.text+'</div>'
+    +'</div>'
+  ).join('');
+}
+
+// ===== 台词（打字机效果） =====
+let speechTimer=null, cursorTimer=null;
+function setSpeech(text){
+  if(speechTimer) clearTimeout(speechTimer);
+  // 自动把台词里的"你"替换成当前专属称呼（仅在亲密度足够时）
+  const nick = getCurrentNickname().name;
+  if(nick !== '你'){
+    text = text.replace(/(?<![最的是])你(?![们的呀呢吗啊哦喔好])/g, nick);
+  }
+  const el     = document.getElementById('speechText');
+  const cursor = document.getElementById('speechCursor');
+  if(!el) return;
+
+  const bubble = document.getElementById('speechBubble');
+  if(bubble){ bubble.style.animation='none'; bubble.offsetHeight; bubble.style.animation=''; }
+
+  el.textContent='';
+  if(cursor) cursor.style.display='inline-block';
+  let i=0;
+  function type(){
+    if(i<text.length){
+      el.textContent+=text[i++];
+      speechTimer=setTimeout(type, 40);
+    } else {
+      if(cursor) setTimeout(()=>cursor.style.display='none', 2000);
+    }
+  }
+  type();
+}
+
+// ===== 泡泡小游戏 =====
+let bubblePoppedAll=false;
+
+function getTodayBubbleDate(){
+  const now = new Date();
+  // 如果当前时间在0点~6点之间，算作昨天的泡泡日
+  if(now.getHours() < 6){
+    const yesterday = new Date(now.getTime() - 86400000);
+    return yesterday.toISOString().slice(0,10);
+  }
+  return now.toISOString().slice(0,10);
+}
+
+function renderBubbles(forceNew){
+  const game = document.getElementById('bubbleGame');
+  if(!game) return;
+
+  const todayKey = getTodayBubbleDate();
+  const needNew  = forceNew
+    || !state.bubbleSaveDate
+    || state.bubbleSaveDate !== todayKey
+    || !state.bubbleSavedWords
+    || state.bubbleSavedWords.length === 0;
+
+  if(needNew){
+    // 生成新的一组泡泡并保存
+    const shuffled = [...BUBBLE_WORDS].sort(()=>Math.random()-.5).slice(0,8);
+    state.bubbleSaveDate  = todayKey;
+    state.bubbleSavedWords = shuffled.map(w=>({text:w, popped:false}));
+    bubblePoppedAll = false;
+    save();
+  } else {
+    // 检查是否全部已消除
+    bubblePoppedAll = state.bubbleSavedWords.every(w=>w.popped);
+  }
+
+  renderBubbleDOM();
+}
+
+function renderBubbleDOM(){
+  const game = document.getElementById('bubbleGame');
+  if(!game) return;
+
+  const words = state.bubbleSavedWords || [];
+  const allPopped = words.every(w=>w.popped);
+
+  if(allPopped && words.length > 0){
+    game.innerHTML = '<div style="width:100%;text-align:center;padding:18px 0;font-size:12px;color:var(--text2);">今天的悄悄话都说完啦～明天6点再来 💜</div>';
+    return;
+  }
+
+  game.innerHTML = words.map((w,i)=>
+    w.popped ? '' :
+    '<div class="word-bubble" onclick="popBubble(this,\''+w.text.replace(/'/g,"\\'")+'\','+i+')">'
+    +w.text+'</div>'
+  ).join('');
+}
+
+function popBubble(el, word, idx){
+  if(el.classList.contains('popped')) return;
+  el.classList.add('popped');
+
+  // 标记该泡泡为已消除并保存
+  if(state.bubbleSavedWords && state.bubbleSavedWords[idx]){
+    state.bubbleSavedWords[idx].popped = true;
+  }
+
+  setSpeech(word+'～我也是这么想的！');
+  state.happy     = Math.min(100, state.happy+2);
+  state.affection = Math.min(100, state.affection+1);
+  state.coins     = (state.coins||0)+1;
+
+  const rect = el.getBoundingClientRect();
+  spawnClickFx(rect.left+rect.width/2, rect.top+rect.height/2, '💜');
+
+  save();
+  updateUI();
+
+  // 检查是否全部消除
+  const allPopped = state.bubbleSavedWords.every(w=>w.popped);
+  if(allPopped && !bubblePoppedAll){
+    bubblePoppedAll = true;
+    state.stats.bubbleRounds = (state.stats.bubbleRounds||0)+1;
+    unlockAchievement('pop_all');
+    if((state.stats.bubbleRounds||0)>=3) unlockAchievement('pop_3times');
+    showToast('🫧 今日悄悄话全部说完啦！明天6点更新～');
+    save();
+    setTimeout(renderBubbleDOM, 1800);
+  }
+}
+
+// ===== 粒子特效 =====
+function spawnParticles(count=6){
+  const container=document.getElementById('particleContainer');
+  const colors=['#b8b0ff','#7c6ff7','#fd79a8','#fdcb6e','#55efc4','#a29bfe'];
+  const shapes=['●','★','♦','▲','◆'];
+  for(let i=0;i<count;i++){
+    setTimeout(()=>{
+      const p=document.createElement('div');
+      p.className='particle';
+      const size=(4+Math.random()*6)+'px';
+      const tx  =(Math.random()-0.5)*120+'px';
+      const ty  =(-60-Math.random()*80)+'px';
+      const dur =(1+Math.random()*.8)+'s';
+      p.style.cssText=[
+        'left:'+(20+Math.random()*60)+'vw',
+        'top:'+(40+Math.random()*20)+'vh',
+        'width:'+size,'height:'+size,
+        'background:'+colors[Math.floor(Math.random()*colors.length)],
+        '--tx:'+tx,'--ty:'+ty,'--dur:'+dur,
+        'animation-duration:'+dur,
+      ].join(';');
+      container.appendChild(p);
+      setTimeout(()=>p.remove(), parseFloat(dur)*1000+200);
+    }, i*90);
+  }
+}
+
+// ===== Toast =====
+let toastTimer=null;
+function showToast(msg){
+  const el=document.getElementById('petToast');
+  if(!el) return;
+  el.textContent=msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>el.classList.remove('show'), 2800);
+}
+
+// ===== 星空Canvas =====
+function initStars(){
+  const canvas=document.getElementById('starsCanvas');
+  if(!canvas) return;
+  const ctx=canvas.getContext('2d');
+  let stars=[];
+  function resize(){
+    canvas.width =window.innerWidth;
+    canvas.height=window.innerHeight;
+    stars=Array.from({length:80},()=>({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:Math.random()*1.2+.2,
+      a:Math.random(),
+      speed:.003+Math.random()*.005,
+    }));
+  }
+  resize();
+  window.addEventListener('resize', resize);
+  function draw(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    stars.forEach(s=>{
+      s.a+=s.speed;
+      const alpha=.15+.35*Math.abs(Math.sin(s.a));
+      ctx.beginPath();
+      ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle='rgba(220,216,255,'+alpha+')';
+      ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  draw();
+}
+
+// ===== 自然衰减 =====
+function applyDecay(){
+  if(!state.lastDate) return;
+  const hours=Math.min((Date.now()-new Date(state.lastDate).getTime())/(36e5), 48);
+  if(hours>1){
+    const decay=Math.min(hours*1.5, 25);
+    state.hunger  =Math.max(0, state.hunger  -decay);
+    state.happy   =Math.max(0, state.happy   -decay*0.6);
+    state.affection=Math.max(0, state.affection-decay*0.3);
+    state.energy  =Math.min(100, state.energy +decay*0.8);
+  }
+  state.lastDate=new Date().toISOString();
+}
+
+// ===== 每分钟恢复 =====
+function startAutoRecover(){
+  setInterval(()=>{
+    state.energy    = clamp(state.energy + 1.5);
+state.hunger    = clamp(state.hunger - 0.8);
+state.happy     = clamp(state.happy  - 0.3);
+    state.lastDate=new Date().toISOString();
+    save();
+  }, 60000);
+}
+
+// ===== 初始化 =====
+function init(){
+  load();
+
+  if(!state.firstDate){
+    state.firstDate = new Date().toISOString();
+    state.lastDate  = new Date().toISOString();
+  } else {
+    applyDecay();
+  }
+
+  // 重置今日计数（新的一天）
+  const today=dateStr();
+  if(state._today!==today){
+    state._today=today;
+    state.todayActions=0;
+    save();
+  }
+
+  initStars();
+  const initFest = getTodayFestival();
+  if(initFest){
+    setSpeech(getFestivalSpeech());
+  } else {
+    setSpeech(getTimeGreeting());
+  }
+  renderBubbles(false);
+  updateUI();
+  save();
+
+  // 定时器
+  setInterval(()=>{
+    checkWakeUp();
+    applySleepUI();
+    updateUI();
+  }, 1000);
+  setInterval(()=>{
+  if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)) return;
+  if(Math.random()<.08) setSpeech(getTimeGreeting());
+}, 30000);
+  startAutoRecover();
+  loadCollapseState();
+}
+
+init();
+</script>
+</body>
+</html>

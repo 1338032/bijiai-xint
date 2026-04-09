@@ -6582,7 +6582,9 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
 返回
 </button>
-<div class="xj-avatar"><img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺"></div>
+<div class="xj-avatar" onclick="window.open('./xingj-pet.html','_blank')" style="cursor:pointer" title="点击进入星笺养成">
+  <img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺">
+</div>
 <div class="xj-info">
 <div class="xj-name">星笺 <span><i class="fas fa-star" style="font-size:12px"></i></span></div>
 <div class="xj-status">在线 · 随时为你提供灵感</div>
@@ -11482,7 +11484,7 @@ function openEditPhraseDialog(idx){
     '<div>'+
       '<label style="display:block;font-size:11px;color:var(--text2);margin-bottom:4px;font-weight:500">内容（最多100字）</label>'+
       '<textarea id="phraseEditContent" style="width:100%;padding:9px 13px;border-radius:9px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:12px;outline:none;min-height:80px;resize:vertical;font-family:inherit;line-height:1.6;box-sizing:border-box" placeholder="输入短语内容..." maxlength="500">'+esc(p.content||'')+'</textarea>'+
-      '<div style="font-size:10px;color:var(--text2);text-align:right;margin-top:4px" id="phraseEditCount">'+(p.content||'').length+'/100</div>'+
+      '<div style="font-size:10px;color:var(--text2);text-align:right;margin-top:4px" id="phraseEditCount">'+(p.content||'').length+'/500</div>'+
     '</div>'+
     '<button onclick="event.preventDefault();confirmDeletePhrase('+idx+',null)" style="padding:8px;border-radius:9px;border:1px solid rgba(255,107,107,.3);background:transparent;color:var(--danger);font-size:11px;cursor:pointer;width:100%"><i class="fas fa-trash-alt"></i> 删除这条短语</button>';
   
@@ -16214,20 +16216,50 @@ card.innerHTML=
 '<button onclick="event.stopPropagation();toggleCrCardMenu(\''+work.id+'\',this)"><i class="fas fa-ellipsis-h"></i></button>'+
 '</div>'+
 '</div>';
-card.onclick=e=>{if(!e.target.closest('.cr-card-acts'))openEditor(work.id);};
+card.onclick=e=>{
+  if(window._crPinJustDone&&Date.now()-window._crPinJustDone<800)return;
+  if(!e.target.closest('.cr-card-acts'))openEditor(work.id);
+};
 (function(cardEl,workId){
 var _lpT=null,_moved=false,_sx=0,_sy=0,_pinDone=false;
 cardEl.addEventListener('touchstart',function(e){
-_moved=false;_pinDone=false;if(e.touches.length>0){_sx=e.touches[0].clientX;_sy=e.touches[0].clientY;}
-_lpT=setTimeout(function(){if(_moved)return;_pinDone=true;window._crPinJustDone=Date.now();_suppressSelect(cardEl);if(navigator.vibrate)navigator.vibrate(30);toggleCrPin(workId);setTimeout(function(){_restoreSelect(cardEl);},500);},600);
+  _moved=false;_pinDone=false;
+  if(e.touches.length>0){_sx=e.touches[0].clientX;_sy=e.touches[0].clientY;}
+  _lpT=setTimeout(function(){
+    if(_moved)return;
+    _pinDone=true;
+    window._crPinJustDone=Date.now();
+    _suppressSelect(cardEl);
+    if(navigator.vibrate)navigator.vibrate(30);
+    toggleCrPin(workId);
+    setTimeout(function(){_restoreSelect(cardEl);},500);
+  },600);
 },{passive:true});
 cardEl.addEventListener('touchmove',function(e){
-if(e.touches.length>0&&(Math.abs(e.touches[0].clientX-_sx)>10||Math.abs(e.touches[0].clientY-_sy)>10))_moved=true;
-if(_moved&&_lpT){clearTimeout(_lpT);_lpT=null;}
+  if(e.touches.length>0&&(Math.abs(e.touches[0].clientX-_sx)>10||Math.abs(e.touches[0].clientY-_sy)>10)){
+    _moved=true;
+  }
+  if(_moved&&_lpT){clearTimeout(_lpT);_lpT=null;}
 },{passive:true});
-cardEl.addEventListener('touchend',function(){if(_lpT){clearTimeout(_lpT);_lpT=null;}});
-cardEl.addEventListener('touchcancel',function(){if(_lpT){clearTimeout(_lpT);_lpT=null;}_pinDone=false;});
-cardEl.addEventListener('contextmenu',function(e){e.preventDefault();if(_pinDone)return;if(window._crPinJustDone&&Date.now()-window._crPinJustDone<1000)return;toggleCrPin(workId);});
+cardEl.addEventListener('touchend',function(e){
+  if(_lpT){clearTimeout(_lpT);_lpT=null;}
+  // 关键修复：长按置顶后阻止click事件触发
+  if(_pinDone){
+    e.preventDefault&&e.preventDefault();
+    e.stopPropagation&&e.stopPropagation();
+    _pinDone=false;
+    return;
+  }
+});
+cardEl.addEventListener('touchcancel',function(){
+  if(_lpT){clearTimeout(_lpT);_lpT=null;}
+  _pinDone=false;
+});
+cardEl.addEventListener('contextmenu',function(e){
+  e.preventDefault();
+  if(window._crPinJustDone&&Date.now()-window._crPinJustDone<1000)return;
+  toggleCrPin(workId);
+});
 })(card,work.id);
 list.appendChild(card);
 });
@@ -25515,16 +25547,24 @@ bubble.className='xj-gb-bubble';
 bubble.textContent=tip;
 el.appendChild(bubble);
 requestAnimationFrame(function(){
+  // 强制计算气泡尺寸
+  bubble.style.visibility='hidden';
+  bubble.style.display='block';
   var elRect=el.getBoundingClientRect();
-  var bw=bubble.offsetWidth||200;
-  var bh=bubble.offsetHeight||40;
-  var bLeft=elRect.left+elRect.width/2-bw/2;
-  var bTop=elRect.top-bh-12;
-  if(bLeft<8)bLeft=8;
-  if(bLeft+bw>window.innerWidth-8)bLeft=window.innerWidth-bw-8;
-  if(bTop<8){bTop=elRect.bottom+12;}
+  var bw=Math.min(bubble.offsetWidth||180, 240);
+  var bh=bubble.offsetHeight||44;
+  // 以精灵中心为基准定位
+  var centerX=elRect.left+elRect.width/2;
+  var bLeft=centerX-bw/2;
+  var bTop=elRect.top-bh-10;
+  // 边界保护
+  if(bLeft<8) bLeft=8;
+  if(bLeft+bw>window.innerWidth-8) bLeft=window.innerWidth-bw-8;
+  if(bTop<8) bTop=elRect.bottom+10;
+  if(bTop+bh>window.innerHeight-60) bTop=elRect.top-bh-10;
   bubble.style.left=bLeft+'px';
   bubble.style.top=bTop+'px';
+  bubble.style.visibility='visible';
 });
 
   setTimeout(function(){
