@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bijiai-v12';
+const CACHE_NAME = 'bijiai-v13';
 
 self.addEventListener('install', function(e) {
   self.skipWaiting();
@@ -49,6 +49,8 @@ self.addEventListener('fetch', function(e) {
           });
         }
         return resp;
+      }).catch(function() {
+        return new Response('', { status: 503, statusText: 'Offline' });
       });
     })
   );

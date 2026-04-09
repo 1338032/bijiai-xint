@@ -1149,7 +1149,6 @@ body.theme-light .rd-search-ov{
 body.theme-light .rd-reader-ov-top{border-bottom-color:rgba(0,0,0,.08);}
 body.theme-light .rd-reader-ov-bottom{border-top-color:rgba(0,0,0,.08);}
 @media (hover: hover) {   .rd-content p:hover{background:rgba(108,92,231,.03);} }
-.rd-content p:hover{background:rgba(108,92,231,.03);}
 .rd-dir-input{margin-bottom:12px;} .rd-dir-input input{ width:100%;padding:12px 16px;border-radius:12px; border:1px solid var(--border);background:var(--card); color:var(--text);font-size:13px;outline:none; transition:border-color .3s; } .rd-dir-input input:focus{border-color:var(--accent);} .rd-dir-input input::placeholder{color:var(--text2);}
 .cont-wrap{padding:16px 0;text-align:center;}
 .btn-cont{
@@ -8548,6 +8547,9 @@ function _flushSv() {
                     localStorage.setItem(k, JSON.stringify(d));
                 } catch (e2) {
             console.warn('localStorage 空间不足，数据仅保存在IndexedDB:', k);
+            if(typeof showToastForce === 'function'){
+              showToastForce('⚠️ 本地存储已满！建议立即导出备份，否则数据可能丢失', 6000);
+            }
         }
             }
         }
@@ -8721,12 +8723,16 @@ let xjAbortCtrl = null; // 星笺聊天中止控制
 let ringAudio = null; // 铃声播放器
 // ==================== TOAST ====================
 let toastTimer=null;
+let _lastToastMsg='';
 function showToast(msg,dur=2000){
 if(navigator.vibrate)navigator.vibrate(10);
 const t=document.getElementById('toast');
+// 相同内容连续触发时跳过，避免叠加闪烁
+if(msg===_lastToastMsg&&t.classList.contains('show'))return;
+_lastToastMsg=msg;
 t.textContent=msg;t.classList.add('show');
 if(toastTimer)clearTimeout(toastTimer);
-toastTimer=setTimeout(()=>t.classList.remove('show'),dur);
+toastTimer=setTimeout(()=>{t.classList.remove('show');_lastToastMsg='';},dur);
 t.onclick=function(){t.classList.remove('show');if(toastTimer)clearTimeout(toastTimer);};
 // 点击页面任意地方也能关闭toast
 var _toastDismiss=function(){
@@ -9382,7 +9388,6 @@ setTimeout(()=>{likeProcessing=false;},500);
 const article=ws.find(a=>a.id===id);
 if(!article){
 // 也检查收藏里的文章（可能只在收藏不在作坊）
-let found=null;
 if(cols.books.find(b=>b.id===id)){
 cols.books=cols.books.filter(b=>b.id!==id);
 sv(K.cols,cols);
@@ -9409,7 +9414,7 @@ else{
 const copy=JSON.parse(JSON.stringify(article));
 copy.cover=null;copy.status='ongoing';copy.rating=0;
 cols.books.push(copy);
-showToast('星笺已整理到到书架上啦 📚');
+showToast('已整理到书架上啦 📚');
 }
 }else{
 const sIdx=cols.shorts.findIndex(s=>s.id===id);
@@ -9679,7 +9684,10 @@ async function fetchModels(){
 
   // 拉取模型过程中的提示全部强制显示
   showToastForce('正在拉取模型列表...');
-  const baseUrl=cfg.url.replace(/\/+$/,'');
+  let baseUrl=cfg.url.replace(/\/+$/,'');
+  if(!/\/v\d+$/i.test(baseUrl) && !/\/chat\/completions/i.test(baseUrl)){
+    baseUrl = baseUrl + '/v1';
+  }
   try{
     const resp=await fetch(baseUrl+'/models',{
       headers:{'Authorization':'Bearer '+cfg.key}
@@ -10844,8 +10852,25 @@ _bgGenerating = true;
       let friendly='';
       if(resp.status===401){
         friendly='认证失败（可能是 API 密钥错误或没有权限）';
+        setTimeout(function(){
+          showDlg('🔑 密钥认证失败','API密钥不对或已失效，是否去设置页检查？',function(){
+            switchPage('settings',document.querySelector('.bnav-i:nth-child(4)'));
+          },false);
+          document.getElementById('dlgOkBtn').textContent='去设置 →';
+          // 加取消按钮
+          var cancelBtn=document.getElementById('dlgCancelBtn');
+          if(cancelBtn){cancelBtn.style.display='';cancelBtn.textContent='稍后再说';}
+        },400);
       }else if(resp.status===404){
         friendly='接口路径不存在（API地址或路径可能写错，例如 /v1 或 /chat/completions 配置错误）';
+        setTimeout(function(){
+          showDlg('🔍 接口地址错误','API地址或模型名填错了，是否去设置页修改？',function(){
+            switchPage('settings',document.querySelector('.bnav-i:nth-child(4)'));
+          },false);
+          document.getElementById('dlgOkBtn').textContent='去设置 →';
+          var cancelBtn=document.getElementById('dlgCancelBtn');
+          if(cancelBtn){cancelBtn.style.display='';cancelBtn.textContent='稍后再说';}
+        },400);
       }else if(resp.status===429){
         friendly='请求太频繁或额度不足（被限流/余额不足）';
         if(_retryLeft>0){
@@ -11380,8 +11405,8 @@ function openAddPhraseDialog(){
     if(contentTa){
       contentTa.oninput=function(){
         var c=document.getElementById('newPhraseCount');
-        if(c)c.textContent=this.value.length+'/100';
-        if(this.value.length>100){this.value=this.value.substring(0,100);if(navigator.vibrate)navigator.vibrate(10);}
+        if(c)c.textContent=this.value.length+'/500';
+        if(this.value.length>500){this.value=this.value.substring(0,500);if(navigator.vibrate)navigator.vibrate(10);}
       };
     }
     var titleInput=document.getElementById('newPhraseTitle');
@@ -11398,7 +11423,7 @@ function openAddPhraseDialog(){
     var title=(document.getElementById('newPhraseTitle').value||'').trim();
     var content=(document.getElementById('newPhraseContent').value||'').trim();
     if(!content){showToast('内容不能为空');return;}
-    if(content.length>100){showToast('内容最多100字');return;}
+    if(content.length>500){showToast('内容最多500字');return;}
     if(title.length>10){showToast('标题最多10字');return;}
     var exists=savedPhrases.some(function(p){var c=typeof p==='string'?p:p.content;return c===content;});
     if(exists){showToast('这条短语已存在');return;}
@@ -11469,8 +11494,8 @@ function openEditPhraseDialog(idx){
       contentTa.oninput=function(){
         var c=document.getElementById('phraseEditCount');
         if(c)c.textContent=this.value.length+'/500';
-        if(this.value.length>100){
-          this.value=this.value.substring(0,100);
+        if(this.value.length>500){
+          this.value=this.value.substring(0,500);
           if(navigator.vibrate)navigator.vibrate(10);
         }
       };
@@ -11491,7 +11516,7 @@ function openEditPhraseDialog(idx){
     var title=(document.getElementById('phraseEditTitle').value||'').trim();
     var content=(document.getElementById('phraseEditContent').value||'').trim();
     if(!content){showToast('内容不能为空');return;}
-    if(content.length>100){showToast('内容最多100字');return;}
+    if(content.length>500){showToast('内容最多500字');return;}
     if(title.length>10){showToast('标题最多10字');return;}
     savedPhrases[idx]={title:title,content:content};
     sv('bj_savedPhrases',savedPhrases);
@@ -15259,7 +15284,7 @@ ap.curStyle=content;
 sv(K.ap,ap);
 if(presetName)showToast('已切换到「'+presetName+'」的文风');
 }
-// ==================== 通用模板选择弹窗 ====================
+
 // ==================== 通用模板选择弹窗 ====================
 let _tplChooserCallback = null;
 function showTemplateChooser(title, templates, onSelect){
@@ -28557,7 +28582,13 @@ function splashConfirmName() {
         app.classList.add('show');
         setTimeout(function() {
             splash.style.display = 'none';
-            try { splash.innerHTML = ''; } catch(e) {}
+            try {
+              splash.querySelectorAll('*').forEach(function(el){
+                el.style.animation='none';
+                el.style.willChange='auto';
+              });
+              splash.innerHTML = '';
+            } catch(e) {}
         }, 800);
     }, 1500);
 }
@@ -28628,7 +28659,14 @@ document.addEventListener('DOMContentLoaded', async () => {
                 app.classList.add('show');
                 setTimeout(() => {
                     splash.style.display = 'none';
-                    try { splash.innerHTML = ''; } catch(e) {}
+                    try {
+                      // 停掉所有动画后再清空，防止低端机动画还在跑
+                      splash.querySelectorAll('*').forEach(function(el){
+                        el.style.animation='none';
+                        el.style.willChange='auto';
+                      });
+                      splash.innerHTML = '';
+                    } catch(e) {}
                 }, 800);
             }
         }, 400);
@@ -34484,7 +34522,6 @@ async function doGeneratePlay(){
   
   if(!result){showToast('生成失败');return;}
   result = stripMetaThinking(result);
-  result = stripMetaThinking(result);
   
   // 解析标题
   var title = '剧场';
@@ -34613,14 +34650,14 @@ function deleteRtPlayPreset(idx){
 </script>
 <script>
 function downloadApk(){
-  if(confirm('此为安卓安装包，确定下载吗？')){
+  showDlg('📦 下载安装包','此为安卓安装包（.apk），确定下载吗？',function(){
     var a=document.createElement('a');
     a.href='./bijiai.apk';
     a.download='笔记AI.apk';
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-  }
+  },true);
 }
 </script>
 <script>
