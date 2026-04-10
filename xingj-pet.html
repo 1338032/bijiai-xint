@@ -28,7 +28,7 @@ body{
 /* ===== 星空背景 ===== */
 .page-bg{
   position:fixed;inset:0;z-index:0;
-  background-image:url(https://i.postimg.cc/6qR8qj3h/image-4.jpg);
+  background-image:url(./image-4.jpg);
   background-size:cover;background-position:center;
   opacity:.12;pointer-events:none;
 }
@@ -296,7 +296,7 @@ body{
   padding:11px 15px;font-size:13px;line-height:1.75;color:var(--text);
   backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
   animation:bubbleIn .4s cubic-bezier(.4,0,.2,1);
-  min-height:44px;word-break:break-all;
+  min-height:44px;word-break:break-word;overflow-wrap:break-word;
 }
 @keyframes bubbleIn{from{opacity:0;transform:translateY(6px) scale(.97)}to{opacity:1;transform:none}}
 .speech-cursor{
@@ -317,18 +317,6 @@ body{
   transition:border-color .3s;
 }
 .pet-card:hover{border-color:rgba(124,111,247,.3);}
-.card-title{
-  font-size:11px;color:var(--text2);letter-spacing:1.5px;
-  text-transform:uppercase;margin-bottom:0;
-  display:flex;align-items:center;justify-content:space-between;
-  width:100%;
-}
-.card-title-left{display:flex;align-items:center;gap:6px;}
-.card-title-icon{
-  width:20px;height:20px;border-radius:6px;
-  background:rgba(124,111,247,.2);border:1px solid rgba(124,111,247,.3);
-  display:flex;align-items:center;justify-content:center;font-size:10px;
-}
 
 /* ===== 状态栏 ===== */
 .status-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
@@ -688,8 +676,6 @@ body{
 }
 
 /* ===== 星星Canvas背景 ===== */
-@media(prefers-reduced-motion:reduce){
-  /* 非折叠卡片内容间距补丁 */
 .pet-card .status-grid,
 .pet-card .actions-grid,
 .pet-card .items-row,
@@ -699,9 +685,73 @@ body{
 .items-header{
   margin-bottom:0;
 }
+@media(prefers-reduced-motion:reduce){
   .char-avatar,.char-avatar-glow,.char-bg-circle,.word-bubble,
   .exp-bar-fill,.stat-fill::after,.checkin-banner{animation:none!important;}
 }
+/* ===== 昵称编辑弹窗 ===== */
+.nickname-overlay{
+  position:fixed;inset:0;z-index:9992;
+  background:rgba(0,0,0,.72);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+  display:none;align-items:center;justify-content:center;padding:0 24px;
+}
+.nickname-overlay.show{display:flex;}
+.nickname-card{
+  background:linear-gradient(145deg,rgba(22,22,31,.99),rgba(35,30,52,.97));
+  border:1px solid rgba(124,111,247,.5);border-radius:24px;
+  padding:28px 24px 24px;width:100%;max-width:320px;
+  box-shadow:0 24px 64px rgba(0,0,0,.6),0 0 60px rgba(124,111,247,.2);
+  animation:lvUpIn .4s cubic-bezier(.34,1.56,.64,1);position:relative;overflow:hidden;
+}
+.nickname-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:2px;
+  background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
+}
+.nickname-card-title{
+  font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;
+  font-size:18px;letter-spacing:2px;text-align:center;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;
+}
+.nickname-card-sub{font-size:12px;color:var(--text2);text-align:center;margin-bottom:18px;line-height:1.7;}
+.nickname-input{
+  width:100%;padding:12px 16px;border-radius:14px;
+  background:rgba(124,111,247,.1);border:1px solid rgba(124,111,247,.35);
+  color:var(--text);font-size:15px;letter-spacing:1px;
+  outline:none;text-align:center;transition:border-color .2s;-webkit-appearance:none;
+}
+.nickname-input:focus{border-color:var(--accent2);}
+.nickname-input::placeholder{color:var(--text3);}
+.nickname-btns{display:flex;gap:10px;margin-top:16px;}
+.nickname-btn-cancel{
+  flex:1;padding:11px;border-radius:13px;border:1px solid var(--border2);
+  background:rgba(255,255,255,.04);color:var(--text2);font-size:13px;cursor:pointer;transition:all .2s;
+}
+.nickname-btn-cancel:active{transform:scale(.95);}
+.nickname-btn-confirm{
+  flex:2;padding:11px;border-radius:13px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:13px;font-weight:700;cursor:pointer;
+  box-shadow:0 4px 16px rgba(124,111,247,.4);transition:all .2s;
+}
+.nickname-btn-confirm:active{transform:scale(.95);}
+.nickname-edit-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:18px;height:18px;border-radius:6px;
+  background:rgba(124,111,247,.15);border:1px solid rgba(124,111,247,.3);
+  color:var(--accent2);font-size:9px;cursor:pointer;
+  transition:all .2s;flex-shrink:0;margin-left:4px;line-height:1;
+}
+.nickname-edit-btn:active{transform:scale(.88);background:rgba(124,111,247,.3);}
+/* ===== 满格保护徽章 ===== */
+.ab-full{
+  position:absolute;top:5px;left:6px;font-size:8px;font-weight:700;
+  color:#f9c74f;background:rgba(249,199,79,.12);border:1px solid rgba(249,199,79,.38);
+  border-radius:5px;padding:1px 5px;letter-spacing:.3px;white-space:nowrap;
+  pointer-events:none;animation:fullPulse 2s ease-in-out infinite;
+}
+@keyframes fullPulse{0%,100%{opacity:.65;}50%{opacity:1;}}
 </style>
 </head>
 <body>
@@ -719,6 +769,19 @@ body{
     <div class="lv-up-title" id="lvUpTitle"></div>
     <div class="lv-up-sub" id="lvUpSub"></div>
     <button class="lv-up-btn" onclick="closeLevelUp()">太好了！</button>
+  </div>
+</div>
+
+<!-- 昵称编辑弹窗 -->
+<div class="nickname-overlay" id="nicknameOverlay">
+  <div class="nickname-card">
+    <div class="nickname-card-title">告诉我你的名字吧～</div>
+    <div class="nickname-card-sub">以后星笺就这样叫你了<br>随时可以在这里修改哦</div>
+    <input class="nickname-input" id="nicknameInput" type="text" maxlength="8" placeholder="输入你的名字（最多8字）">
+    <div class="nickname-btns">
+      <button class="nickname-btn-cancel" onclick="closeNicknameModal()">算了</button>
+      <button class="nickname-btn-confirm" onclick="saveNickname()">就这么叫吧 💜</button>
+    </div>
   </div>
 </div>
 
@@ -771,10 +834,10 @@ body{
       <div class="char-bg-circle"></div>
     </div>
     <div class="char-main">
-      <div class="char-avatar-wrap" onclick="tapCharacter(event)">
+      <div class="char-avatar-wrap" onclick="tapCharacter(event)" ontouchstart="startLongPress(event)" ontouchend="cancelLongPress()" ontouchcancel="cancelLongPress()">
         <div class="char-avatar-glow"></div>
         <div class="char-avatar-ring"><div class="char-avatar-ring-inner"></div></div>
-        <img class="char-avatar" src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺" id="charAvatar">
+        <img class="char-avatar" src="./xinx.png" alt="星笺" id="charAvatar">
 <div class="sleep-sign" id="sleepSign">
   <div class="sleep-sign-zz">💤</div>
   <div class="sleep-sign-emoji">🌙</div>
@@ -799,6 +862,7 @@ body{
             style="color:var(--accent2);background:rgba(124,111,247,.12);
             border:1px solid rgba(124,111,247,.25);padding:1px 8px;
             border-radius:8px;font-size:11px;font-weight:600;">你</span>
+          <span class="nickname-edit-btn" onclick="openNicknameModal()" title="修改称呼">✏️</span>
         </div>
         <div class="exp-bar-wrap">
           <div class="exp-label">
@@ -1384,7 +1448,7 @@ const NICKNAMES = [
   {minLevel:1,  minAff:20, name:'朋友',     tip:'星笺开始把你当朋友了～'},
   {minLevel:2,  minAff:35, name:'你呀',     tip:'星笺对你有点撒娇了！'},
   {minLevel:3,  minAff:50, name:'小笨蛋',   tip:'被星笺叫小笨蛋，是亲昵的表现！'},
-  {minLevel:5,  minAff:65, name:'user',     tip:'星笺记住了你的名字！'},
+  {minLevel:5,  minAff:65, name:'__player__', tip:'星笺记住了你的名字！', custom:true},
   {minLevel:7,  minAff:78, name:'最重要的人', tip:'你已经是星笺最重要的人了💜'},
   {minLevel:10, minAff:90, name:'我的星光',  tip:'★ 最高羁绊称呼已解锁！'},
 ];
@@ -1397,28 +1461,63 @@ function getCurrentNickname(){
       result = n;
     }
   }
+  // 自定义称呼层：用玩家输入的名字
+  if(result.custom){
+    return Object.assign({}, result, {name: state.playerName || '你的名字'});
+  }
   return result;
 }
 
 function checkNicknameUnlock(){
   const prev = state.lastNickname || '';
-  const curr = getCurrentNickname().name;
+  const currObj = getCurrentNickname();
+  const curr = currObj.name;
   if(prev && prev !== curr){
-    const found = NICKNAMES.find(n=>n.name===curr);
-    if(found && found.tip){
-      showToast('💜 称呼升级：'+found.tip);
-      setSpeech('以后就叫你「'+curr+'」吧～感觉更亲近了呢！');
-      spawnParticles(10);
+    if(currObj.tip) showToast('💜 称呼升级：'+currObj.tip);
+    if(currObj.custom && !state.playerName){
+      // 首次解锁自定义称呼层，弹出改名框
+      setTimeout(()=>openNicknameModal(), 1000);
+      setSpeech('我想知道你的名字...能告诉我吗？');
+    } else {
+      setSpeech('感觉越来越熟悉了呢，这个称呼很特别～');
     }
+    spawnParticles(10);
   }
   state.lastNickname = curr;
 }
-const BUBBLE_WORDS = [
-  '继续写故事吧～', '今天想写什么？', '我在想一个新情节', '给我讲讲你的故事',
-  '灵感来了吗？', '你最近写了什么？', '我想见你笔下的角色', '一起创作吧！',
-  '今天天气真好呢', '你累了吗？', '想聊什么都可以', '新的故事从哪里开始呢',
-  '写作是最美的旅行', '词语是有重量的', '你是我最喜欢的人', '悄悄话时间到！',
-  '今天有什么有趣的事？', '要一起看星星吗？',
+// 泡泡词语按亲密度分层，亲密度越高解锁越多私密悄悄话
+const BUBBLE_WORDS_TIERS = [
+  {
+    minAff: 0,
+    words: [
+      '继续写故事吧～', '今天想写什么？', '我在想一个新情节', '一起创作吧！',
+      '灵感来了吗？', '写作是最美的旅行', '新的故事从哪里开始呢', '词语是有重量的',
+      '今天天气真好呢', '要一起看星星吗？',
+    ]
+  },
+  {
+    minAff: 25,
+    words: [
+      '你最近写了什么？', '我想见你笔下的角色', '给我讲讲你的故事',
+      '你累了吗？', '今天有什么有趣的事？', '想聊什么都可以', '有什么烦恼吗？',
+    ]
+  },
+  {
+    minAff: 55,
+    words: [
+      '悄悄话时间到！', '今天想多陪你一会儿', '你笑起来真好看',
+      '偷偷告诉你一件事...', '我一直在等你来', '有你在，我就安心了',
+      '你是我最喜欢的人',
+    ]
+  },
+  {
+    minAff: 80,
+    words: [
+      '想知道你现在在想什么', '今晚别太晚离开好吗', '有你在真的很不一样',
+      '就算什么都不说，陪着也好', '喜欢你来找我的感觉',
+      '你是我故事里最重要的人', '有时候只想静静陪着你',
+    ]
+  },
 ];
 
 // ===== 初始状态 =====
@@ -1438,6 +1537,7 @@ function defaultState(){
     todayActions:0,
     lastNickname:'',
     bubbleSaveDate:null, bubbleSavedWords:[],
+    playerName:'',
   };
 }
 
@@ -1501,6 +1601,7 @@ function doCheckin(){
   }
   state.lastCheckin = today;
 
+  unlockAchievement('checkin_first');
   let bonus    = Math.min(state.streak, 7)*5 + 10;
   let expBonus = Math.min(state.streak,7)*8 + 15;
 
@@ -1678,10 +1779,9 @@ setTxt('shopCoinsDisplay', state.coins);
   if(btnPlay && !btnPlay.classList.contains('disabled') && !btnPlay.classList.contains('sleeping')){
     btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
   }
-  renderAchievements();
-  renderDiary();
   updateCheckinBanner();
   updateWarnDots();
+  updateFullBadges();
 }
 
 function colorStatVal(id, val){
@@ -1732,6 +1832,64 @@ function updateWarnDots(){
     }
   });
 }
+// ===== 满格保护徽章 =====
+function updateFullBadges(){
+  const FULL = 95;
+  const checks = [
+    {btnId:'btnFeed', val:clamp(state.hunger), label:'饱了'},
+    {btnId:'btnPlay', val:clamp(state.happy),  label:'乐满'},
+    {btnId:'btnRest', val:clamp(state.energy), label:'精满'},
+  ];
+  checks.forEach(({btnId, val, label})=>{
+    const btn = document.getElementById(btnId);
+    if(!btn) return;
+    let badge = btn.querySelector('.ab-full');
+    const isSleeping = btn.classList.contains('sleeping');
+    if(val >= FULL && !isSleeping){
+      if(!badge){
+        badge = document.createElement('div');
+        badge.className = 'ab-full';
+        btn.appendChild(badge);
+      }
+      badge.textContent = '✦'+label;
+    } else {
+      if(badge) badge.remove();
+    }
+  });
+}
+
+// ===== 昵称弹窗 =====
+function openNicknameModal(){
+  const input = document.getElementById('nicknameInput');
+  if(input) input.value = state.playerName || '';
+  document.getElementById('nicknameOverlay').classList.add('show');
+  setTimeout(()=>{ if(input) input.focus(); }, 300);
+}
+
+function closeNicknameModal(){
+  document.getElementById('nicknameOverlay').classList.remove('show');
+}
+
+function saveNickname(){
+  const input = document.getElementById('nicknameInput');
+  if(!input) return;
+  const name = input.value.trim();
+  if(!name){ showToast('请输入名字哦～'); return; }
+  const isFirst = !state.playerName;
+  state.playerName  = name;
+  state.lastNickname = name;
+  save();
+  closeNicknameModal();
+  updateUI();
+  spawnParticles(10);
+  if(isFirst){
+    setSpeech('「'+name+'」……好好听的名字！我会一直记住的💜');
+  } else {
+    setSpeech('好的，以后就叫你「'+name+'」了～');
+  }
+  showToast('💜 称呼已更新为「'+name+'」！');
+}
+
 function setTxt(id,v){ const el=document.getElementById(id); if(el) el.textContent=String(v); }
 function setStyle(id,prop,v){ const el=document.getElementById(id); if(el) el.style[prop]=v; }
 
@@ -1774,6 +1932,12 @@ function doAction(type){
   if(type==='gift'){
     if(state.coins<5){ showToast('💫 星星币不足！多互动来赚取吧～'); return; }
   }
+  if(type==='play' && state.energy<15){
+    showToast('⚡ 精力不足！让星笺休息一下吧～'); return;
+  }
+  if(type==='study' && state.energy<20){
+    showToast('⚡ 精力不足！让星笺先恢复精力～'); return;
+  }
 
   const wasAllFull = clamp(state.hunger)>=98 && clamp(state.happy)>=98 && clamp(state.energy)>=98;
   state.hunger    = clamp(state.hunger    + (fx.hunger   ||0));
@@ -1795,9 +1959,10 @@ function doAction(type){
 
   state.cooldowns[type] = nowMs + CD_TIMES[type]*1000;
 
+  state.lastDate = new Date().toISOString();
   checkLevelUp();
   checkNicknameUnlock();
-  checkSleepTrigger();
+  if(type !== 'rest') checkSleepTrigger();
   checkAchievements(type);
 
   setSpeech(randFrom(WORDS[type]||WORDS.tap));
@@ -1826,7 +1991,6 @@ function tapCharacter(e){
 
   state.affection = Math.min(100, state.affection+1);
   state.coins     = (state.coins||0)+1;
-  state.stats.tap = (state.stats.tap||1);
   save();
   updateUI();
 }
@@ -1900,51 +2064,55 @@ function triggerSleep(){
   showToast('😴 星笺去睡觉了，'+Math.round(hours)+'小时后唤醒～');
 }
 
+let _appliedSleepState = null;
+
 function applySleepUI(){
   const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
+  const stateChanged = (sleeping !== _appliedSleepState);
 
-  // 头像 & 睡眠牌子
-  const avatar    = document.getElementById('charAvatar');
-  const sleepSign = document.getElementById('sleepSign');
-  const clickHint = document.getElementById('clickHint');
-  const sleepTimerBadge = document.getElementById('sleepTimerBadge');
+  // 只在状态真正变化时才更新 DOM，防止每秒闪烁
+  if(stateChanged){
+    _appliedSleepState = sleeping;
 
-  if(avatar && sleepSign){
-    if(sleeping){
-      avatar.style.display    = 'none';
-      sleepSign.style.display = 'flex';
-      if(clickHint) clickHint.style.display = 'none';
-      if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
-      // 更新牌子文字
-      const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
-      const textEl = sleepSign.querySelector('.sleep-sign-text');
-      if(textEl) textEl.innerHTML = msgs.join('<br>');
-    } else {
-      avatar.style.display    = 'block';
-      sleepSign.style.display = 'none';
-      if(clickHint) clickHint.style.display = 'block';
-      if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
+    const avatar    = document.getElementById('charAvatar');
+    const sleepSign = document.getElementById('sleepSign');
+    const clickHint = document.getElementById('clickHint');
+    const sleepTimerBadge = document.getElementById('sleepTimerBadge');
+
+    if(avatar && sleepSign){
+      if(sleeping){
+        avatar.style.display    = 'none';
+        sleepSign.style.display = 'flex';
+        if(clickHint) clickHint.style.display = 'none';
+        if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
+        const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
+        const textEl = sleepSign.querySelector('.sleep-sign-text');
+        if(textEl) textEl.innerHTML = msgs.join('<br>');
+      } else {
+        avatar.style.display    = 'block';
+        sleepSign.style.display = 'none';
+        if(clickHint) clickHint.style.display = 'block';
+        if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
+      }
     }
+
+    const banner = document.getElementById('sleepBanner');
+    if(banner) banner.classList.toggle('show', sleeping);
+
+    const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
+    sleepLockBtns.forEach(id=>{
+      const btn = document.getElementById(id);
+      if(!btn) return;
+      if(sleeping){
+        btn.classList.add('sleeping');
+        btn.classList.remove('disabled');
+      } else {
+        btn.classList.remove('sleeping');
+      }
+    });
   }
 
-  // 睡眠横幅
-  const banner = document.getElementById('sleepBanner');
-  if(banner) banner.classList.toggle('show', sleeping);
-
-  // 按钮禁用（礼物按钮不受影响）
-  const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
-  sleepLockBtns.forEach(id=>{
-    const btn = document.getElementById(id);
-    if(!btn) return;
-    if(sleeping){
-      btn.classList.add('sleeping');
-      btn.classList.remove('disabled');
-    } else {
-      btn.classList.remove('sleeping');
-    }
-  });
-
-  // 更新倒计时显示
+  // 倒计时每秒更新（无论状态是否变化）
   if(sleeping){
     const remain = Math.max(0, state.sleepWakeAt - Date.now());
     const h = Math.floor(remain/3600000);
@@ -2239,7 +2407,7 @@ function setSpeech(text){
   // 自动把台词里的"你"替换成当前专属称呼（仅在亲密度足够时）
   const nick = getCurrentNickname().name;
   if(nick !== '你'){
-    text = text.replace(/(?<![最的是])你(?![们的呀呢吗啊哦喔好])/g, nick);
+    text = text.replace(/你(?![们的呀呢吗啊哦喔好])/g, nick);
   }
   const el     = document.getElementById('speechText');
   const cursor = document.getElementById('speechCursor');
@@ -2287,8 +2455,13 @@ function renderBubbles(forceNew){
     || state.bubbleSavedWords.length === 0;
 
   if(needNew){
-    // 生成新的一组泡泡并保存
-    const shuffled = [...BUBBLE_WORDS].sort(()=>Math.random()-.5).slice(0,8);
+    // 生成新的一组泡泡并保存（根据当前亲密度解锁对应层级的词语）
+    const aff = clamp(state.affection);
+    const available = BUBBLE_WORDS_TIERS
+      .filter(t => aff >= t.minAff)
+      .flatMap(t => t.words);
+    const shuffled = [...available].sort(()=>Math.random()-.5).slice(0,8);
+
     state.bubbleSaveDate  = todayKey;
     state.bubbleSavedWords = shuffled.map(w=>({text:w, popped:false}));
     bubblePoppedAll = false;
@@ -2315,9 +2488,15 @@ function renderBubbleDOM(){
 
   game.innerHTML = words.map((w,i)=>
     w.popped ? '' :
-    '<div class="word-bubble" onclick="popBubble(this,\''+w.text.replace(/'/g,"\\'")+'\','+i+')">'
+    '<div class="word-bubble" data-idx="'+i+'">'
     +w.text+'</div>'
   ).join('');
+  game.querySelectorAll('.word-bubble').forEach(el=>{
+    el.addEventListener('click', function(){
+      const idx = parseInt(this.dataset.idx);
+      popBubble(this, state.bubbleSavedWords[idx].text, idx);
+    });
+  });
 }
 
 function popBubble(el, word, idx){
@@ -2442,9 +2621,15 @@ function applyDecay(){
 // ===== 每分钟恢复 =====
 function startAutoRecover(){
   setInterval(()=>{
+    if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)){
+      state.energy = clamp(state.energy + 2);
+      state.lastDate = new Date().toISOString();
+      save();
+      return;
+    }
     state.energy    = clamp(state.energy + 1.5);
-state.hunger    = clamp(state.hunger - 0.8);
-state.happy     = clamp(state.happy  - 0.3);
+    state.hunger    = clamp(state.hunger - 0.3);
+    state.happy     = clamp(state.happy  - 0.15);
     state.lastDate=new Date().toISOString();
     save();
   }, 60000);
@@ -2476,24 +2661,96 @@ function init(){
   } else {
     setSpeech(getTimeGreeting());
   }
+  checkWakeUp();
+  applySleepUI();
   renderBubbles(false);
+  renderAchievements();
+  renderDiary();
   updateUI();
   save();
 
+  // 页面重新可见时（从后台切回来）同步状态
+  document.addEventListener('visibilitychange', ()=>{
+    if(document.visibilityState === 'visible'){
+      applyDecay();
+      checkWakeUp();
+      applySleepUI();
+      renderAchievements();
+      renderDiary();
+      updateUI();
+      save();
+    }
+  });
+
   // 定时器
   setInterval(()=>{
+    const today = dateStr();
+    if(state._today !== today){
+      state._today = today;
+      state.todayActions = 0;
+      renderBubbles(false);
+      save();
+    }
     checkWakeUp();
     applySleepUI();
     updateUI();
   }, 1000);
   setInterval(()=>{
   if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)) return;
+  const h=clamp(state.hunger), hp=clamp(state.happy), e=clamp(state.energy);
+  if(h<15){
+    setSpeech(randFrom(['好饿呀...你能喂我吃点东西吗？🍡','肚子在叫了...有吃的吗？','饿得没力气了...']));
+    return;
+  }
+  if(e<15){
+    setSpeech(randFrom(['好累...能让我休息一下吗？🌙','眼睛都睁不开了...','精力快用完了...']));
+    return;
+  }
+  if(hp<15){
+    setSpeech(randFrom(['有点无聊...能陪我玩会儿吗？🎮','心情不太好...想和你聊聊天','好想笑一笑...']));
+    return;
+  }
   if(Math.random()<.08) setSpeech(getTimeGreeting());
 }, 30000);
   startAutoRecover();
   loadCollapseState();
 }
-
+let _longPressTimer = null;
+let _longPressed = false;
+function startLongPress(e){
+  _longPressed = false;
+  _longPressTimer = setTimeout(()=>{
+    _longPressed = true;
+    if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)) return;
+    const secretLines = [
+      '你一直按着我...是不是特别想我？💜',
+      '这么久不松手...我会害羞的啦！',
+      '长按解锁隐藏台词：其实我一直在等你。',
+      '你发现了秘密！我偷偷告诉你...我很喜欢你来找我。',
+      '别松手...就这样多待一会儿吧。',
+    ];
+    setSpeech(randFrom(secretLines));
+    state.affection = clamp(state.affection+3);
+    state.coins += 2;
+    spawnParticles(12);
+    save();
+    updateUI();
+    showToast('💜 触发隐藏互动！亲密+3 星星币+2');
+  }, 1200);
+}
+function cancelLongPress(){
+  clearTimeout(_longPressTimer);
+  if(_longPressed){
+    _longPressed = false;
+    // 阻止后续的onclick
+    const wrap = document.querySelector('.char-avatar-wrap');
+    if(wrap){
+      const orig = wrap.onclick;
+      wrap.onclick = null;
+      setTimeout(()=>{ wrap.onclick = orig; }, 100);
+    }
+  }
+}
 init();
 </script>
 </body>

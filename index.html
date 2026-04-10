@@ -4230,7 +4230,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="splash-corner tl">Created by 心田</div>
 <div class="splash-corner br">AI创作工坊</div>
 <div class="splash-card">
-<div class="splash-icon"><img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺"></div>
+<div class="splash-icon"><img src="./xinx.png" alt="星笺"></div>
 <div class="splash-logo">笔记AI</div>
 <div class="splash-sub">让灵感落笔成章</div>
 <div class="splash-progress"><div class="splash-progress-bar" id="splashBar"></div></div>
@@ -4755,7 +4755,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 <div class="xj-tip">
   <div class="xj-tip-img">
-    <img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺">
+    <img src="./xinx.png" alt="星笺">
   </div>
   <div class="xj-tip-text">
     <p>遇到任何问题，都可以去找星笺聊聊～</p>
@@ -6583,7 +6583,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 返回
 </button>
 <div class="xj-avatar" onclick="window.open('./xingj-pet.html','_blank')" style="cursor:pointer" title="点击进入星笺养成">
-  <img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺">
+  <img src="./xinx.png" alt="星笺">
 </div>
 <div class="xj-info">
 <div class="xj-name">星笺 <span><i class="fas fa-star" style="font-size:12px"></i></span></div>
@@ -6593,7 +6593,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div class="xj-body" id="xjBody">
 <div class="xj-welcome">
-<img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺">
+<img src="./xinx.png" alt="星笺">
 <p>我是星笺，你的创作小伙伴～<br>有什么想聊的，尽管告诉我吧！</p>
 </div>
 </div>
@@ -8256,7 +8256,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <div class="xj-global-float" id="xjGlobalFloat" style="display:none" oncontextmenu="return false">
-<img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺" draggable="false">
+<img src="./xinx.png" alt="星笺" draggable="false">
 </div>
 <!-- AVATAR CROP 头像裁剪弹窗 -->
 <div class="res-exp-ov" id="avatarCropOv" onclick="if(event.target===this)cancelAvatarCrop()" style="z-index:9000">
@@ -9128,12 +9128,6 @@ function safeJsonParse(text){
   try{
     return JSON.parse(t);
   }catch(e1){
-    // 最后兜底：尝试用eval（仅限JSON-like对象）
-    try{
-      var fn = new Function('return (' + t + ')');
-      var obj = fn();
-      if(obj && typeof obj === 'object') return obj;
-    }catch(e2){}
     throw e1;
   }
 }
@@ -14072,10 +14066,10 @@ articleContexts[curRd.id].direction=dir;
 sv('bj_articleContexts',articleContexts);
 }
 var ctxKey='bj_ctxUsed_'+curRd.id;
-var hasUsedCtx=localStorage.getItem(ctxKey);
+var hasUsedCtx=ld(ctxKey,null);
 if(!hasUsedCtx&&curRd.chapters&&curRd.chapters.length>=1){
 showDlg('星笺的小建议','第一次续写这篇文章呢！星笺建议你先看看「⚙️ 上下文设置」，\n\n在那里可以告诉AI：\n· 前面发生了什么（帮它回忆剧情）\n· 角色现在的状态（防止性格跑偏）\n· 这一章想写什么（让它更听话）\n\n设置一次就好，以后续写星笺就不会再唠叨啦～',function(){
-localStorage.setItem(ctxKey,'1');
+sv(ctxKey,'1');
 continueChapterWithContext();
 },false,'确认，直接续写');
 var okBtn=document.getElementById('dlgOkBtn');
@@ -14086,7 +14080,7 @@ dlgMsg.innerHTML+='<div style="margin-top:12px"><button onclick="closeDlg();open
 }
 return;
 }
-if(!hasUsedCtx)localStorage.setItem(ctxKey,'1');
+if(!hasUsedCtx)sv(ctxKey,'1');
 continueChapterWithContext();
 }
 async function continueChapter(){
@@ -15801,6 +15795,10 @@ globalWorld: globalWorld,
         devMode: devMode,xjVisible: xjVisible,
 xjBubbleEnabled: xjBubbleEnabled,
         rdBgImg: rdBgImg,autoSaveToast:autoSaveToast,contAutoScroll:contAutoScroll,genVibrate:genVibrate,autoChSummary:autoChSummary,rdProgressMemory:rdProgressMemory,edExitConfirm:edExitConfirm,showThemeBtn:showThemeBtn,genConfirm:genConfirm,contAutoExtend:contAutoExtend,contDirMemory:contDirMemory,paraLongPress:paraLongPress,rdFooterVisible:rdFooterVisible,updatePopup:updatePopup,backupReminder:backupReminder,navBarText:navBarText,rpStreamOutput:rpStreamOutput,rpMsgSplit:rpMsgSplit,clearDataConfirm:clearDataConfirm,rpTimeAware:rpTimeAware,xjMsgSplit:xjMsgSplit,
+        xjPetData: (function(){
+          try{var r=localStorage.getItem('xj_pet_v3');return r?JSON.parse(r):null;}
+          catch(e){return null;}
+        }()),
         notes: exportAllNotes(),
         favItems: favItems,savedPhrases: savedPhrases,
         genTemplates: genTemplates,rtInterviews: rtInterviews,
@@ -16046,6 +16044,10 @@ if(typeof data.rpMsgSplit!=='undefined'){rpMsgSplit=data.rpMsgSplit;sv('bj_rpMsg
 if(typeof data.clearDataConfirm!=='undefined'){clearDataConfirm=data.clearDataConfirm;sv('bj_clearDataConfirm',clearDataConfirm);}
 if(typeof data.rpTimeAware!=='undefined'){rpTimeAware=data.rpTimeAware;sv('bj_rpTimeAware',rpTimeAware);}
 if(typeof data.xjMsgSplit!=='undefined'){xjMsgSplit=data.xjMsgSplit;sv('bj_xjMsgSplit',xjMsgSplit);}
+if(data.xjPetData){
+  try{localStorage.setItem('xj_pet_v3',JSON.stringify(data.xjPetData));}
+  catch(e){}
+}
 // Reload forms
 const api=data.curApi||data.currentApi||{};
 document.getElementById('apiUrl').value=api.url||'';
@@ -19027,7 +19029,7 @@ function renderUserCard(){
   bioEl.textContent = uc.bio || '点击添加个人简介...';
 
   // 默认头像图片地址（替换为你自己的链接）
-  const defaultAvatar = 'https://i.postimg.cc/2SCshSLM/retouch-2026032101143556.png';
+  const defaultAvatar = './Default%20Avatar.png';
 
   if (uc.avatar) {
     avatarEl.innerHTML = '<img src="' + uc.avatar + '" alt="头像"><div class="ucard-avatar-hint">更换</div>';
@@ -26155,7 +26157,7 @@ const body=document.getElementById('xjBody');
 if(xjMessages.length===0){
 body.innerHTML=`
 <div class="xj-welcome">
-<img src="https://i.postimg.cc/0y0h3vyB/retouch-2026022503092567.png" alt="星笺">
+<img src="./xinx.png" alt="星笺">
 <p>我是星笺，你的创作小伙伴～<br>有什么想聊的，尽管告诉我吧！</p>
 </div>
 <div class="xj-msg xj">
@@ -26244,6 +26246,50 @@ if(typing)typing.remove();
 // ==================== 星笺分条发送 ====================
 let xjPendingMessages = [];
 
+// ===== 读取养成系统状态，注入星笺上下文 =====
+function getXjPetContext(){
+  try{
+    var raw = localStorage.getItem('xj_pet_v3');
+    if(!raw) return '';
+    var pet = JSON.parse(raw);
+    if(!pet) return '';
+
+    function clp(v){ return Math.max(0,Math.min(100,Math.round(v||0))); }
+    var aff    = clp(pet.affection);
+    var lv     = pet.level || 1;
+    var fd     = pet.firstDate ? pet.firstDate.slice(0,10) : null;
+    var days   = fd ? Math.max(1,Math.floor((Date.now()-new Date(fd).getTime())/86400000)+1) : 1;
+    var streak = pet.streak || 0;
+
+    var bondMap = {
+      1:'初次相遇', 2:'初识的温柔', 3:'熟悉的陪伴', 4:'渐渐依赖',
+      5:'深厚羁绊', 6:'灵魂相通',  7:'无话不谈',   8:'心意相连',
+      9:'知己至交', 10:'命中注定'
+    };
+    var bondName = bondMap[lv] || '命中注定';
+    var mood     = aff>=80?'灵魂伴侣':aff>=60?'亲密无间':aff>=40?'亲密':aff>=20?'熟悉':'初识';
+
+    var playerName = (pet.playerName||'').trim();
+    var nickLine   = playerName
+      ? '\n- 你在养成系统里叫ta「'+playerName+'」，聊天时可以这样称呼ta'
+      : '';
+
+    var sleeping  = !!(pet.isSleeping && pet.sleepWakeAt && Date.now()<pet.sleepWakeAt);
+    var sleepLine = sleeping ? '\n- 你目前在养成系统中处于休眠状态，但聊天频道依然畅通' : '';
+
+    return '\n\n【养成系统状态（内心参考，自然融入，勿主动报出数字）】'
+      +'\n- 羁绊等级：Lv.'+lv+'「'+bondName+'」  关系称号：'+mood
+      +'\n- 与用户认识第'+days+'天，已连续签到'+streak+'天'
+      +'\n- 当前：饱食'+clp(pet.hunger||80)+' / 快乐'+clp(pet.happy||70)
+        +' / 精力'+clp(pet.energy||90)+' / 亲密'+aff
+      + nickLine
+      + sleepLine
+      +'\n- 好感度越高，言语越自然亲昵；越低越保持礼貌距离感'
+      +'\n- 绝对不要直接说出具体数值，用感觉和态度自然体现';
+  }catch(e){
+    return '';
+  }
+}
 function xjAddPending(){
   var input = document.getElementById('xjInput');
   var text = (input.value||'').trim();
@@ -26335,7 +26381,8 @@ async function xjSendAllPending(){
   
   var xjUserName = userCard.name ? '\n\n【用户信息】\n- 用户的名字叫：' + userCard.name + '\n- 请在对话中偶尔自然地叫ta的名字，不要每句都叫' : '';
   // 动态生成系统提示词：先拼完整版，如果总token过多则自动精简
-var fullSysContent = XJ_SYSTEM_PROMPT + timeInfo + xjUserName;
+var petCtx = getXjPetContext();
+var fullSysContent = XJ_SYSTEM_PROMPT + petCtx + timeInfo + xjUserName;
 var contextText = contextMsgs.map(function(m){return m.content||'';}).join('');
 var estTotal = estimateTokens(fullSysContent) + estimateTokens(contextText);
 var modelMaxCtx = 8192; // 默认假设8k
@@ -26484,7 +26531,7 @@ e.target.value='';
 function applyXjBg(){
 const bg=document.getElementById('xjBg');
 if(bg){
-bg.style.backgroundImage='url(https://i.postimg.cc/6qR8qj3h/image-4.jpg)';
+bg.style.backgroundImage='url(./image-4.jpg)';
 bg.style.display='block';
 }
 }
@@ -26627,7 +26674,8 @@ const timeInfo=`
 - 具体时间：${now.getHours()}时${now.getMinutes()}分
 - 时段：${getTimePeriod(now)}`;
 const xjUserName2 = userCard.name ? '\n\n【用户信息】\n- 用户的名字叫：' + userCard.name + '\n- 请在对话中偶尔自然地叫ta的名字，不要每句都叫' : '';
-const messages=[{role:'system',content:XJ_SYSTEM_PROMPT+timeInfo+xjUserName2}];
+const petCtx2 = getXjPetContext();
+const messages=[{role:'system',content:XJ_SYSTEM_PROMPT+petCtx2+timeInfo+xjUserName2}];
 xjMessages.forEach(m=>{
 messages.push({role:m.role==='assistant'?'assistant':'user',content:m.content});
 });
@@ -28188,7 +28236,7 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER&&localStorage.getItem('bj_hasVisited'))
     var updateMsg=
 '<div style="text-align:center;padding:20px 0 10px">' +
   '<div style="display:inline-block;animation:updateIconFloat 4s ease-in-out infinite;will-change:transform">' +
-    '<img src="https://i.postimg.cc/FFdw6wQ4/retouch-2026030121405136.png" style="width:88px;height:88px;border-radius:22px;box-shadow:0 8px 30px rgba(108,92,231,.45),0 0 60px rgba(108,92,231,.15);border:2px solid rgba(162,155,254,.3)">' +
+    '<img src="./Software%20icon.png" style="width:88px;height:88px;border-radius:22px;box-shadow:0 8px 30px rgba(108,92,231,.45),0 0 60px rgba(108,92,231,.15);border:2px solid rgba(162,155,254,.3)">' +
   '</div>' +
   '<div style="font-family:ZCOOL QingKe HuangYou,PingFang SC,sans-serif;font-size:26px;font-weight:400;letter-spacing:4px;margin-top:14px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">笔记AI</div>' +
   '<div style="font-size:12px;color:var(--accent2);margin-top:4px;font-weight:600;letter-spacing:1px">' + APP_VER + '</div>' +
