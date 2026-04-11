@@ -1626,9 +1626,11 @@ function doCheckin(){
   if(state.streak>=7) unlockAchievement('streak7');
 
   checkLevelUp();
+  checkNicknameUnlock();
   save();
   updateCheckinBanner();
   updateUI();
+  renderDiary();
   spawnParticles(10);
   showToast('📅 签到成功！连续'+state.streak+'天｜+'+bonus+'💫 +'+expBonus+'经验'+(fest?'  '+fest.icon:''));
   if(!fest) setSpeech('谢谢你每天都来看我！我好开心～💜');
@@ -1638,6 +1640,9 @@ function updateCheckinBanner(){
   const today = dateStr();
   const done  = state.lastCheckin === today;
   const fest  = getTodayFestival();
+  const cacheKey = (done?'1':'0')+'_'+(fest?fest.name:'')+'_'+(state.streak||0);
+  if(updateCheckinBanner._lastKey === cacheKey) return;
+  updateCheckinBanner._lastKey = cacheKey;
   const banner = document.getElementById('checkinBanner');
   const btn    = document.getElementById('checkinBtn');
   const title  = document.getElementById('checkinTitle');
@@ -1746,12 +1751,18 @@ setTxt('shopCoinsDisplay', state.coins);
 
   // 冷却
   const nowMs = Date.now();
+  const isSleepingNow = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
   Object.keys(CD_TIMES).forEach(k=>{
     const key  = 'cd'+k.charAt(0).toUpperCase()+k.slice(1);
     const btnId= 'btn'+k.charAt(0).toUpperCase()+k.slice(1);
     const cdEl = document.getElementById(key);
     const btn  = document.getElementById(btnId);
     if(!cdEl||!btn) return;
+    // 睡眠中不要动这些按钮的disabled状态，交给applySleepUI处理
+    if(btn.classList.contains('sleeping')) {
+      cdEl.textContent = '';
+      return;
+    }
     const cdEnd = state.cooldowns[k]||0;
     if(cdEnd > nowMs){
       const sec = Math.ceil((cdEnd-nowMs)/1000);
@@ -1770,8 +1781,26 @@ setTxt('shopCoinsDisplay', state.coins);
   const btnFeed = document.getElementById('btnFeed');
   const btnRest = document.getElementById('btnRest');
   const btnPlay = document.getElementById('btnPlay');
-  if(btnFeed && !btnFeed.classList.contains('disabled') && !btnFeed.classList.contains('sleeping')){
-    btnFeed.classList.toggle('highlight', clamp(state.hunger)<35);
+  if(btnFeed){
+    if(btnFeed.classList.contains('disabled') || btnFeed.classList.contains('sleeping')){
+      btnFeed.classList.remove('highlight');
+    } else {
+      btnFeed.classList.toggle('highlight', clamp(state.hunger)<35);
+    }
+  }
+  if(btnRest){
+    if(btnRest.classList.contains('disabled') || btnRest.classList.contains('sleeping')){
+      btnRest.classList.remove('highlight');
+    } else {
+      btnRest.classList.toggle('highlight', clamp(state.energy)<35);
+    }
+  }
+  if(btnPlay){
+    if(btnPlay.classList.contains('disabled') || btnPlay.classList.contains('sleeping')){
+      btnPlay.classList.remove('highlight');
+    } else {
+      btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
+    }
   }
   if(btnRest && !btnRest.classList.contains('disabled') && !btnRest.classList.contains('sleeping')){
     btnRest.classList.toggle('highlight', clamp(state.energy)<35);
@@ -1780,6 +1809,8 @@ setTxt('shopCoinsDisplay', state.coins);
     btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
   }
   updateCheckinBanner();
+if((state.coins||0)>=50 && !state.achievements['coins_50'])  unlockAchievement('coins_50');
+  if((state.coins||0)>=200 && !state.achievements['coins_200']) unlockAchievement('coins_200');
   updateWarnDots();
   updateFullBadges();
 }
@@ -1945,8 +1976,9 @@ function doAction(type){
   state.energy    = clamp(state.energy    + (fx.energy   ||0));
   // 当前状态全满时（礼物除外）不增加好感度
   if(wasAllFull && type !== 'gift'){
-    // 好感度不变，给提示
-    showToast('💫 星笺状态已满格，好感度暂不提升～');
+    // 满格时好感度只增加一半，而不是完全不增加
+    state.affection = clamp(state.affection + Math.ceil((fx.affection||0)/2));
+    showToast('💫 星笺状态满格，好感度提升减半～');
   } else {
     state.affection = clamp(state.affection + (fx.affection||0));
   }
@@ -1974,6 +2006,7 @@ function doAction(type){
   }
   save();
   updateUI();
+  renderDiary();
   if(isSleepingNow && type==='gift'){
     showToast('🎁 悄悄把礼物放在枕边，不打扰她睡觉～');
   } else {
@@ -1983,6 +2016,10 @@ function doAction(type){
 
 // ===== 点击角色 =====
 function tapCharacter(e){
+  if(_longPressed){
+    _longPressed = false;
+    return;
+  }
   if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)){
     showToast('😴 星笺正在休息中，别打扰她睡觉～');
     return;
@@ -2000,6 +2037,7 @@ function tapCharacter(e){
 
   state.affection = Math.min(100, state.affection+1);
   state.coins     = (state.coins||0)+1;
+  checkNicknameUnlock();
   save();
   updateUI();
 }
@@ -2040,8 +2078,10 @@ const WAKE_SPEECHES = [
 function randFrom(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
 
 function checkSleepTrigger(){
-  // 已在睡眠中则不重复触发
   if(state.isSleeping) return;
+
+  // 距离上次醒来不到10分钟，不触发
+  if(state._lastWakeTime && Date.now() - state._lastWakeTime < 600000) return;
 
   const h = clamp(state.hunger), hp = clamp(state.happy),
         e = clamp(state.energy), a  = clamp(state.affection);
@@ -2049,17 +2089,16 @@ function checkSleepTrigger(){
 
   if(!allFull) return;
 
-  // 大概率触发（70%）
-  if(Math.random() > 0.30) {
+  if(Math.random() > 0.45) {
     triggerSleep();
   }
 }
 
 function triggerSleep(){
-  // 随机3~5小时（毫秒）
   const hours = 3 + Math.random()*2;
   const wakeTime = Date.now() + hours*3600*1000;
 
+  _lastSleepState   = null;
   state.isSleeping  = true;
   state.sleepWakeAt = wakeTime;
 
@@ -2073,6 +2112,7 @@ function triggerSleep(){
   showToast('😴 星笺去睡觉了，'+Math.round(hours)+'小时后唤醒～');
 }
 
+let _lastSleepState = null;
 function applySleepUI(){
   const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
 
@@ -2080,39 +2120,48 @@ function applySleepUI(){
   const sleepSign = document.getElementById('sleepSign');
   const clickHint = document.getElementById('clickHint');
   const sleepTimerBadge = document.getElementById('sleepTimerBadge');
+  const banner = document.getElementById('sleepBanner');
 
-  if(avatar && sleepSign){
-    if(sleeping){
-      avatar.style.display    = 'none';
-      sleepSign.style.display = 'flex';
-      if(clickHint) clickHint.style.display = 'none';
-      if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
-      const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
-      const textEl = sleepSign.querySelector('.sleep-sign-text');
-      if(textEl) textEl.innerHTML = msgs.join('<br>');
-    } else {
-      avatar.style.display    = 'block';
-      sleepSign.style.display = 'none';
-      if(clickHint) clickHint.style.display = 'block';
-      if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
+  // 只在状态切换时更新 DOM 结构，避免每秒重复操作导致闪烁
+  if(_lastSleepState !== sleeping){
+    _lastSleepState = sleeping;
+
+    if(avatar && sleepSign){
+      if(sleeping){
+        avatar.style.display    = 'none';
+        sleepSign.style.display = 'flex';
+        if(clickHint) clickHint.style.display = 'none';
+        if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
+        const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
+        const textEl = sleepSign.querySelector('.sleep-sign-text');
+        if(textEl) textEl.innerHTML = msgs.join('<br>');
+      } else {
+        avatar.style.display    = 'block';
+        sleepSign.style.display = 'none';
+        if(clickHint) clickHint.style.display = 'block';
+        if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
+      }
     }
+
+    if(banner){
+      if(sleeping) banner.classList.add('show');
+      else         banner.classList.remove('show');
+    }
+
+    const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
+    sleepLockBtns.forEach(id=>{
+      const btn = document.getElementById(id);
+      if(!btn) return;
+      if(sleeping){
+        btn.classList.add('sleeping');
+        btn.classList.remove('disabled','highlight');
+      } else {
+        btn.classList.remove('sleeping');
+      }
+    });
   }
 
-  const banner = document.getElementById('sleepBanner');
-  if(banner) banner.classList.toggle('show', sleeping);
-
-  const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
-  sleepLockBtns.forEach(id=>{
-    const btn = document.getElementById(id);
-    if(!btn) return;
-    if(sleeping){
-      btn.classList.add('sleeping');
-      btn.classList.remove('disabled');
-    } else {
-      btn.classList.remove('sleeping');
-    }
-  });
-
+  // 计时器部分每秒都要更新
   if(sleeping){
     const remain = Math.max(0, state.sleepWakeAt - Date.now());
     const h = Math.floor(remain/3600000);
@@ -2134,9 +2183,10 @@ function checkWakeUp(){
   if(!state.isSleeping) return;
   if(Date.now() >= (state.sleepWakeAt||0)){
     state.isSleeping  = false;
+    state._lastWakeTime = Date.now();
     state.sleepWakeAt = null;
     state.sleepMsg    = null;
-    // 睡醒后恢复一定状态
+    _lastSleepState   = null; // 强制让applySleepUI重新渲染
     state.energy    = clamp(state.energy    + 20);
     state.happy     = clamp(state.happy     + 10);
     state.hunger    = clamp(state.hunger    - 15);
@@ -2194,6 +2244,7 @@ function useItem(type){
   if(f.coins)     state.coins    += f.coins;
 
   checkLevelUp();
+  checkNicknameUnlock();
   checkAchievements('item');
   const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
   if(!sleeping){
@@ -2533,7 +2584,7 @@ function popBubble(el, word, idx){
     if((state.stats.bubbleRounds||0)>=3) unlockAchievement('pop_3times');
     showToast('🫧 今日悄悄话全部说完啦！明天6点更新～');
     save();
-    setTimeout(renderBubbleDOM, 1800);
+    setTimeout(renderBubbleDOM, 600);
   }
 }
 
@@ -2678,6 +2729,7 @@ function init(){
   // 页面重新可见时（从后台切回来）同步状态
   document.addEventListener('visibilitychange', ()=>{
     if(document.visibilityState === 'visible'){
+      _lastSleepState = null;
       applyDecay();
       checkWakeUp();
       applySleepUI();
@@ -2691,6 +2743,10 @@ function init(){
   // 定时器
   setInterval(()=>{
     const today = dateStr();
+    if(state.lastCheckin === today) return;
+  // 立即禁用按钮，防止快速双击重复签到
+  const banner = document.getElementById('checkinBanner');
+  if(banner) banner.style.pointerEvents = 'none';
     if(state._today !== today){
       state._today = today;
       state.todayActions = 0;
@@ -2698,10 +2754,11 @@ function init(){
       save();
     }
     checkWakeUp();
-    applySleepUI();
-    updateUI();
+updateUI();
+applySleepUI();
   }, 1000);
   setInterval(()=>{
+    if(document.hidden) return;
   if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)) return;
   const h=clamp(state.hunger), hp=clamp(state.happy), e=clamp(state.energy);
   if(h<15){
@@ -2722,7 +2779,7 @@ function init(){
   loadCollapseState();
 }
 function goBack(){
-  if(history.length > 1 && document.referrer){
+  if(history.length > 1){
     history.back();
   } else {
     window.location.href = './index.html';
@@ -2753,16 +2810,6 @@ function startLongPress(e){
 }
 function cancelLongPress(){
   clearTimeout(_longPressTimer);
-  if(_longPressed){
-    _longPressed = false;
-    // 阻止后续的onclick
-    const wrap = document.querySelector('.char-avatar-wrap');
-    if(wrap){
-      const orig = wrap.onclick;
-      wrap.onclick = null;
-      setTimeout(()=>{ wrap.onclick = orig; }, 100);
-    }
-  }
 }
 // ===== 同步笔记AI换装皮肤 =====
 const XJ_SKINS_PET = {
