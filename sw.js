@@ -1,4 +1,4 @@
-const CACHE_NAME = 'bijiai-v15';
+const CACHE_NAME = 'bijiai-v16';
 
 self.addEventListener('install', function(e) {
   self.skipWaiting();

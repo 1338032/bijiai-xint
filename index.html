@@ -3071,6 +3071,160 @@ body.theme-light .xj-msg.xj{background:linear-gradient(135deg,rgba(108,92,231,.8
 body.theme-light .xj-msg.user{background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));}
 body.theme-light .xj-hdr{background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(162,155,254,.05));}
 body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,245,248,.9));}
+/* ===== 星笺气泡换肤 - 所有皮肤统一半透明磨砂基础 ===== */
+.xj-modal .xj-msg{
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 原版星笺：柔紫色磨砂，圆润气泡 ---- */
+.xj-modal.skin-default .xj-msg.xj{
+  background:rgba(108,92,231,0.35);
+  border:1px solid rgba(162,155,254,0.3);
+  box-shadow:0 4px 16px rgba(108,92,231,0.2);
+  border-radius:18px;border-bottom-left-radius:6px;
+  color:#fff;
+}
+.xj-modal.skin-default .xj-msg.user{
+  background:rgba(162,155,254,0.3);
+  border:1px solid rgba(200,195,255,0.3);
+  box-shadow:0 4px 16px rgba(108,92,231,0.15);
+  border-radius:18px;border-bottom-right-radius:6px;
+  color:#fff;
+}
+.xj-modal.skin-default .xj-typing{
+  background:rgba(108,92,231,0.35);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 赛博朋克：金橙色磨砂，尖锐切角 ---- */
+.xj-modal.skin-gold .xj-msg.xj{
+  background:rgba(180,120,20,0.35);
+  border:1px solid rgba(255,200,80,0.4);
+  box-shadow:0 0 12px rgba(255,180,0,0.3),0 4px 16px rgba(0,0,0,0.3);
+  border-radius:4px 18px 18px 4px;
+  color:#ffe;
+}
+.xj-modal.skin-gold .xj-msg.user{
+  background:rgba(100,80,10,0.4);
+  border:1px solid rgba(255,200,80,0.3);
+  box-shadow:0 0 12px rgba(255,180,0,0.2),0 4px 16px rgba(0,0,0,0.3);
+  border-radius:18px 4px 4px 18px;
+  color:#ffe;
+}
+.xj-modal.skin-gold .xj-msg.xj::before{
+  content:'⚡';position:absolute;top:-10px;left:8px;font-size:12px;opacity:0.8;
+  animation:goldSpark 2s infinite;
+}
+@keyframes goldSpark{0%,100%{opacity:0.8;transform:scale(1);}50%{opacity:1;transform:scale(1.2);}}
+.xj-modal.skin-gold .xj-msg{position:relative;}
+.xj-modal.skin-gold .xj-typing{
+  background:rgba(180,120,20,0.35);border:1px solid rgba(255,200,80,0.4);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 绿野仙踪：翠绿磨砂，叶形圆角 + 🍃 装饰 ---- */
+.xj-modal.skin-green .xj-msg.xj{
+  background:rgba(30,120,60,0.38);
+  border:1px solid rgba(80,200,120,0.35);
+  box-shadow:0 4px 16px rgba(39,174,96,0.25);
+  border-radius:18px 18px 18px 4px;
+  color:#e8ffe8;
+}
+.xj-modal.skin-green .xj-msg.user{
+  background:rgba(20,80,40,0.4);
+  border:1px solid rgba(80,200,120,0.3);
+  box-shadow:0 4px 16px rgba(39,174,96,0.2);
+  border-radius:18px 18px 4px 18px;
+  color:#e8ffe8;
+}
+.xj-modal.skin-green .xj-msg.xj::after{
+  content:'🍃';position:absolute;bottom:-8px;left:10px;font-size:11px;
+  animation:leafSway 3s ease-in-out infinite;
+}
+@keyframes leafSway{0%,100%{transform:rotate(-10deg);}50%{transform:rotate(10deg);}}
+.xj-modal.skin-green .xj-msg{position:relative;}
+.xj-modal.skin-green .xj-typing{
+  background:rgba(30,120,60,0.38);border:1px solid rgba(80,200,120,0.35);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 白雪天使：冰蓝白磨砂，椭圆柔边 + ❄️ 装饰 ---- */
+.xj-modal.skin-snow .xj-msg.xj{
+  background:rgba(180,220,255,0.25);
+  border:1px solid rgba(200,235,255,0.5);
+  box-shadow:0 4px 20px rgba(100,180,255,0.2),0 0 8px rgba(255,255,255,0.15);
+  border-radius:22px;border-bottom-left-radius:8px;
+  color:#e8f4ff;
+}
+.xj-modal.skin-snow .xj-msg.user{
+  background:rgba(150,200,255,0.22);
+  border:1px solid rgba(200,230,255,0.4);
+  box-shadow:0 4px 20px rgba(100,180,255,0.15);
+  border-radius:22px;border-bottom-right-radius:8px;
+  color:#e8f4ff;
+}
+.xj-modal.skin-snow .xj-msg.xj::before{
+  content:'❄️';position:absolute;top:-10px;left:6px;font-size:11px;
+  animation:snowSpin 4s linear infinite;
+}
+@keyframes snowSpin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
+.xj-modal.skin-snow .xj-msg{position:relative;}
+.xj-modal.skin-snow .xj-typing{
+  background:rgba(180,220,255,0.25);border:1px solid rgba(200,235,255,0.5);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 海贝书虫：珊瑚粉青磨砂，波浪底边 + 🐚 装饰 ---- */
+.xj-modal.skin-sea .xj-msg.xj{
+  background:rgba(0,150,160,0.32);
+  border:1px solid rgba(80,220,220,0.35);
+  box-shadow:0 4px 16px rgba(0,160,180,0.25);
+  border-radius:20px 20px 20px 4px;
+  color:#e0ffff;
+}
+.xj-modal.skin-sea .xj-msg.user{
+  background:rgba(180,80,80,0.3);
+  border:1px solid rgba(255,160,140,0.35);
+  box-shadow:0 4px 16px rgba(200,100,80,0.2);
+  border-radius:20px 20px 4px 20px;
+  color:#fff0ee;
+}
+.xj-modal.skin-sea .xj-msg.xj::after{
+  content:'🐚';position:absolute;bottom:-9px;left:8px;font-size:12px;
+  animation:seaBob 2.5s ease-in-out infinite;
+}
+@keyframes seaBob{0%,100%{transform:translateY(0);}50%{transform:translateY(-3px);}}
+.xj-modal.skin-sea .xj-msg{position:relative;}
+.xj-modal.skin-sea .xj-typing{
+  background:rgba(0,150,160,0.32);border:1px solid rgba(80,220,220,0.35);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+
+/* ---- 樱花浪漫：粉白磨砂，花瓣圆角 + 🌸 飘落 ---- */
+.xj-modal.skin-cherry .xj-msg.xj{
+  background:rgba(220,100,130,0.3);
+  border:1px solid rgba(255,180,200,0.4);
+  box-shadow:0 4px 16px rgba(220,100,130,0.25);
+  border-radius:20px 20px 20px 6px;
+  color:#fff0f5;
+}
+.xj-modal.skin-cherry .xj-msg.user{
+  background:rgba(255,160,180,0.25);
+  border:1px solid rgba(255,200,215,0.4);
+  box-shadow:0 4px 16px rgba(220,100,130,0.2);
+  border-radius:20px 20px 6px 20px;
+  color:#fff0f5;
+}
+.xj-modal.skin-cherry .xj-msg.xj::before{
+  content:'🌸';position:absolute;top:-10px;left:6px;font-size:11px;
+  animation:cherryFall 3s ease-in-out infinite;
+}
+@keyframes cherryFall{0%{transform:translateY(0) rotate(0deg);opacity:1;}100%{transform:translateY(8px) rotate(20deg);opacity:0.5;}}
+.xj-modal.skin-cherry .xj-msg{position:relative;}
+.xj-modal.skin-cherry .xj-typing{
+  background:rgba(220,100,130,0.3);border:1px solid rgba(255,180,200,0.4);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
 /* 甘特图时间线 */
 .tl-gantt-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;padding:10px 0;}
 .tl-gantt-table{display:table;border-collapse:collapse;min-width:100%;}
@@ -7945,6 +8099,12 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:2px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="xjMsgSplitThumb"></div>
 </div>
 </div>
+</div>
+<div style="padding:10px 0 4px">
+<button onclick="openXjSkinModal()" style="width:100%;padding:11px;border-radius:12px;border:1px solid var(--border);background:linear-gradient(135deg,var(--card2),rgba(108,92,231,.08));color:var(--text);font-size:13px;font-weight:600;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:8px;transition:all .2s">
+<i class="fas fa-palette" style="color:var(--accent2)"></i> 星笺换装
+<span style="font-size:10px;color:var(--text2);font-weight:400">更换星笺形象皮肤</span>
+</button>
 </div>
 </div>
 </div>
@@ -13717,6 +13877,14 @@ function saveRdEdit(){
     curRd.content=newText;
   }
   curRd.updatedAt=new Date().toISOString();
+  // 自动同步标题为第一章第一句话
+  if(curRd.type==='long' && curCh===0 && newText.trim()){
+    var _firstLine=(newText.trim().split('\n').find(function(l){return l.trim().length>0;})||'');
+    _firstLine=_firstLine.replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim();
+    if(_firstLine && _firstLine.length>=2 && _firstLine.length<=50){
+      curRd.title=_firstLine;
+    }
+  }
   syncArticle(curRd);
   _rdEditDirty=false;
   document.getElementById('rdEditStatus').textContent='已保存 ✓';
@@ -14650,6 +14818,34 @@ function _bindPopMenuClose(popId,btn){
     document.addEventListener('click',handler,true);
   },100);
 }
+function renameBook(id){
+  var book=cols.books.find(function(b){return b.id===id;});
+  if(!book)return;
+  showInp('更名','输入新书名',function(name){
+    name=name.trim();
+    if(!name){showToast('标题不能为空');return;}
+    book.title=name;
+    if(book.chapters&&book.chapters.length>0){
+      var _lines=book.chapters[0].split('\n');
+      for(var _i=0;_i<_lines.length;_i++){if(_lines[_i].trim()){_lines[_i]=name;break;}}
+      book.chapters[0]=_lines.join('\n');
+    }
+    var wsArt=ws.find(function(a){return a.id===id;});
+    if(wsArt){
+      wsArt.title=name;
+      if(wsArt.chapters&&wsArt.chapters.length>0){
+        var _l2=wsArt.chapters[0].split('\n');
+        for(var _j=0;_j<_l2.length;_j++){if(_l2[_j].trim()){_l2[_j]=name;break;}}
+        wsArt.chapters[0]=_l2.join('\n');
+      }
+      sv(K.ws,ws);
+    }
+    sv(K.cols,cols);
+    renderCollections();
+    showToast('已更名 ✅');
+  });
+  setTimeout(function(){var f=document.getElementById('inpField');if(f)f.value=book.title||'';},120);
+}
 function toggleBookMenu(id,btn){
   var old=document.getElementById('bookMenuPop');
   if(old){old.remove();btn._menuOpen=false;return;}
@@ -14657,8 +14853,9 @@ function toggleBookMenu(id,btn){
   btn._menuOpen=true;
   var pop=document.createElement('div');
   pop.id='bookMenuPop';
-  pop.style.cssText='position:fixed;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.35);min-width:140px;padding:6px 0;animation:fadeIn .15s ease';
+  pop.style.cssText='position:fixed;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35);width:216px;padding:8px;animation:fadeIn .15s ease;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px';
   var items=[
+    {icon:'fa-pen',text:'更名',fn:function(){renameBook(id);}},
     {icon:'fa-palette',text:'封面',fn:function(){openCoverOptions(id);}},
     {icon:'fa-sync-alt',text:'状态',fn:function(){cycleStatus(id);}},
     {icon:'fa-copy',text:'复制',fn:function(){copyBook(id);}},
@@ -14667,8 +14864,8 @@ function toggleBookMenu(id,btn){
   ];
   items.forEach(function(it){
     var d=document.createElement('div');
-    d.style.cssText='padding:12px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:'+(it.danger?'var(--danger)':'var(--text)');
-    d.innerHTML='<i class="fas '+it.icon+'" style="width:16px;text-align:center;'+(it.danger?'color:var(--danger)':'color:var(--text2)')+'"></i>'+it.text;
+    d.style.cssText='padding:11px 4px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;color:'+(it.danger?'var(--danger)':'var(--text2)')+';border-radius:10px;text-align:center;transition:background .15s;';
+    d.innerHTML='<i class="fas '+it.icon+'" style="font-size:17px;'+(it.danger?'color:var(--danger)':'color:var(--text)')+'"></i><span style="font-size:11px;color:'+(it.danger?'var(--danger)':'var(--text2)')+'">'+it.text+'</span>';
     d.addEventListener('click',function(e){
       e.preventDefault();e.stopPropagation();
       _closePopMenu('bookMenuPop',btn);
@@ -15804,7 +16001,10 @@ xjBubbleEnabled: xjBubbleEnabled,
         genTemplates: genTemplates,rtInterviews: rtInterviews,
         rtPlays: rtPlays,
         rtPlayPresets: rtPlayPresets,
-        rtBgImg: rtBgImg
+        rtBgImg: rtBgImg,
+xjSkin: xjSkin,
+xjSkinUnlocked: xjSkinUnlocked,
+xjUsedCodes: ld('bj_xjUsedCodes',[])
     };
 
     let jsonStr;
@@ -15994,6 +16194,9 @@ if(data.rtInterviews){rtInterviews=data.rtInterviews;sv('bj_rtInterviews',rtInte
 if(data.rtPlays){rtPlays=data.rtPlays;sv('bj_rtPlays',rtPlays);}
 if(data.rtPlayPresets){rtPlayPresets=data.rtPlayPresets;sv('bj_rtPlayPresets',rtPlayPresets);}
 if(data.rtBgImg){rtBgImg=data.rtBgImg;sv('bj_rtBgImg',rtBgImg);}
+if(data.xjSkin){xjSkin=data.xjSkin;sv('bj_xjSkin',xjSkin);}
+if(data.xjSkinUnlocked){xjSkinUnlocked=data.xjSkinUnlocked;sv('bj_xjSkinUnlocked',xjSkinUnlocked);}
+if(data.xjUsedCodes){sv('bj_xjUsedCodes',data.xjUsedCodes);}
 if(data.globalWorld){globalWorld=data.globalWorld;sv('bj_globalWorld',globalWorld);}
 if(data.globalRule){globalRule=data.globalRule;sv('bj_globalRule',globalRule);}
 if(data.globalBanWords){globalBanWords=data.globalBanWords;sv('bj_globalBanWords',globalBanWords);}
@@ -16273,18 +16476,21 @@ function toggleCrCardMenu(id,btn){
   btn._menuOpen=true;
   var pop=document.createElement('div');
   pop.id='crCardMenuPop';
-  pop.style.cssText='position:fixed;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:14px;box-shadow:0 8px 30px rgba(0,0,0,.35);min-width:140px;padding:6px 0;animation:fadeIn .15s ease';
-var items=[
+  pop.style.cssText='position:fixed;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35);width:216px;padding:8px;animation:fadeIn .15s ease;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px';
+  var _work=crWorks.find(function(w){return w.id===id;});
+  var _isPinned=_work&&_work.pinned;
+  var items=[
     {icon:'fa-pen',text:'更名',fn:function(){renameCrWork(id);}},
     {icon:'fa-copy',text:'复制',fn:function(){copyCrWork(id);}},
     {icon:'fa-file-export',text:'导出',fn:function(){exportSingleCrWork(id);}},
-    {icon:'fa-share-alt',text:'分享到资源',fn:function(){shareCrToRes(id);}},
+    {icon:'fa-share-alt',text:'分享',fn:function(){shareCrToRes(id);}},
+    {icon:'fa-thumbtack',text:_isPinned?'取消置顶':'置顶',fn:function(){toggleCrPin(id);}},
     {icon:'fa-trash-alt',text:'删除',fn:function(){deleteCrWork(id);},danger:true}
   ];
   items.forEach(function(it){
     var d=document.createElement('div');
-    d.style.cssText='padding:12px 16px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:8px;color:'+(it.danger?'var(--danger)':'var(--text)');
-    d.innerHTML='<i class="fas '+it.icon+'" style="width:16px;text-align:center;'+(it.danger?'color:var(--danger)':'color:var(--text2)')+'"></i>'+it.text;
+    d.style.cssText='padding:11px 4px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;color:'+(it.danger?'var(--danger)':'var(--text2)')+';border-radius:10px;text-align:center;transition:background .15s;';
+    d.innerHTML='<i class="fas '+it.icon+'" style="font-size:17px;'+(it.danger?'color:var(--danger)':'color:var(--text)')+'"></i><span style="font-size:11px;color:'+(it.danger?'var(--danger)':'var(--text2)')+'">'+it.text+'</span>';
     d.addEventListener('click',function(e){
       e.preventDefault();e.stopPropagation();
       _closePopMenu('crCardMenuPop',btn);
@@ -25381,6 +25587,96 @@ speechSynthesis.onvoiceschanged=initTtsVoices;
 }catch(e){
 console.warn('语音合成API不可用:',e);
 }
+// ===== 星笺皮肤功能函数 =====
+function getXjSkinImg(){
+  return (XJ_SKINS[xjSkin]||XJ_SKINS['default']).img;
+}
+function applyXjSkin(){
+  var img=getXjSkinImg();
+  document.querySelectorAll('img[alt="星笺"]').forEach(function(el){
+    if(el.closest('#helpModal')||el.closest('#updateLog'))return;
+    el.src=img;
+  });
+}
+function openXjSkinModal(){
+  checkXjSkinAchievements();
+  var chatCount=(xjMessages||[]).filter(function(m){return m.role==='user';}).length;
+  var hasLong=ws.some(function(a){return a.type==='long';});
+  var hasShort=ws.some(function(a){return a.type==='short';});
+  var html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
+  html+='<div style="font-size:13px;font-weight:700;color:var(--text)">选择一个形象</div>';
+  html+='<button onclick="restoreDefaultXjSkin()" style="padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer">↩ 恢复原皮</button>';
+  html+='</div>';
+  html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
+  ['default','gold','green','snow','sea','cherry'].forEach(function(key){
+    var s=XJ_SKINS[key];
+    var unlocked=xjSkinUnlocked[key]||!s.locked;
+    var isCurrent=xjSkin===key;
+    html+='<div onclick="'+(unlocked?'selectXjSkin(\''+key+'\')':key==='green'?'redeemXjSkinCode()':'showXjSkinHint(\''+key+'\')')+'" style="border:2px solid '+(isCurrent?'var(--accent)':'var(--border)')+';background:'+(isCurrent?'rgba(108,92,231,.1)':'var(--card2)')+';border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;position:relative">';
+    if(!unlocked)html+='<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);border-radius:6px;padding:2px 6px;font-size:9px;color:#ffd700"><i class="fas fa-lock"></i></div>';
+    if(isCurrent)html+='<div style="position:absolute;top:6px;left:6px;background:var(--accent);border-radius:6px;padding:2px 5px;font-size:9px;color:#fff">使用中</div>';
+    html+='<img src="'+s.img+'" style="width:60px;height:60px;object-fit:contain;border-radius:50%;'+(unlocked?'':'filter:grayscale(1) opacity(.35)')+';margin-bottom:7px"><br>';
+    html+='<span style="font-size:12px;font-weight:600;color:'+(unlocked?'var(--text)':'var(--text2)')+'">'+s.name+'</span>';
+    html+='<div style="font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4">'+(unlocked?s.desc:s.lockDesc)+'</div>';
+    if(!unlocked&&key==='snow'){var pct=Math.min(100,Math.round(chatCount/50*100));html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent2)"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+chatCount+'/50次</div>';}
+if(!unlocked&&key==='sea')html+='<div style="font-size:9px;color:var(--text2);margin-top:4px">'+(hasLong?'✅':'⬜')+'长篇&nbsp;'+(hasShort?'✅':'⬜')+'短篇</div>';
+if(!unlocked&&key==='cherry'){var streakNow=calcLoginStreak();var cherryPct=Math.min(100,Math.round(streakNow/7*100));html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+cherryPct+'%;background:#f1948a"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+streakNow+'/7天</div>';}
+html+='</div>';
+  });
+  html+='</div>';
+  showDlg('🎨 星笺换装',html,function(){},false,true);
+  document.getElementById('dlgOkBtn').style.display='none';
+  setTimeout(function(){var p=document.getElementById('dlgMsg');if(p){p.style.maxHeight='72vh';p.style.overflowY='auto';}},50);
+}
+function selectXjSkin(key){
+  if(!(xjSkinUnlocked[key]||!XJ_SKINS[key].locked)){showToast('皮肤未解锁');return;}
+  xjSkin=key;sv('bj_xjSkin',xjSkin);applyXjSkin();applyXjBg();applyXjBubble();closeDlg();
+  showToast('✨ 已切换为「'+(XJ_SKINS[key].name)+'」');
+}
+function restoreDefaultXjSkin(){
+  xjSkin='default';sv('bj_xjSkin',xjSkin);applyXjSkin();applyXjBg();applyXjBubble();closeDlg();
+  showToast('已恢复原皮 ✅');
+}
+function showXjSkinHint(key){
+  var s=XJ_SKINS[key];if(!s)return;
+  showToast('🔒 '+s.name+'：'+s.lockDesc,3000);
+}
+function redeemXjSkinCode(){
+  closeDlg();
+  setTimeout(function(){
+    showInp('兑换码','输入10位兑换码（字母或数字）',function(code){
+      code=(code||'').trim().toUpperCase();
+      if(!code||code.length!==10){showToast('兑换码应为10位',2500);return;}
+      if(XJ_REDEEM_CODES.indexOf(code)===-1){showToast('兑换码无效，请检查是否正确',2500);return;}
+      var usedCodes=ld('bj_xjUsedCodes',[]);
+      if(usedCodes.indexOf(code)>-1){showToast('此兑换码已被使用过',2500);return;}
+      usedCodes.push(code);sv('bj_xjUsedCodes',usedCodes);
+      xjSkinUnlocked['green']=true;sv('bj_xjSkinUnlocked',xjSkinUnlocked);
+      showToast('🌿 兑换成功！「绿野仙踪」皮肤已解锁！',3500);
+      setTimeout(openXjSkinModal,400);
+    });
+  },200);
+}
+function checkXjSkinAchievements(){
+  var changed=false;
+  var chatCount=(xjMessages||[]).filter(function(m){return m.role==='user';}).length;
+  if(chatCount>=50&&!xjSkinUnlocked['snow']){
+    xjSkinUnlocked['snow']=true;changed=true;
+    setTimeout(function(){showToast('❄️ 成就解锁！「白雪天使」皮肤已获得！',3500);},200);
+}
+var hasLong=ws.some(function(a){return a.type==='long';});
+var hasShort=ws.some(function(a){return a.type==='short';});
+if(hasLong&&hasShort&&!xjSkinUnlocked['sea']){
+    xjSkinUnlocked['sea']=true;changed=true;
+    setTimeout(function(){showToast('🐚 成就解锁！「海贝书虫」皮肤已获得！',3500);},200);
+}
+var streakDays=calcLoginStreak();
+if(streakDays>=7&&!xjSkinUnlocked['cherry']){
+    xjSkinUnlocked['cherry']=true;changed=true;
+    setTimeout(function(){showToast('🌸 成就解锁！「樱花浪漫」皮肤已获得！',3500);},200);
+}
+  if(changed)sv('bj_xjSkinUnlocked',xjSkinUnlocked);
+}
 // ==================== 星笺全局浮动精灵 ====================
 let _xjGBubbleEl=null;
 let _xjGlobalTimer=null;
@@ -25581,6 +25877,28 @@ function xjRandomBubble(){
 }
 // ==================== 星笺聊天 ====================
 let xjBgImg='';
+// ===== 星笺换装系统 =====
+// ===== 星笺聊天气泡换肤 =====
+function applyXjBubble(){
+  var modal=document.querySelector('.xj-modal');
+  if(!modal)return;
+  // 先清除所有气泡皮肤class
+  ['skin-default','skin-gold','skin-green','skin-snow','skin-sea','skin-cherry'].forEach(function(c){
+    modal.classList.remove(c);
+  });
+  modal.classList.add('skin-'+(xjSkin||'default'));
+}
+var XJ_SKINS={
+  default:{name:'原版星笺',img:'./xinx.png',locked:false,desc:'最初的温柔模样',bg:'./image-4.jpg'},
+  gold:   {name:'赛博朋克',img:'./gold.png', locked:false,desc:'神秘的魔法书精灵',bg:'./Background-gold.jpg'},
+  green:  {name:'绿野仙踪',img:'./green.png',locked:true, desc:'翠绿森林的小精灵',lockDesc:'使用兑换码解锁',bg:'./Background-Green.jpg'},
+  snow:   {name:'白雪天使',img:'./Snowflake.png',locked:true,desc:'冰雪世界的小书仙',lockDesc:'与星笺聊天达50次解锁',bg:'./Background-Snow.jpg'},
+  sea:    {name:'海贝书虫',img:'./sea.png',  locked:true, desc:'深海贝壳里的故事精灵',lockDesc:'生成长篇+短篇各1篇解锁',bg:'./Background-sea.jpg'},
+  cherry: {name:'樱花浪漫',img:'./Cherry.png',locked:true, desc:'樱花树下的浪漫精灵',lockDesc:'连续登入笔记AI 7天解锁',bg:'./Background-Cherry.jpg'}
+};
+var XJ_REDEEM_CODES=['XJGREEN001','BIJA1GREEN','XJVIP2024A','GREENFIELD','GREENXJ01A','BIJAGREEN1','XINJIAN001','OLDPLAYER1','CONTRIB001','HEARTXJ001'];
+let xjSkin=ld('bj_xjSkin','default');
+let xjSkinUnlocked=ld('bj_xjSkinUnlocked',{default:true,gold:true});
 let xjMessages=ld('bj_xjMessages',[]);
 const XJ_MAX_CONTEXT=30;
 let xjContextLen=ld('bj_xjContextLen',30); // 星笺上下文条数（用户可设置）
@@ -26531,8 +26849,15 @@ e.target.value='';
 function applyXjBg(){
 const bg=document.getElementById('xjBg');
 if(bg){
-bg.style.backgroundImage='url(./image-4.jpg)';
+var skinBg=(XJ_SKINS[xjSkin]||XJ_SKINS['default']).bg||'';
+var finalBg=skinBg||xjBgImg;
+if(finalBg){
+bg.style.backgroundImage='url('+finalBg+')';
 bg.style.display='block';
+}else{
+bg.style.backgroundImage='none';
+bg.style.display='none';
+}
 }
 }
 // 消息菜单相关
@@ -27482,6 +27807,38 @@ function closeCelebrate(){
 document.getElementById('goalCelebrate').classList.remove('show');
 if(ringAudio){ringAudio.pause();ringAudio=null;}
 }
+// 记录今日登录
+function recordTodayLogin(){
+  var today=new Date();
+  var key=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  var loginLog=ld('bj_loginLog',{});
+  if(!loginLog[key]){
+    loginLog[key]=1;
+    sv('bj_loginLog',loginLog);
+  }
+}
+
+// 计算连续登录天数
+function calcLoginStreak(){
+  var loginLog=ld('bj_loginLog',{});
+  var today=new Date();
+  var streak=0;
+  for(var i=0;i<365;i++){
+    var d=new Date(today);
+    d.setDate(today.getDate()-i);
+    var key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+    if(loginLog[key]){
+      streak++;
+    }else{
+      if(i===0){
+        // 今天还没登录也算，继续往前查
+        continue;
+      }
+      break;
+    }
+  }
+  return streak;
+}
 function calcStreakDays(){
   var today=new Date();
   var streak=0;
@@ -28224,6 +28581,7 @@ document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%
     if(!Array.isArray(crWorks))crWorks=[];
   }catch(e){console.warn('启动完整性检查异常:',e);}
 })();
+recordTodayLogin();
 checkGoalReset();
 // 初始化网络状态检测
 if(!navigator.onLine){
@@ -28323,6 +28681,15 @@ if(!ap.simpleUI){
 setTimeout(function(){initXjGlobalFloat();},2000);
 applyThemeBtnVisible();
 xjVisible = ld('bj_xjVisible', true);
+xjSkin=ld('bj_xjSkin','default');
+xjSkinUnlocked=ld('bj_xjSkinUnlocked',{default:true,gold:true});
+setTimeout(function(){
+  xjSkin=ld('bj_xjSkin','default');
+  xjSkinUnlocked=ld('bj_xjSkinUnlocked',{default:true,gold:true});
+  applyXjSkin();
+  applyXjBubble();
+  checkXjSkinAchievements();
+},300);
 xjBubbleEnabled = ld('bj_xjBubbleEnabled', false);
 if(!xjVisible){
   setTimeout(function(){

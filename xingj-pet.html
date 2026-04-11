@@ -790,7 +790,7 @@ body{
   <!-- 顶部栏 -->
   <div class="top-bar">
     <div class="top-bar-left">
-      <button class="back-btn" onclick="history.back()">
+      <button class="back-btn" onclick="goBack()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
         返回
       </button>
@@ -1965,11 +1965,20 @@ function doAction(type){
   if(type !== 'rest') checkSleepTrigger();
   checkAchievements(type);
 
-  setSpeech(randFrom(WORDS[type]||WORDS.tap));
-  spawnParticles(5);
+  const isSleepingNow = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
+  if(!isSleepingNow){
+    setSpeech(randFrom(WORDS[type]||WORDS.tap));
+    spawnParticles(5);
+  } else {
+    spawnParticles(3);
+  }
   save();
   updateUI();
-  showToast(ACTION_TOASTS[type]||'互动成功！');
+  if(isSleepingNow && type==='gift'){
+    showToast('🎁 悄悄把礼物放在枕边，不打扰她睡觉～');
+  } else {
+    showToast(ACTION_TOASTS[type]||'互动成功！');
+  }
 }
 
 // ===== 点击角色 =====
@@ -2064,55 +2073,46 @@ function triggerSleep(){
   showToast('😴 星笺去睡觉了，'+Math.round(hours)+'小时后唤醒～');
 }
 
-let _appliedSleepState = null;
-
 function applySleepUI(){
   const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
-  const stateChanged = (sleeping !== _appliedSleepState);
 
-  // 只在状态真正变化时才更新 DOM，防止每秒闪烁
-  if(stateChanged){
-    _appliedSleepState = sleeping;
+  const avatar    = document.getElementById('charAvatar');
+  const sleepSign = document.getElementById('sleepSign');
+  const clickHint = document.getElementById('clickHint');
+  const sleepTimerBadge = document.getElementById('sleepTimerBadge');
 
-    const avatar    = document.getElementById('charAvatar');
-    const sleepSign = document.getElementById('sleepSign');
-    const clickHint = document.getElementById('clickHint');
-    const sleepTimerBadge = document.getElementById('sleepTimerBadge');
-
-    if(avatar && sleepSign){
-      if(sleeping){
-        avatar.style.display    = 'none';
-        sleepSign.style.display = 'flex';
-        if(clickHint) clickHint.style.display = 'none';
-        if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
-        const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
-        const textEl = sleepSign.querySelector('.sleep-sign-text');
-        if(textEl) textEl.innerHTML = msgs.join('<br>');
-      } else {
-        avatar.style.display    = 'block';
-        sleepSign.style.display = 'none';
-        if(clickHint) clickHint.style.display = 'block';
-        if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
-      }
+  if(avatar && sleepSign){
+    if(sleeping){
+      avatar.style.display    = 'none';
+      sleepSign.style.display = 'flex';
+      if(clickHint) clickHint.style.display = 'none';
+      if(sleepTimerBadge) sleepTimerBadge.style.display = 'block';
+      const msgs = state.sleepMsg || ['我去睡觉了','一会就回来～'];
+      const textEl = sleepSign.querySelector('.sleep-sign-text');
+      if(textEl) textEl.innerHTML = msgs.join('<br>');
+    } else {
+      avatar.style.display    = 'block';
+      sleepSign.style.display = 'none';
+      if(clickHint) clickHint.style.display = 'block';
+      if(sleepTimerBadge) sleepTimerBadge.style.display = 'none';
     }
-
-    const banner = document.getElementById('sleepBanner');
-    if(banner) banner.classList.toggle('show', sleeping);
-
-    const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
-    sleepLockBtns.forEach(id=>{
-      const btn = document.getElementById(id);
-      if(!btn) return;
-      if(sleeping){
-        btn.classList.add('sleeping');
-        btn.classList.remove('disabled');
-      } else {
-        btn.classList.remove('sleeping');
-      }
-    });
   }
 
-  // 倒计时每秒更新（无论状态是否变化）
+  const banner = document.getElementById('sleepBanner');
+  if(banner) banner.classList.toggle('show', sleeping);
+
+  const sleepLockBtns = ['btnFeed','btnPlay','btnChat','btnStudy','btnRest'];
+  sleepLockBtns.forEach(id=>{
+    const btn = document.getElementById(id);
+    if(!btn) return;
+    if(sleeping){
+      btn.classList.add('sleeping');
+      btn.classList.remove('disabled');
+    } else {
+      btn.classList.remove('sleeping');
+    }
+  });
+
   if(sleeping){
     const remain = Math.max(0, state.sleepWakeAt - Date.now());
     const h = Math.floor(remain/3600000);
@@ -2121,7 +2121,6 @@ function applySleepUI(){
     const timeStr = h>0
       ? h+'h '+String(m).padStart(2,'0')+'m'
       : String(m).padStart(2,'0')+':'+String(s).padStart(2,'0');
-
     const timerEl  = document.getElementById('sleepBannerTimer');
     const badgeEl  = document.getElementById('sleepTimerBadge');
     const subEl    = document.getElementById('sleepBannerSub');
@@ -2162,9 +2161,10 @@ function buyItem(type){
   state.items[type] = (state.items[type]||0)+1;
   state.stats.buyCount = (state.stats.buyCount||0)+1;
   const names = {tea:'灵感茶',book:'故事书',star:'流星碎片',ink:'墨水瓶',moon:'月光石'};
+  const sleepingNow = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
   showToast('🛍️ 购买成功！获得 '+names[type]+'！剩余'+state.coins+'💫');
-  setSpeech('哇！你给我买了'+names[type]+'！谢谢你～💜');
-  spawnParticles(5);
+  if(!sleepingNow) setSpeech('哇！你给我买了'+names[type]+'！谢谢你～💜');
+  spawnParticles(sleepingNow ? 3 : 5);
   save(); updateUI();
   // 同步商店金币显示
   const shopCoins = document.getElementById('shopCoinsDisplay');
@@ -2195,10 +2195,15 @@ function useItem(type){
 
   checkLevelUp();
   checkAchievements('item');
-  setSpeech(f.speech);
-  spawnParticles(8);
+  const sleeping = state.isSleeping && Date.now() < (state.sleepWakeAt||0);
+  if(!sleeping){
+    setSpeech(f.speech);
+    spawnParticles(8);
+  } else {
+    spawnParticles(3);
+  }
   save(); updateUI();
-  showToast(f.toast);
+  showToast(sleeping ? '🎁 悄悄放下道具，好感悄悄增加了～' : f.toast);
 }
 
 // ===== 升级（递归处理连续升级） =====
@@ -2638,6 +2643,7 @@ function startAutoRecover(){
 // ===== 初始化 =====
 function init(){
   load();
+  applySkinFromMain();
 
   if(!state.firstDate){
     state.firstDate = new Date().toISOString();
@@ -2715,6 +2721,13 @@ function init(){
   startAutoRecover();
   loadCollapseState();
 }
+function goBack(){
+  if(history.length > 1 && document.referrer){
+    history.back();
+  } else {
+    window.location.href = './index.html';
+  }
+}
 let _longPressTimer = null;
 let _longPressed = false;
 function startLongPress(e){
@@ -2750,6 +2763,25 @@ function cancelLongPress(){
       setTimeout(()=>{ wrap.onclick = orig; }, 100);
     }
   }
+}
+// ===== 同步笔记AI换装皮肤 =====
+const XJ_SKINS_PET = {
+  default:{img:'./xinx.png',     bg:'./image-4.jpg'},
+  gold:   {img:'./gold.png',     bg:'./Background-gold.jpg'},
+  green:  {img:'./green.png',    bg:'./Background-Green.jpg'},
+  snow:   {img:'./Snowflake.png',bg:'./Background-Snow.jpg'},
+  sea:    {img:'./sea.png',      bg:'./Background-sea.jpg'},
+  cherry: {img:'./Cherry.png',   bg:'./Background-Cherry.jpg'},
+};
+function applySkinFromMain(){
+  try{
+    var skinKey = localStorage.getItem('bj_xjSkin') || 'default';
+    var skin = XJ_SKINS_PET[skinKey] || XJ_SKINS_PET['default'];
+    var avatar = document.getElementById('charAvatar');
+    if(avatar) avatar.src = skin.img;
+    var pageBg = document.querySelector('.page-bg');
+    if(pageBg) pageBg.style.backgroundImage = 'url(' + skin.bg + ')';
+  }catch(e){}
 }
 init();
 </script>
