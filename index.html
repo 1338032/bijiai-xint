@@ -4869,6 +4869,10 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <p>✓ 新增「🌟 星笺养成系统」：独立养成页面，照顾星笺状态、解锁日记、收集成就、获取星星币</p>
   <p>✓ 新增「🎨 星笺换装系统」：6套皮肤（原版/赛博朋克/绿野仙踪/白雪天使/海贝书虫/樱花浪漫），聊天气泡同步切换</p>
   <p>✓ 新增「📌 作坊置顶」：长按作坊文章卡片可置顶，置顶文章始终排列在列表最前面</p>
+  <p>✓ 修复星笺/角色模拟暂停按钮提前消失问题，现在按钮在消息完整出现后才恢复</p>
+<p>✓ 修复星笺重新生成时✅按钮未禁用、可误触导致并发请求的问题</p>
+<p>✓ 修复星笺消息卡在「正在恢复中」不回复的问题</p>
+<p>✓ 新增「💬 星笺消息分段」：开关控制星笺回复是否拆成多条气泡（默认关闭）</p>
   <p style="margin-top:10px;padding-top:8px;border-top:1px solid rgba(108,92,231,.2)"><strong>⚠️ 关于后续更新</strong></p>
   <p>由于个人精力和经济原因，笔记AI将进入不定期更新阶段。我不会放弃这个项目，但更新频率可能会降低。感谢每一位用户的支持和陪伴，你们的反馈是我继续做下去的最大动力。❤️</p>
 </div>
@@ -26765,6 +26769,8 @@ async function xjSendAllPending(){
   // 动态生成系统提示词：先拼完整版，如果总token过多则自动精简
 var petCtx = getXjPetContext();
 var fullSysContent = XJ_SYSTEM_PROMPT + petCtx + timeInfo + xjUserName;
+var maxCtx = xjContextLen || XJ_MAX_CONTEXT;
+var contextMsgs = xjMessages.slice(-maxCtx*2);
 var contextText = contextMsgs.map(function(m){return m.content||'';}).join('');
 var estTotal = estimateTokens(fullSysContent) + estimateTokens(contextText);
 var modelMaxCtx = 8192; // 默认假设8k
@@ -26788,8 +26794,6 @@ if(estTotal > available * 0.85){
   }
 }
 var messages = [{role:'system', content:sysContent}];
-  var maxCtx = xjContextLen || XJ_MAX_CONTEXT;
-var contextMsgs = xjMessages.slice(-maxCtx*2);
   contextMsgs.forEach(function(m){
     messages.push({role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content});
   });
@@ -26806,17 +26810,21 @@ var contextMsgs = xjMessages.slice(-maxCtx*2);
       signal:xjAbortCtrl.signal
     });
     
+    if(!resp.ok){
+      hideXjTyping();
+      if(btn) btn.style.display = 'flex';
+      if(receiveBtn) receiveBtn.style.display = 'flex';
+      if(stopBtn) stopBtn.style.display = 'none';
+      xjAbortCtrl = null;
+      addXjReply('呜...'+friendlyApiErr(resp.status)+'，等会儿再找星笺聊吧～');
+      return;
+    }
+    var data = await resp.json();
     hideXjTyping();
     if(btn) btn.style.display = 'flex';
     if(receiveBtn) receiveBtn.style.display = 'flex';
     if(stopBtn) stopBtn.style.display = 'none';
     xjAbortCtrl = null;
-    
-    if(!resp.ok){
-      addXjReply('呜...'+friendlyApiErr(resp.status)+'，等会儿再找星笺聊吧～');
-      return;
-    }
-    var data = await resp.json();
     if(data.choices && data.choices[0] && data.choices[0].message){
       addXjReply(data.choices[0].message.content);
     } else {
@@ -27053,8 +27061,10 @@ renderXjMessages();
 // 重新生成
 showXjTyping();
 const btn=document.getElementById('xjSendBtn');
+const receiveBtn=document.getElementById('xjReceiveBtn');
 const stopBtn=document.getElementById('xjStopBtn');
 btn.style.display='none';
+if(receiveBtn) receiveBtn.style.display='none';
 stopBtn.style.display='flex';
 const now=new Date();
 const timeInfo=`
@@ -27079,21 +27089,28 @@ body:JSON.stringify({model:cfg.model,messages:messages,temperature:0.85,
 max_tokens:2048}),
 signal:xjAbortCtrl.signal
 });
+if(!resp.ok){
 hideXjTyping();
 btn.style.display='flex';
+if(receiveBtn) receiveBtn.style.display='flex';
 stopBtn.style.display='none';
 xjAbortCtrl=null;
-if(!resp.ok){
 addXjReply('呜...重新回答时遇到了问题...');
 return;
 }
 const data=await resp.json();
+hideXjTyping();
+btn.style.display='flex';
+if(receiveBtn) receiveBtn.style.display='flex';
+stopBtn.style.display='none';
+xjAbortCtrl=null;
 if(data.choices&&data.choices[0]&&data.choices[0].message){
 addXjReply(data.choices[0].message.content);
 }
 }catch(e){
 hideXjTyping();
 btn.style.display='flex';
+if(receiveBtn) receiveBtn.style.display='flex';
 stopBtn.style.display='none';
 xjAbortCtrl=null;
 if(e.name!=='AbortError'){
@@ -28662,7 +28679,7 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER&&localStorage.getItem('bj_hasVisited'))
   '</div>' +
   '<div style="font-family:ZCOOL QingKe HuangYou,PingFang SC,sans-serif;font-size:26px;font-weight:400;letter-spacing:4px;margin-top:14px;background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text">笔记AI</div>' +
   '<div style="font-size:12px;color:var(--accent2);margin-top:4px;font-weight:600;letter-spacing:1px">' + APP_VER + '</div>' +
-  '<div style="font-size:10px;color:var(--text2);margin-top:6px">2026.4.1 更新</div>' +
+  '<div style="font-size:10px;color:var(--text2);margin-top:6px">2026.4.12 更新</div>' +
   '<div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin:12px auto 0;border-radius:1px"></div>' +
 '</div>\n\n' +
 
@@ -28674,6 +28691,9 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER&&localStorage.getItem('bj_hasVisited'))
     '🌟 <b>星笺养成系统</b>：独立养成页面，照顾状态、解锁日记、收集成就<br>' +
     '🎨 <b>星笺换装系统</b>：6套皮肤，聊天气泡与背景同步切换<br>' +
     '📌 <b>作坊置顶</b>：长按作坊文章卡片可置顶，常用项目置顶显示<br>' +
+    '· 修复星笺/角色暂停按钮提前消失问题<br>' +
+    '· 修复星笺重新生成可误触并发请求问题<br>' +
+    '· 修复星笺卡在「正在恢复中」不回复问题<br>' +
   '</div>' +
 '</div>' +
 
