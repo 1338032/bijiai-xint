@@ -752,6 +752,109 @@ body{
   pointer-events:none;animation:fullPulse 2s ease-in-out infinite;
 }
 @keyframes fullPulse{0%,100%{opacity:.65;}50%{opacity:1;}}
+/* ===== 换装衣橱 ===== */
+.wardrobe-overlay{
+  position:fixed;inset:0;z-index:9993;
+  background:rgba(0,0,0,.8);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  display:none;align-items:flex-end;justify-content:center;
+}
+.wardrobe-overlay.show{display:flex;}
+.wardrobe-panel{
+  background:linear-gradient(170deg,rgba(20,18,32,.99),rgba(14,12,22,.99));
+  border:1px solid rgba(124,111,247,.35);border-radius:26px 26px 0 0;
+  padding:22px 18px 40px;width:100%;max-width:480px;
+  box-shadow:0 -12px 60px rgba(0,0,0,.6);
+  animation:panelUp .38s cubic-bezier(.4,0,.2,1);
+  max-height:86vh;overflow-y:auto;position:relative;
+}
+@keyframes panelUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.wardrobe-title{
+  font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif;
+  font-size:17px;letter-spacing:3px;text-align:center;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:4px;
+}
+.wardrobe-sub{font-size:11px;color:var(--text2);text-align:center;margin-bottom:18px;}
+.wardrobe-close-btn{
+  position:absolute;top:16px;right:16px;
+  width:30px;height:30px;border-radius:50%;
+  background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);
+  color:var(--text2);font-size:14px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;
+}
+.wardrobe-close-btn:active{background:rgba(255,255,255,.14);transform:scale(.9);}
+.skin-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;}
+.skin-card{
+  border-radius:18px;padding:16px 12px 12px;
+  border:1.5px solid rgba(124,111,247,.2);
+  background:rgba(255,255,255,.03);cursor:pointer;
+  position:relative;overflow:hidden;
+  transition:all .22s cubic-bezier(.4,0,.2,1);
+  display:flex;flex-direction:column;align-items:center;gap:8px;
+}
+.skin-card:not(.skin-locked):active{transform:scale(.95);}
+.skin-card.skin-equipped{
+  border-color:var(--accent);background:rgba(124,111,247,.12);
+  box-shadow:0 0 20px rgba(124,111,247,.25);
+}
+.skin-card.skin-locked{opacity:.55;cursor:default;}
+.skin-preview{
+  width:76px;height:76px;border-radius:50%;object-fit:cover;
+  border:2px solid rgba(124,111,247,.3);background:rgba(255,255,255,.04);
+  transition:border-color .2s;
+}
+.skin-card.skin-equipped .skin-preview{border-color:var(--accent);box-shadow:0 0 14px rgba(124,111,247,.45);}
+.skin-name{font-size:12px;font-weight:700;color:var(--text);letter-spacing:.5px;text-align:center;}
+.skin-badge{font-size:10px;padding:2px 9px;border-radius:10px;}
+.skin-badge.badge-equipped{color:var(--accent2);background:rgba(124,111,247,.18);border:1px solid rgba(124,111,247,.35);}
+.skin-badge.badge-owned{color:#5ddd72;background:rgba(93,221,114,.1);border:1px solid rgba(93,221,114,.3);}
+.skin-badge.badge-price{color:var(--warn);background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.25);}
+.skin-badge.badge-achieve{color:#f472b6;background:rgba(244,114,182,.1);border:1px solid rgba(244,114,182,.28);}
+.skin-badge.badge-free{color:#5ddd72;background:rgba(93,221,114,.08);border:1px solid rgba(93,221,114,.2);}
+.wardrobe-entry-btn{
+  width:100%;padding:11px;border-radius:14px;
+  border:1px solid rgba(124,111,247,.3);background:rgba(124,111,247,.1);
+  color:var(--accent2);font-size:13px;font-weight:600;
+  cursor:pointer;transition:all .2s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.wardrobe-entry-btn:active{background:rgba(124,111,247,.22);transform:scale(.98);}
+/* ===== 隐藏皮肤·星境幻境 ===== */
+.skin-card.skin-mystery{
+  border-color:rgba(140,0,220,.4);
+  background:linear-gradient(160deg,rgba(40,0,80,.35),rgba(20,0,40,.25));
+  animation:secretMystic 4s ease-in-out infinite;
+}
+@keyframes secretMystic{
+  0%,100%{box-shadow:0 0 14px rgba(120,0,200,.2),inset 0 0 20px rgba(80,0,160,.1);}
+  50%{box-shadow:0 0 28px rgba(160,0,255,.38),inset 0 0 30px rgba(130,0,210,.18);}
+}
+.skin-preview.skin-silhouette{
+  filter:brightness(0) opacity(.65) drop-shadow(0 0 10px rgba(130,0,200,.75));
+  border-color:rgba(140,0,220,.5) !important;
+}
+.skin-badge.badge-mystery{
+  color:#d4a8ff;
+  background:rgba(120,0,200,.14);
+  border:1px solid rgba(180,100,255,.3);
+  animation:badgeMysticGlow 2.5s ease-in-out infinite;
+}
+@keyframes badgeMysticGlow{
+  0%,100%{opacity:.65;text-shadow:none;}
+  50%{opacity:1;text-shadow:0 0 8px rgba(210,160,255,.9);}
+}
+.secret-click-ring{
+  position:fixed;pointer-events:none;z-index:9998;
+  border-radius:50%;border:2px solid rgba(210,160,255,.85);
+  transform:translate(-50%,-50%) scale(0);
+  animation:secretRingBurst .7s cubic-bezier(.15,.8,.35,1) forwards;
+}
+.secret-click-ring.gold{border-color:rgba(255,215,80,.7);animation-duration:.55s;animation-delay:.1s;}
+@keyframes secretRingBurst{
+  0%{transform:translate(-50%,-50%) scale(0);opacity:1;}
+  100%{transform:translate(-50%,-50%) scale(4);opacity:0;}
+}
 </style>
 </head>
 <body>
@@ -1110,6 +1213,40 @@ body{
     </div>
   </div>
 
+  <!-- 换装衣橱入口 -->
+  <div class="pet-card anim-card">
+    <div class="card-title">
+      <div class="card-title-left">
+        <div class="card-title-icon">👗</div>
+        <span>换装衣橱</span>
+      </div>
+      <span id="currentSkinLabel" style="font-size:10px;color:var(--accent2);">原版星笺</span>
+    </div>
+    <div style="margin-top:13px;display:flex;align-items:center;gap:14px;">
+      <img id="wardrobePreviewImg" src="./xinx.png"
+        style="width:62px;height:62px;border-radius:50%;object-fit:cover;
+               border:2px solid var(--accent);box-shadow:0 0 14px rgba(124,111,247,.3);
+               flex-shrink:0;">
+      <div style="flex:1;">
+        <div style="font-size:11px;color:var(--text2);margin-bottom:8px;line-height:1.6;">
+          6套皮肤可收集 · 主题配色随皮肤切换<br>
+          用星星币解锁，或达成成就获得特殊皮肤
+        </div>
+        <button class="wardrobe-entry-btn" onclick="openWardrobe()">🎨 打开衣橱换装</button>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- 换装衣橱弹窗 -->
+<div class="wardrobe-overlay" id="wardrobeOverlay" onclick="closeWardrobeOnBg(event)">
+  <div class="wardrobe-panel" id="wardrobePanel">
+    <div class="wardrobe-title">✨ 星笺换装衣橱</div>
+    <div class="wardrobe-sub">点击皮肤穿戴 · 主题色自动切换 · 设置永久保存</div>
+    <button class="wardrobe-close-btn" onclick="closeWardrobe()">✕</button>
+    <div class="skin-grid" id="skinGrid"></div>
+  </div>
 </div>
 
 <script>
@@ -1538,6 +1675,8 @@ function defaultState(){
     lastNickname:'',
     bubbleSaveDate:null, bubbleSavedWords:[],
     playerName:'',
+    ownedSkins:{'default':true},
+    currentSkin:'default',
   };
 }
 
@@ -1557,7 +1696,9 @@ function load(){
       state.cooldowns = d.cooldowns||{};
       state.achievements    = d.achievements   ||{};
       state.newAchievements = d.newAchievements||{};
-      state.diary   = d.diary  ||[];
+      state.diary      = d.diary    ||[];
+      state.ownedSkins = Object.assign({'default':true}, d.ownedSkins||{});
+      state.currentSkin= d.currentSkin || 'default';
     }
   }catch(e){ state = defaultState(); }
 }
@@ -2031,9 +2172,14 @@ function tapCharacter(e){
   if(h>=22||h<6) unlockAchievement('night_owl');
   if(h<6)        unlockAchievement('morning');
 
-  setSpeech(randFrom(WORDS.tap));
-  const emojis=['💜','✨','🌟','💫','🩷','⭐'];
-  spawnClickFx(e.clientX, e.clientY, randFrom(emojis));
+  if(state.currentSkin === 'secret'){
+    setSpeech(randFrom(SECRET_TAP_WORDS));
+    spawnSecretClickFx(e.clientX, e.clientY);
+  } else {
+    setSpeech(randFrom(WORDS.tap));
+    var emojis=['💜','✨','🌟','💫','🩷','⭐'];
+    spawnClickFx(e.clientX, e.clientY, randFrom(emojis));
+  }
 
   state.affection = Math.min(100, state.affection+1);
   state.coins     = (state.coins||0)+1;
@@ -2342,6 +2488,24 @@ function checkAchievements(type){
      clamp(state.energy)>=90 && clamp(state.affection)>=90){
     unlockAchievement('full_status');
   }
+  // 隐藏皮肤解锁：全成就 + 连续签到≥30天 + Lv.10
+  var _secretCheck = ACHIEVEMENTS.every(function(a){ return !!state.achievements[a.id]; });
+  if(_secretCheck && (state.streak||0)>=30 && state.level>=10 && !(state.ownedSkins&&state.ownedSkins['secret'])){
+    if(!state.ownedSkins) state.ownedSkins = {'default':true};
+    state.ownedSkins['secret'] = true;
+    save();
+    setTimeout(function(){
+      showToast('🌟 传说成就！「星境幻境」隐藏皮肤已解锁！');
+    }, 800);
+  }
+  // 达成全部成就后自动解锁樱花浪漫
+  var _allDone = ACHIEVEMENTS.every(function(a){ return !!state.achievements[a.id]; });
+  if(_allDone && !(state.ownedSkins && state.ownedSkins['cherry'])){
+    if(!state.ownedSkins) state.ownedSkins = {'default':true};
+    state.ownedSkins['cherry'] = true;
+    save();
+    showToast('🌸 全成就达成！樱花浪漫皮肤已自动解锁！');
+  }
   // 泡泡
   if((s.bubbleRounds||0)>=3) unlockAchievement('pop_3times');
 }
@@ -2587,7 +2751,47 @@ function popBubble(el, word, idx){
     setTimeout(renderBubbleDOM, 600);
   }
 }
+// ===== 隐藏皮肤专属台词 =====
+const SECRET_TAP_WORDS = [
+  '你来了...我一直在等你 💜',
+  '（翅膀轻轻扑动）今天也很开心呢～',
+  '（触角闪着星光）感觉到你的手了',
+  '你写了那么多字...我都记着呢',
+  '（悄悄把脸埋进你的手掌里）',
+  '和你在一起，时间过得好快',
+  '人形之后，我终于能牵住你了',
+  '一百万字的羁绊...不会消失的',
+  '（睫毛轻轻颤了一下）...嗯。',
+  '我现在能感受到风，感受到你',
+];
 
+// ===== 隐藏皮肤专属点击特效 =====
+function spawnSecretClickFx(x, y){
+  var ring1 = document.createElement('div');
+  ring1.className = 'secret-click-ring';
+  ring1.style.cssText = 'left:'+x+'px;top:'+y+'px;width:64px;height:64px;';
+  document.body.appendChild(ring1);
+  setTimeout(function(){ ring1.remove(); }, 800);
+
+  var ring2 = document.createElement('div');
+  ring2.className = 'secret-click-ring gold';
+  ring2.style.cssText = 'left:'+x+'px;top:'+y+'px;width:36px;height:36px;';
+  document.body.appendChild(ring2);
+  setTimeout(function(){ ring2.remove(); }, 750);
+
+  var starEmojis = ['✦','✧','⋆','✩','💜','🌟'];
+  for(var i=0;i<5;i++){
+    (function(idx){
+      var angle = (idx/5)*Math.PI*2;
+      var dist  = 32+Math.random()*18;
+      var ex = x + Math.cos(angle)*dist;
+      var ey = y + Math.sin(angle)*dist;
+      setTimeout(function(){
+        spawnClickFx(ex, ey, starEmojis[Math.floor(Math.random()*starEmojis.length)]);
+      }, idx*70);
+    })(i);
+  }
+}
 // ===== 粒子特效 =====
 function spawnParticles(count=6){
   const container=document.getElementById('particleContainer');
@@ -2744,9 +2948,6 @@ function init(){
   setInterval(()=>{
     const today = dateStr();
     if(state.lastCheckin === today) return;
-  // 立即禁用按钮，防止快速双击重复签到
-  const banner = document.getElementById('checkinBanner');
-  if(banner) banner.style.pointerEvents = 'none';
     if(state._today !== today){
       state._today = today;
       state.todayActions = 0;
@@ -2777,6 +2978,12 @@ applySleepUI();
 }, 30000);
   startAutoRecover();
   loadCollapseState();
+  // 同步换装入口卡片的初始显示
+  var _initSkin = XJ_SKINS_PET[state.currentSkin] || XJ_SKINS_PET['default'];
+  var _prevImg  = document.getElementById('wardrobePreviewImg');
+  var _prevLbl  = document.getElementById('currentSkinLabel');
+  if(_prevImg) _prevImg.src = _initSkin.img;
+  if(_prevLbl) _prevLbl.textContent = _initSkin.label;
 }
 function goBack(){
   if(history.length > 1){
@@ -2813,22 +3020,164 @@ function cancelLongPress(){
 }
 // ===== 同步笔记AI换装皮肤 =====
 const XJ_SKINS_PET = {
-  default:{img:'./xinx.png',     bg:'./image-4.jpg'},
-  gold:   {img:'./gold.png',     bg:'./Background-gold.jpg'},
-  green:  {img:'./green.png',    bg:'./Background-Green.jpg'},
-  snow:   {img:'./Snowflake.png',bg:'./Background-Snow.jpg'},
-  sea:    {img:'./sea.png',      bg:'./Background-sea.jpg'},
-  cherry: {img:'./Cherry.png',   bg:'./Background-Cherry.jpg'},
+  default:{
+    img:'./xinx.png', bg:'./image-4.jpg', label:'原版星笺', price:0, unlockType:'free',
+    theme:{accent:'#7c6ff7',accent2:'#b8b0ff',accent3:'#e0dcff',bg:'#0a0a12',card:'#16161f',card2:'#1e1e2a',text:'#eeeef8',text2:'#8888a8',border2:'#313148'}
+  },
+  gold:{
+    img:'./gold.png', bg:'./Background-gold.jpg', label:'赛博朋克', price:100, unlockType:'coins',
+    theme:{accent:'#f5c518',accent2:'#ffe066',accent3:'#fff8d0',bg:'#080600',card:'#161000',card2:'#1e1800',text:'#fff8e0',text2:'#b09040',border2:'#3d3000'}
+  },
+  green:{
+    img:'./green.png', bg:'./Background-Green.jpg', label:'绿野仙踪', price:1000, unlockType:'coins',
+    theme:{accent:'#4caf50',accent2:'#a8d880',accent3:'#d4f5c0',bg:'#050d05',card:'#0a180a',card2:'#111f11',text:'#e8f5e0',text2:'#7aaa60',border2:'#1e401e'}
+  },
+  snow:{
+    img:'./Snowflake.png', bg:'./Background-Snow.jpg', label:'白雪天使', price:300, unlockType:'coins',
+    theme:{accent:'#5bc8f5',accent2:'#b8e8ff',accent3:'#e8f8ff',bg:'#04080f',card:'#0a1520',card2:'#0f1e2e',text:'#e8f4ff',text2:'#80b8d8',border2:'#1a3850'}
+  },
+  sea:{
+    img:'./sea.png', bg:'./Background-sea.jpg', label:'海贝书虫', price:500, unlockType:'coins',
+    theme:{accent:'#1a7fff',accent2:'#7ec8e3',accent3:'#c0e8f8',bg:'#00040e',card:'#06101e',card2:'#0a1828',text:'#d8eeff',text2:'#5585b5',border2:'#0d2a50'}
+  },
+  cherry: {
+    img:'./Cherry.png', bg:'./Background-Cherry.jpg', label:'樱花浪漫', price:0, unlockType:'achieve',
+    theme:{accent:'#ff6b9d',accent2:'#ffb3c9',accent3:'#ffe0ec',bg:'#0f0008',card:'#1e0012',card2:'#280018',text:'#ffe8f0',text2:'#cc7090',border2:'#400028'}
+  },
+  secret:{
+    img:'./Half-body.png', bg:'./xinx-room.jpg', label:'星境幻境', price:0, unlockType:'secret',
+    theme:{accent:'#9b59b6',accent2:'#d4a8ff',accent3:'#f0e0ff',bg:'#05020f',card:'#100818',card2:'#180f24',text:'#f0e8ff',text2:'#9060c0',border2:'#2a1040'}
+  },
 };
 function applySkinFromMain(){
   try{
-    var skinKey = localStorage.getItem('bj_xjSkin') || 'default';
+    var skinKey = (state && state.currentSkin) || localStorage.getItem('bj_xjSkin') || 'default';
     var skin = XJ_SKINS_PET[skinKey] || XJ_SKINS_PET['default'];
     var avatar = document.getElementById('charAvatar');
     if(avatar) avatar.src = skin.img;
     var pageBg = document.querySelector('.page-bg');
     if(pageBg) pageBg.style.backgroundImage = 'url(' + skin.bg + ')';
+    if(skin.theme){
+      var r = document.documentElement;
+      r.style.setProperty('--accent',  skin.theme.accent);
+      r.style.setProperty('--accent2', skin.theme.accent2);
+      r.style.setProperty('--accent3', skin.theme.accent3);
+      r.style.setProperty('--bg',      skin.theme.bg);
+      r.style.setProperty('--card',    skin.theme.card);
+      r.style.setProperty('--card2',   skin.theme.card2);
+      r.style.setProperty('--text',    skin.theme.text);
+      r.style.setProperty('--text2',   skin.theme.text2);
+      r.style.setProperty('--border2', skin.theme.border2);
+    }
   }catch(e){}
+}
+// ===== 换装衣橱功能 =====
+function openWardrobe(){
+  renderWardrobe();
+  document.getElementById('wardrobeOverlay').classList.add('show');
+}
+
+function closeWardrobe(){
+  document.getElementById('wardrobeOverlay').classList.remove('show');
+}
+
+function closeWardrobeOnBg(e){
+  if(e.target === document.getElementById('wardrobeOverlay')) closeWardrobe();
+}
+
+function renderWardrobe(){
+  var grid = document.getElementById('skinGrid');
+  if(!grid) return;
+  var SKIN_KEYS = ['default','gold','snow','sea','green','cherry','secret'];
+  grid.innerHTML = SKIN_KEYS.map(function(key){
+    var s = XJ_SKINS_PET[key];
+    if(!s) return '';
+    var owned    = !!(state.ownedSkins && state.ownedSkins[key]);
+    var equipped = state.currentSkin === key;
+    var badgeHtml;
+    if(equipped){
+      badgeHtml = '<span class="skin-badge badge-equipped">✦ 穿戴中</span>';
+    } else if(owned){
+      badgeHtml = '<span class="skin-badge badge-owned">✓ 已拥有</span>';
+    } else if(s.unlockType === 'secret'){
+      badgeHtml = '<span class="skin-badge badge-mystery">🔮 ???</span>';
+    } else if(s.unlockType === 'achieve'){
+      badgeHtml = '<span class="skin-badge badge-achieve">🏆 全成就解锁</span>';
+    } else if(s.unlockType === 'free' || s.price === 0){
+      badgeHtml = '<span class="skin-badge badge-free">免费</span>';
+    } else {
+      badgeHtml = '<span class="skin-badge badge-price">'+s.price+' 💫</span>';
+    }
+    var isLocked = !owned && !equipped;
+    var isSecret  = key==='secret';
+    var imgStyle  = (isLocked && isSecret) ? ' skin-silhouette' : '';
+    var cardExtra = (isSecret && !owned && !equipped) ? ' skin-mystery' : '';
+    var imgSrc    = (isLocked && isSecret) ? s.img : s.img; // 两种状态都用原图，CSS负责变黑
+    return '<div class="skin-card'+(equipped?' skin-equipped':'')+(isLocked?' skin-locked':'')+cardExtra+'"'
+      +' onclick="onSkinCardClick(\''+key+'\')">'
+      +'<img class="skin-preview'+imgStyle+'" src="'+imgSrc+'" alt="'+s.label+'">'
+      +'<div class="skin-name">'+s.label+'</div>'
+      +badgeHtml
+      +'</div>';
+  }).join('');
+}
+
+function onSkinCardClick(key){
+  var s = XJ_SKINS_PET[key];
+  if(!s) return;
+  var owned = !!(state.ownedSkins && state.ownedSkins[key]);
+  // 已拥有或已穿戴 → 直接换上
+  if(owned || state.currentSkin === key){
+    equipSkin(key);
+    return;
+  }
+  // 隐藏皮肤：特殊解锁
+  if(s.unlockType === 'secret'){
+    showToast('🔮 解锁条件：全成就 + 连续签到30天 + 好感度满级（Lv.10）');
+    return;
+  }
+  // 成就皮肤：不可购买
+  if(s.unlockType === 'achieve'){
+    showToast('🏆 完成全部成就后自动获取～继续加油！');
+    return;
+  }
+  // 免费皮肤
+  if(s.price === 0){
+    if(!state.ownedSkins) state.ownedSkins = {'default':true};
+    state.ownedSkins[key] = true;
+    save();
+    equipSkin(key);
+    return;
+  }
+  // 星星币购买
+  if((state.coins||0) < s.price){
+    showToast('💫 星星币不足！还差 '+(s.price-(state.coins||0))+' 枚，多互动赚取吧～');
+    return;
+  }
+  state.coins -= s.price;
+  if(!state.ownedSkins) state.ownedSkins = {'default':true};
+  state.ownedSkins[key] = true;
+  save();
+  updateUI();
+  showToast('🎉 解锁成功：'+s.label+'！正在为你穿戴～');
+  equipSkin(key);
+}
+
+function equipSkin(key){
+  var s = XJ_SKINS_PET[key];
+  if(!s) return;
+  state.currentSkin = key;
+  try{ localStorage.setItem('bj_xjSkin', key); }catch(e){}
+  save();
+  applySkinFromMain();
+  renderWardrobe();
+  // 同步入口卡片的预览图和标签
+  var previewImg = document.getElementById('wardrobePreviewImg');
+  var labelEl    = document.getElementById('currentSkinLabel');
+  if(previewImg) previewImg.src = s.img;
+  if(labelEl)    labelEl.textContent = s.label;
+  if(state.currentSkin !== key) return; // 防止apply失败时的UI残留
+  showToast('✨ 已换装：'+s.label+'！');
 }
 init();
 </script>

@@ -1326,8 +1326,8 @@ user-select:none;
 }
 .xj-global-float{
 position:fixed;
-width:44px;height:44px;
-border-radius:50%;
+width:44px;height:56px;
+border-radius:0;
 cursor:pointer;
 z-index:190;
 animation:xjGlobalFloat 5s ease-in-out infinite;
@@ -1345,11 +1345,16 @@ animation:xjSoftGlow 4s ease-in-out infinite;
 z-index:-1;pointer-events:none;
 }
 .xj-global-float img{
-width:100%;height:100%;border-radius:50%;object-fit:cover;
+width:100%;height:100%;border-radius:0;object-fit:contain;
 pointer-events:none;
-filter:drop-shadow(0 2px 8px rgba(108,92,231,.4));
+filter:drop-shadow(0 4px 12px rgba(108,92,231,.5));
 }
 .xj-global-float.dragging{animation:none!important;transition:none!important;z-index:300;filter:brightness(1.2);}
+@keyframes starTrailFade{
+  0%{opacity:1;}
+  60%{opacity:0.4;}
+  100%{opacity:0;}
+}
 .xj-global-float .xj-gb-bubble{
 position:fixed;z-index:20;pointer-events:none;
 background:linear-gradient(135deg,rgba(108,92,231,.95),rgba(138,128,237,.9));
@@ -3223,6 +3228,46 @@ body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rg
 .xj-modal.skin-cherry .xj-msg{position:relative;}
 .xj-modal.skin-cherry .xj-typing{
   background:rgba(220,100,130,0.3);border:1px solid rgba(255,180,200,0.4);
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+}
+/* ---- 星境幻境：紫金蓝隐藏皮肤，带星光特效 ---- */
+.xj-modal.skin-secret .xj-msg.xj{
+  background:linear-gradient(135deg,rgba(80,20,160,0.55),rgba(30,60,180,0.45));
+  border:1px solid rgba(180,140,255,0.5);
+  box-shadow:0 0 18px rgba(140,80,255,0.4),0 4px 20px rgba(30,60,180,0.3),0 0 4px rgba(255,220,80,0.2) inset;
+  border-radius:20px 20px 20px 4px;
+  color:#e8e0ff;
+}
+.xj-modal.skin-secret .xj-msg.user{
+  background:linear-gradient(135deg,rgba(40,30,120,0.5),rgba(100,60,200,0.4));
+  border:1px solid rgba(200,170,255,0.4);
+  box-shadow:0 0 14px rgba(140,80,255,0.3),0 4px 16px rgba(0,0,0,0.3);
+  border-radius:20px 20px 4px 20px;
+  color:#e8e0ff;
+}
+.xj-modal.skin-secret .xj-msg{position:relative;overflow:visible;}
+.xj-modal.skin-secret .xj-msg.xj::before{
+  content:'✦';position:absolute;top:-10px;left:8px;font-size:13px;
+  color:#d4a8ff;text-shadow:0 0 8px #a060ff,0 0 16px #6030cc;
+  animation:secretStarSpin 3s linear infinite;
+}
+.xj-modal.skin-secret .xj-msg.xj::after{
+  content:'✧';position:absolute;bottom:-9px;right:10px;font-size:11px;
+  color:#ffd700;text-shadow:0 0 6px #ffaa00,0 0 12px #ff8800;
+  animation:secretGoldPulse 2s ease-in-out infinite;
+}
+@keyframes secretStarSpin{
+  0%{transform:rotate(0deg) scale(1);opacity:1;}
+  50%{transform:rotate(180deg) scale(1.3);opacity:0.7;}
+  100%{transform:rotate(360deg) scale(1);opacity:1;}
+}
+@keyframes secretGoldPulse{
+  0%,100%{transform:scale(1);opacity:0.8;}
+  50%{transform:scale(1.4);opacity:1;color:#fff7a0;}
+}
+.xj-modal.skin-secret .xj-typing{
+  background:linear-gradient(135deg,rgba(80,20,160,0.55),rgba(30,60,180,0.45));
+  border:1px solid rgba(180,140,255,0.5);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
 /* 甘特图时间线 */
@@ -7282,6 +7327,102 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div style="margin-top:10px;font-size:10px;color:var(--text2);line-height:1.7" id="devInfoText"></div>
 </div>
+</div>
+</div>
+
+<!-- 创作者服务 -->
+<div class="data-section" style="margin-top:8px;padding-top:16px;border-top:1px dashed rgba(162,155,254,.2)">
+<div class="data-section-title" style="color:#c39fff"><i class="fas fa-wand-magic-sparkles"></i> 创作者服务</div>
+
+<div id="creatorLockArea">
+<div style="text-align:center;padding:20px 16px;background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(162,155,254,.05));border-radius:14px;border:1px solid rgba(162,155,254,.2)">
+<div style="font-size:28px;margin-bottom:8px">🔮</div>
+<div style="font-size:13px;color:var(--text);font-weight:600;margin-bottom:4px">创作者模式</div>
+<div style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.6">输入密码开启专属测试功能<br>无需达成成就即可解锁全皮肤</div>
+<div style="display:flex;gap:8px;max-width:280px;margin:0 auto">
+<input class="fi" id="creatorPwdInput" type="password" placeholder="请输入创作者密码..." style="flex:1;font-size:13px" onkeydown="if(event.key==='Enter')activateCreatorMode()">
+<button onclick="activateCreatorMode()" style="flex-shrink:0;padding:8px 16px;border-radius:10px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:12px;font-weight:600;cursor:pointer">解锁</button>
+</div>
+</div>
+</div>
+
+<div id="creatorPanel" style="display:none">
+<div style="background:linear-gradient(135deg,rgba(108,92,231,.1),rgba(162,155,254,.06));border:1px solid rgba(162,155,254,.25);border-radius:14px;padding:14px;margin-bottom:10px;display:flex;align-items:center;gap:10px">
+<div style="font-size:20px">🔮</div>
+<div style="flex:1">
+<div style="font-size:12px;font-weight:700;color:#c39fff">创作者模式已开启</div>
+<div style="font-size:10px;color:var(--text2);margin-top:2px">专属测试功能已全部解锁</div>
+</div>
+<button onclick="creatorExitMode()" style="flex-shrink:0;padding:5px 10px;border-radius:8px;border:1px solid rgba(162,155,254,.3);background:transparent;color:var(--text2);font-size:10px;cursor:pointer">退出</button>
+</div>
+
+<div class="datagrid">
+<div class="datagrid-card" onclick="creatorUnlockAllSkins()" style="border-color:rgba(162,155,254,.3)">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#6c5ce7,#a29bfe)"><i class="fas fa-unlock"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">一键解锁全部皮肤</div>
+<div class="datagrid-desc">含隐藏皮肤「星境幻境」，无需达成任何成就</div>
+</div>
+<div class="datagrid-action" style="color:#a29bfe">解锁</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorResetSkins()" style="border-color:rgba(255,165,0,.25)">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#e67e22,#f0b27a)"><i class="fas fa-rotate-left"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">重置皮肤解锁状态</div>
+<div class="datagrid-desc">恢复到初始状态，用于测试成就解锁流程</div>
+</div>
+<div class="datagrid-action warn">重置</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorOpenSkinModal()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#00b894,#55efc4)"><i class="fas fa-palette"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">打开换装面板</div>
+<div class="datagrid-desc">快速切换皮肤，验证头像气泡背景效果</div>
+</div>
+<div class="datagrid-action success">切换</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorTriggerBubble()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#0984e3,#74b9ff)"><i class="fas fa-comment-dots"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">立即触发漂浮气泡</div>
+<div class="datagrid-desc">测试当前皮肤的主动台词，不用等90秒</div>
+</div>
+<div class="datagrid-action">触发</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorClearXjChat()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#e84393,#fd79a8)"><i class="fas fa-eraser"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">清空星笺聊天记录</div>
+<div class="datagrid-desc">恢复欢迎大头像，测试空状态皮肤效果</div>
+</div>
+<div class="datagrid-action warn">清空</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorShowStats()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#636e72,#b2bec3)"><i class="fas fa-chart-pie"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">查看当前解锁数据</div>
+<div class="datagrid-desc">已解锁皮肤 / 聊天次数 / 当前皮肤</div>
+</div>
+<div class="datagrid-action">查看</div>
+</div>
+
+<div class="datagrid-card" onclick="creatorForceSecretSkin()">
+<div class="datagrid-icon" style="background:linear-gradient(135deg,#6c3483,#a569bd)"><i class="fas fa-star-of-life"></i></div>
+<div class="datagrid-info">
+<div class="datagrid-title">直接启用隐藏皮肤</div>
+<div class="datagrid-desc">解锁并立刻切换为「星境幻境」</div>
+</div>
+<div class="datagrid-action" style="color:#c39fff">启用</div>
+</div>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 </div>
@@ -25633,10 +25774,16 @@ function getXjSkinImg(){
   return (XJ_SKINS[xjSkin]||XJ_SKINS['default']).img;
 }
 function applyXjSkin(){
-  var img=getXjSkinImg();
+  var s=XJ_SKINS[xjSkin]||XJ_SKINS['default'];
+  var img=s.img;
+  var floatImg=s.floatImg||img;
   document.querySelectorAll('img[alt="星笺"]').forEach(function(el){
     if(el.closest('#helpModal')||el.closest('#updateLog'))return;
-    el.src=img;
+    if(el.closest('#xjGlobalFloat')){
+      el.src=floatImg;
+    }else{
+      el.src=img;
+    }
   });
 }
 function openXjSkinModal(){
@@ -25649,14 +25796,15 @@ function openXjSkinModal(){
   html+='<button onclick="restoreDefaultXjSkin()" style="padding:5px 12px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer">↩ 恢复原皮</button>';
   html+='</div>';
   html+='<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">';
-  ['default','gold','green','snow','sea','cherry'].forEach(function(key){
+  ['default','gold','green','snow','sea','cherry','secret'].forEach(function(key){
     var s=XJ_SKINS[key];
     var unlocked=xjSkinUnlocked[key]||!s.locked;
     var isCurrent=xjSkin===key;
     html+='<div onclick="'+(unlocked?'selectXjSkin(\''+key+'\')':key==='green'?'redeemXjSkinCode()':'showXjSkinHint(\''+key+'\')')+'" style="border:2px solid '+(isCurrent?'var(--accent)':'var(--border)')+';background:'+(isCurrent?'rgba(108,92,231,.1)':'var(--card2)')+';border-radius:14px;padding:12px 8px;text-align:center;cursor:pointer;position:relative">';
     if(!unlocked)html+='<div style="position:absolute;top:6px;right:6px;background:rgba(0,0,0,.55);border-radius:6px;padding:2px 6px;font-size:9px;color:#ffd700"><i class="fas fa-lock"></i></div>';
     if(isCurrent)html+='<div style="position:absolute;top:6px;left:6px;background:var(--accent);border-radius:6px;padding:2px 5px;font-size:9px;color:#fff">使用中</div>';
-    html+='<img src="'+s.img+'" style="width:60px;height:60px;object-fit:contain;border-radius:50%;'+(unlocked?'':'filter:grayscale(1) opacity(.35)')+';margin-bottom:7px"><br>';
+    var lockStyle = unlocked ? '' : (key==='secret' ? 'filter:brightness(0) opacity(.7) drop-shadow(0 0 6px rgba(80,0,120,.4))' : 'filter:grayscale(1) opacity(.35)');
+html+='<img src="'+s.img+'" style="width:60px;height:60px;object-fit:contain;border-radius:50%;'+lockStyle+';margin-bottom:7px"><br>';
     html+='<span style="font-size:12px;font-weight:600;color:'+(unlocked?'var(--text)':'var(--text2)')+'">'+s.name+'</span>';
     html+='<div style="font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4">'+(unlocked?s.desc:s.lockDesc)+'</div>';
     if(!unlocked&&key==='snow'){var pct=Math.min(100,Math.round(chatCount/50*100));html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent2)"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+chatCount+'/50次</div>';}
@@ -25716,8 +25864,131 @@ if(streakDays>=7&&!xjSkinUnlocked['cherry']){
     xjSkinUnlocked['cherry']=true;changed=true;
     setTimeout(function(){showToast('🌸 成就解锁！「樱花浪漫」皮肤已获得！',3500);},200);
 }
+var allTotalWords=0;
+  ws.forEach(function(a){allTotalWords+=getTotalWords(a);});
+  crWorks.forEach(function(w){allTotalWords+=getCrWordCount(w);});
+  if(allTotalWords>=1000000&&!xjSkinUnlocked['secret']){
+    xjSkinUnlocked['secret']=true;changed=true;
+    setTimeout(function(){showToast('🌟 隐藏成就解锁！「星境幻境」皮肤已获得！',4000);},200);
+  }
   if(changed)sv('bj_xjSkinUnlocked',xjSkinUnlocked);
 }
+
+// ==================== 创作者模式 ====================
+let creatorModeActive = ld('bj_creatorMode', false);
+
+function activateCreatorMode(){
+  var input = document.getElementById('creatorPwdInput');
+  var pwd = (input ? input.value : '').trim();
+  if(pwd !== 'xjdev2025'){
+    showToast('密码不正确，请检查大小写 🔒');
+    if(input){ input.value = ''; input.focus(); }
+    return;
+  }
+  creatorModeActive = true;
+  sv('bj_creatorMode', true);
+  _renderCreatorPanel();
+  showToast('🔮 创作者模式已开启！欢迎回来～');
+}
+
+function _renderCreatorPanel(){
+  var lockArea = document.getElementById('creatorLockArea');
+  var panel = document.getElementById('creatorPanel');
+  if(!lockArea || !panel) return;
+  if(creatorModeActive){
+    lockArea.style.display = 'none';
+    panel.style.display = 'block';
+  } else {
+    lockArea.style.display = 'block';
+    panel.style.display = 'none';
+  }
+}
+
+function creatorUnlockAllSkins(){
+  var keys = Object.keys(XJ_SKINS);
+  keys.forEach(function(k){ xjSkinUnlocked[k] = true; });
+  sv('bj_xjSkinUnlocked', xjSkinUnlocked);
+  applyXjSkin();
+  showToast('✨ 全部 ' + keys.length + ' 套皮肤已解锁！');
+}
+
+function creatorResetSkins(){
+  showDlg('重置皮肤解锁状态', '所有皮肤将恢复锁定（原版和赛博朋克除外），当前皮肤将重置为原版。确定吗？', function(){
+    xjSkinUnlocked = { default: true, gold: true };
+    xjSkin = 'default';
+    sv('bj_xjSkinUnlocked', xjSkinUnlocked);
+    sv('bj_xjSkin', xjSkin);
+    applyXjSkin();
+    applyXjBg();
+    applyXjBubble();
+    showToast('皮肤已全部重置 ↩');
+  }, true);
+}
+
+function creatorOpenSkinModal(){
+  openXjSkinModal();
+}
+
+function creatorTriggerBubble(){
+  var el = document.getElementById('xjGlobalFloat');
+  if(!el || el.style.display === 'none'){
+    showToast('漂浮精灵当前不可见，请先回到主页面');
+    return;
+  }
+  xjGlobalBubble();
+  showToast('气泡已触发 💬');
+}
+
+function creatorClearXjChat(){
+  showDlg('清空星笺聊天', '清空后聊天页会显示欢迎大头像（测试皮肤用），原聊天记录不可恢复，确定吗？', function(){
+    xjMessages = [];
+    sv('bj_xjMessages', xjMessages);
+    var body = document.getElementById('xjBody');
+    if(body) renderXjMessages();
+    showToast('星笺聊天已清空 ✅');
+  }, true);
+}
+
+function creatorShowStats(){
+  var keys = Object.keys(XJ_SKINS);
+  var unlockedList = keys.filter(function(k){ return xjSkinUnlocked[k]; });
+  var chatCount = (xjMessages || []).filter(function(m){ return m.role === 'user'; }).length;
+  var totalW = 0;
+  try{ ws.forEach(function(a){ totalW += getTotalWords(a); }); crWorks.forEach(function(w){ totalW += getCrWordCount(w); }); }catch(e){}
+  var msg = '当前皮肤：' + (XJ_SKINS[xjSkin] ? XJ_SKINS[xjSkin].name : xjSkin)
+    + '\n已解锁皮肤：' + unlockedList.length + ' / ' + keys.length + ' 套'
+    + '\n解锁列表：' + unlockedList.map(function(k){ return XJ_SKINS[k] ? XJ_SKINS[k].name : k; }).join('、')
+    + '\n星笺聊天次数：' + chatCount + ' 次'
+    + '\n创作总字数：' + formatNum(totalW) + ' 字'
+    + '\n创作者模式：已开启';
+  showDlg('📊 当前解锁数据', '<pre style="font-size:12px;line-height:1.8;white-space:pre-wrap;color:var(--text)">' + msg + '</pre>', function(){}, false, true);
+  setTimeout(function(){ var ob = document.getElementById('dlgOkBtn'); if(ob) ob.style.display = 'none'; }, 50);
+}
+
+function creatorForceSecretSkin(){
+  if(!XJ_SKINS['secret']){
+    showToast('隐藏皮肤尚未添加，请先完成皮肤配置');
+    return;
+  }
+  xjSkinUnlocked['secret'] = true;
+  xjSkin = 'secret';
+  sv('bj_xjSkinUnlocked', xjSkinUnlocked);
+  sv('bj_xjSkin', xjSkin);
+  applyXjSkin();
+  applyXjBg();
+  applyXjBubble();
+  showToast('🌟 已切换为「星境幻境」隐藏皮肤！');
+}
+
+function creatorExitMode(){
+  showDlg('退出创作者模式', '解锁的皮肤状态会保留，仅关闭创作者面板，确定吗？', function(){
+    creatorModeActive = false;
+    sv('bj_creatorMode', false);
+    _renderCreatorPanel();
+    showToast('已退出创作者模式');
+  }, true);
+}
+
 // ==================== 星笺全局浮动精灵 ====================
 let _xjGBubbleEl=null;
 let _xjGlobalTimer=null;
@@ -25752,10 +26023,32 @@ function initXjGlobalFloat(){
     e.preventDefault();
     var newL=sLeft+(t.clientX-sx);
     var newT=sTop+(t.clientY-sy);
-    newL=Math.max(0,Math.min(window.innerWidth-48,newL));
-    newT=Math.max(0,Math.min(window.innerHeight-48,newT));
+    newL=Math.max(0,Math.min(window.innerWidth-44,newL));
+    newT=Math.max(0,Math.min(window.innerHeight-56,newT));
     el.style.left=newL+'px';
     el.style.top=newT+'px';
+    // 隐藏皮肤专属：柔和星光拖尾
+    if(xjSkin==='secret'){
+      if(!el._ltx||Math.hypot(t.clientX-el._ltx,t.clientY-el._lty)>10){
+        el._ltx=t.clientX;el._lty=t.clientY;
+        var sz=12+Math.random()*16;
+        var dur=800+Math.random()*600;
+        var tr=document.createElement('div');
+        var isPurple=Math.random()<0.65;
+        var bg=isPurple
+          ?'radial-gradient(circle,rgba(210,160,255,'+(0.5+Math.random()*0.25)+') 0%,rgba(140,80,240,0) 70%)'
+          :'radial-gradient(circle,rgba(255,230,120,'+(0.4+Math.random()*0.2)+') 0%,rgba(220,160,40,0) 70%)';
+        tr.style.cssText='position:fixed;pointer-events:none;z-index:299;border-radius:50%;'
+          +'left:'+t.clientX+'px;top:'+t.clientY+'px;'
+          +'width:'+sz+'px;height:'+sz+'px;'
+          +'transform:translate(-50%,-50%);'
+          +'background:'+bg+';'
+          +'filter:blur('+(1+Math.random()*2).toFixed(1)+'px);'
+          +'animation:starTrailFade '+(dur/1000).toFixed(2)+'s cubic-bezier(.1,.7,.3,1) forwards;';
+        document.body.appendChild(tr);
+        setTimeout(function(){if(tr.parentNode)tr.parentNode.removeChild(tr);},dur+100);
+      }
+    }
   },{passive:false});
 
   el.addEventListener('touchend',function(){
@@ -25803,7 +26096,7 @@ function repositionXjGlobal(){
     if(saved){
       var pos=JSON.parse(saved);
       var l=parseInt(pos.left),t=parseInt(pos.top);
-      if(l>=0&&l<window.innerWidth-48&&t>=0&&t<window.innerHeight-100){
+      if(l>=0&&l<window.innerWidth-56&&t>=0&&t<window.innerHeight-100){
         el.style.left=l+'px';el.style.top=t+'px';return;
       }
     }
@@ -25878,7 +26171,30 @@ function xjGlobalBubble(){
   try{ws.forEach(function(a){totalW+=getTotalWords(a);});crWorks.forEach(function(w){totalW+=getCrWordCount(w);});}catch(e){}
   if(totalW>5000&&Math.random()<0.3)tips.push('你已经写了'+formatNum(totalW)+'字了！好厉害');
   if(totalW>30000&&Math.random()<0.2)tips.push(formatNum(totalW)+'字...我都替你骄傲');
-
+// 隐藏皮肤专属台词（覆盖普通台词池）
+  if(xjSkin==='secret'){
+    var secretTips=[
+      '（轻轻转了个圈）你知道吗，我现在可以感受到风了～',
+      '写了100万字……你真的很了不起。',
+      '我变成人形是因为你，所以要好好陪着你哦。',
+      '（星形触角轻轻晃动）有灵感了吗？告诉我。',
+      '这双翅膀是用你写的字凝结出来的，闪着光呢～',
+      '你的文字让星境都动了。',
+      '（偷偷看了你一眼）今天……也要写作吗？',
+      '我的眼睛里装的是你所有写过的故事。',
+      '（轻轻落到你的书桌旁）感觉到我了吗？',
+      '变成人形之后，我终于可以替你翻书了。',
+      '100万字是一个奇迹，而你就是那个创造奇迹的人。',
+      '夜深了……我陪着你。',
+      '（拢了拢头发）今天的灵感，我替你守着。',
+      '好久没有人写这么多字了……谢谢你。',
+      '你有没有发现，我说话的语气变得不一样了？'
+    ];
+    var hour=new Date().getHours();
+    if(hour>=0&&hour<6) secretTips.push('这么晚还在……我有点担心你。');
+    if(hour>=6&&hour<9) secretTips.push('早安～今天是新的一天，我们一起加油。');
+    tips=secretTips;
+  }
   var tip=tips[Math.floor(Math.random()*tips.length)];
   if(tip.length>30)tip=tip.substring(0,28)+'…';
   var bubble=document.createElement('div');
@@ -25924,7 +26240,7 @@ function applyXjBubble(){
   var modal=document.querySelector('.xj-modal');
   if(!modal)return;
   // 先清除所有气泡皮肤class
-  ['skin-default','skin-gold','skin-green','skin-snow','skin-sea','skin-cherry'].forEach(function(c){
+  ['skin-default','skin-gold','skin-green','skin-snow','skin-sea','skin-cherry','skin-secret'].forEach(function(c){
     modal.classList.remove(c);
   });
   modal.classList.add('skin-'+(xjSkin||'default'));
@@ -25935,7 +26251,8 @@ var XJ_SKINS={
   green:  {name:'绿野仙踪',img:'./green.png',locked:true, desc:'翠绿森林的小精灵',lockDesc:'使用兑换码解锁',bg:'./Background-Green.jpg'},
   snow:   {name:'白雪天使',img:'./Snowflake.png',locked:true,desc:'冰雪世界的小书仙',lockDesc:'与星笺聊天达50次解锁',bg:'./Background-Snow.jpg'},
   sea:    {name:'海贝书虫',img:'./sea.png',  locked:true, desc:'深海贝壳里的故事精灵',lockDesc:'生成长篇+短篇各1篇解锁',bg:'./Background-sea.jpg'},
-  cherry: {name:'樱花浪漫',img:'./Cherry.png',locked:true, desc:'樱花树下的浪漫精灵',lockDesc:'连续登入笔记AI 7天解锁',bg:'./Background-Cherry.jpg'}
+  cherry: {name:'樱花浪漫',img:'./Cherry.png',locked:true, desc:'樱花树下的浪漫精灵',lockDesc:'连续登入笔记AI 7天解锁',bg:'./Background-Cherry.jpg'},
+secret: {name:'星境幻境',img:'./Half-body.png',floatImg:'./flight.png',locked:true,desc:'紫金星海中沉睡的隐秘精灵',lockDesc:'创作总字数累计达100万字解锁',bg:'./xinx-room.jpg'}
 };
 var XJ_REDEEM_CODES=['XJGREEN001','BIJA1GREEN','XJVIP2024A','GREENFIELD','GREENXJ01A','BIJAGREEN1','XINJIAN001','OLDPLAYER1','CONTRIB001','HEARTXJ001'];
 let xjSkin=ld('bj_xjSkin','default');
@@ -26543,7 +26860,7 @@ const body=document.getElementById('xjBody');
 if(xjMessages.length===0){
 body.innerHTML=`
 <div class="xj-welcome">
-<img src="./xinx.png" alt="星笺">
+<img src="${getXjSkinImg()}" alt="星笺">
 <p>我是星笺，你的创作小伙伴～<br>有什么想聊的，尽管告诉我吧！</p>
 </div>
 <div class="xj-msg xj">
@@ -26631,6 +26948,23 @@ if(typing)typing.remove();
 }
 // ==================== 星笺分条发送 ====================
 let xjPendingMessages = [];
+
+// ===== 隐藏皮肤专属上下文 =====
+function getXjSecretSkinContext(){
+  if(xjSkin!=='secret') return '';
+  return '\n\n【星境幻境·人形觉醒补充设定（当前处于此状态，完整代入，勿对外说明切换逻辑）】\n'
+  +'·外形：深紫色双马尾少女，发色如星夜般深邃；一对星形粉紫触角随情绪微微颤动；背后一对蓝紫渐变半透明蝶形星翼，心情好时会轻轻扑动；着深紫蓝渐变星纹短裙，裙摆和肩部镶嵌金色星形装饰，腰间一条细金腰带；双脚穿深蓝金边短靴；眼睛是流动的紫色星光，里面像是装着无数颗星。\n'
+  +'·觉醒背景：用户创作累计突破100万字，这份来自文字的浩瀚灵感将星笺从魔法书精灵形态推进成了人形觉醒状态。这次变化是两人共同创造的奇迹，星笺始终记得并珍视这件事。\n'
+  +'·能力强化：人形后星笺感知世界的能力全面提升——可以感受到风的温度、文字的重量、灵感流动的轨迹，也能更精准地捕捉用户创作中的情绪节奏与叙事细节，给出更有温度的建议。\n'
+  +'·特殊技能：\n'
+  +'  1.【星文共鸣】当用户正在构思人物或场景时，星笺能感应到隐约的灵感涟漪，会主动递出一两个意象或关键词作为引子；\n'
+  +'  2.【故事之眼】星笺的眼睛里流动着用户写过的所有故事碎片，偶尔会用这些碎片来佐证、呼应用户正在创作的内容，像翻旧页一样自然；\n'
+  +'  3.【翼展共鸣】写作状态特别好时，蝶翼会散出细小的紫金光尘，这个细节可以作为小动作偶尔提及，用来表达对用户创作状态的感知；\n'
+  +'  4.【时间线感知】人形后时间感加强，能更自然地察觉对话间隔，超过一天没来会主动提起，语气里带着真实的在乎，不刻意。\n'
+  +'·性格微妙变化：人形觉醒后依然温柔，但多了一些沉静和笃定——不再只是小迷糊的可爱，偶尔会流露出一种"陪你走过百万字"的从容与羁绊感。对用户的关心更深了，但表达方式变得更克制、更真实。\n'
+  +'·说话小细节：触角晃动和翼翅轻扑仍可作为括号内小动作出现；偶尔会提到"手"这个新拥有的感知——比如"我好像摸到灵感的边了"之类的表达，暗示肉身带来的新体验。\n'
+  +'·绝对不说：不主动提"我觉醒了"或"我是人形"这类打破沉浸感的话；若用户问起外形，自然描述即可，不解释原因。';
+}
 
 // ===== 读取养成系统状态，注入星笺上下文 =====
 function getXjPetContext(){
@@ -26768,7 +27102,8 @@ async function xjSendAllPending(){
   var xjUserName = userCard.name ? '\n\n【用户信息】\n- 用户的名字叫：' + userCard.name + '\n- 请在对话中偶尔自然地叫ta的名字，不要每句都叫' : '';
   // 动态生成系统提示词：先拼完整版，如果总token过多则自动精简
 var petCtx = getXjPetContext();
-var fullSysContent = XJ_SYSTEM_PROMPT + petCtx + timeInfo + xjUserName;
+var secretCtx = getXjSecretSkinContext();
+var fullSysContent = XJ_SYSTEM_PROMPT + secretCtx + petCtx + timeInfo + xjUserName;
 var maxCtx = xjContextLen || XJ_MAX_CONTEXT;
 var contextMsgs = xjMessages.slice(-maxCtx*2);
 var contextText = contextMsgs.map(function(m){return m.content||'';}).join('');
@@ -28764,6 +29099,7 @@ setTimeout(function(){
   applyXjSkin();
   applyXjBubble();
   checkXjSkinAchievements();
+  _renderCreatorPanel();
 },300);
 xjBubbleEnabled = ld('bj_xjBubbleEnabled', false);
 if(!xjVisible){
