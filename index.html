@@ -1,8 +1,8 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="zh-CN" style="background:#0f0f14">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>笔记AI</title>
 <link rel="manifest" href="./manifest.json">
 <meta name="theme-color" content="#6c5ce7">
@@ -13,15 +13,31 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+<link rel="dns-prefetch" href="https://cdnjs.cloudflare.com">
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    transition-duration: .01ms !important;
+  }
+}
 :root{
 --bg:#0f0f14;--card:#1a1a24;--card2:#22222f;
 --accent:#6c5ce7;--accent2:#a29bfe;
 --text:#e8e8f0;--text2:#9090a8;
 --danger:#ff6b6b;--success:#51cf66;
 --border:#2a2a3a;--shadow:0 4px 20px rgba(0,0,0,0.4);
+}
+html{
+  background:#0f0f14;
+  background-color:#0f0f14;
+}
+body.theme-light ~ html,
+html.theme-light{
+  background:#f5f5f8;
 }
 body{
 font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;
@@ -33,6 +49,8 @@ position:relative;
 text-rendering:optimizeLegibility;
 padding-bottom:env(safe-area-inset-bottom, 0px);
 scroll-padding-bottom:120px;
+overscroll-behavior:none;
+-webkit-overflow-scrolling:touch;
 }
 body::before{
 content:'';position:fixed;inset:0;z-index:-1;
@@ -73,6 +91,51 @@ font-family:'ZCOOL QingKe HuangYou','PingFang SC','Microsoft YaHei',sans-serif!i
 /* 简洁模式：隐藏高级功能，只保留核心 */
 body.simple-ui .simple-hide{
   display:none!important;
+}
+/* ==================== PAGE LOADING OVERLAY ==================== */
+.page-loading-ov{
+  position:fixed;inset:0;z-index:9992;
+  background:var(--bg);
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  opacity:0;pointer-events:none;
+  transition:opacity .22s ease;
+  will-change:opacity;
+}
+.page-loading-ov.show{opacity:1;pointer-events:auto;}
+.pl-icon{
+  width:80px;height:80px;
+  border-radius:50%;object-fit:cover;
+  margin-bottom:20px;
+  animation:plBounce 2s ease-in-out infinite;
+  filter:drop-shadow(0 4px 16px rgba(108,92,231,.4));
+}
+.pl-icon.secret-icon{
+  width:64px;height:96px;
+  border-radius:0;object-fit:contain;
+  filter:drop-shadow(0 0 20px rgba(162,155,254,.75));
+}
+.pl-label{
+  font-size:13px;color:var(--text2);
+  letter-spacing:2px;display:flex;
+  align-items:center;gap:6px;
+}
+.pl-label.secret{
+  font-style:italic;letter-spacing:3px;
+  background:linear-gradient(90deg,#c3a8ff,#e2d0ff,#a29bfe,#d4a8ff,#c3a8ff);
+  background-size:400% auto;
+  -webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;
+  animation:plSecretShine 3s linear infinite;
+  filter:drop-shadow(0 0 8px rgba(162,155,254,.5));
+}
+@keyframes plBounce{
+  0%,100%{transform:translateY(0) scale(1);}
+  50%{transform:translateY(-12px) scale(1.06);}
+}
+@keyframes plSecretShine{
+  0%{background-position:0% center;}
+  100%{background-position:400% center;}
 }
 /* SPLASH */
 .splash{
@@ -273,7 +336,7 @@ box-shadow:0 4px 15px rgba(108,92,231,.4);transition:all .3s;
 }
 .splash-name-confirm:active{transform:scale(.95);}
 /* APP */
-.app{opacity:0;transition:opacity .5s .2s;padding-bottom:68px;}
+.app{opacity:0;transition:opacity .5s .2s;padding-bottom:calc(68px + env(safe-area-inset-bottom, 16px));min-height:100vh;}
 .app.show{opacity:1;}
 
 /* HEADER */
@@ -284,11 +347,13 @@ backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 padding:16px 20px 12px;
 border-bottom:1px solid rgba(108,92,231,.15);
 display:flex;justify-content:space-between;align-items:center;
-box-shadow:0 4px 30px rgba(0,0,0,.2);
+box-shadow:0 4px 30px rgba(0,0,0,.2),0 1px 0 rgba(108,92,231,.08) inset;
+transition:box-shadow .3s;
 }
+.hdr:hover{box-shadow:0 4px 30px rgba(0,0,0,.3),0 1px 0 rgba(108,92,231,.15) inset;}
 .hdr-left h1{
 font-family:'ZCOOL QingKe HuangYou','PingFang SC',sans-serif!important;
-font-size:22px;font-weight:400;letter-spacing:2px;
+font-size:24px;font-weight:400;letter-spacing:3px;
 background:linear-gradient(135deg,var(--accent),var(--accent2));
 -webkit-background-clip:text;-webkit-text-fill-color:transparent;
 background-clip:text;
@@ -337,12 +402,16 @@ body.theme-light .tts-bar-btns button{background:var(--card2);color:var(--text);
   display:flex;
   justify-content:space-around;
   padding:8px 0 calc(12px + env(safe-area-inset-bottom, 0px));
-    transition:transform .3s, opacity .3s;
+  transition:transform .3s, opacity .3s;
   box-shadow:0 -4px 30px rgba(0,0,0,.3);
+  -webkit-transform:translateZ(0);
+  transform:translateZ(0);
 }
 .bnav::before{
-content:'';position:absolute;top:0;left:10%;right:10%;height:1px;
-background:linear-gradient(90deg,transparent,var(--accent),transparent);
+content:'';position:absolute;top:0;left:5%;right:5%;height:1px;
+background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
+opacity:.8;
+box-shadow:0 0 8px var(--accent);
 }
 .bnav-i{
 display:flex;flex-direction:column;align-items:center;gap:2px;
@@ -379,7 +448,8 @@ box-shadow:0 2px 10px rgba(0,0,0,.05) inset;
 }
 .sbar input:focus{
 border-color:var(--accent);
-box-shadow:0 0 0 3px rgba(108,92,231,.15),0 2px 10px rgba(0,0,0,.05) inset;
+box-shadow:0 0 0 3px rgba(108,92,231,.18),0 0 20px rgba(108,92,231,.08),0 2px 10px rgba(0,0,0,.05) inset;
+transform:scale(1.005);
 }
 .sbar input::placeholder{color:var(--text2);opacity:.7;}
 .btn-gen{
@@ -391,7 +461,7 @@ white-space:nowrap;transition:all .4s cubic-bezier(.4,0,.2,1);
 box-shadow:0 4px 15px rgba(108,92,231,.3),0 0 20px rgba(108,92,231,.1);
 position:relative;overflow:hidden;
 }
-.btn-gen:hover{background-position:100% 0;box-shadow:0 6px 25px rgba(108,92,231,.4);}
+.btn-gen:hover{background-position:100% 0;box-shadow:0 8px 30px rgba(108,92,231,.5),0 0 15px rgba(162,155,254,.2);transform:translateY(-2px);}
 .btn-gen::after{
 content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
 background:linear-gradient(45deg,transparent,rgba(255,255,255,.1),transparent);
@@ -505,7 +575,7 @@ opacity:0;transition:opacity .3s;
 font-size:12px;color:var(--text2);line-height:1.7;margin-bottom:10px;
 display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;
 }
-.acard-ft{display:flex;justify-content:space-between;align-items:center;}
+.acard-ft{display:flex;justify-content:space-between;align-items:center;margin-top:4px;padding-top:8px;border-top:1px solid rgba(108,92,231,.06);}
 .acard-tags{display:flex;gap:5px;flex-wrap:wrap;flex:1;}
 .acard-tag{padding:2px 7px;border-radius:7px;font-size:9px;background:var(--card2);color:var(--text2);}
 .acard-wc{font-size:10px;color:var(--text2);margin-right:8px;white-space:nowrap;}
@@ -1355,15 +1425,81 @@ filter:drop-shadow(0 4px 12px rgba(108,92,231,.5));
   60%{opacity:0.4;}
   100%{opacity:0;}
 }
-.xj-global-float .xj-gb-bubble{
-position:fixed;z-index:20;pointer-events:none;
+.xj-gb-bubble{
+position:fixed;z-index:9999;pointer-events:none;
 background:linear-gradient(135deg,rgba(108,92,231,.95),rgba(138,128,237,.9));
 color:#fff;padding:10px 16px;border-radius:16px 16px 16px 6px;
 font-size:12px;line-height:1.6;
-animation:xjBubbleIn .4s ease;
+animation:xjBubbleIn .4s cubic-bezier(.34,1.56,.64,1);
 box-shadow:0 6px 20px rgba(108,92,231,.45);
-max-width:260px;min-width:100px;white-space:normal;word-break:break-word;
-left:auto;right:auto;bottom:auto;top:auto;
+max-width:min(240px,calc(100vw - 24px));min-width:80px;
+white-space:normal;word-break:break-word;
+}
+/* 赛博朋克 */
+.xj-gb-bubble.skin-gold{
+background:linear-gradient(135deg,rgba(10,8,25,.97),rgba(25,15,55,.96));
+color:#00e5ff;border:1px solid rgba(0,229,255,.5);
+box-shadow:0 0 10px rgba(0,229,255,.4),0 0 28px rgba(108,92,231,.25),inset 0 0 10px rgba(0,229,255,.05);
+border-radius:4px 14px 14px 4px;font-family:monospace;letter-spacing:.5px;
+}
+/* 绿野仙踪 */
+.xj-gb-bubble.skin-green{
+background:linear-gradient(135deg,rgba(22,68,32,.97),rgba(14,50,22,.96));
+color:#a8e6b0;border:1px solid rgba(80,200,100,.4);
+box-shadow:0 4px 16px rgba(40,160,60,.35),inset 0 0 12px rgba(80,200,100,.06);
+border-radius:16px 16px 6px 16px;
+}
+/* 白雪天使 */
+.xj-gb-bubble.skin-snow{
+background:linear-gradient(135deg,rgba(210,232,255,.96),rgba(238,248,255,.94));
+color:#1e4a78;border:1px solid rgba(180,220,255,.8);
+box-shadow:0 4px 20px rgba(120,180,255,.3),inset 0 0 14px rgba(255,255,255,.55);
+border-radius:20px 20px 20px 6px;
+}
+/* 海贝书虫 */
+.xj-gb-bubble.skin-sea{
+background:linear-gradient(135deg,rgba(8,35,75,.97),rgba(0,55,95,.96));
+color:#7fe8f5;border:1px solid rgba(100,200,220,.4);
+box-shadow:0 4px 20px rgba(0,150,200,.35),inset 0 0 12px rgba(100,200,220,.07);
+border-radius:16px 6px 16px 16px;
+}
+/* 樱花浪漫 */
+.xj-gb-bubble.skin-cherry{
+background:linear-gradient(135deg,rgba(255,185,205,.97),rgba(245,155,185,.95));
+color:#6b1a32;border:1px solid rgba(255,160,190,.55);
+box-shadow:0 4px 20px rgba(220,100,140,.35),inset 0 0 12px rgba(255,255,255,.22);
+border-radius:20px 20px 6px 20px;
+}
+/* 星境幻境（隐藏皮肤，着重美化） */
+.xj-gb-bubble.skin-secret{
+position:fixed;
+background:linear-gradient(135deg,rgba(6,3,18,.98) 0%,rgba(28,8,58,.97) 50%,rgba(6,3,18,.98) 100%);
+color:#e2d0ff;
+box-shadow:
+  0 0 0 1px rgba(162,155,254,.55),
+  0 0 14px rgba(162,155,254,.35),
+  0 0 40px rgba(108,92,231,.22),
+  inset 0 0 18px rgba(108,92,231,.1);
+border-radius:12px;
+font-style:italic;letter-spacing:.4px;
+text-shadow:0 0 8px rgba(162,155,254,.55);
+animation:xjBubbleIn .55s cubic-bezier(.34,1.56,.64,1),xjSecretGlow 3s ease-in-out infinite;
+}
+.xj-gb-bubble.skin-secret::before{
+content:'✦';
+position:absolute;top:-9px;left:50%;transform:translateX(-50%);
+font-size:11px;color:rgba(162,155,254,.9);font-style:normal;
+text-shadow:0 0 8px rgba(162,155,254,1);
+animation:xjSecretStar 2.2s ease-in-out infinite;
+pointer-events:none;
+}
+@keyframes xjSecretGlow{
+0%,100%{box-shadow:0 0 0 1px rgba(162,155,254,.55),0 0 14px rgba(162,155,254,.35),0 0 40px rgba(108,92,231,.22),inset 0 0 18px rgba(108,92,231,.1);}
+50%{box-shadow:0 0 0 1px rgba(200,190,255,.75),0 0 22px rgba(162,155,254,.55),0 0 60px rgba(108,92,231,.32),inset 0 0 24px rgba(108,92,231,.15);}
+}
+@keyframes xjSecretStar{
+0%,100%{opacity:.55;transform:translateX(-50%) scale(1) rotate(0deg);}
+50%{opacity:1;transform:translateX(-50%) scale(1.4) rotate(180deg);}
 }
 @keyframes xjGlobalFloat{
 0%,100%{transform:translateY(0) translateX(0);}
@@ -1373,9 +1509,9 @@ left:auto;right:auto;bottom:auto;top:auto;
 80%{transform:translateY(-4px) translateX(-1px);}
 }
 @keyframes xjBubbleIn{
-0%{opacity:0;transform:translateX(-50%) translateY(8px) scale(.8);}
-50%{transform:translateX(-50%) translateY(-2px) scale(1.02);}
-100%{opacity:1;transform:translateX(-50%) translateY(0) scale(1);}
+0%{opacity:0;transform:translateY(10px) scale(.82);}
+60%{transform:translateY(-3px) scale(1.04);}
+100%{opacity:1;transform:translateY(0) scale(1);}
 }
 @keyframes xjFloat{
 0%,100%{
@@ -1502,10 +1638,12 @@ display:flex;align-items:center;gap:5px;
 .set-modal-hdr h2{font-size:16px;font-weight:700;flex:1;}
 .set-modal-body{padding:18px;}
 .set-entry{
-background:var(--card);border-radius:14px;padding:16px;
-border:1px solid var(--border);margin-bottom:12px;
+background:linear-gradient(135deg,var(--card) 0%,rgba(108,92,231,.03) 100%);
+border-radius:16px;padding:16px 18px;
+border:1px solid var(--border);margin-bottom:10px;
 display:flex;justify-content:space-between;align-items:center;
-cursor:pointer;transition:all .3s;
+cursor:pointer;transition:all .35s cubic-bezier(.4,0,.2,1);
+box-shadow:0 2px 8px rgba(0,0,0,.04);
 }
 .set-entry:active{transform:scale(.98);border-color:var(--accent);}
 @media (hover:hover){.set-entry:hover{border-color:var(--accent);background:rgba(108,92,231,.03);}}
@@ -1817,6 +1955,8 @@ box-shadow:0 10px 40px rgba(0,0,0,.4),0 0 30px rgba(108,92,231,.25),0 0 0 1px rg
 max-width:320px;font-weight:500;
 word-break:break-word;line-height:1.5;
 letter-spacing:.5px;
+backdrop-filter:blur(20px) saturate(180%);
+-webkit-backdrop-filter:blur(20px) saturate(180%);
 }
 .toast.show{opacity:1;transform:translate(-50%,-50%) scale(1);}
 /* 防闪烁：给所有弹窗加硬件加速 */
@@ -1825,6 +1965,8 @@ letter-spacing:.5px;
 transform:translateZ(0);
 -webkit-backface-visibility:hidden;
 backface-visibility:hidden;
+isolation:isolate;
+contain:layout style;
 }
 .res-exp-ov .res-exp-box,.dlg-ov .dlg-box,.inp-ov .inp-box,.ai-review-ov .ai-review-box{
 -webkit-transform:translateZ(0);
@@ -1835,7 +1977,7 @@ will-change:transform,opacity;
 display:none;position:fixed;inset:0;z-index:9500;
 background:rgba(0,0,0,.55);align-items:center;justify-content:center;padding:28px;
 }
-.dlg-ov.show{display:flex;animation:fadeIn .2s ease;}
+.dlg-ov.show{display:flex;animation:fadeIn .15s ease;}
 .dlg-box{
 background:var(--card);border-radius:16px;padding:22px;width:100%;
 max-width:310px;border:1px solid var(--border);animation:fadeIn .25s ease;
@@ -2002,6 +2144,92 @@ color:var(--accent2);font-size:11px;cursor:pointer;
 display:none;
 }
 .ed-modal.immersive .immersive-exit{display:block;}
+/* ===== 氛围写作 ===== */
+.ambience-bg{position:absolute;inset:0;background-size:cover;background-position:center;pointer-events:none;display:none;opacity:.55;transition:opacity .8s;}
+.ambience-canvas{position:absolute;inset:0;pointer-events:none;display:none;}
+.ambience-fog{position:absolute;inset:0;pointer-events:none;display:none;background:radial-gradient(ellipse 120% 60% at 50% 0%,rgba(180,200,220,.22) 0%,transparent 60%),radial-gradient(ellipse 80% 80% at 0% 50%,rgba(160,190,215,.12) 0%,transparent 55%),radial-gradient(ellipse 80% 80% at 100% 80%,rgba(160,190,215,.12) 0%,transparent 55%);}
+.ambience-warm-filter{position:absolute;inset:0;pointer-events:none;display:none;background:rgba(160,90,20,.14);mix-blend-mode:multiply;}
+/* 森林：轻微绿意滤镜 */
+.ambience-forest-filter{position:absolute;inset:0;pointer-events:none;display:none;background:rgba(30,80,20,.1);mix-blend-mode:multiply;}
+/* 雪天：冷蓝滤镜 */
+.ambience-snow-filter{position:absolute;inset:0;pointer-events:none;display:none;background:rgba(30,60,110,.1);mix-blend-mode:screen;}
+#edModal.ambience-mode .ambience-bg{display:block;}
+#edModal.ambience-mode .ambience-canvas{display:block;}
+#edModal.ambience-mode.ambience-rain .ambience-fog{display:block;}
+#edModal.ambience-mode.ambience-coffee .ambience-warm-filter{display:block;}
+#edModal.ambience-mode.ambience-forest .ambience-forest-filter{display:block;}
+#edModal.ambience-mode.ambience-snowy .ambience-snow-filter{display:block;}
+.ambience-timer-bar{position:fixed;top:0;left:0;right:0;height:3px;background:transparent;pointer-events:none;display:none;z-index:520;}
+.ambience-timer-progress{height:100%;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width 1s linear;border-radius:0 2px 2px 0;width:0%;}
+#edModal.ambience-mode .ambience-timer-bar{display:block;}
+/* 计时器：仅显示半透明裸数字，无背景框 */
+.ambience-timer-float{
+  position:fixed;bottom:88px;right:16px;z-index:520;
+  padding:0;background:none;border:none;backdrop-filter:none;
+  color:rgba(255,255,255,.28);
+  font-size:13px;font-weight:700;
+  pointer-events:none;display:none;
+  letter-spacing:2px;
+  font-variant-numeric:tabular-nums;
+  text-shadow:0 1px 4px rgba(0,0,0,.5);
+  transition:color .4s;
+}
+#edModal.ambience-mode .ambience-timer-float{display:block;}
+/* 取消按钮：平时半透明小点，点一次完整显示，再点取消，可拖动 */
+.ambience-cancel-btn{
+  position:fixed;
+  bottom:88px;left:16px;
+  z-index:520;
+  width:32px;height:32px;
+  border-radius:50%;
+  background:rgba(220,60,60,.18);
+  border:1.5px solid rgba(255,100,100,.25);
+  color:rgba(255,255,255,.3);
+  font-size:11px;cursor:pointer;
+  display:none;
+  touch-action:none;
+  -webkit-tap-highlight-color:transparent;
+  transition:background .25s,border-color .25s,color .25s,width .25s,height .25s,border-radius .25s,box-shadow .25s;
+  overflow:hidden;
+  white-space:nowrap;
+  user-select:none;-webkit-user-select:none;
+}
+/* 完整显示态 */
+.ambience-cancel-btn.revealed{
+  width:auto;height:auto;
+  border-radius:20px;
+  padding:8px 16px;
+  background:rgba(200,50,50,.82);
+  border-color:rgba(255,120,120,.5);
+  color:#fff;
+  box-shadow:0 4px 18px rgba(180,40,40,.5);
+}
+/* 拖动态 */
+.ambience-cancel-btn.dragging{
+  opacity:.85;
+  box-shadow:0 6px 24px rgba(0,0,0,.4);
+  transition:none;
+}
+#edModal.ambience-mode .ambience-cancel-btn{display:flex;align-items:center;justify-content:center;gap:5px;}
+.ambience-panel-ov{position:fixed;inset:0;z-index:600;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);display:none;align-items:center;justify-content:center;animation:fadeIn .2s ease;}
+.ambience-panel-ov.show{display:flex;}
+.ambience-panel{background:var(--card);border-radius:20px;padding:20px;width:min(90vw,380px);max-height:85vh;overflow-y:auto;border:1px solid var(--border);box-shadow:0 20px 60px rgba(0,0,0,.5);}
+.ambience-panel h3{font-size:16px;font-weight:700;margin-bottom:4px;display:flex;align-items:center;gap:8px;}
+.ap-sub{font-size:11px;color:var(--text2);margin-bottom:16px;line-height:1.6;}
+.ambience-types{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:16px;}
+.ambience-type-btn{padding:14px 10px;border-radius:14px;border:2px solid var(--border);background:var(--bg);cursor:pointer;text-align:center;transition:all .25s;-webkit-tap-highlight-color:transparent;}
+.ambience-type-btn:active{transform:scale(.96);}
+.ambience-type-btn.sel{border-color:var(--accent);background:rgba(108,92,231,.14);}
+.at-icon{font-size:24px;margin-bottom:4px;}
+.at-name{font-size:12px;font-weight:600;color:var(--text);}
+.at-desc{font-size:10px;color:var(--text2);margin-top:2px;}
+.ambience-time-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px;}
+.ambience-time-chip{padding:7px 14px;border-radius:20px;font-size:12px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .2s;color:var(--text2);-webkit-tap-highlight-color:transparent;}
+.ambience-time-chip.sel{border-color:var(--accent);background:rgba(108,92,231,.12);color:var(--accent2);font-weight:600;}
+.ambience-time-chip:active{transform:scale(.95);}
+.ambience-custom-row{display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+.ambience-custom-row input{width:64px;padding:7px 10px;border-radius:10px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:13px;text-align:center;outline:none;}
+.ambience-custom-row input:focus{border-color:var(--accent);}
 .ed-modal{
 display:none;position:fixed;inset:0;z-index:510;
 background:var(--bg);overflow:hidden;
@@ -3642,6 +3870,67 @@ body.theme-light .ed-reader-footer{background:var(--bg);}
     .rd-reader-mode .landscape-hint{display:block;}
   }
 }
+/* ==================== 桌面端PC优化 ==================== */
+@media (min-width: 769px) {
+  /* 整体内容居中，最大宽度520px，两侧有紫色边框装饰 */
+  body {
+    max-width: 520px;
+    margin: 0 auto;
+    box-shadow: 0 0 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(108,92,231,.2);
+  }
+  /* 底部导航栏也跟着居中 */
+  .bnav {
+    max-width: 520px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    border-radius: 16px 16px 0 0;
+  }
+  .bnav.hide {
+    transform: translateX(-50%) translateY(120%) !important;
+  }
+  /* 所有全屏弹窗（阅读/编辑/设置）都居中 */
+  .modal, .set-modal {
+    max-width: 520px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+    box-shadow: 0 0 80px rgba(0,0,0,0.6);
+  }
+  /* 顶部阅读进度条居中 */
+  .rd-progress-bar {
+    max-width: 520px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  /* 弹窗动画在PC端去掉滑入，改为淡入更自然 */
+  .modal.show { animation: fadeIn .2s ease; }
+  /* 沉浸阅读退出按钮位置修正 */
+  .immersive-exit-float { right: calc(50% - 240px); }
+  /* 自定义鼠标滚动条（PC端专属，好看又实用） */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+  ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
+  /* 卡片悬停更强调 */
+  .acard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 14px 40px rgba(108,92,231,.22);
+    border-color: rgba(108,92,231,.35);
+  }
+  /* 按钮有悬停高亮 */
+  .btn-gen:hover { transform: translateY(-1px); }
+  .hdr-btn:hover { border-color: var(--accent); color: var(--accent2); }
+  /* 导航图标鼠标悬停效果 */
+  .bnav-i:hover { color: var(--accent2); background: rgba(108,92,231,.08); border-radius: 14px; }
+  /* 设置列表项悬停 */
+  .set-entry:hover { border-color: var(--accent); background: rgba(108,92,231,.04); }
+  /* 阅读文字在PC端稍微大一点 */
+  .rd-content { font-size: var(--rd-fontsize, 17px); line-height: var(--rd-lineheight, 2.4); max-width: 700px; margin: 0 auto; padding: 0 16px; }
+  /* 减少粒子数量以降低CPU占用 */
+  .splash-particle { animation-duration: 14s; }
+}
 /* ==================== 数据管理页面美化 ==================== */
 .data-section {
   margin-bottom: 20px;
@@ -4328,7 +4617,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   }
   .bnav.hide{transform:none!important;opacity:1!important;pointer-events:auto!important;}
   .bnav::before{display:none;}
-  .bnav-i{padding:12px 20px;font-size:12px;flex-direction:row;justify-content:flex-start;gap:10px;border-radius:10px;width:calc(100% - 20px);margin:0 10px;}
+  .bnav-i{padding:14px 22px;font-size:13px;font-weight:500;flex-direction:row;justify-content:flex-start;gap:12px;border-radius:12px;width:calc(100% - 20px);margin:0 10px;letter-spacing:.3px;}
   .bnav-i svg{width:20px;height:20px;flex-shrink:0;}
   
   /* 主内容区左移 */
@@ -4344,7 +4633,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   
   /* 文章卡片横排更舒适 */
   .acard{padding:18px 20px;}
-  .acard:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(108,92,231,.15);}
+  .acard:hover{transform:translateY(-4px) scale(1.005);box-shadow:0 16px 48px rgba(108,92,231,.25),0 0 0 1px rgba(108,92,231,.2);border-color:rgba(108,92,231,.4);transition:all .35s cubic-bezier(.4,0,.2,1);}
   
   /* 收藏书架用更大的网格 */
   .bgrid{padding:0 32px;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:16px;}
@@ -5576,6 +5865,24 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   <li>首屏只渲染作坊页面，其他页面延迟500ms后渲染，减少启动白屏时间</li>
 </ul>
 
+<h3>7.91）页面切换加载动画</h3>
+<p>切换五大主页面或打开全屏功能时，会显示短暂的加载过渡动画，防止大量内容渲染时造成的闪烁和白屏。</p>
+<ul>
+  <li>适用范围：作坊/收藏/创作/设置/资源五大页面、设置子页面、阅读器、编辑器、角色模拟、故事转盘、星笺聊天等所有全屏切换</li>
+  <li>小弹窗、底部面板、提示框不受影响</li>
+  <li>加载图标使用当前星笺皮肤图案</li>
+  <li>使用「星境幻境」隐藏皮肤时，加载图标变为专属人形图，文字带有星光流动特效</li>
+  <li>内置 500ms 超时保护，即使加载出错也不会卡住</li>
+</ul>
+<h3>7.92）氛围写作功能修复（v1.3.7）</h3>
+<p>对氛围写作功能进行了多项稳定性修复：</p>
+<ul>
+  <li>修复取消按钮在多次开启/关闭后状态混乱的问题</li>
+  <li>修复部分手机因浏览器策略导致背景音频无法自动播放的问题（现在会静默处理，不报错）</li>
+  <li>修复退出氛围模式后 Canvas 粒子特效残留的问题</li>
+  <li>加强了退出编辑器时的提示引导，会同时高亮左下角的取消按钮</li>
+</ul>
+
 <h3>8）角色模拟：和你笔下的角色聊天</h3>
 <p>在顶部右上角点击「更多」→「🎭 角色模拟」即可进入。</p>
 <p><strong>这是什么？</strong></p>
@@ -5907,7 +6214,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div id="toolOverlay" style="display:none;position:fixed;inset:0;z-index:550;background:rgba(0,0,0,.3)" onclick="closeAllToolPanels()"></div>
 <!-- EDITOR MODAL -->
 <div class="theme-bg-layer cr-theme-bg" id="crThemeBg"></div>
-<div class="ed-modal" id="edModal" role="dialog" aria-label="编辑器"> <div class="cr-bg" id="crBg"></div>
+<div class="ed-modal" id="edModal" role="dialog" aria-label="编辑器"> <div class="cr-bg" id="crBg"></div> <div class="ambience-bg" id="ambienceBg"></div> <canvas class="ambience-canvas" id="ambienceCanvas"></canvas> <div class="ambience-fog"></div> <div class="ambience-warm-filter"></div> <div class="ambience-forest-filter"></div> <div class="ambience-snow-filter"></div>
 <div class="ed-hdr" style="display:none">
 <input class="ed-title-input" id="edTitle" placeholder="输入标题...">
 </div>
@@ -5929,6 +6236,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="tool-item" onclick="closeAllToolPanels();copyEditorContent()"><i class="fas fa-copy"></i> 复制全文</div>
 <div class="tool-item" onclick="closeAllToolPanels();exportEdToTxt()"><i class="fas fa-file-export"></i> 导出TXT <span class="ti-desc">保存到本地</span></div>
 <div class="tool-item" onclick="closeAllToolPanels();toggleImmersiveEdit()" id="immersiveEditBtn2"><i class="fas fa-moon"></i> 沉浸写作 <span class="ti-desc">全屏专注</span></div>
+<div class="tool-item" onclick="closeAllToolPanels();openAmbiencePanel()" style="border-color:rgba(108,92,231,.6);color:var(--accent2)"><i class="fas fa-cloud-moon"></i> 氛围写作 <span class="ti-desc">音效+计时</span></div>
 </div>
 </div>
 <div class="tool-group">
@@ -6009,6 +6317,39 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <span class="ef-details" id="edReadTime" style="margin-left:10px;font-size:9px;color:var(--text2)"></span>
 <span class="ef-details" id="edTokenEst" style="margin-left:10px;font-size:9px;color:var(--text2)" title="估算Token数（含系统提示词）"></span>
 <span class="ef-details" id="edSaveStatus">未保存</span>
+</div>
+<div class="ambience-timer-bar"><div class="ambience-timer-progress" id="ambienceTimerProgress"></div></div>
+<div class="ambience-timer-float" id="ambienceTimerFloat">00:00</div>
+<button class="ambience-cancel-btn" onclick="cancelAmbienceMode()"><i class="fas fa-times"></i> 取消氛围</button>
+</div>
+<div class="ambience-panel-ov" id="ambiencePanelOv">
+<div class="ambience-panel">
+<h3><i class="fas fa-cloud-moon" style="color:var(--accent2)"></i> 氛围写作</h3>
+<div class="ap-sub">沉浸式环境音 + 专注计时，让写作更有仪式感</div>
+<div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:600">选择氛围</div>
+<div class="ambience-types">
+<div class="ambience-type-btn" id="at-rainy" onclick="selectAmbienceType('rainy')"><div class="at-icon"><i class="fas fa-cloud-rain"></i>️</div><div class="at-name">雨天</div><div class="at-desc">雨声 · 静谧</div></div>
+<div class="ambience-type-btn" id="at-coffee" onclick="selectAmbienceType('coffee')"><div class="at-icon"><i class="fas fa-mug-hot"></i></div><div class="at-name">咖啡店</div><div class="at-desc">暖意 · 慵懒</div></div>
+<div class="ambience-type-btn" id="at-forest" onclick="selectAmbienceType('forest')"><div class="at-icon"><i class="fas fa-tree"></i></div><div class="at-name">森林</div><div class="at-desc">鸟鸣 · 风叶</div></div>
+<div class="ambience-type-btn" id="at-snowy" onclick="selectAmbienceType('snowy')"><div class="at-icon"><i class="fas fa-house-chimney"></i></div><div class="at-name">雪天小屋</div><div class="at-desc">暴风雪 · 壁炉</div></div>
+<div class="ambience-type-btn" id="at-library" onclick="selectAmbienceType('library')" style="grid-column:span 2"><div class="at-icon"><i class="fas fa-book-open"></i></div><div class="at-name">图书馆</div><div class="at-desc">书写声 · 翻书声</div></div>
+</div>
+<div style="font-size:11px;color:var(--text2);margin-bottom:8px;font-weight:600">写作时长</div>
+<div class="ambience-time-row">
+<div class="ambience-time-chip sel" onclick="selectAmbienceTime(25,this)">25 分</div>
+<div class="ambience-time-chip" onclick="selectAmbienceTime(45,this)">45 分</div>
+<div class="ambience-time-chip" onclick="selectAmbienceTime(60,this)">60 分</div>
+<div class="ambience-time-chip" onclick="selectAmbienceTime(90,this)">90 分</div>
+</div>
+<div class="ambience-custom-row">
+<span style="font-size:11px;color:var(--text2)">自定义：</span>
+<input type="number" id="ambienceCustomMin" min="1" max="300" placeholder="分钟" oninput="selectAmbienceTimeCustom()">
+<span style="font-size:11px;color:var(--text2)">分钟</span>
+</div>
+<div style="display:flex;gap:8px">
+<button onclick="closeAmbiencePanel()" style="flex:1;padding:10px;border-radius:12px;border:1px solid var(--border);background:var(--bg);color:var(--text2);font-size:13px;cursor:pointer">取消</button>
+<button onclick="startAmbienceWriting()" id="ambienceStartBtn" disabled style="flex:2;padding:10px;border-radius:12px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;font-weight:600;cursor:pointer;opacity:.45"><i class="fas fa-play"></i> 开始</button>
+</div>
 </div>
 </div>
 <!-- ARTICLE REWRITE -->
@@ -8549,6 +8890,65 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 </div>
 </div>
+
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)"><i class="fas fa-cloud-moon"></i> 沉浸式写作<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="set-grp-c show">
+<p style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.6">调整氛围写作的背景音乐、粒子特效强度，以及背景图来源。</p>
+
+<div style="padding:8px 0 6px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:13px;font-weight:600">背景音量</span>
+    <span style="font-size:12px;color:var(--accent2);font-weight:700" id="ambienceVolLabel">100%</span>
+  </div>
+  <input type="range" min="0" max="200" step="5" value="100" id="ambienceVolSlider"
+    style="width:100%;accent-color:var(--accent)"
+    oninput="applyAmbienceVolume(this.value)">
+  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:4px">
+    <span>静音</span><span>100% 默认</span><span>200%</span>
+  </div>
+</div>
+
+<div style="padding:8px 0 6px;margin-top:4px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+    <span style="font-size:13px;font-weight:600">特效强度</span>
+    <span style="font-size:12px;color:var(--accent2);font-weight:700" id="ambienceEffectLabel">100%</span>
+  </div>
+  <input type="range" min="0" max="200" step="5" value="100" id="ambienceEffectSlider"
+    style="width:100%;accent-color:var(--accent)"
+    oninput="applyAmbienceEffect(this.value)">
+  <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--text2);margin-top:4px">
+    <span>关闭</span><span>100% 默认</span><span>200%</span>
+  </div>
+</div>
+
+<div style="padding:8px 0 4px;margin-top:4px">
+  <div style="font-size:13px;font-weight:600;margin-bottom:10px">背景图来源</div>
+  <div style="display:flex;flex-direction:column;gap:8px">
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--bg);transition:border-color .2s" id="ambienceBgModeBuiltinRow">
+      <input type="radio" name="ambienceBgMode" value="builtin" checked id="ambienceBgBuiltin"
+        style="accent-color:var(--accent);width:16px;height:16px"
+        onchange="setAmbienceBgMode('builtin')">
+      <div>
+        <div style="font-size:13px;font-weight:600">内置背景图</div>
+        <div style="font-size:10px;color:var(--text2)">使用每种氛围专属的内置风景图</div>
+      </div>
+    </label>
+    <label style="display:flex;align-items:center;gap:10px;cursor:pointer;padding:10px 12px;border-radius:12px;border:1px solid var(--border);background:var(--bg);transition:border-color .2s" id="ambienceBgModeCustomRow">
+      <input type="radio" name="ambienceBgMode" value="custom" id="ambienceBgCustom"
+        style="accent-color:var(--accent);width:16px;height:16px"
+        onchange="setAmbienceBgMode('custom')">
+      <div>
+        <div style="font-size:13px;font-weight:600">使用创作背景图</div>
+        <div style="font-size:10px;color:var(--text2)">沿用编辑器当前设置的背景图（如无则自动切换内置）</div>
+      </div>
+    </label>
+  </div>
+</div>
+
+</div>
+</div>
+
 </div>
 </div>
 <!-- GEN TEMPLATE 生成模板全屏弹窗 -->
@@ -8645,6 +9045,14 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <span id="rdEditStatus">未修改</span>
 <span id="rdEditWc2">0字</span>
 </div>
+</div>
+<!-- PAGE LOADING OVERLAY -->
+<div class="page-loading-ov" id="pageLoadingOv">
+  <img id="plIcon" src="./xinx2.png" class="pl-icon" alt="">
+  <div id="plLabel" class="pl-label">
+    <span>努力加载中</span>
+    <span class="ldots"><span></span><span></span><span></span></span>
+  </div>
 </div>
 <div class="toast" id="toast" role="alert" aria-live="polite"></div>
 
@@ -9065,6 +9473,90 @@ let _unlocked = false;
 let articleContexts = ld('bj_articleContexts', {}); // 存储每篇文章的上下文设置
 let xjAbortCtrl = null; // 星笺聊天中止控制
 let ringAudio = null; // 铃声播放器
+// ==================== PAGE LOADING SYSTEM ====================
+var _plShowing = false;
+var _plHideTimer = null;
+
+function _pl_doShow(){
+  try{
+    var isSecret=(typeof xjSkin!=='undefined'&&xjSkin==='secret');
+    var icon=document.getElementById('plIcon');
+    var label=document.getElementById('plLabel');
+    var ov=document.getElementById('pageLoadingOv');
+    if(!ov)return;
+    if(icon){
+      icon.src=isSecret?'./Humanoid.png':'./xinx2.png';
+      icon.className=isSecret?'pl-icon secret-icon':'pl-icon';
+    }
+    if(label){
+      label.className=isSecret?'pl-label secret':'pl-label';
+    }
+    _plShowing=true;
+    ov.classList.add('show');
+    // 最长显示 3 秒兜底
+    clearTimeout(window._plMaxTimer);
+    window._plMaxTimer=setTimeout(function(){
+      ov.classList.remove('show');
+      _plShowing=false;
+    },3000);
+  }catch(e){}
+}
+
+function hidePageLoading(){
+  clearTimeout(window._plMaxTimer);
+  if(!_plShowing)return;
+  var ov=document.getElementById('pageLoadingOv');
+  if(!ov){_plShowing=false;return;}
+  // 至少显示 280ms 防止一闪而过
+  clearTimeout(_plHideTimer);
+  _plHideTimer=setTimeout(function(){
+    ov.classList.remove('show');
+    _plShowing=false;
+  },280);
+}
+
+// 只在数据量判断需要时才调用这个
+function showPageLoading(){
+  _pl_doShow();
+}
+
+// 判断是否需要加载动画（根据数据量）
+function _needsLoadingAnim(type){
+  try{
+    if(type==='collection'){
+      return (cols.books.length+cols.shorts.length)>30;
+    }
+    if(type==='create'){
+      return crWorks.length>20;
+    }
+    if(type==='resource'){
+      var total=0;
+      resPacks.forEach(function(p){total+=(p.items||[]).length;});
+      return total>30;
+    }
+    if(type==='settings'){
+      return (charP.length+worldP.length+styleP.length+ruleP.length)>20;
+    }
+    if(type==='rp'){
+      var ch=typeof getRpCurrentChar==='function'?getRpCurrentChar():null;
+      return ch&&(ch.messages||[]).length>60;
+    }
+    if(type==='reading'){
+      return typeof curRd!=='undefined'&&curRd&&(
+        (curRd.chapters&&curRd.chapters.length>10)||
+        countWords(curRd.content||'')>8000||
+        (curRd.chapters&&curRd.chapters.reduce(function(s,c){return s+countWords(c||'');},0)>8000)
+      );
+    }
+    if(type==='editor'){
+      return typeof curEd!=='undefined'&&curEd&&(
+        (curEd.chapters&&curEd.chapters.length>15)||
+        countWords(curEd.content||'')>5000
+      );
+    }
+  }catch(e){}
+  return false;
+}
 // ==================== TOAST ====================
 let toastTimer=null;
 let _lastToastMsg='';
@@ -9370,20 +9862,26 @@ return cols.shorts.some(s=>s.id===article.id);
 
 // ==================== NAV ====================
 function switchPage(pg,el){
-// 双击同一个tab时回到顶部
 if(el.classList.contains('act')){
 window.scrollTo({top:0,behavior:'smooth'});
 return;
 }
+// 只在数据量大时才显示加载
+var needsLoading=_needsLoadingAnim(pg);
+if(needsLoading) showPageLoading();
+
 document.querySelectorAll('.pg').forEach(p=>p.classList.remove('act'));
 document.getElementById('pg-'+pg).classList.add('act');
 document.querySelectorAll('.bnav-i').forEach(n=>n.classList.remove('act'));
 el.classList.add('act');
+
 if(pg==='collection')renderCollections();
 if(pg==='create')renderCrList();
 if(pg==='resource')renderResList();
 if(pg==='settings'){renderAllPresets();renderCharCards();updateStats();updateStorageDisplay();}
 try{if(xjVisible)document.getElementById('xjGlobalFloat').style.display='';}catch(e){}
+
+if(needsLoading) hidePageLoading();
 }
 // ==================== TAGS ====================
 function renderTags(){
@@ -9661,6 +10159,7 @@ const list=document.getElementById('articleList');
 const hash=curType+'_'+ws.length+'_'+wsDisplayCount+'_'+selTags.join(',')+'_'+cols.books.length+'_'+cols.shorts.length;
 if(hash===_lastRenderArticlesHash&&!renderArticles._force){return;}
 _lastRenderArticlesHash=hash;
+if(!list) return;
 renderArticles._force=false;
 const _wsTypeCache={};
 function getWsByType(type){
@@ -12375,6 +12874,8 @@ function showDetailedWordStats(){
 }
 // ==================== 阅读页核心 ====================
 function openReading(article){
+var _rdNeedsLoading=_needsLoadingAnim('reading');
+if(_rdNeedsLoading) showPageLoading();
 try{document.getElementById('xjGlobalFloat').style.display='none';}catch(e){}
 // Always use the latest version: check workshop first, then collections
 let latestArticle=ws.find(a=>a.id===article.id);
@@ -12452,6 +12953,7 @@ setRdFont(ap.rdFontSize||15);
 setRdLine(ap.rdLineHeight||2);
 applyRdThemeBg();
 document.getElementById('rdModal').classList.add('show');
+if(_rdNeedsLoading) hidePageLoading();
 navPush('rdModal');
 document.getElementById('rdModal').scrollTop=0;
 updateNoteBtn();
@@ -15140,6 +15642,8 @@ const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'se
 const id=map[type];if(!id)return;
 document.getElementById(id).classList.add('show');
 navPush(id);
+  // 打开其他设置时恢复氛围写作控件状态
+  if(type==='other') setTimeout(_restoreAmbienceSettings, 50);
 document.getElementById('bnav').classList.add('hide');
 if(type==='char'){renderCharCards();renderCustomTraitList();renderRelList();renderNpcCards();}
 if(type==='other'){updateXjVisibleUI();updateXjBubbleUI();updateContQualityUINew();initAll7Switches();}
@@ -15939,6 +16443,7 @@ document.addEventListener('webkitfullscreenchange',function(){
 });
 function applyAppearance(){
 document.body.className='';
+document.documentElement.style.background = (ap.theme==='light')?'#f5f5f8':'#0f0f14';
 if(ap.theme==='auto'){
   if(window.matchMedia&&window.matchMedia('(prefers-color-scheme: light)').matches){
     document.body.classList.add('theme-light');
@@ -16762,6 +17267,686 @@ doCopy(header+text.trim()+footer);
 // ==================== EDITOR ====================
 // ==================== IMMERSIVE EDIT ====================
 let isImmersiveEdit=false;
+// ==================== 氛围写作 ====================
+var ambienceMode=false;
+var ambienceType=null;
+// 用户可调参数（从localStorage恢复）
+var ambienceVolumePct = parseInt(localStorage.getItem('bj_ambienceVol')||'100',10);
+var ambienceEffectPct = parseInt(localStorage.getItem('bj_ambienceEffect')||'100',10);
+var ambienceBgMode    = localStorage.getItem('bj_ambienceBgMode')||'builtin';
+// 取消按钮状态
+var _ambiCancelRevealed = false;
+var _ambiCancelDragging = false;
+var _ambiCancelPos = {x:16, y: window.innerHeight - 88 - 32}; // 初始位置
+var ambienceTimerInterval=null;
+var ambienceDetailTimeout=null;
+var ambienceSecsLeft=0;
+var ambienceTotalSecs=0;
+var ambienceAudioMain=null;
+var ambienceAudioDetail=null;
+var ambienceAnimReq=null;
+var ambienceSelectedMins=25;
+var AMBIENCE_CFG={
+  rainy:{
+    bg:'./rainy.jpg',
+    main:'./Singing%20in%20Rainy.mp3',mainVol:0.50,
+    detail:'./page%20turning%20book.wav',detailVol:0.22,detailLoop:false,
+    effect:'rain'
+  },
+  coffee:{
+    bg:'./coffee%20shop.jpg',
+    main:'./Coffee%20shop%20music.mp3',mainVol:0.38,
+    detail:null,
+    effect:'coffee'
+  },
+  forest:{
+    bg:'./forest.jpg',
+    main:'./forest%20birds%20morning loop.mp3',mainVol:0.50,
+    detail:'./wind%20leaves%20rustling.mp3',detailVol:0.30,detailLoop:false,
+    effect:'forest'
+  },
+  snowy:{
+    bg:'./Snowy%20Cottage.jpg',
+    main:'./blizzard%20wind outside.wav',mainVol:0.38,
+    detail:'./fireplace%20crackling%20loop.mp3',detailVol:0.52,detailLoop:true,
+    effect:'snow'
+  },
+  library:{
+    bg:'./library.jpg',
+    main:'Writing%20sound.wav',mainVol:0.32,
+    detail:'./page%20turning%20book.wav',detailVol:0.18,detailLoop:false,
+    effect:'none'
+  }
+};
+
+function openAmbiencePanel(){
+  // 氛围进行中，禁止重新开始，高亮取消按钮引导用户
+  if(ambienceMode){
+    showToast('氛围写作进行中，如需切换请先点左下角取消',2500);
+    var cb=document.querySelector('.ambience-cancel-btn');
+    if(cb){
+      cb.style.transform='scale(1.18)';
+      cb.style.boxShadow='0 0 0 5px rgba(255,80,80,.35),0 4px 20px rgba(200,50,50,.6)';
+      cb.style.animation='none';
+      setTimeout(function(){
+        if(cb){
+          cb.style.transform='';
+          cb.style.boxShadow='';
+          cb.style.animation='ambiCancelPulse 2.5s ease-in-out infinite';
+        }
+      },1400);
+    }
+    return;
+  }
+  ambienceType=null;
+  ambienceSelectedMins=25;
+  document.querySelectorAll('.ambience-type-btn').forEach(function(b){b.classList.remove('sel');});
+  var chips=document.querySelectorAll('.ambience-time-chip');
+  chips.forEach(function(c,i){c.classList.toggle('sel',i===0);});
+  var ci=document.getElementById('ambienceCustomMin');
+  if(ci)ci.value='';
+  var sb=document.getElementById('ambienceStartBtn');
+  if(sb){sb.disabled=true;sb.style.opacity='.45';}
+  document.getElementById('ambiencePanelOv').classList.add('show');
+}
+function closeAmbiencePanel(){
+  document.getElementById('ambiencePanelOv').classList.remove('show');
+}
+function selectAmbienceType(type){
+  ambienceType=type;
+  document.querySelectorAll('.ambience-type-btn').forEach(function(b){b.classList.remove('sel');});
+  var btn=document.getElementById('at-'+type);
+  if(btn)btn.classList.add('sel');
+  _updateAmbienceStartBtn();
+}
+function selectAmbienceTime(mins,el){
+  ambienceSelectedMins=mins;
+  document.querySelectorAll('.ambience-time-chip').forEach(function(c){c.classList.remove('sel');});
+  if(el)el.classList.add('sel');
+  var ci=document.getElementById('ambienceCustomMin');
+  if(ci)ci.value='';
+  _updateAmbienceStartBtn();
+}
+function selectAmbienceTimeCustom(){
+  var ci=document.getElementById('ambienceCustomMin');
+  var v=parseInt(ci.value,10);
+  if(v>0){
+    ambienceSelectedMins=v;
+    document.querySelectorAll('.ambience-time-chip').forEach(function(c){c.classList.remove('sel');});
+  }else{
+    ambienceSelectedMins=0;
+  }
+  _updateAmbienceStartBtn();
+}
+function _updateAmbienceStartBtn(){
+  var sb=document.getElementById('ambienceStartBtn');
+  if(!sb)return;
+  var ok=!!(ambienceType&&ambienceSelectedMins>0);
+  sb.disabled=!ok;
+  sb.style.opacity=ok?'1':'.45';
+}
+function startAmbienceWriting(){
+  if(!ambienceType){showToast('请先选择一种氛围');return;}
+  if(!ambienceSelectedMins||ambienceSelectedMins<=0){showToast('请设置写作时长');return;}
+  closeAmbiencePanel();
+
+  // ── 防御性清理：确保所有旧状态彻底停止，不叠加 ──
+  if(ambienceAnimReq){cancelAnimationFrame(ambienceAnimReq);ambienceAnimReq=null;}
+  if(ambienceTimerInterval){clearInterval(ambienceTimerInterval);ambienceTimerInterval=null;}
+  if(ambienceDetailTimeout){clearTimeout(ambienceDetailTimeout);ambienceDetailTimeout=null;}
+  _fadeOutAndStopAudio(ambienceAudioMain);ambienceAudioMain=null;
+  _fadeOutAndStopAudio(ambienceAudioDetail);ambienceAudioDetail=null;
+  try{var cv=document.getElementById('ambienceCanvas');if(cv)cv.getContext('2d').clearRect(0,0,cv.width,cv.height);}catch(e){}
+
+  var cfg=AMBIENCE_CFG[ambienceType];
+  ambienceMode=true;
+  ambienceTotalSecs=ambienceSelectedMins*60;
+  ambienceSecsLeft=ambienceTotalSecs;
+
+  var modal=document.getElementById('edModal');
+  // 先全部清除，再精确添加当前类型的类名
+  modal.classList.remove('ambience-rain','ambience-coffee','ambience-forest','ambience-snowy','ambience-library');
+  modal.classList.add('ambience-mode');
+  if(cfg.effect==='rain')  modal.classList.add('ambience-rain');
+  if(cfg.effect==='coffee')modal.classList.add('ambience-coffee');
+  if(cfg.effect==='forest')modal.classList.add('ambience-forest');
+  if(cfg.effect==='snow')  modal.classList.add('ambience-snowy');
+
+  // 根据用户设置决定背景图来源
+  var bgEl=document.getElementById('ambienceBg');
+  var crBgEl=document.getElementById('crBg');
+  var crThEl=document.getElementById('crThemeBg');
+
+  if(ambienceBgMode==='custom'){
+    // 自定义模式：保留用户创作背景，隐藏内置背景图层
+    if(bgEl){bgEl.dataset.ambiSaved=bgEl.style.backgroundImage||'';bgEl.style.backgroundImage='';}
+    // crBg / crThemeBg 保持原样，不动
+    if(crBgEl) crBgEl.dataset.ambiSaved='__keep__';
+    if(crThEl) crThEl.dataset.ambiSaved='__keep__';
+    // 若用户根本没设置创作背景，自动降级为内置图
+    var hasCrBg=crBgEl&&crBgEl.style.display!=='none'&&crBgEl.style.backgroundImage&&crBgEl.style.backgroundImage!=='none';
+    if(!hasCrBg){
+      if(bgEl)bgEl.style.backgroundImage='url('+cfg.bg+')';
+    }
+  }else{
+    // 内置模式：显示内置背景，隐藏用户背景
+    if(bgEl)bgEl.style.backgroundImage='url('+cfg.bg+')';
+    if(crBgEl){crBgEl.dataset.ambiSaved=crBgEl.style.display;crBgEl.style.display='none';}
+    if(crThEl){crThEl.dataset.ambiSaved=crThEl.style.opacity||'';crThEl.style.opacity='0';}
+  }
+
+  _initAmbienceCancelBtn();
+  _startAmbienceAudio(cfg);
+  _startAmbienceEffect(cfg.effect);
+  _updateAmbienceTimerDisplay();
+  ambienceTimerInterval=setInterval(_ambienceTick,1000);
+
+  // 每种氛围有专属开场提示
+  var msgs={
+    rainy:'🌧️ 雨声淅沥，图书馆静谧，专心写 '+ambienceSelectedMins+' 分钟',
+    coffee:'☕ 咖啡香气弥漫，惬意创作 '+ambienceSelectedMins+' 分钟',
+    forest:'🌿 鸟鸣环绕、萤火微光，沉浸森林 '+ambienceSelectedMins+' 分钟',
+    snowy:'❄️ 壁炉噼啪作响，暴风雪之夜写 '+ambienceSelectedMins+' 分钟',
+    library:'📚 图书馆翻书声，静谧专注 '+ambienceSelectedMins+' 分钟'
+  };
+  showToast(msgs[ambienceType]||'氛围写作开始！专心写 '+ambienceSelectedMins+' 分钟 ✨',3000);
+}
+
+// 音频淡出停止辅助函数
+function _fadeOutAndStopAudio(audio){
+  if(!audio)return;
+  try{
+    var origVol=audio.volume;
+    var steps=12,step=0;
+    var fade=setInterval(function(){
+      step++;
+      try{
+        if(!audio){clearInterval(fade);return;}
+        audio.volume=Math.max(0,origVol*(1-step/steps));
+        if(step>=steps){clearInterval(fade);try{audio.pause();}catch(e2){}}
+      }catch(e){clearInterval(fade);}
+    },40);
+  }catch(e){try{audio.pause();}catch(e2){}}
+}
+
+function _startAmbienceAudio(cfg){
+  // 主音频：淡入播放
+  try{
+    if(ambienceAudioMain){ambienceAudioMain.pause();ambienceAudioMain=null;}
+    if(cfg.main){
+      ambienceAudioMain=new Audio(cfg.main);
+ambienceAudioMain.loop=true;
+ambienceAudioMain.volume=0;
+ambienceAudioMain.preload='auto';
+var playPromise=ambienceAudioMain.play();
+if(playPromise!==undefined){
+  playPromise.catch(function(e){
+    console.warn('氛围音频自动播放受限，需要用户手势触发：',e);
+  });
+}
+      var targetVol=(cfg.mainVol||0.45)*(ambienceVolumePct/100);
+      var step=0,fadeSteps=24;
+      var fadeIn=setInterval(function(){
+        step++;
+        if(!ambienceAudioMain){clearInterval(fadeIn);return;}
+        ambienceAudioMain.volume=Math.min(targetVol,targetVol*(step/fadeSteps));
+        if(step>=fadeSteps)clearInterval(fadeIn);
+      },50);
+    }
+  }catch(e){}
+
+  // 细节音频：区分循环型（如壁炉）和随机型（如翻书）
+  if(ambienceDetailTimeout){clearTimeout(ambienceDetailTimeout);ambienceDetailTimeout=null;}
+  try{if(ambienceAudioDetail){ambienceAudioDetail.pause();ambienceAudioDetail=null;}}catch(e){}
+
+  if(cfg.detail){
+    if(cfg.detailLoop){
+      // 连续循环的次级氛围音（如壁炉声）
+      try{
+        ambienceAudioDetail=new Audio(cfg.detail);
+        ambienceAudioDetail.loop=true;
+        ambienceAudioDetail.volume=0;
+        ambienceAudioDetail.play().catch(function(){});
+        var dv=(cfg.detailVol||0.4)*(ambienceVolumePct/100);
+        var ds=0,dFadeSteps=20;
+        var dFade=setInterval(function(){
+          ds++;
+          if(!ambienceAudioDetail){clearInterval(dFade);return;}
+          ambienceAudioDetail.volume=Math.min(dv,dv*(ds/dFadeSteps));
+          if(ds>=dFadeSteps)clearInterval(dFade);
+        },60);
+      }catch(e){}
+    }else{
+      // 随机偶发的细节音（如翻书声、风叶声）
+      _scheduleAmbienceDetail(cfg.detail,cfg.detailVol||0.25);
+    }
+  }
+}
+
+function _scheduleAmbienceDetail(file,vol){
+  if(!ambienceMode||!file)return;
+  var v=(vol||0.25)*(ambienceVolumePct/100);
+  // 随机间隔 15~55 秒，模拟真实环境中偶发的细节音
+  var delay=(15+Math.random()*40)*1000;
+  ambienceDetailTimeout=setTimeout(function(){
+    if(!ambienceMode)return;
+    try{
+      if(ambienceAudioDetail){ambienceAudioDetail.pause();ambienceAudioDetail=null;}
+      ambienceAudioDetail=new Audio(file);
+      // 每次音量轻微随机，更自然真实
+      ambienceAudioDetail.volume=v*(0.7+Math.random()*0.6);
+      ambienceAudioDetail.play().catch(function(){});
+      ambienceAudioDetail.onended=function(){
+        ambienceAudioDetail=null;
+        if(ambienceMode)_scheduleAmbienceDetail(file,v);
+      };
+    }catch(e){
+      if(ambienceMode)_scheduleAmbienceDetail(file,v);
+    }
+  },delay);
+}
+
+// ── 雨滴特效：更多雨滴，自然随机感 ──
+var _ambiRainDrops=[];
+function _initRain(canvas){
+  _ambiRainDrops=[];
+   var rainCount=Math.round(130*(ambienceEffectPct/100));
+  for(var i=0;i<rainCount;i++){
+    _ambiRainDrops.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      len:9+Math.random()*18,
+      spd:7+Math.random()*7,
+      op:0.04+Math.random()*0.17,
+      w:0.4+Math.random()*0.8
+    });
+  }
+}
+function _drawRain(canvas){
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  _ambiRainDrops.forEach(function(d){
+    ctx.beginPath();
+    ctx.strokeStyle='rgba(185,215,240,'+d.op+')';
+    ctx.lineWidth=d.w;
+    ctx.moveTo(d.x,d.y);
+    ctx.lineTo(d.x+d.len*0.13,d.y+d.len);
+    ctx.stroke();
+    d.y+=d.spd;d.x+=d.spd*0.13;
+    if(d.y>canvas.height+d.len){
+      d.y=-d.len;d.x=Math.random()*canvas.width;
+      // 落回顶部时重新随机化，避免整齐感
+      d.spd=7+Math.random()*7;
+      d.op=0.04+Math.random()*0.17;
+    }
+  });
+}
+
+// ── 雪花特效：自然摇摆，大小层次分明 ──
+var _ambiSnowFlakes=[];
+function _initSnow(canvas){
+  _ambiSnowFlakes=[];
+  var snowCount=Math.round(90*(ambienceEffectPct/100));
+  for(var i=0;i<snowCount;i++){
+    _ambiSnowFlakes.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:0.8+Math.random()*2.8,
+      spd:0.35+Math.random()*1.3,
+      drift:(Math.random()-.5)*0.7,
+      op:0.35+Math.random()*0.55,
+      wobble:Math.random()*Math.PI*2,
+      wobbleSpd:0.008+Math.random()*0.025
+    });
+  }
+}
+function _drawSnow(canvas){
+  var ctx=canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  _ambiSnowFlakes.forEach(function(f){
+    f.wobble+=f.wobbleSpd;
+    // 叠加正弦波让雪花左右飘动，模拟真实雪落
+    var curDrift=f.drift+0.5*Math.sin(f.wobble);
+    ctx.beginPath();
+    ctx.arc(f.x,f.y,f.r,0,Math.PI*2);
+    ctx.fillStyle='rgba(255,255,255,'+f.op+')';
+    ctx.fill();
+    f.y+=f.spd;f.x+=curDrift;
+    if(f.y>canvas.height+f.r){f.y=-f.r;f.x=Math.random()*canvas.width;}
+    if(f.x>canvas.width+f.r)f.x=-f.r;
+    if(f.x<-f.r)f.x=canvas.width+f.r;
+  });
+}
+
+// ── 森林特效：树影光斑 + 萤火虫 ──
+var _ambiForestSpots=[];
+var _ambiFireflies=[];
+function _initForest(canvas){
+  _ambiForestSpots=[];
+  var spotCount=Math.round(14*(ambienceEffectPct/100));
+  for(var i=0;i<spotCount;i++){
+    _ambiForestSpots.push({
+      x:Math.random()*canvas.width,
+      y:Math.random()*canvas.height,
+      r:50+Math.random()*110,
+      phase:Math.random()*Math.PI*2,
+      spd:0.18+Math.random()*0.38,
+      op:0.03+Math.random()*0.07,
+      // 金黄/嫩绿两种光色，模拟林间碎光
+      color:Math.random()>0.45?'255,238,150':'195,255,170'
+    });
+  }
+  _ambiFireflies=[];
+  var ffCount=Math.round(9*(ambienceEffectPct/100));
+  for(var j=0;j<ffCount;j++){
+    _ambiFireflies.push({
+      x:Math.random()*canvas.width,
+      y:canvas.height*0.25+Math.random()*canvas.height*0.65,
+      phase:Math.random()*Math.PI*2,
+      blinkSpd:0.025+Math.random()*0.045,
+      vx:(Math.random()-.5)*0.45,
+      vy:(Math.random()-.5)*0.28
+    });
+  }
+}
+function _drawForest(canvas){
+  var ctx=canvas.getContext('2d');
+  var t=Date.now()*.001;
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  // 树影碎光
+  _ambiForestSpots.forEach(function(s){
+    var op=s.op*(0.5+0.5*Math.sin(t*s.spd+s.phase));
+    var dx=22*Math.sin(t*s.spd*.7+s.phase),dy=14*Math.cos(t*s.spd*.5+s.phase+1);
+    var grd=ctx.createRadialGradient(s.x+dx,s.y+dy,0,s.x+dx,s.y+dy,s.r);
+    grd.addColorStop(0,'rgba('+s.color+','+op+')');
+    grd.addColorStop(1,'rgba('+s.color+',0)');
+    ctx.beginPath();ctx.arc(s.x+dx,s.y+dy,s.r,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+  });
+  // 萤火虫
+  _ambiFireflies.forEach(function(f){
+    f.phase+=f.blinkSpd;
+    var bright=Math.max(0,Math.sin(f.phase)*.5+.5);
+    if(bright>0.08){
+      var r=1.5+bright*2;
+      // 外晕
+      var grd=ctx.createRadialGradient(f.x,f.y,0,f.x,f.y,r*5);
+      grd.addColorStop(0,'rgba(210,255,160,'+(bright*.8)+')');
+      grd.addColorStop(0.45,'rgba(170,255,100,'+(bright*.35)+')');
+      grd.addColorStop(1,'rgba(170,255,100,0)');
+      ctx.beginPath();ctx.arc(f.x,f.y,r*5,0,Math.PI*2);ctx.fillStyle=grd;ctx.fill();
+      // 亮核
+      ctx.beginPath();ctx.arc(f.x,f.y,r,0,Math.PI*2);
+      ctx.fillStyle='rgba(235,255,190,'+(bright*.92)+')';ctx.fill();
+    }
+    f.x+=f.vx;f.y+=f.vy;
+    // 边界处理：超出画布则从对侧重新出现
+    if(f.x<0)f.x=canvas.width;
+    if(f.x>canvas.width)f.x=0;
+    if(f.y<canvas.height*0.15){f.y=canvas.height*0.85;}
+    if(f.y>canvas.height){f.y=canvas.height*0.25;}
+  });
+}
+
+function _startAmbienceEffect(effect){
+  var canvas=document.getElementById('ambienceCanvas');
+  if(!canvas)return;
+  // 先停掉旧动画帧，防止叠加
+  if(ambienceAnimReq){cancelAnimationFrame(ambienceAnimReq);ambienceAnimReq=null;}
+  canvas.width=window.innerWidth;
+  canvas.height=window.innerHeight;
+  if(effect==='rain'){
+    _initRain(canvas);
+    (function loop(){
+      if(!ambienceMode)return;
+      _drawRain(canvas);
+      ambienceAnimReq=requestAnimationFrame(loop);
+    }());
+  }else if(effect==='snow'){
+    _initSnow(canvas);
+    (function loop(){
+      if(!ambienceMode)return;
+      _drawSnow(canvas);
+      ambienceAnimReq=requestAnimationFrame(loop);
+    }());
+  }else if(effect==='forest'){
+    _initForest(canvas);
+    (function loop(){
+      if(!ambienceMode)return;
+      _drawForest(canvas);
+      ambienceAnimReq=requestAnimationFrame(loop);
+    }());
+  }
+  // 'coffee' 和 'none' 只靠背景图+CSS滤镜，无需canvas动画
+}
+
+function _ambienceTick(){
+  if(!ambienceMode)return;
+  ambienceSecsLeft--;
+  _updateAmbienceTimerDisplay();
+  if(ambienceSecsLeft<=0)_ambienceComplete();
+}
+function _updateAmbienceTimerDisplay(){
+  var m=Math.floor(Math.max(0,ambienceSecsLeft)/60),s=Math.max(0,ambienceSecsLeft)%60;
+  var str=(m<10?'0':'')+m+':'+(s<10?'0':'')+s;
+  var el=document.getElementById('ambienceTimerFloat');
+  if(el)el.textContent=str;
+  var prog=document.getElementById('ambienceTimerProgress');
+  if(prog){var pct=ambienceTotalSecs>0?(1-Math.max(0,ambienceSecsLeft)/ambienceTotalSecs)*100:100;prog.style.width=pct+'%';}
+}
+function _ambienceComplete(){
+  var mins=Math.round(ambienceTotalSecs/60);
+  _stopAmbienceMode();
+  playRingForGoal();
+  showDlg('🎉 写作完成！','太棒了！你坚持专注写作了 '+mins+' 分钟！\n\n每一次坚持都是成长，继续保持这份热情 ✨\n\n记得保存你的作品哦 💾',function(){},false);
+}
+function cancelAmbienceMode(){
+  showDlg('取消氛围写作','确定取消当前氛围写作计时吗？\n\n取消后可以正常退出写作页。',function(){
+    _stopAmbienceMode();
+    showToast('氛围写作已取消');
+  },true);
+}
+function _stopAmbienceMode(){
+  ambienceMode=false;
+  ambienceType=null;
+  if(ambienceTimerInterval){clearInterval(ambienceTimerInterval);ambienceTimerInterval=null;}
+  if(ambienceDetailTimeout){clearTimeout(ambienceDetailTimeout);ambienceDetailTimeout=null;}
+  if(ambienceAnimReq){cancelAnimationFrame(ambienceAnimReq);ambienceAnimReq=null;}
+  // 音频淡出而非直接停止，体验更自然
+  _fadeOutAndStopAudio(ambienceAudioMain);ambienceAudioMain=null;
+  _fadeOutAndStopAudio(ambienceAudioDetail);ambienceAudioDetail=null;
+  try{var c=document.getElementById('ambienceCanvas');if(c){c.getContext('2d').clearRect(0,0,c.width,c.height);}}catch(e){}
+  try{
+  var _canvas=document.getElementById('ambienceCanvas');
+  if(_canvas){_canvas.width=_canvas.width;} // 强制重置canvas
+}catch(e){}
+  var modal=document.getElementById('edModal');
+  modal.classList.remove('ambience-mode','ambience-rain','ambience-coffee','ambience-forest','ambience-snowy','ambience-library');
+  var bgEl2=document.getElementById('ambienceBg');
+  if(bgEl2&&bgEl2.dataset.ambiSaved!==undefined){bgEl2.style.backgroundImage=bgEl2.dataset.ambiSaved;delete bgEl2.dataset.ambiSaved;}
+  var crBgEl=document.getElementById('crBg');
+  if(crBgEl&&crBgEl.dataset.ambiSaved!==undefined){
+    if(crBgEl.dataset.ambiSaved!=='__keep__') crBgEl.style.display=crBgEl.dataset.ambiSaved;
+    delete crBgEl.dataset.ambiSaved;
+  }
+  var crThEl=document.getElementById('crThemeBg');
+  if(crThEl&&crThEl.dataset.ambiSaved!==undefined){
+    if(crThEl.dataset.ambiSaved!=='__keep__') crThEl.style.opacity=crThEl.dataset.ambiSaved;
+    delete crThEl.dataset.ambiSaved;
+  }
+  // 重置取消按钮状态
+  if(typeof _ambiCancelAutoHideTimer!=='undefined'){
+    clearTimeout(_ambiCancelAutoHideTimer);
+    _ambiCancelAutoHideTimer=null;
+  }
+  try{clearTimeout(document.querySelector('.ambience-cancel-btn')._autoHideTimer);}catch(e){}
+  _ambiCancelRevealed=false;
+  _ambiCancelDragging=false;
+  var cb=document.querySelector('.ambience-cancel-btn');
+  if(cb){
+    cb.classList.remove('revealed','dragging');
+    cb.innerHTML='<i class="fas fa-times"></i>';
+  }
+}
+
+// ── 取消按钮：半透明→点击展开→再点取消，可拖动 ──
+// 用模块级变量存储自动收起计时器，避免 DOM 属性不稳定
+var _ambiCancelAutoHideTimer=null;
+function _initAmbienceCancelBtn(){
+  var btn=document.querySelector('.ambience-cancel-btn');
+  if(!btn)return;
+clearTimeout(_ambiCancelAutoHideTimer);
+_ambiCancelAutoHideTimer=null;
+_ambiCancelRevealed=false;
+_ambiCancelDragging=false;
+btn.classList.remove('revealed','dragging');
+btn.innerHTML='<i class="fas fa-times"></i>';
+btn.style.left='16px';
+btn.style.top='auto';
+btn.style.bottom='88px';
+  // 彻底清理旧状态
+  clearTimeout(_ambiCancelAutoHideTimer);
+  _ambiCancelAutoHideTimer=null;
+  _ambiCancelRevealed=false;
+  _ambiCancelDragging=false;
+  btn.classList.remove('revealed','dragging');
+  btn.innerHTML='<i class="fas fa-times"></i>';
+
+  // 恢复上次拖动的位置
+  var savedX=parseInt(localStorage.getItem('bj_ambiCancelX')||'16',10);
+  var savedY=parseInt(localStorage.getItem('bj_ambiCancelY')||''+(window.innerHeight-120),10);
+  btn.style.left=savedX+'px';
+  btn.style.bottom='auto';
+  btn.style.top=savedY+'px';
+
+  // 自动收起：3秒后收回小圆圈
+  function scheduleAutoHide(){
+    clearTimeout(_ambiCancelAutoHideTimer);
+    _ambiCancelAutoHideTimer=setTimeout(function(){
+      if(!_ambiCancelRevealed)return;
+      _ambiCancelRevealed=false;
+      btn.classList.remove('revealed');
+      btn.innerHTML='<i class="fas fa-times"></i>';
+    },3000);
+  }
+
+  // 点击：展开 → 再点取消（用 onclick 赋值，避免重复绑定）
+  btn.onclick=function(e){
+    if(_ambiCancelDragging)return;
+    if(!_ambiCancelRevealed){
+      _ambiCancelRevealed=true;
+      btn.classList.add('revealed');
+      btn.innerHTML='<i class="fas fa-times"></i> 取消氛围';
+      scheduleAutoHide();
+    }else{
+      clearTimeout(_ambiCancelAutoHideTimer);
+      _ambiCancelAutoHideTimer=null;
+      cancelAmbienceMode();
+    }
+    e.stopPropagation();
+  };
+
+  // 拖动逻辑：用克隆节点替换，彻底移除旧 touch 监听，防止累积
+  var newBtn=btn.cloneNode(true);
+  newBtn.onclick=btn.onclick;
+  btn.parentNode.replaceChild(newBtn,btn);
+  btn=newBtn;
+
+  var dragStartX,dragStartY,btnStartX,btnStartY,moved=false;
+  btn.addEventListener('touchstart',function(e){
+    var t=e.touches[0];
+    dragStartX=t.clientX;dragStartY=t.clientY;
+    var r=btn.getBoundingClientRect();
+    btnStartX=r.left;btnStartY=r.top;
+    moved=false;
+    _ambiCancelDragging=false;
+    // 暂停自动收起，防止拖动时触发
+    clearTimeout(_ambiCancelAutoHideTimer);
+    _ambiCancelAutoHideTimer=null;
+  },{passive:true});
+  btn.addEventListener('touchmove',function(e){
+    var t=e.touches[0];
+    var dx=t.clientX-dragStartX,dy=t.clientY-dragStartY;
+    if(!moved&&Math.sqrt(dx*dx+dy*dy)>6){
+      moved=true;_ambiCancelDragging=true;
+      btn.classList.add('dragging');
+    }
+    if(moved){
+      e.preventDefault();
+      var nx=Math.max(0,Math.min(window.innerWidth-50,btnStartX+dx));
+      var ny=Math.max(0,Math.min(window.innerHeight-50,btnStartY+dy));
+      btn.style.left=nx+'px';btn.style.top=ny+'px';btn.style.bottom='auto';
+    }
+  },{passive:false});
+  btn.addEventListener('touchend',function(){
+    if(moved){
+      var r=btn.getBoundingClientRect();
+      localStorage.setItem('bj_ambiCancelX',Math.round(r.left));
+      localStorage.setItem('bj_ambiCancelY',Math.round(r.top));
+    }
+    setTimeout(function(){
+      _ambiCancelDragging=false;
+      btn.classList.remove('dragging');
+      // 拖动结束后若处于展开态，重启自动收起计时
+      if(_ambiCancelRevealed) scheduleAutoHide();
+    },120);
+  });
+}
+
+// ── 设置页：音量/特效/背景模式 ──
+function applyAmbienceVolume(val){
+  ambienceVolumePct=parseInt(val,10);
+  localStorage.setItem('bj_ambienceVol',ambienceVolumePct);
+  var el=document.getElementById('ambienceVolLabel');
+  if(el)el.textContent=ambienceVolumePct+'%';
+  // 实时应用到正在播放的音频
+  var ratio=ambienceVolumePct/100;
+  var cfg=ambienceType?AMBIENCE_CFG[ambienceType]:null;
+  try{
+    if(ambienceAudioMain&&cfg)ambienceAudioMain.volume=Math.min(1,Math.max(0,(cfg.mainVol||0.45)*ratio));
+  }catch(e){}
+  try{
+    if(ambienceAudioDetail&&cfg&&!cfg.detailLoop)
+      ambienceAudioDetail.volume=Math.min(1,Math.max(0,(cfg.detailVol||0.25)*ratio));
+    if(ambienceAudioDetail&&cfg&&cfg.detailLoop)
+      ambienceAudioDetail.volume=Math.min(1,Math.max(0,(cfg.detailVol||0.4)*ratio));
+  }catch(e){}
+}
+function applyAmbienceEffect(val){
+  ambienceEffectPct=parseInt(val,10);
+  localStorage.setItem('bj_ambienceEffect',ambienceEffectPct);
+  var el=document.getElementById('ambienceEffectLabel');
+  if(el)el.textContent=ambienceEffectPct+'%';
+  // 实时调整粒子数量（重启特效才能生效，此处仅保存值）
+  // 如果氛围进行中，重启粒子特效
+  if(ambienceMode&&ambienceType){
+    var cfg=AMBIENCE_CFG[ambienceType];
+    if(ambienceAnimReq){cancelAnimationFrame(ambienceAnimReq);ambienceAnimReq=null;}
+    _startAmbienceEffect(cfg.effect);
+  }
+}
+function setAmbienceBgMode(mode){
+  ambienceBgMode=mode;
+  localStorage.setItem('bj_ambienceBgMode',mode);
+  // 高亮选中行
+  ['builtin','custom'].forEach(function(m){
+    var row=document.getElementById('ambienceBgMode'+m.charAt(0).toUpperCase()+m.slice(1)+'Row');
+    if(row)row.style.borderColor=m===mode?'var(--accent)':'var(--border)';
+  });
+}
+// 打开设置页时恢复控件状态
+function _restoreAmbienceSettings(){
+  var vs=document.getElementById('ambienceVolSlider');
+  var vl=document.getElementById('ambienceVolLabel');
+  var es=document.getElementById('ambienceEffectSlider');
+  var el=document.getElementById('ambienceEffectLabel');
+  if(vs){vs.value=ambienceVolumePct;if(vl)vl.textContent=ambienceVolumePct+'%';}
+  if(es){es.value=ambienceEffectPct;if(el)el.textContent=ambienceEffectPct+'%';}
+  var rb=document.getElementById('ambienceBg'+
+    (ambienceBgMode==='custom'?'Custom':'Builtin'));
+  if(rb)rb.checked=true;
+  setAmbienceBgMode(ambienceBgMode);
+}
+// ==================== 原有沉浸写作函数 ====================
 function toggleImmersiveEdit(){
 const modal=document.getElementById('edModal');
 isImmersiveEdit=!isImmersiveEdit;
@@ -16828,6 +18013,8 @@ if(overlay)overlay.style.display='none';
 }
 // ==================== 创作编辑器 ====================
 function openEditor(id){
+var _edNeedsLoading=_needsLoadingAnim('editor');
+if(_edNeedsLoading) showPageLoading();
 const work=crWorks.find(w=>w.id===id);
 if(!work)return;
 try{document.getElementById('xjGlobalFloat').style.display='none';}catch(e){}
@@ -16877,9 +18064,20 @@ if(edTa){
     }, 300);
   });
 }
+if(_edNeedsLoading) hidePageLoading();
 document.getElementById('bnav').classList.add('hide');
 }
 function closeEditor(){
+if(ambienceMode){
+  showToast('⏳ 氛围写作计时中，请先点左下角按钮取消氛围模式再离开');
+  // 高亮取消按钮提示用户
+  var _cb=document.querySelector('.ambience-cancel-btn');
+  if(_cb){
+    _cb.style.transform='scale(1.3)';
+    setTimeout(function(){if(_cb)_cb.style.transform='';},600);
+  }
+  return;
+}
 if(document.getElementById('edModal').classList.contains('ed-read-mode')){closeEdReadMode();}
 // 检查未保存修改
 const currentText=document.getElementById('edTextarea').value||'';
@@ -26110,10 +27308,10 @@ function repositionXjGlobal(){
     {minX:80,maxX:window.innerWidth-80,minY:120,maxY:200}
   ];
   var zone=safeZones[Math.floor(Math.random()*safeZones.length)];
-  var x=zone.minX+Math.random()*(zone.maxX-zone.minX);
-  var y=zone.minY+Math.random()*(zone.maxY-zone.minY);
-  x=Math.max(4,Math.min(window.innerWidth-48,x));
-  y=Math.max(60,Math.min(window.innerHeight-120,y));
+var x=zone.minX+Math.random()*(zone.maxX-zone.minX);
+var y=zone.minY+Math.random()*(zone.maxY-zone.minY);
+x=Math.max(4,Math.min(window.innerWidth-48,x));
+y=Math.max(60,Math.min(window.innerHeight-190,y));
   el.style.left=Math.round(x)+'px';
   el.style.top=Math.round(y)+'px';
 }
@@ -26125,14 +27323,16 @@ function onXjGlobalClick(){
 
 function xjGlobalBubble(){
   if(!xjBubbleEnabled) return;
+  // 只在五大主页面（无任何弹窗/遮罩打开时）显示
+  if(typeof window.navStackEmpty === 'function' && !window.navStackEmpty()) return;
   var el=document.getElementById('xjGlobalFloat');
-  if(!el||el.style.display==='none')return;
-  var old=el.querySelector('.xj-gb-bubble');
-  if(old)old.remove();
+  if(!el||el.style.display==='none') return;
+  // 清除旧气泡（挂在 body 上）
+  var old=document.querySelector('.xj-gb-bubble');
+  if(old) old.remove();
 
   var hour=new Date().getHours();
   var tips=[];
-
   if(hour>=0&&hour<6){
     tips=['夜深了，身体比灵感更重要哦','星笺陪你熬夜，但记得喝口水','写到凌晨...你真的好努力','记得导出备份再睡哦～'];
   }else if(hour>=6&&hour<9){
@@ -26148,7 +27348,6 @@ function xjGlobalBubble(){
   }else{
     tips=['夜晚属于创作者～','灵感来了就赶紧记下来！','我一直在这里陪着你','记得保存哦，别让心血白费','试试精华压缩器，设定太长也不怕'];
   }
-
   var funcTips=[
     '长按创作页卡片可以置顶常用作品哦',
     '阅读时点屏幕中间会弹出功能菜单',
@@ -26166,12 +27365,12 @@ function xjGlobalBubble(){
   if(Math.random()<0.35){
     tips.push(funcTips[Math.floor(Math.random()*funcTips.length)]);
   }
-
   var totalW=0;
   try{ws.forEach(function(a){totalW+=getTotalWords(a);});crWorks.forEach(function(w){totalW+=getCrWordCount(w);});}catch(e){}
-  if(totalW>5000&&Math.random()<0.3)tips.push('你已经写了'+formatNum(totalW)+'字了！好厉害');
-  if(totalW>30000&&Math.random()<0.2)tips.push(formatNum(totalW)+'字...我都替你骄傲');
-// 隐藏皮肤专属台词（覆盖普通台词池）
+  if(totalW>5000&&Math.random()<0.3) tips.push('你已经写了'+formatNum(totalW)+'字了！好厉害');
+  if(totalW>30000&&Math.random()<0.2) tips.push(formatNum(totalW)+'字...我都替你骄傲');
+
+  // 隐藏皮肤专属台词（覆盖普通台词池）
   if(xjSkin==='secret'){
     var secretTips=[
       '（轻轻转了个圈）你知道吗，我现在可以感受到风了～',
@@ -26190,41 +27389,51 @@ function xjGlobalBubble(){
       '好久没有人写这么多字了……谢谢你。',
       '你有没有发现，我说话的语气变得不一样了？'
     ];
-    var hour=new Date().getHours();
-    if(hour>=0&&hour<6) secretTips.push('这么晚还在……我有点担心你。');
-    if(hour>=6&&hour<9) secretTips.push('早安～今天是新的一天，我们一起加油。');
+    var h2=new Date().getHours();
+    if(h2>=0&&h2<6) secretTips.push('这么晚还在……我有点担心你。');
+    if(h2>=6&&h2<9) secretTips.push('早安～今天是新的一天，我们一起加油。');
     tips=secretTips;
   }
-  var tip=tips[Math.floor(Math.random()*tips.length)];
-  if(tip.length>30)tip=tip.substring(0,28)+'…';
+
+  var tip=tips[Math.floor(Math.random()*tips.length)]||'';
+
+  // 根据皮肤决定气泡 class
+  var skinClass = (xjSkin && xjSkin!=='default') ? ' skin-'+xjSkin : '';
   var bubble=document.createElement('div');
-bubble.className='xj-gb-bubble';
-bubble.textContent=tip;
-el.appendChild(bubble);
-requestAnimationFrame(function(){
-  // 强制计算气泡尺寸
+  bubble.className='xj-gb-bubble'+skinClass;
+  bubble.textContent=tip;
+
+  // 先隐藏挂到 body，测量真实尺寸再定位
   bubble.style.visibility='hidden';
-  bubble.style.display='block';
-  var elRect=el.getBoundingClientRect();
-  var bw=Math.min(bubble.offsetWidth||180, 240);
-  var bh=bubble.offsetHeight||44;
-  // 以精灵中心为基准定位
-  var centerX=elRect.left+elRect.width/2;
-  var bLeft=centerX-bw/2;
-  var bTop=elRect.top-bh-10;
-  // 边界保护
-  if(bLeft<8) bLeft=8;
-  if(bLeft+bw>window.innerWidth-8) bLeft=window.innerWidth-bw-8;
-  if(bTop<8) bTop=elRect.bottom+10;
-  if(bTop+bh>window.innerHeight-60) bTop=elRect.top-bh-10;
-  bubble.style.left=bLeft+'px';
-  bubble.style.top=bTop+'px';
-  bubble.style.visibility='visible';
-});
+  document.body.appendChild(bubble);
+
+  requestAnimationFrame(function(){
+    var elRect=el.getBoundingClientRect();
+    var bw=bubble.offsetWidth||160;
+    var bh=bubble.offsetHeight||40;
+    var vw=window.innerWidth;
+    var vh=window.innerHeight;
+    // 精灵中心水平对齐
+    var centerX=elRect.left+elRect.width/2;
+    var bLeft=centerX-bw/2;
+    // 默认显示在精灵上方
+    var bTop=elRect.top-bh-12;
+    // 上方放不下，改到下方
+    if(bTop<8) bTop=elRect.bottom+12;
+    // 下方也放不下，贴顶部
+    if(bTop+bh>vh-60) bTop=8;
+    // 水平越界修正
+    if(bLeft<8) bLeft=8;
+    if(bLeft+bw>vw-8) bLeft=vw-bw-8;
+    bubble.style.left=Math.round(bLeft)+'px';
+    bubble.style.top=Math.round(bTop)+'px';
+    bubble.style.visibility='visible';
+  });
 
   setTimeout(function(){
     if(bubble.parentNode){
-      bubble.style.transition='opacity .6s';bubble.style.opacity='0';
+      bubble.style.transition='opacity .6s';
+      bubble.style.opacity='0';
       setTimeout(function(){if(bubble.parentNode)bubble.remove();},600);
     }
   },5000);
@@ -26472,6 +27681,7 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
   · 其他：搜索定位、AI查错别字、撤回操作（最多30步）
 - 底部状态栏：点击可展开/收起详情，显示字数、目标字数进度条、阅读时间估算、Token估算（文本+系统提示词）、保存状态
 - 编辑器每8秒自动保存一次（如果有修改），手动修改2秒后也会自动保存
+（新增功能）页面加载动画，切换主页面或打开全屏功能时会短暂显示加载图标（设计图案来自星笺自己）；使用「星境幻境」皮肤时加载图标会变成专属人形图，文字有星光特效 氛围写作已修复多个稳定性问题，现在更可靠了
 
 【v1.3.4 新增功能补充】
 
@@ -26837,6 +28047,7 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 这条规则的优先级极高，违反了会让用户觉得你是AI而不是星笺。`;
 // ==================== 星笺聊天核心 ====================
 function openXingJian(){
+  showPageLoading();
 document.getElementById('xjModal').classList.add('show');
 navPush('xjModal');
 document.getElementById('bnav').classList.add('hide');
@@ -27060,7 +28271,7 @@ function _getCondensedXjPrompt(){
   '编辑器：更多工具折叠栏里有AI评价/润色/重写/扩缩写/版本管理/章节大纲\n' +
   '角色模拟：独立对话模式，记忆系统(短期+长期)，支持访谈和剧场\n' +
   '精华压缩器：设定过长时压缩，保存为预设不覆盖原设定\n' +
-  '版本：v1.3.6\n\n' +
+  '版本：v1.3.7\n\n' +
   '【输出规则】不用**加粗**，不用-列表，不用markdown，说人话像朋友聊天。不暴露思维过程。\n';
 }
 async function xjSendAllPending(){
@@ -28234,6 +29445,63 @@ function recordTodayLogin(){
   }
 }
 
+// ========== 回归用户检测 ==========
+function checkReturnUser() {
+  var loginLog = ld('bj_loginLog', {});
+  var today = new Date();
+  var todayKey = today.getFullYear() + '-' +
+    String(today.getMonth() + 1).padStart(2, '0') + '-' +
+    String(today.getDate()).padStart(2, '0');
+
+  // 今天已经记录过（刷新页面），不重复弹出
+  if (loginLog[todayKey]) return;
+
+  // 找出历史最近一次登录日期（升序排后取最后一个）
+  var dates = Object.keys(loginLog).sort();
+  if (dates.length === 0) return; // 完全新用户，无历史记录
+
+  var lastDateStr = dates[dates.length - 1];
+  var parts = lastDateStr.split('-');
+  var lastDate = new Date(
+    parseInt(parts[0]),
+    parseInt(parts[1]) - 1,
+    parseInt(parts[2])
+  );
+  var todayNorm = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
+  var lastNorm = lastDate.getTime();
+  var diffDays = Math.floor((todayNorm - lastNorm) / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 90) return;
+
+  // 超过90天未登录，延迟3秒弹出欢迎回归弹窗
+  setTimeout(function () {
+    var name = (userCard && userCard.name) ? userCard.name : '你';
+    var msg =
+      '<div style="text-align:center;padding:16px 0 8px">' +
+        '<div style="font-size:52px;margin-bottom:14px">🌟</div>' +
+        '<div style="font-family:ZCOOL QingKe HuangYou,PingFang SC,sans-serif;' +
+          'font-size:22px;letter-spacing:3px;' +
+          'background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);' +
+          '-webkit-background-clip:text;-webkit-text-fill-color:transparent;' +
+          'background-clip:text;margin-bottom:14px">' +
+          '欢迎回来，' + esc(name) + '！</div>' +
+        '<div style="font-size:13px;color:var(--text2);line-height:2;margin-bottom:10px">' +
+          '距离上次打开星笺，已经过去了<br>' +
+          '<span style="color:var(--accent2);font-weight:700;font-size:20px">' + diffDays + '</span>' +
+          ' <span style="color:var(--text)">天</span>' +
+        '</div>' +
+        '<div style="font-size:12px;color:var(--text2);line-height:1.8;padding:10px;' +
+          'background:rgba(108,92,231,.08);border-radius:10px;border:1px solid rgba(108,92,231,.15)">' +
+          '星笺一直在这里等你 ✨<br>你的所有创作和数据都好好保存着 📖' +
+        '</div>' +
+      '</div>';
+    showDlg('✨ 星笺想你了', msg, function () {}, false, true);
+    setTimeout(function () {
+      var okBtn = document.getElementById('dlgOkBtn');
+      if (okBtn) okBtn.textContent = '我回来啦 ✨';
+    }, 50);
+  }, 3000);
+}
 // 计算连续登录天数
 function calcLoginStreak(){
   var loginLog=ld('bj_loginLog',{});
@@ -28997,6 +30265,7 @@ document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%
     if(!Array.isArray(crWorks))crWorks=[];
   }catch(e){console.warn('启动完整性检查异常:',e);}
 })();
+checkReturnUser();
 recordTodayLogin();
 checkGoalReset();
 // 初始化网络状态检测
@@ -29027,6 +30296,9 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER&&localStorage.getItem('bj_hasVisited'))
     '🎨 <b>星笺换装系统</b>：6套皮肤，聊天气泡与背景同步切换<br>' +
     '📌 <b>作坊置顶</b>：长按作坊文章卡片可置顶，常用项目置顶显示<br>' +
     '· 修复星笺/角色暂停按钮提前消失问题<br>' +
+    '· 修复氛围写作取消按钮状态混乱和音频播放问题<br>' +
+'🌊 <b>页面加载动画</b>：切换全屏页面时显示过渡加载，防止内容闪烁<br>' +
+'· 隐藏皮肤「星境幻境」拥有专属加载图与星光文字特效<br>' +
     '· 修复星笺重新生成可误触并发请求问题<br>' +
     '· 修复星笺卡在「正在恢复中」不回复问题<br>' +
   '</div>' +
@@ -31507,6 +32779,8 @@ function getRpCurrentChar(){
 }
 
 function openRolePlay(){
+  var _rpNeedsLoading=_needsLoadingAnim('rp');
+if(_rpNeedsLoading) showPageLoading();
   var modal = document.getElementById('rpModal');
   if(!modal){showToast('角色模拟组件未加载');return;}
   modal.classList.add('show');
@@ -31516,6 +32790,7 @@ function openRolePlay(){
   renderRpChat();
   updateRpCharBar();
   updateRpMemoryBadge();
+  if(_rpNeedsLoading) hidePageLoading();
 }
 
 function closeRolePlay(){
@@ -34761,7 +36036,11 @@ function doGlobalSearch(){
     // 如果有层级可以关闭，就关闭最上层的弹窗
     if(_navStack.length > 0){
       var topId = _navStack.pop();
-      closeNavLayer(topId);
+      // 先让页面背景不显白（防止display:none瞬间白屏）
+      var bgColor = (ap && ap.theme === 'light') ? '#f5f5f8' : '#0f0f14';
+document.documentElement.style.background = bgColor;
+document.body.style.background = bgColor;
+closeNavLayer(topId);
       // 兜底：如果栈已空，强制恢复底部栏
       if(_navStack.length === 0){
         var nav = document.getElementById('bnav');
@@ -34784,7 +36063,9 @@ function doGlobalSearch(){
   
   // 初始化：推入一个空状态，防止第一次左划就退出
   history.pushState({nav:true}, '');
-  
+  // 初始化：推入一个空状态，防止第一次左划就退出
+  history.pushState({nav:true}, '');
+  window.navStackEmpty = function(){ return _navStack.length === 0; };
   // 根据层级ID关闭对应弹窗
   function closeNavLayer(id){
     try{
