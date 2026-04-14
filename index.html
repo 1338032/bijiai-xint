@@ -15396,9 +15396,8 @@ if(shorts.length===0){
       renderStarHTML(s.rating||0,realId)+
       '</div>'+
       '<div class="sitem-acts">'+
-      '<button onclick="event.stopPropagation();copyShort(\''+realId+'\')">复制</button>'+
-      '<button onclick="event.stopPropagation();deleteShort(\''+realId+'\')" style="color:var(--danger)">删除</button>'+
-      '</div>';
+'<button onclick="event.stopPropagation();toggleShortMenu(\''+realId+'\',this)" style="padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:12px;cursor:pointer"><i class="fas fa-ellipsis-h"></i></button>'+
+'</div>';
     shortFrag.appendChild(item);
   });
   sl.appendChild(shortFrag);
@@ -15634,7 +15633,60 @@ cols.shorts=cols.shorts.filter(s=>s.id!==id);
 sv(K.cols,cols);renderCollections();showToast('已删除');
 },true);
 }
+function toggleShortMenu(id,btn){
+  var old=document.getElementById('shortMenuPop');
+  if(old){old.remove();btn._menuOpen=false;return;}
+  if(btn._menuClosedAt&&Date.now()-btn._menuClosedAt<200)return;
+  btn._menuOpen=true;
+  var pop=document.createElement('div');
+  pop.id='shortMenuPop';
+  pop.style.cssText='position:fixed;z-index:300;background:var(--card);border:1px solid var(--border);border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.35);width:216px;padding:8px;animation:fadeIn .15s ease;display:grid;grid-template-columns:1fr 1fr 1fr;gap:2px';
+  var items=[
+    {icon:'fa-pen',text:'更名',fn:function(){renameShort(id);}},
+    {icon:'fa-copy',text:'复制',fn:function(){copyShort(id);}},
+    {icon:'fa-file-export',text:'导出',fn:function(){exportShort(id);}},
+    {icon:'fa-trash-alt',text:'删除',fn:function(){deleteShort(id);},danger:true}
+  ];
+  var colCount=Math.ceil(Math.sqrt(items.length));
+  pop.style.gridTemplateColumns='repeat('+colCount+',1fr)';
+  pop.style.width=(colCount*72+16)+'px';
+  items.forEach(function(it){
+    var d=document.createElement('div');
+    d.style.cssText='padding:11px 4px;font-size:11px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:5px;color:'+(it.danger?'var(--danger)':'var(--text2)')+';border-radius:10px;text-align:center;transition:background .15s;';
+    d.innerHTML='<i class="fas '+it.icon+'" style="font-size:17px;'+(it.danger?'color:var(--danger)':'color:var(--text)')+'"></i><span style="font-size:11px;color:'+(it.danger?'var(--danger)':'var(--text2)')+'">'+it.text+'</span>';
+    d.addEventListener('click',function(e){
+      e.preventDefault();e.stopPropagation();
+      _closePopMenu('shortMenuPop',btn);
+      setTimeout(function(){it.fn();},50);
+    });
+    pop.appendChild(d);
+  });
+  document.body.appendChild(pop);
+  _positionPopMenu(pop,btn);
+  _bindPopMenuClose('shortMenuPop',btn);
+}
 
+function renameShort(id){
+  var s=cols.shorts.find(function(x){return x.id===id;});
+  if(!s)return;
+  showInp('更名','输入新标题',function(name){
+    name=(name||'').trim();
+    if(!name){showToast('标题不能为空');return;}
+    s.title=name;
+    var wsArt=ws.find(function(a){return a.id===id;});
+    if(wsArt){wsArt.title=name;sv(K.ws,ws);}
+    sv(K.cols,cols);
+    renderCollections();
+    showToast('已更名 ✅');
+  });
+  setTimeout(function(){var f=document.getElementById('inpField');if(f)f.value=s.title||'';},120);
+}
+
+function exportShort(id){
+  var s=cols.shorts.find(function(x){return x.id===id;});
+  if(!s){showToast('找不到该短篇');return;}
+  doExportWork(s,true);
+}
 // ==================== SETTINGS ====================
 // ==================== SETTINGS MODAL ====================
 function openSetModal(type){
@@ -17290,7 +17342,7 @@ var AMBIENCE_CFG={
   rainy:{
     bg:'./rainy.jpg',
     main:'./Singing%20in%20Rainy.mp3',mainVol:0.50,
-    detail:'./page%20turning%20book.wav',detailVol:0.22,detailLoop:false,
+    detail:'./page%20turning%20book.wav',detailVol:0.38,detailLoop:false,
     effect:'rain'
   },
   coffee:{
@@ -17314,7 +17366,7 @@ var AMBIENCE_CFG={
   library:{
     bg:'./library.jpg',
     main:'Writing%20sound.wav',mainVol:0.32,
-    detail:'./page%20turning%20book.wav',detailVol:0.18,detailLoop:false,
+    detail:'./page%20turning%20book.wav',detailVol:0.35,detailLoop:false,
     effect:'none'
   }
 };
@@ -17534,7 +17586,7 @@ function _scheduleAmbienceDetail(file,vol){
       if(ambienceAudioDetail){ambienceAudioDetail.pause();ambienceAudioDetail=null;}
       ambienceAudioDetail=new Audio(file);
       // 每次音量轻微随机，更自然真实
-      ambienceAudioDetail.volume=v*(0.7+Math.random()*0.6);
+      ambienceAudioDetail.volume=v*(0.85+Math.random()*0.3);
       ambienceAudioDetail.play().catch(function(){});
       ambienceAudioDetail.onended=function(){
         ambienceAudioDetail=null;
