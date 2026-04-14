@@ -3302,8 +3302,13 @@ border:3px solid rgba(108,92,231,.3);
 body.theme-light .xj-input{background:rgba(255,255,255,.95);border-color:rgba(108,92,231,.25);color:#1a1a2e;}
 body.theme-light .xj-msg.xj{background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));}
 body.theme-light .xj-msg.user{background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));}
-body.theme-light .xj-hdr{background:linear-gradient(135deg,rgba(108,92,231,.08),rgba(162,155,254,.05));}
-body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,245,248,.9));}
+body.theme-light .xj-hdr{
+  background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(162,155,254,.12));
+  border-bottom-color:rgba(108,92,231,.2);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+}
+body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,244,255,.95));}
+body.theme-light .xj-modal{background:linear-gradient(160deg,#f7f6fc 0%,#eeeeff 100%);}
 /* ===== 星笺气泡换肤 - 所有皮肤统一半透明磨砂基础 ===== */
 .xj-modal .xj-msg{
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
@@ -4244,12 +4249,62 @@ body.theme-light .more-menu-panel {
 /* RP 角色模拟 */
 #rpModal{overflow:hidden!important;}
 #rpModal .set-modal-body{overflow:hidden;}
-.rp-msg{max-width:82%;padding:10px 14px;border-radius:16px;font-size:13px;line-height:1.7;word-wrap:break-word;animation:msgIn .3s ease;}
-.rp-msg.char{align-self:flex-start;background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));color:#fff;border-bottom-left-radius:4px;box-shadow:0 2px 8px rgba(108,92,231,.25);}
-.rp-msg.user{align-self:flex-end;background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));color:#fff;border-bottom-right-radius:4px;box-shadow:0 2px 8px rgba(88,166,255,.25);}
-.rp-msg .rp-time{display:block;font-size:9px;opacity:.6;margin-top:4px;}
+.rp-msg{
+  max-width:82%;
+  padding:11px 15px;
+  border-radius:18px;
+  font-size:13px;
+  line-height:1.75;
+  word-wrap:break-word;
+  animation:msgIn .35s cubic-bezier(.34,1.56,.64,1);
+  backdrop-filter:blur(16px) saturate(180%);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);
+  position:relative;
+  transition:box-shadow .2s;
+}
+.rp-msg.char{
+  align-self:flex-start;
+  background:var(--rp-char-bg, rgba(108,92,231,.28));
+  color:var(--rp-char-color, #fff);
+  border:1px solid var(--rp-char-border, rgba(162,155,254,.35));
+  border-bottom-left-radius:5px;
+  box-shadow:0 4px 20px var(--rp-char-shadow, rgba(108,92,231,.2)),
+             0 1px 0 rgba(255,255,255,.08) inset;
+}
+.rp-msg.user{
+  align-self:flex-end;
+  background:var(--rp-user-bg, rgba(52,120,220,.28));
+  color:var(--rp-user-color, #fff);
+  border:1px solid var(--rp-user-border, rgba(100,160,255,.35));
+  border-bottom-right-radius:5px;
+  box-shadow:0 4px 20px var(--rp-user-shadow, rgba(52,120,220,.2)),
+             0 1px 0 rgba(255,255,255,.08) inset;
+}
+.rp-msg .rp-time{
+  display:block;
+  font-size:9px;
+  opacity:.55;
+  margin-top:5px;
+  letter-spacing:.3px;
+}
 .rp-msg.char .rp-time{text-align:left;}
 .rp-msg.user .rp-time{text-align:right;}
+.rp-msg.char::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
+.rp-msg.user::before{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  background:linear-gradient(135deg,rgba(255,255,255,.07) 0%,rgba(255,255,255,0) 60%);
+  pointer-events:none;
+}
 .rp-msg-group{display:flex;flex-direction:column;gap:4px;align-self:flex-start;max-width:82%;}
 .rp-msg-group .rp-msg{max-width:100%;align-self:flex-start;}
 .rp-typing{align-self:flex-start;padding:10px 14px;border-radius:16px;border-bottom-left-radius:4px;background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));display:flex;align-items:center;gap:4px;}
@@ -4288,7 +4343,75 @@ body.theme-light .rp-batch-bar{
   border-top-color:rgba(0,0,0,.1);
   box-shadow:0 -4px 15px rgba(0,0,0,.08);
 }
+body.theme-light .rp-msg.char{
+  background:linear-gradient(135deg,rgba(108,92,231,.82),rgba(130,115,248,.78));
+  color:#fff;
+  border-color:rgba(108,92,231,.4);
+  box-shadow:0 3px 16px rgba(108,92,231,.2),0 1px 0 rgba(255,255,255,.15) inset;
+}
+body.theme-light .rp-msg.user{
+  background:linear-gradient(135deg,rgba(52,120,220,.82),rgba(80,150,240,.78));
+  color:#fff;
+  border-color:rgba(52,120,220,.4);
+  box-shadow:0 3px 16px rgba(52,120,220,.2),0 1px 0 rgba(255,255,255,.15) inset;
+}
+body.theme-light .rp-typing{
+  background:rgba(108,92,231,.82)!important;
+  border-color:rgba(108,92,231,.4)!important;
+}
+body.theme-light #rpModal{
+  background:linear-gradient(160deg,#f7f6fc 0%,#eeeeff 100%);
+}
+body.theme-light #rpCharBar{
+  background:linear-gradient(135deg,rgba(108,92,231,.14),rgba(162,155,254,.10))!important;
+  border-bottom-color:rgba(108,92,231,.2)!important;
+}
 .rp-typing span{width:5px;height:5px;border-radius:50%;background:#fff;animation:typingDot 1.4s infinite both;}
+/* RP 聊天区域整体美化 */
+#rpChatBody{
+  padding:16px 14px;
+  gap:14px;
+}
+/* 消息组（连续角色消息）间距 */
+.rp-msg-group{
+  gap:5px;
+}
+/* 角色消息图标装饰 */
+.rp-msg.char:first-child{
+  border-top-left-radius:18px;
+}
+/* 用户消息尾巴装饰 */
+.rp-msg.user + .rp-msg.user{
+  margin-top:2px;
+  border-top-right-radius:8px;
+}
+.rp-msg.char + .rp-msg.char{
+  margin-top:2px;
+  border-top-left-radius:8px;
+}
+/* 打字动画气泡也用毛玻璃 */
+.rp-typing{
+  backdrop-filter:blur(16px) saturate(180%);
+  -webkit-backdrop-filter:blur(16px) saturate(180%);
+  background:var(--rp-char-bg, rgba(108,92,231,.28)) !important;
+  border:1px solid var(--rp-char-border, rgba(162,155,254,.35)) !important;
+  border-bottom-left-radius:5px !important;
+}
+/* 消息进入动画升级 */
+@keyframes msgIn{
+  0%{opacity:0;transform:translateY(10px) scale(.94);}
+  60%{transform:translateY(-2px) scale(1.01);}
+  100%{opacity:1;transform:translateY(0) scale(1);}
+}
+/* 图片消息圆角 */
+.rp-img-msg{
+  max-width:200px;
+  max-height:200px;
+  border-radius:14px;
+  cursor:pointer;
+  border:1px solid rgba(255,255,255,.15);
+  box-shadow:0 4px 16px rgba(0,0,0,.25);
+}
 .rp-typing span:nth-child(2){animation-delay:.2s;}
 .rp-typing span:nth-child(3){animation-delay:.4s;}
 .rp-char-item{padding:12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:8px;display:flex;align-items:center;gap:10px;cursor:pointer;transition:all .2s;}
@@ -8226,6 +8349,41 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div style="font-size:9px;color:var(--text2);margin-top:4px">清空对话不会删除角色记忆</div>
 </div>
+<!-- 气泡颜色自定义 -->
+<div class="fg">
+<label class="fl"><i class="fas fa-palette"></i> 角色气泡颜色</label>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:6px">
+  <div style="background:var(--card2);border-radius:10px;padding:10px">
+    <div style="font-size:11px;font-weight:600;margin-bottom:8px;color:var(--accent2)">角色消息</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px" id="rpCharBubbleColors">
+      <div class="rp-color-chip act" data-side="char" data-color="purple" onclick="setRpBubbleColor('char','purple',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(108,92,231,.45);cursor:pointer;border:2px solid var(--accent);box-shadow:0 2px 8px rgba(108,92,231,.4)"></div>
+      <div class="rp-color-chip" data-side="char" data-color="blue" onclick="setRpBubbleColor('char','blue',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(41,128,185,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="green" onclick="setRpBubbleColor('char','green',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(39,174,96,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="red" onclick="setRpBubbleColor('char','red',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(192,57,43,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="pink" onclick="setRpBubbleColor('char','pink',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(220,80,140,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="orange" onclick="setRpBubbleColor('char','orange',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(230,126,34,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="teal" onclick="setRpBubbleColor('char','teal',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(22,160,133,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="char" data-color="dark" onclick="setRpBubbleColor('char','dark',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(40,40,60,.65);cursor:pointer;border:2px solid transparent"></div>
+    </div>
+    <div id="rpCharBubblePreview" style="margin-top:10px;padding:9px 13px;border-radius:14px;font-size:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--rp-char-bg,rgba(108,92,231,.28));border:1px solid var(--rp-char-border,rgba(162,155,254,.35));color:var(--rp-char-color,#fff);box-shadow:0 4px 12px var(--rp-char-shadow,rgba(108,92,231,.2));border-bottom-left-radius:4px">预览：这是角色的消息气泡</div>
+  </div>
+  <div style="background:var(--card2);border-radius:10px;padding:10px">
+    <div style="font-size:11px;font-weight:600;margin-bottom:8px;color:var(--accent2)">我的消息</div>
+    <div style="display:flex;flex-wrap:wrap;gap:6px" id="rpUserBubbleColors">
+      <div class="rp-color-chip" data-side="user" data-color="blue" onclick="setRpBubbleColor('user','blue',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(52,120,220,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip act" data-side="user" data-color="sky" onclick="setRpBubbleColor('user','sky',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(41,182,246,.45);cursor:pointer;border:2px solid rgba(41,182,246,.8);box-shadow:0 2px 8px rgba(41,182,246,.4)"></div>
+      <div class="rp-color-chip" data-side="user" data-color="purple" onclick="setRpBubbleColor('user','purple',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(162,155,254,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="user" data-color="green" onclick="setRpBubbleColor('user','green',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(39,174,96,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="user" data-color="pink" onclick="setRpBubbleColor('user','pink',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(236,64,122,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="user" data-color="orange" onclick="setRpBubbleColor('user','orange',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(255,152,0,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="user" data-color="teal" onclick="setRpBubbleColor('user','teal',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(0,188,212,.45);cursor:pointer;border:2px solid transparent"></div>
+      <div class="rp-color-chip" data-side="user" data-color="dark" onclick="setRpBubbleColor('user','dark',this)" style="width:28px;height:28px;border-radius:8px;background:rgba(40,40,60,.65);cursor:pointer;border:2px solid transparent"></div>
+    </div>
+    <div id="rpUserBubblePreview" style="margin-top:10px;padding:9px 13px;border-radius:14px;font-size:12px;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);background:var(--rp-user-bg,rgba(52,120,220,.28));border:1px solid var(--rp-user-border,rgba(100,160,255,.35));color:var(--rp-user-color,#fff);box-shadow:0 4px 12px var(--rp-user-shadow,rgba(52,120,220,.2));border-bottom-right-radius:4px;text-align:right">预览：这是我的消息气泡</div>
+  </div>
+</div>
+<button onclick="resetRpBubbleColors()" style="margin-top:10px;padding:7px 16px;border-radius:9px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:11px;cursor:pointer"><i class="fas fa-rotate-left"></i> 恢复默认颜色</button>
+</div>
 <div class="fg"><label class="fl"><i class="fas fa-image"></i> 聊天背景（所有角色通用）</label>
 <div style="display:flex;gap:8px">
 <button class="btn-s" onclick="document.getElementById('rpBgUpload').click()" style="flex:1;margin:0"><i class="fas fa-folder-open"></i> 上传背景</button>
@@ -9037,6 +9195,9 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <span id="rdEditSearchCount" style="font-size:11px;color:var(--text2)"></span>
 <span id="rdEditWcInfo" style="font-size:11px;color:var(--accent2);font-weight:600">0字</span>
 </div>
+</div>
+<div id="rdEditTitleBar" style="display:none;padding:12px 20px 8px;flex-shrink:0;position:sticky;top:51px;z-index:9;background:var(--bg)">
+<input type="text" id="rdEditTitle" placeholder="文章标题..." style="width:100%;padding:0 0 10px;border:none;border-bottom:1px dashed var(--border);background:transparent;color:var(--text);font-size:16px;font-weight:700;outline:none;font-family:inherit" oninput="onRdEditInput()">
 </div>
 <div style="flex:1;overflow:hidden;display:flex;flex-direction:column;padding:0">
 <textarea id="rdEditTextarea" style="flex:1;width:100%;padding:16px 20px;border:none;background:transparent;color:var(--text);font-size:15px;line-height:2;letter-spacing:.02em;outline:none;resize:none;font-family:inherit;overflow-y:auto;-webkit-overflow-scrolling:touch" oninput="onRdEditInput()" placeholder="编辑内容..."></textarea>
@@ -14504,9 +14665,47 @@ function openRdInlineEdit(){
     text=curRd.chapters[curCh]||'';
     var chName=(curRd.chNames&&curRd.chNames[curCh])?(' '+curRd.chNames[curCh]):'';
     label='<i class="fas fa-pen"></i> 编辑第'+(curCh+1)+'章'+esc(chName);
+    if(curCh===0&&curRd.title&&text){
+      var _tBar2=document.getElementById('rdEditTitleBar');
+      var _tInp2=document.getElementById('rdEditTitle');
+      if(_tBar2&&_tInp2){
+        _tBar2.style.display='block';
+        _tInp2.value=curRd.title||'';
+      }
+      var _ct2=curRd.title.replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim().toLowerCase();
+      var _tlines2=text.split('\n');
+      var _fi2=_tlines2.findIndex(function(l){return l.trim().length>0;});
+      if(_fi2>=0){
+        var _fl2=_tlines2[_fi2].replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim().toLowerCase();
+        if(_fl2===_ct2){
+          _tlines2.splice(0,_fi2+1);
+          while(_tlines2.length>0&&_tlines2[0].trim()==='')_tlines2.shift();
+          text=_tlines2.join('\n');
+        }
+      }
+    }
   }else{
     text=curRd.content||'';
     label='<i class="fas fa-pen"></i> 编辑全文';
+    var _tBar=document.getElementById('rdEditTitleBar');
+    var _tInp=document.getElementById('rdEditTitle');
+    if(_tBar&&_tInp){
+      _tBar.style.display='block';
+      _tInp.value=curRd.title||'';
+    }
+    if(curRd.title&&text){
+      var _ct=curRd.title.replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim().toLowerCase();
+      var _tlines=text.split('\n');
+      var _fi=_tlines.findIndex(function(l){return l.trim().length>0;});
+      if(_fi>=0){
+        var _fl=_tlines[_fi].replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim().toLowerCase();
+        if(_fl===_ct){
+          _tlines.splice(0,_fi+1);
+          while(_tlines.length>0&&_tlines[0].trim()==='')_tlines.shift();
+          text=_tlines.join('\n');
+        }
+      }
+    }
   }
   document.getElementById('rdEditHdrTitle').innerHTML=label;
   var ta=document.getElementById('rdEditTextarea');
@@ -14535,6 +14734,8 @@ function closeRdEdit(){
     setTimeout(function(){var okBtn=document.getElementById('dlgOkBtn');if(okBtn)okBtn.textContent='放弃修改';},50);
     return;
   }
+  var _tBarC=document.getElementById('rdEditTitleBar');
+  if(_tBarC)_tBarC.style.display='none';
   navPop('rdEditModal');
   var rdEditEl2=document.getElementById('rdEditModal');rdEditEl2.classList.remove('show');setTimeout(function(){if(!rdEditEl2.classList.contains('show'))rdEditEl2.style.display='none';},50);
   document.getElementById('bnav').classList.remove('hide');
@@ -14561,13 +14762,15 @@ function saveRdEdit(){
     curRd.content=newText;
   }
   curRd.updatedAt=new Date().toISOString();
-  // 自动同步标题为第一章第一句话
-  if(curRd.type==='long' && curCh===0 && newText.trim()){
-    var _firstLine=(newText.trim().split('\n').find(function(l){return l.trim().length>0;})||'');
-    _firstLine=_firstLine.replace(/^[#*《「【\s:：]+/,'').replace(/[》」】\s]+$/,'').trim();
-    if(_firstLine && _firstLine.length>=2 && _firstLine.length<=50){
-      curRd.title=_firstLine;
-    }
+  // 自动同步标题为第一章第一句话（长篇）/ 正文第一行（短篇）
+  if(curRd.type==='long' && curCh===0){
+    var _tInpEl2=document.getElementById('rdEditTitle');
+    var _newTitle2=_tInpEl2?(_tInpEl2.value||'').trim():'';
+    if(_newTitle2)curRd.title=_newTitle2;
+  }else if(curRd.type==='short'){
+    var _tInpEl=document.getElementById('rdEditTitle');
+    var _newTitle=_tInpEl?(_tInpEl.value||'').trim():'';
+    if(_newTitle)curRd.title=_newTitle;
   }
   syncArticle(curRd);
   _rdEditDirty=false;
@@ -14588,6 +14791,8 @@ function saveRdEdit(){
   }catch(e){}
   showToast('已保存修改 ✅ ('+newWc+'字'+(newWc!==oldWc?' ·'+(newWc>oldWc?' +':' ')+(newWc-oldWc)+'字':'')+')');
   // 关闭并刷新阅读页
+  var _tBarS=document.getElementById('rdEditTitleBar');
+  if(_tBarS)_tBarS.style.display='none';
   navPop('rdEditModal');
   var rdEditEl3=document.getElementById('rdEditModal');rdEditEl3.classList.remove('show');setTimeout(function(){if(!rdEditEl3.classList.contains('show'))rdEditEl3.style.display='none';},300);
   document.getElementById('bnav').classList.remove('hide');
@@ -14668,6 +14873,11 @@ document.getElementById('rdModal').classList.remove('rd-reader-mode');
 _rdDestroyReader();
 document.getElementById('rdModal').classList.remove('show');
 document.getElementById('rdModal').classList.remove('immersive-read');
+var _bnavEl = document.getElementById('bnav');
+if(_bnavEl){ _bnavEl.style.transform = 'translateZ(0)'; setTimeout(function(){ _bnavEl.style.transform = ''; }, 100); }
+var _alist = document.querySelectorAll('.acard');
+for(var _i=0;_i<_alist.length;_i++){ _alist[_i].style.transform='translateZ(0)'; }
+setTimeout(function(){ var _al=document.querySelectorAll('.acard'); for(var _i=0;_i<_al.length;_i++){_al[_i].style.transform='';} }, 100);
 document.getElementById('rdSettingsPanel').classList.remove('show');
 document.getElementById('bnav').classList.remove('hide');
 closeNotePanel();
@@ -30421,6 +30631,7 @@ setTimeout(function(){
   xjSkin=ld('bj_xjSkin','default');
   xjSkinUnlocked=ld('bj_xjSkinUnlocked',{default:true,gold:true});
   applyXjSkin();
+  applyRpBubbleColors();
   applyXjBubble();
   checkXjSkinAchievements();
   _renderCreatorPanel();
@@ -32821,6 +33032,115 @@ if(cancelBtn)cancelBtn.onclick=function(){closeInp();};
 let rpChars = ld('bj_rpChars', []); // [{id,name,avatar,desc,world,greeting,systemPrompt:'',messages:[],memories:[],lastSumIdx:0}] // memories格式：[{id,text,time,startIdx,endIdx}]
 let rpSettings = ld('bj_rpSettings', {userDesc:'',contextLen:10,bg:'',autoSumEnabled:false,autoSumInterval:20});
 let rpCurrentCharId = ld('bj_rpCurrentCharId', '');
+// RP 气泡颜色配置
+let rpBubbleColors = ld('bj_rpBubbleColors', {char:'purple', user:'sky'});
+
+const RP_BUBBLE_PALETTE = {
+  // 角色气泡颜色方案
+  char:{
+    purple:{bg:'rgba(108,92,231,.28)',border:'rgba(162,155,254,.35)',shadow:'rgba(108,92,231,.2)',color:'#fff'},
+    blue:  {bg:'rgba(41,128,185,.28)', border:'rgba(93,173,226,.35)', shadow:'rgba(41,128,185,.2)', color:'#fff'},
+    green: {bg:'rgba(39,174,96,.28)',  border:'rgba(88,214,141,.35)', shadow:'rgba(39,174,96,.2)',  color:'#fff'},
+    red:   {bg:'rgba(192,57,43,.28)',  border:'rgba(231,76,60,.35)',  shadow:'rgba(192,57,43,.2)',  color:'#fff'},
+    pink:  {bg:'rgba(220,80,140,.28)', border:'rgba(255,160,200,.35)',shadow:'rgba(220,80,140,.2)', color:'#fff'},
+    orange:{bg:'rgba(230,126,34,.28)', border:'rgba(245,176,65,.35)', shadow:'rgba(230,126,34,.2)', color:'#fff'},
+    teal:  {bg:'rgba(22,160,133,.28)', border:'rgba(72,201,176,.35)', shadow:'rgba(22,160,133,.2)', color:'#fff'},
+    dark:  {bg:'rgba(30,30,50,.65)',   border:'rgba(80,80,120,.5)',   shadow:'rgba(10,10,30,.4)',   color:'#e8e8f0'},
+  },
+  // 用户气泡颜色方案
+  user:{
+    blue:  {bg:'rgba(52,120,220,.28)', border:'rgba(100,160,255,.35)',shadow:'rgba(52,120,220,.2)', color:'#fff'},
+    sky:   {bg:'rgba(41,182,246,.28)', border:'rgba(120,210,255,.35)',shadow:'rgba(41,182,246,.2)', color:'#fff'},
+    purple:{bg:'rgba(162,155,254,.28)',border:'rgba(200,195,255,.35)',shadow:'rgba(162,155,254,.2)',color:'#fff'},
+    green: {bg:'rgba(39,174,96,.28)',  border:'rgba(88,214,141,.35)', shadow:'rgba(39,174,96,.2)',  color:'#fff'},
+    pink:  {bg:'rgba(236,64,122,.28)', border:'rgba(255,140,180,.35)',shadow:'rgba(236,64,122,.2)', color:'#fff'},
+    orange:{bg:'rgba(255,152,0,.28)',  border:'rgba(255,200,80,.35)', shadow:'rgba(255,152,0,.2)',  color:'#fff'},
+    teal:  {bg:'rgba(0,188,212,.28)',  border:'rgba(80,230,250,.35)', shadow:'rgba(0,188,212,.2)',  color:'#fff'},
+    dark:  {bg:'rgba(30,30,50,.65)',   border:'rgba(80,80,120,.5)',   shadow:'rgba(10,10,30,.4)',   color:'#e8e8f0'},
+  }
+};
+
+function applyRpBubbleColors(){
+  var charKey = rpBubbleColors.char || 'purple';
+  var userKey = rpBubbleColors.user || 'sky';
+  var charPalette = RP_BUBBLE_PALETTE.char[charKey] || RP_BUBBLE_PALETTE.char.purple;
+  var userPalette = RP_BUBBLE_PALETTE.user[userKey] || RP_BUBBLE_PALETTE.user.sky;
+  var root = document.documentElement;
+  root.style.setProperty('--rp-char-bg',     charPalette.bg);
+  root.style.setProperty('--rp-char-border', charPalette.border);
+  root.style.setProperty('--rp-char-shadow', charPalette.shadow);
+  root.style.setProperty('--rp-char-color',  charPalette.color);
+  root.style.setProperty('--rp-user-bg',     userPalette.bg);
+  root.style.setProperty('--rp-user-border', userPalette.border);
+  root.style.setProperty('--rp-user-shadow', userPalette.shadow);
+  root.style.setProperty('--rp-user-color',  userPalette.color);
+}
+
+function setRpBubbleColor(side, colorKey, el){
+  rpBubbleColors[side] = colorKey;
+  sv('bj_rpBubbleColors', rpBubbleColors);
+  applyRpBubbleColors();
+  // 更新选中高亮
+  var container = document.getElementById(side==='char' ? 'rpCharBubbleColors' : 'rpUserBubbleColors');
+  if(container){
+    container.querySelectorAll('.rp-color-chip').forEach(function(chip){
+      chip.style.border = '2px solid transparent';
+      chip.style.boxShadow = 'none';
+    });
+    if(el){
+      var palette = RP_BUBBLE_PALETTE[side][colorKey];
+      el.style.border = '2px solid ' + (palette ? palette.border : 'var(--accent)');
+      el.style.boxShadow = '0 2px 8px ' + (palette ? palette.shadow : 'rgba(108,92,231,.4)');
+    }
+  }
+  // 更新预览
+  updateRpBubblePreview(side);
+  showToast('气泡颜色已更新 🎨');
+}
+
+function updateRpBubblePreview(side){
+  var key = rpBubbleColors[side];
+  var palette = RP_BUBBLE_PALETTE[side] ? RP_BUBBLE_PALETTE[side][key] : null;
+  if(!palette) return;
+  var previewId = side==='char' ? 'rpCharBubblePreview' : 'rpUserBubblePreview';
+  var el = document.getElementById(previewId);
+  if(!el) return;
+  el.style.background = palette.bg;
+  el.style.borderColor = palette.border;
+  el.style.color = palette.color;
+  el.style.boxShadow = '0 4px 12px ' + palette.shadow;
+}
+
+function resetRpBubbleColors(){
+  rpBubbleColors = {char:'purple', user:'sky'};
+  sv('bj_rpBubbleColors', rpBubbleColors);
+  applyRpBubbleColors();
+  // 重置选中状态
+  setTimeout(function(){
+    refreshRpColorChips();
+  }, 50);
+  showToast('已恢复默认颜色 ↩');
+}
+
+function refreshRpColorChips(){
+  ['char','user'].forEach(function(side){
+    var key = rpBubbleColors[side];
+    var container = document.getElementById(side==='char'?'rpCharBubbleColors':'rpUserBubbleColors');
+    if(!container) return;
+    container.querySelectorAll('.rp-color-chip').forEach(function(chip){
+      chip.style.border = '2px solid transparent';
+      chip.style.boxShadow = 'none';
+      if(chip.dataset.color === key){
+        var palette = RP_BUBBLE_PALETTE[side][key];
+        if(palette){
+          chip.style.border = '2px solid ' + palette.border;
+          chip.style.boxShadow = '0 2px 8px ' + palette.shadow;
+        }
+      }
+    });
+    updateRpBubblePreview(side);
+  });
+}
 let rpAbortCtrl = null;
 let rpEditingCharId = '';
 let rpTempAvatar = '';
@@ -33359,7 +33679,9 @@ function openRpSettings(){
   document.getElementById('rpUserDesc').value = rpSettings.userDesc || '';
   document.getElementById('rpContextLen').value = rpSettings.contextLen || 10;
   updateRpAutoSumUI();
-  switchRpSetTab('config'); // 默认打开设置页
+  switchRpSetTab('config');
+  // 刷新气泡颜色选中状态
+  setTimeout(function(){ refreshRpColorChips(); }, 80);
   document.getElementById('rpSettingsOv').classList.add('show');
   navPush('rpSettingsOv');
   document.getElementById('bnav').classList.add('hide');
@@ -36091,8 +36413,12 @@ function doGlobalSearch(){
       // 先让页面背景不显白（防止display:none瞬间白屏）
       var bgColor = (ap && ap.theme === 'light') ? '#f5f5f8' : '#0f0f14';
 document.documentElement.style.background = bgColor;
-document.body.style.background = bgColor;
+document.body.style.background = '';
 closeNavLayer(topId);
+setTimeout(function(){
+  document.body.style.background = '';
+  document.documentElement.style.background = '';
+}, 350);
       // 兜底：如果栈已空，强制恢复底部栏
       if(_navStack.length === 0){
         var nav = document.getElementById('bnav');
