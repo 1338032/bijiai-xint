@@ -105,9 +105,8 @@ body.simple-ui .simple-hide{
 .page-loading-ov.show{opacity:1;pointer-events:auto;}
 .pl-icon{
   width:80px;height:80px;
-  border-radius:50%;object-fit:cover;
+  border-radius:0;object-fit:contain;
   margin-bottom:20px;
-  animation:plBounce 2s ease-in-out infinite;
   filter:drop-shadow(0 4px 16px rgba(108,92,231,.4));
 }
 .pl-icon.secret-icon{
@@ -2153,6 +2152,12 @@ display:none;
 .ambience-forest-filter{position:absolute;inset:0;pointer-events:none;display:none;background:rgba(30,80,20,.1);mix-blend-mode:multiply;}
 /* 雪天：冷蓝滤镜 */
 .ambience-snow-filter{position:absolute;inset:0;pointer-events:none;display:none;background:rgba(30,60,110,.1);mix-blend-mode:screen;}
+/* 氛围写作字体颜色（轻微染色，不影响阅读） */
+#edModal.ambience-mode.ambience-rain .ed-textarea{color:#ddeeff;}
+#edModal.ambience-mode.ambience-coffee .ed-textarea{color:#f5e8d8;}
+#edModal.ambience-mode.ambience-forest .ed-textarea{color:#d8eed5;}
+#edModal.ambience-mode.ambience-snowy .ed-textarea{color:#dce8f8;}
+#edModal.ambience-mode.ambience-library .ed-textarea{color:#e8e0d4;}
 #edModal.ambience-mode .ambience-bg{display:block;}
 #edModal.ambience-mode .ambience-canvas{display:block;}
 #edModal.ambience-mode.ambience-rain .ambience-fog{display:block;}
@@ -3300,15 +3305,15 @@ width:80px;height:80px;border-radius:50%;margin-bottom:12px;
 border:3px solid rgba(108,92,231,.3);
 }
 body.theme-light .xj-input{background:rgba(255,255,255,.95);border-color:rgba(108,92,231,.25);color:#1a1a2e;}
-body.theme-light .xj-msg.xj{background:linear-gradient(135deg,rgba(108,92,231,.85),rgba(138,128,237,.8));}
-body.theme-light .xj-msg.user{background:linear-gradient(135deg,rgba(88,166,255,.85),rgba(100,180,255,.8));}
+body.theme-light .xj-msg.xj{background:linear-gradient(135deg,rgba(108,92,231,.95),rgba(120,105,240,.92));color:#fff;}
+body.theme-light .xj-msg.user{background:linear-gradient(135deg,rgba(52,120,220,.95),rgba(70,140,240,.92));color:#fff;}
 body.theme-light .xj-hdr{
   background:linear-gradient(135deg,rgba(108,92,231,.15),rgba(162,155,254,.12));
   border-bottom-color:rgba(108,92,231,.2);
   backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
 }
-body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(245,244,255,.95));}
-body.theme-light .xj-modal{background:linear-gradient(160deg,#f7f6fc 0%,#eeeeff 100%);}
+body.theme-light .xj-input-wrap{background:linear-gradient(180deg,transparent,rgba(225,222,248,.98));}
+body.theme-light .xj-modal{background:linear-gradient(160deg,#ededf7 0%,#e2e2f5 100%);}
 /* ===== 星笺气泡换肤 - 所有皮肤统一半透明磨砂基础 ===== */
 .xj-modal .xj-msg{
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
@@ -4344,20 +4349,20 @@ body.theme-light .rp-batch-bar{
   box-shadow:0 -4px 15px rgba(0,0,0,.08);
 }
 body.theme-light .rp-msg.char{
-  background:linear-gradient(135deg,rgba(108,92,231,.82),rgba(130,115,248,.78));
-  color:#fff;
-  border-color:rgba(108,92,231,.4);
-  box-shadow:0 3px 16px rgba(108,92,231,.2),0 1px 0 rgba(255,255,255,.15) inset;
+  background:var(--rp-char-bg,rgba(108,92,231,.82));
+  color:var(--rp-char-color,#fff);
+  border-color:var(--rp-char-border,rgba(108,92,231,.4));
+  box-shadow:0 3px 16px var(--rp-char-shadow,rgba(108,92,231,.2)),0 1px 0 rgba(255,255,255,.15) inset;
 }
 body.theme-light .rp-msg.user{
-  background:linear-gradient(135deg,rgba(52,120,220,.82),rgba(80,150,240,.78));
-  color:#fff;
-  border-color:rgba(52,120,220,.4);
-  box-shadow:0 3px 16px rgba(52,120,220,.2),0 1px 0 rgba(255,255,255,.15) inset;
+  background:var(--rp-user-bg,rgba(52,120,220,.82));
+  color:var(--rp-user-color,#fff);
+  border-color:var(--rp-user-border,rgba(52,120,220,.4));
+  box-shadow:0 3px 16px var(--rp-user-shadow,rgba(52,120,220,.2)),0 1px 0 rgba(255,255,255,.15) inset;
 }
 body.theme-light .rp-typing{
-  background:rgba(108,92,231,.82)!important;
-  border-color:rgba(108,92,231,.4)!important;
+  background:var(--rp-char-bg,rgba(108,92,231,.82))!important;
+  border-color:var(--rp-char-border,rgba(108,92,231,.4))!important;
 }
 body.theme-light #rpModal{
   background:linear-gradient(160deg,#f7f6fc 0%,#eeeeff 100%);
