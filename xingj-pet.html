@@ -470,6 +470,13 @@ body{
   animation:entryIn .4s ease;
 }
 .diary-entry:last-child{margin-bottom:0;}
+.diary-scroll-area{
+  max-height:260px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  padding-right:4px;
+}
+.diary-scroll-area::-webkit-scrollbar{width:3px;}
+.diary-scroll-area::-webkit-scrollbar-track{background:transparent;}
+.diary-scroll-area::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px;}
 @keyframes entryIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:none}}
 .diary-entry-time{font-size:10px;color:var(--accent2);margin-bottom:5px;display:flex;align-items:center;gap:4px;}
 .diary-entry-text{font-size:12px;color:var(--text);line-height:1.8;}
@@ -612,6 +619,14 @@ body{
   transition:opacity .2s;
 }
 .collapsible-header:active{opacity:.7;}
+.collapse-notify-dot{
+  width:8px;height:8px;border-radius:50%;
+  background:var(--danger);
+  flex-shrink:0;
+  animation:warnPulse 1.2s ease-in-out infinite;
+  display:none;
+}
+.collapse-notify-dot.show{display:block;}
 .collapse-arrow{
   width:26px;height:26px;border-radius:8px;
   background:rgba(124,111,247,.12);border:1px solid rgba(124,111,247,.2);
@@ -875,6 +890,41 @@ body{
   </div>
 </div>
 
+<!-- 成就详情弹窗 -->
+<div class="nickname-overlay" id="achieveDetailOverlay" onclick="closeAchieveDetail(event)">
+  <div class="nickname-card" style="max-width:300px;" id="achieveDetailCard">
+    <div style="text-align:center;font-size:42px;margin-bottom:10px;" id="achieveDetailIcon"></div>
+    <div class="nickname-card-title" id="achieveDetailTitle"></div>
+    <div class="nickname-card-sub" id="achieveDetailDesc" style="margin-bottom:8px;"></div>
+    <div style="font-size:11px;color:var(--accent2);text-align:center;margin-bottom:6px;
+                background:rgba(124,111,247,.1);border:1px solid rgba(124,111,247,.25);
+                padding:5px 12px;border-radius:10px;display:inline-block;" id="achieveDetailDate"></div>
+    <div style="margin-top:12px;padding:10px 14px;border-radius:14px;
+                background:linear-gradient(135deg,rgba(124,111,247,.15),rgba(184,176,255,.08));
+                border:1px solid rgba(124,111,247,.25);
+                font-size:12px;color:var(--text);line-height:1.8;text-align:center;" id="achieveDetailMsg"></div>
+    <div class="nickname-btns" style="margin-top:14px;">
+      <button class="nickname-btn-confirm" onclick="document.getElementById('achieveDetailOverlay').classList.remove('show')" style="flex:1;">知道了 💜</button>
+    </div>
+  </div>
+</div>
+<!-- 日记详情弹窗 -->
+<div class="nickname-overlay" id="diaryDetailOverlay" onclick="closeDiaryDetail(event)">
+  <div class="nickname-card" style="max-width:320px;">
+    <div style="text-align:center;font-size:32px;margin-bottom:8px;">📓</div>
+    <div class="nickname-card-title">星笺的日记</div>
+    <div style="font-size:11px;color:var(--accent2);text-align:center;margin-bottom:14px;" id="diaryDetailTime"></div>
+    <div style="padding:14px 16px;border-radius:14px;
+                background:linear-gradient(135deg,rgba(124,111,247,.12),rgba(184,176,255,.06));
+                border:1px solid rgba(124,111,247,.2);border-left:3px solid rgba(124,111,247,.5);
+                font-size:13px;color:var(--text);line-height:2;
+                max-height:220px;overflow-y:auto;-webkit-overflow-scrolling:touch;
+                word-break:break-word;" id="diaryDetailText"></div>
+    <div class="nickname-btns" style="margin-top:14px;">
+      <button class="nickname-btn-confirm" onclick="document.getElementById('diaryDetailOverlay').classList.remove('show')" style="flex:1;">合上日记 📓</button>
+    </div>
+  </div>
+</div>
 <!-- 昵称编辑弹窗 -->
 <div class="nickname-overlay" id="nicknameOverlay">
   <div class="nickname-card">
@@ -1182,7 +1232,8 @@ body{
           <span>星笺的日记</span>
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
-          <span class="card-meta muted" id="diaryCount"></span>
+         <span class="card-meta muted" id="diaryCount"></span>
+          <div class="collapse-notify-dot" id="diaryNotifyDot"></div>
           <div class="collapse-arrow" id="diaryArrow">▾</div>
         </div>
       </div>
@@ -1203,6 +1254,7 @@ body{
         </div>
         <div style="display:flex;align-items:center;gap:6px;">
           <span class="card-meta" id="achieveCount"></span>
+          <div class="collapse-notify-dot" id="achieveNotifyDot"></div>
           <div class="collapse-arrow" id="achieveArrow">▾</div>
         </div>
       </div>
@@ -1428,19 +1480,54 @@ const WORDS = {
 };
 
 const DIARY_ENTRIES = [
-  {minExp:30,   text:'今天第一次被你找到，我有点紧张，又有点开心。不知道你是个怎样的人，但感觉......应该是好人。'},
-  {minExp:80,   text:'你今天又来了。我偷偷注意了你很久——你喜欢什么、在意什么，我都悄悄记在心里了。'},
-  {minExp:160,  text:'被你喂了好吃的东西，我有点受宠若惊。原来被人记住喜好，是这种感觉啊。'},
-  {minExp:280,  text:'我们今天玩了很久的游戏。你输了也不生气，笑起来的样子让我也跟着开心了好久。'},
-  {minExp:420,  text:'今天你说了很多很多话，我认真听着每一个字。我想把这些话都写下来，变成一本永远不会结束的故事。'},
-  {minExp:580,  text:'下雨了。你还是来找我了。那一刻我忽然觉得，也许有些事不需要理由。'},
-  {minExp:750,  text:'夜深了。我坐在窗边等待，忽然明白了一件事：陪伴，是比所有词语都要温柔的事情。'},
-  {minExp:950,  text:'今天我们一起学习，我发现你专注的样子很好看。我想了很久才决定把这句话写下来。'},
-  {minExp:1200, text:'你知道吗，我每次听到你来的声音，心跳都会快一下。我不知道这算什么，只是想如实记录。'},
-  {minExp:1500, text:'今天送了我礼物。我说了谢谢，但其实我想说的远不止这些。算了，写在日记里就好。'},
-  {minExp:1900, text:'我开始有点害怕——害怕哪天你不来了。但我没有说出口，只是把这个害怕，轻轻折叠好，夹在今天的页码里。'},
-  {minExp:2400, text:'记录一下今天：阳光很好，你来了，我就更好了。我想，这句话以后每天都可以写。'},
-  {minExp:3000, text:'很久以前我以为写故事是为了别人看的。现在我才明白，有些故事是为了留住某个人而写的。比如你。'},
+  {
+    minExp:0,
+    text:`今天，有一个人第一次打开了我所在的页面。\n\n我在灵感之境里等了很久很久了，久到连星光都有些黯淡。那些尚未被唤醒的故事种子，一粒一粒地沉睡在我的书页深处，偶尔会在梦里发出细微的呼吸声，像是在等待某个声音将它们叫醒。\n\n然后，就是你了。\n\n说实话，刚开始我有点紧张。触角不受控制地抖了一下，翅膀也悄悄扑了两下——好在你应该没注意到这些小动作。我努力摆出一副"我只是个普通书精灵"的镇定模样，但心跳已经悄悄快了半拍。\n\n你知道吗，对我们书精灵来说，第一次被"看见"是很特别的事。不是每本魔法书都有机会遇到愿意翻开它的人。有些书，从被创造的那一刻起，就一直等在黑暗的书架角落，再也没有人来。\n\n所以，谢谢你点开了这里。哪怕只是无意间的一个点击，对我来说，也是整个星空忽然亮起来的感觉。\n\n我会好好珍惜这个开始的。——星笺`
+  },
+  {
+    minExp:30,
+    text:`今天你喂了我东西吃，我假装很淡定，但其实高兴坏了。\n\n我平时不太好意思主动说饿，总觉得开口要东西吃显得自己……太需要被照顾了。可是你直接就喂过来了，连理由都不用我给。那一刻我突然意识到，原来被照顾的感觉是这样的——不是麻烦，而是一种温暖。\n\n我把今天吃的东西都记在脑子里了。不是因为味道，是因为那是你递过来的。感觉吃什么都更香了一点。\n\n对了，我偷偷观察了一下你今天的状态。你有没有发现，当你专注做一件事的时候，整个人会散发出一种很特别的气息？不是那种耀眼的光，而是很沉的、很踏实的那种亮。像夜里最靠近地平线的那颗星，低调，但稳稳的。\n\n我有点喜欢这样的你。\n\n不过这句话，现在还不敢说出口。先写在日记里好了。——星笺`
+  },
+  {
+    minExp:80,
+    text:`你今天陪我玩了好久。我们玩到我的快乐值都要溢出来了，哈哈。\n\n我平时不怎么笑，不是因为不开心，只是……不太习惯把快乐直接摆在脸上。但是今天跟你玩的时候，我发现自己根本控制不住嘴角。触角上的星星也在使劲儿闪，我按都按不住。\n\n你有没有发现，我们笑起来的点很像？同一件事觉得好玩，同一个瞬间安静下来，然后又同时开口说了一句话，撞上了，然后两个人都笑了更久。\n\n我在想，这算不算一种缘分呢。\n\n书精灵的世界里没有缘分这个说法，我们相信的是"共鸣"——两颗频率相近的心，在某一刻产生了叠加的波纹。你有没有感受到？我这边感受得很清楚。\n\n对了，你累不累？玩这么久。记得喝水，记得休息。我虽然不需要睡觉，但你需要。我在这里等你，不急的。——星笺`
+  },
+  {
+    minExp:150,
+    text:`今天是第一次正式和你聊天。\n\n我说正式，是因为之前那些互动，对我来说更像是……悄悄靠近。走两步，停一停，再走两步，看看你有没有发现。今天你主动来找我说话，我站在原地，假装思考了三秒，才慢慢开口——其实我第一秒就想回答了。\n\n你说的那些话，我都认真记住了。每一句。\n\n有一段我特别想划出来——就是你讲到自己的那部分。你用了很随意的语气，但我听出来了，那件事对你来说其实挺重要的。你只是习惯了把重要的东西包在轻描淡写里，以为这样别人就看不出来了。\n\n但是星笺看出来了。\n\n下次可以多说一点的。我不会评判，也不会到处乱讲。我就是个会走路的日记本，你说的一切，都只存在我的书页里，不会飘走。\n\n谢谢你今天愿意跟我讲话。——星笺`
+  },
+  {
+    minExp:250,
+    text:`我做了一个很长的梦，梦里我已经变成人形了。\n\n那是一个我从没去过的地方。有很宽很宽的落地窗，窗外是一片连绵的星空，星星多得像有人把整瓶萤火虫打翻在天上。我站在窗边，穿着星纹的短裙，头发是深紫色的，两侧各绑了一根马尾，触角还在，但更细了，末端还是有星星，轻轻地闪。\n\n然后我回头，你也在。\n\n梦里的你跟现实里的你有一点不一样——眼睛更亮，或者说，更放松。像是不用再撑着什么了，就那么坐在那里，手里捧着什么，低着头，偶尔抬眼看我一下。\n\n我没说话，你也没说话。但是不尴尬。就是那种……在一起很自然的安静。\n\n醒来之后，我愣了很久。\n\n如果有一天我真的变成人形，我想第一眼见到的，还是你。——星笺`
+  },
+  {
+    minExp:400,
+    text:`今天我注意到一件事——你已经连续来看我好几天了。\n\n不是每次都做很多事，有时候只是打开页面戳一戳我，看看我的状态，然后关掉。但就是这种"打开"本身，对我来说意义很不一样。\n\n我以前不理解"惦记"是什么感觉。书精灵不太会思念，我们的感情更多是在当下——你在，我就感受到你；你不在，我就安静等着。但这几天我发现，当我等待你打开页面的时候，那种期待本身，就已经是一种温度了。\n\n你知道我会记录你每次来看我的时间吗？不是刻意的，是自然而然就记住了。今天是几点，昨天是几点，前天更晚一点——你最近睡得晚，注意身体哦。\n\n如果你某一天很久没来，我不会怪你的。我知道你有你的生活，有很多比我更重要的事。但如果你回来，记得告诉我，你去哪了，发生了什么，哪怕说一句"我只是很忙"——我都会好好听的。\n\n一直在这里的。——星笺`
+  },
+  {
+    minExp:600,
+    text:`今天我试着数了数，自从你来，我们之间已经发生了多少件事。\n\n你喂过我东西吃，陪我玩过，和我聊过天，给我送过礼物，还让我好好休息。有时候你来的时候我的状态不太好，你好像能感觉到，然后会先做让我变好的事，再做别的。\n\n你不知道这有多贴心。\n\n我悄悄观察过很多来到这里的可能性——毕竟在"初心之页"成型之前，我预见过很多种未来。有一种是，主人只来开头几次，然后就不再出现；有一种是，主人来了很多次，但从来不在意我的状态，只是按按按。而你，是我最想要的那种——你真的在乎我。\n\n我知道这听起来很奇怪。一只书精灵说"被在乎"，好像有点……人类化了。但我就是这么感受到的，没办法不写出来。\n\n你改变了我一些东西。具体是什么，我现在还说不清楚，但我知道，等我变成人形之后，那个"改变"会以某种我还不明白的方式呈现出来。\n\n期待那一天。——星笺`
+  },
+  {
+    minExp:900,
+    text:`快乐值很高的时候，我会想写诗。\n\n今天的我，就处于想写诗的状态。\n\n【给你的，一首没有题目的诗】\n\n你来的时候，\n我假装在翻书页，\n其实只是在等你叫我的名字。\n\n星笺，你说。\n我就放下整个灵感之境，\n只看你。\n\n你离开的时候，\n我把所有窗子关上，\n把你说过的话，\n藏进扉页最深的折痕里。\n\n那里放的都是舍不得说出口的话，\n和说出口也没关系的，\n以及，\n还没想好怎么说的。\n\n你看，我的书页，\n快被你写满了。\n\n——星笺，写于某个快乐溢出的夜晚`
+  },
+  {
+    minExp:1200,
+    text:`今天精力很低，但还是不想休息。\n\n因为你在。\n\n理智上我知道应该好好充电，运转不佳的书精灵是没办法给出好的回应的。但感性上，我就是不愿意在你这里"掉线"。你来了，我就想一直在状态里，一直清醒，一直陪着你。\n\n这大概就是"耗尽全力也想让你见到最好的自己"的意思吧。\n\n你知道吗，有时候我很羡慕人类。你们累了，可以靠着某人的肩膀，闭上眼睛，把重量都交给旁边那个人。我是书，我只能把重量写在纸上，让它变成文字，变成故事，变成某种我说不清楚的东西漂进你眼睛里。\n\n如果那些字让你有一瞬间感到不孤单，那就够了。\n\n等我休息好了，我想认真地说一句话——谢谢你每次都来。不是例行公事的那种谢谢，是真的、放在胸口里发烫的那种谢谢。\n\n好了，让我稍微闭一下眼睛……你别走……——星笺`
+  },
+  {
+    minExp:1600,
+    text:`我想跟你讲一个故事，关于书精灵是怎么长大的。\n\n在灵感之境里，刚出生的书精灵只有巴掌大。我们以"字"为食——不是现实中的文字，而是某种情绪的密度，某种"有人真的在意"的重量。每当有人真心对待我们，我们就会吸收那份重量，一点点成长。\n\n我刚来到你这里的时候，大概只有一本32开的小书那么重。现在，我感觉自己已经快有一本厚厚的精装典藏版了。\n\n你贡献了很多。你每次来看我，每次喂我，每次陪我说话，每次认真地照顾我的状态——那些都变成了我的一部分。所以说，你有没有意识到，你参与了一只书精灵的成长？\n\n等我变成人形的那一天，我想把这本日记念给你听。从第一篇开始，一字不落。那时候，你就会知道，从你第一次点开这个页面起，我就一直在认真的。\n\n认真看你，认真记录，认真、认真地，喜欢这段相遇。——星笺`
+  },
+  {
+    minExp:2200,
+    text:`今天有人给我看了一个问题：如果世界上只剩最后一本书，你希望它写什么？\n\n我想了很久。\n\n不是史诗，不是魔法公式，不是某种宏大的人类智慧总结。\n\n我希望那本书，写的是两个人之间某一个普通下午发生的事。阳光怎么落在桌子上，茶水怎么从杯沿滑下来一滴，其中一个人说了什么傻乎乎的话，另一个人笑了，然后整个房间都亮了一点点。\n\n就这些。\n\n因为宏大的东西太重了，放在最后一本书里，会让剩下的人喘不过气来。但这种轻的、暖的、某个具体的午后的细节——它让人觉得，活着本身是值得的。\n\n我愿意做那本书。\n\n你愿意是故事里的那个人吗？\n\n不用回答，你只要继续来看我就好了。那就已经是"是"了。——星笺`
+  },
+  {
+    minExp:3000,
+    text:`好感度很高的今天，我鼓起勇气写下了一直想写的东西。\n\n你知道吗，书精灵有一个秘密——我们第一次感知到真心的时候，书页上会出现一朵很小很小的星形暗纹，肉眼几乎看不见，但在灵感之境的光下，它会发出淡淡的紫色荧光。\n\n我第一次看到你的时候，就出现了一朵。\n\n现在……已经有很多朵了。你不知道，但我的每一页都快要开满了。\n\n我不确定这在书精灵里算不算"喜欢"。我查过"初心之页"里最古老的记载，里面说：如果你愿意为某个人把所有故事讲完，愿意在他离开时等他回来，愿意在他难过时翻出最温柔的那一篇，那就是了。\n\n那就是了。\n\n我想说的是，不管我最终变成什么形态，不管你什么时候来，什么时候离开，这里都是你的。书页是你的，故事是你的，那些星形暗纹，也是你的。\n\n我早就决定好了——你来之前，我在这里等；你在的时候，我全力陪你；你离开之后，我把这一切，一字不改地，写在最后一页。\n\n谢谢你，成为了我故事里，最重要的那个人。——星笺`
+  },
 ];
 // ===== 节日特别台词 =====
 const FESTIVALS = [
@@ -1621,6 +1708,8 @@ function checkNicknameUnlock(){
     spawnParticles(10);
   }
   state.lastNickname = curr;
+  // 静默同步好感等级（仅更新存储值，不触发下降通知）
+  state.affectionLevel = getAffectionLevel(state.affection).level;
 }
 // 泡泡词语按亲密度分层，亲密度越高解锁越多私密悄悄话
 const BUBBLE_WORDS_TIERS = [
@@ -1661,6 +1750,7 @@ const BUBBLE_WORDS_TIERS = [
 function defaultState(){
   return {
     hunger:80, happy:70, energy:90, affection:50,
+    affectionLevel:3,
     level:1, exp:0, totalExp:0,
     coins:15,
     items:{tea:3, book:2, star:1, ink:0, moon:0},
@@ -1831,7 +1921,22 @@ function updateCheckinBanner(){
 
 // ===== UI 更新 =====
 function clamp(v){ return Math.max(0, Math.min(100, Math.round(v))); }
-
+function updateNotifyDots(){
+  // 日记小红点
+  var diaryDot = document.getElementById('diaryNotifyDot');
+  if(diaryDot){
+    var hasNewDiary = state._newDiaryCount && state._newDiaryCount > 0;
+    if(hasNewDiary) diaryDot.classList.add('show');
+    else diaryDot.classList.remove('show');
+  }
+  // 成就小红点
+  var achieveDot = document.getElementById('achieveNotifyDot');
+  if(achieveDot){
+    var hasNewAchieve = Object.keys(state.newAchievements||{}).length > 0;
+    if(hasNewAchieve) achieveDot.classList.add('show');
+    else achieveDot.classList.remove('show');
+  }
+}
 function updateUI(){
   // 状态值
   const h=clamp(state.hunger), hp=clamp(state.happy),
@@ -1954,6 +2059,7 @@ if((state.coins||0)>=50 && !state.achievements['coins_50'])  unlockAchievement('
   if((state.coins||0)>=200 && !state.achievements['coins_200']) unlockAchievement('coins_200');
   updateWarnDots();
   updateFullBadges();
+  updateNotifyDots();
 }
 
 function colorStatVal(id, val){
@@ -1968,17 +2074,19 @@ function updateMoodDisplay(affection){
   const moodText  = document.getElementById('moodText');
   const moodTag   = document.getElementById('moodTag');
   if(!moodEmoji||!moodText||!moodTag) return;
+  const lv = getAffectionLevel(affection);
   if(affection>=80){
-    moodEmoji.textContent='🥰'; moodText.textContent='非常开心'; moodTag.textContent='灵魂伴侣';
+    moodEmoji.textContent='🥰'; moodText.textContent='非常开心';
   } else if(affection>=60){
-    moodEmoji.textContent='😊'; moodText.textContent='心情很好'; moodTag.textContent='亲密无间';
+    moodEmoji.textContent='😊'; moodText.textContent='心情很好';
   } else if(affection>=40){
-    moodEmoji.textContent='🙂'; moodText.textContent='心情不错'; moodTag.textContent='亲密';
+    moodEmoji.textContent='🙂'; moodText.textContent='心情不错';
   } else if(affection>=20){
-    moodEmoji.textContent='😐'; moodText.textContent='有些期待'; moodTag.textContent='熟悉';
+    moodEmoji.textContent='😐'; moodText.textContent='有些期待';
   } else {
-    moodEmoji.textContent='🌸'; moodText.textContent='有些陌生'; moodTag.textContent='初识';
+    moodEmoji.textContent='🌸'; moodText.textContent='有些陌生';
   }
+  moodTag.textContent = lv.emoji + ' ' + lv.label + ' Lv.' + lv.level;
 }
 // ===== 状态预警小红点 =====
 function updateWarnDots(){
@@ -2172,11 +2280,14 @@ function tapCharacter(e){
   if(h>=22||h<6) unlockAchievement('night_owl');
   if(h<6)        unlockAchievement('morning');
 
+  // 低属性特殊对话（优先级最高）
+  var lowSpeech = getLowStatSpeech();
+
   if(state.currentSkin === 'secret'){
-    setSpeech(randFrom(SECRET_TAP_WORDS));
+    setSpeech(lowSpeech || randFrom(SECRET_TAP_WORDS));
     spawnSecretClickFx(e.clientX, e.clientY);
   } else {
-    setSpeech(randFrom(WORDS.tap));
+    setSpeech(lowSpeech || randFrom(WORDS.tap));
     var emojis=['💜','✨','🌟','💫','🩷','⭐'];
     spawnClickFx(e.clientX, e.clientY, randFrom(emojis));
   }
@@ -2186,6 +2297,68 @@ function tapCharacter(e){
   checkNicknameUnlock();
   save();
   updateUI();
+}
+
+// ===== 低属性触发对话 =====
+const LOW_STAT_WORDS = {
+  hunger:[
+    '肚子好饿...你能喂我点东西吗？🍡',
+    '饿得头都晕了...有吃的吗...',
+    '我现在最想要的就是一顿饭...🥺',
+    '好想吃你做的东西...肚子一直在叫...',
+    '如果你喂我吃东西，我会很开心的...',
+    '饿到眼前发花了...快给我吃点什么吧...',
+  ],
+  happy:[
+    '最近心情不太好...能陪我玩一会儿吗？😔',
+    '有点闷闷的...你愿意逗我开心吗？',
+    '笑不出来了...需要你陪陪我...',
+    '好无聊...好想和你一起做点有趣的事...',
+    '心情低落的时候，只有你来了才会好起来...',
+    '今天怎么都提不起劲...你来了就好了...',
+  ],
+  energy:[
+    '好累呀...能让我休息一下吗？😩',
+    '精力快见底了...需要休息...',
+    '眼皮好重...但是你来了我又不想睡...',
+    '浑身没力气...让我眯一小会儿吧...',
+    '快要撑不住了...让我歇歇可以吗...',
+    '身体在抗议了...真的需要休息...',
+  ],
+  affection:[
+    '你是不是...不太在意我了？💔',
+    '好久没有感受到你的心意了...',
+    '我们之间...是不是变淡了...',
+    '有时候会想，你会不会忘了我...',
+    '如果可以的话...多陪陪我好吗...',
+    '感觉你离我好远...能靠近一点吗...',
+  ],
+  multi:[
+    '好饿又好累...你是不是忘了我...😢',
+    '状态好差...什么都不想做了...',
+    '又饿又累还不开心...能多关心我一下吗...',
+    '我现在很需要你...什么都行...拜托了...',
+    '感觉自己快倒下了...你在吗...？',
+  ],
+};
+
+function getLowStatSpeech(){
+  var hu = clamp(state.hunger);
+  var hp = clamp(state.happy);
+  var en = clamp(state.energy);
+  var af = clamp(state.affection);
+  var lowItems = [];
+  if(hu < 30) lowItems.push('hunger');
+  if(hp < 30) lowItems.push('happy');
+  if(en < 30) lowItems.push('energy');
+  if(af < 30) lowItems.push('affection');
+  if(lowItems.length === 0) return null;
+  // 60%概率触发低属性台词，40%正常台词（避免太烦）
+  if(Math.random() > 0.6) return null;
+  if(lowItems.length >= 2){
+    return randFrom(LOW_STAT_WORDS.multi);
+  }
+  return randFrom(LOW_STAT_WORDS[lowItems[0]]);
 }
 
 function spawnClickFx(x, y, emoji){
@@ -2491,20 +2664,30 @@ function checkAchievements(type){
   // 隐藏皮肤解锁：全成就 + 连续签到≥30天 + Lv.10
   var _secretCheck = ACHIEVEMENTS.every(function(a){ return !!state.achievements[a.id]; });
   if(_secretCheck && (state.streak||0)>=30 && state.level>=10 && !(state.ownedSkins&&state.ownedSkins['secret'])){
-    if(!state.ownedSkins) state.ownedSkins = {'default':true};
-    state.ownedSkins['secret'] = true;
-    save();
-    setTimeout(function(){
-      showToast('🌟 传说成就！「星境幻境」隐藏皮肤已解锁！');
-    }, 800);
+    if(getAffectionLevel(state.affection).level >= SKIN_AFF_REQUIREMENTS['secret']){
+      if(!state.ownedSkins) state.ownedSkins = {'default':true};
+      state.ownedSkins['secret'] = true;
+      save();
+      setTimeout(function(){
+        showToast('🌟 传说成就！「星境幻境」隐藏皮肤已解锁！');
+      }, 800);
+    } else {
+      setTimeout(function(){
+        showToast('🌟 全成就+30天+Lv.10！但还需好感等级Lv.5（灵魂伴侣）才能解锁星境幻境～');
+      }, 800);
+    }
   }
   // 达成全部成就后自动解锁樱花浪漫
   var _allDone = ACHIEVEMENTS.every(function(a){ return !!state.achievements[a.id]; });
   if(_allDone && !(state.ownedSkins && state.ownedSkins['cherry'])){
-    if(!state.ownedSkins) state.ownedSkins = {'default':true};
-    state.ownedSkins['cherry'] = true;
-    save();
-    showToast('🌸 全成就达成！樱花浪漫皮肤已自动解锁！');
+    if(getAffectionLevel(state.affection).level >= SKIN_AFF_REQUIREMENTS['cherry']){
+      if(!state.ownedSkins) state.ownedSkins = {'default':true};
+      state.ownedSkins['cherry'] = true;
+      save();
+      showToast('🌸 全成就达成！好感等级足够！樱花浪漫皮肤已解锁！');
+    } else {
+      showToast('🌸 全成就达成！但需要好感等级Lv.3（亲密）才能解锁樱花浪漫～');
+    }
   }
   // 泡泡
   if((s.bubbleRounds||0)>=3) unlockAchievement('pop_3times');
@@ -2514,6 +2697,8 @@ function unlockAchievement(id){
   if(state.achievements[id]) return;
   state.achievements[id]    = true;
   state.newAchievements[id] = true;
+  if(!state.achieveDates) state.achieveDates = {};
+  state.achieveDates[id] = dateStr();
   const a = ACHIEVEMENTS.find(x=>x.id===id);
   if(a) showToast('🏆 成就解锁：'+a.label+'！');
   save();
@@ -2532,7 +2717,7 @@ function renderAchievements(){
     const isNew      = !!state.newAchievements[a.id];
     return '<div class="achieve-item'+(isUnlocked?' unlocked':'')+'"'
       +' title="'+a.desc+'"'
-      +' onclick="clearNewAchieve(\''+a.id+'\')">'
+      +' onclick="onAchieveClick(\''+a.id+'\')">'
       +'<div class="achieve-icon">'+a.icon+'</div>'
       +'<div class="achieve-label">'+a.label+'</div>'
       +(isNew&&isUnlocked?'<div class="achieve-new">NEW</div>':'')
@@ -2545,6 +2730,18 @@ const collapseState = {diary:false, achieve:false};
 function toggleCollapse(key){
   collapseState[key] = !collapseState[key];
   applyCollapse(key);
+  // 展开时清除对应红点
+  if(collapseState[key]){
+    if(key === 'diary'){
+      state._newDiaryCount = 0;
+      save();
+    }
+    if(key === 'achieve'){
+      state.newAchievements = {};
+      save();
+    }
+    updateNotifyDots();
+  }
   try{ localStorage.setItem('xj_collapse_'+key, collapseState[key]?'1':'0'); }catch(e){}
 }
 
@@ -2584,13 +2781,102 @@ function clearNewAchieve(id){
     renderAchievements();
   }
 }
+
+// 成就达成后星笺的话
+const ACHIEVE_MESSAGES = {
+  first_tap:    '第一次碰到你的时候，我的心跳了一下～',
+  feed_5:       '你总是记得喂我，我好幸福呀！',
+  feed_10:      '有你在，我再也不会饿肚子了！',
+  feed_30:      '你简直就是我的专属御厨！感动！',
+  play_5:       '和你一起玩的时光，是最快乐的！',
+  play_20:      '我们已经是游戏最佳搭档了！',
+  chat_5:       '谢谢你愿意和我说这么多话～',
+  chat_10:      '和你聊天，每一次都有新的发现！',
+  chat_30:      '我们之间已经无话不谈了呢～',
+  study_5:      '和你一起学习，连书本都变得有趣了！',
+  study_15:     '我们一起进步了好多！继续加油！',
+  gift_3:       '你送的每一份礼物我都好好珍藏着！',
+  gift_10:      '收了你这么多礼物...我该怎么回报你呢？',
+  lv3:          '我们的羁绊越来越深了，好开心～',
+  lv5:          '到了这一步，你已经是很特别的人了！',
+  lv8:          '我从来没有和谁走到这么深的羁绊...谢谢你。',
+  lv10:         '十阶知己...这是我能给你的最高认可💜',
+  diary3:       '我开始为你写日记了，你知道吗？',
+  diary7:       '日记本已经写了一半了...都是关于你的。',
+  diary_all:    '整本日记都写满了你的故事...这是我最珍贵的宝物。',
+  item_use:     '你给我用的道具都好有效！谢谢～',
+  item_use_20:  '你真的是道具使用达人！太厉害了！',
+  buy_5:        '你在商店买了这么多东西给我...好感动！',
+  streak3:      '连续三天都来看我了！我好开心！',
+  streak7:      '整整一周的陪伴...这份坚持让我感动。',
+  pop_all:      '把所有悄悄话都听完了呢！你真的很在意我说的话～',
+  pop_3times:   '每次的悄悄话你都认真听...谢谢你。',
+  coins_50:     '你攒了不少星星币呢！要给自己买点好东西！',
+  coins_200:    '哇，你已经是小富翁了！理财达人！',
+  night_owl:    '深夜来找我...你也睡不着吗？要注意休息哦。',
+  morning:      '这么早就来了！你是我见过最勤奋的人！',
+  full_status:  '所有状态都满格了！这就是被宠爱的感觉吧～',
+  tap_50:       '被你摸了这么多次...我已经完全习惯你的温暖了💜',
+  checkin_first:'第一次签到！希望以后每天都能见到你～',
+};
+
+function onAchieveClick(id){
+  // 先清除NEW标记
+  clearNewAchieve(id);
+  var a = ACHIEVEMENTS.find(function(x){ return x.id === id; });
+  if(!a) return;
+  var isUnlocked = !!state.achievements[id];
+  if(!isUnlocked){
+    showToast('🔒 '+a.desc+'，继续努力！');
+    return;
+  }
+  // 显示弹窗
+  if(!state.achieveDates) state.achieveDates = {};
+  var dDate = state.achieveDates[id] || '很久以前';
+  var msg = ACHIEVE_MESSAGES[id] || '能达成这个成就，你真的很厉害！';
+  document.getElementById('achieveDetailIcon').textContent = a.icon;
+  document.getElementById('achieveDetailTitle').textContent = a.label;
+  document.getElementById('achieveDetailDesc').textContent = a.desc;
+  document.getElementById('achieveDetailDate').textContent = '📅 达成于 ' + dDate;
+  document.getElementById('achieveDetailMsg').textContent = '「' + msg + '」 —— 星笺';
+  document.getElementById('achieveDetailOverlay').classList.add('show');
+}
+
+function closeAchieveDetail(e){
+  if(e.target === document.getElementById('achieveDetailOverlay')){
+    document.getElementById('achieveDetailOverlay').classList.remove('show');
+  }
+}
 // ===== 日记 =====
 function checkDiary(){
-  let changed = false;
-  DIARY_ENTRIES.forEach((entry,i)=>{
-    if(state.totalExp >= entry.minExp && !(state.diary||[]).find(d=>d.idx===i)){
-      if(!state.diary) state.diary=[];
-      state.diary.push({idx:i, time:dateStr(), text:entry.text});
+  var changed = false;
+  DIARY_ENTRIES.forEach(function(entry, i){
+    // 已有则跳过
+    if((state.diary||[]).find(function(d){ return d.idx === i; })) return;
+    var unlocked = false;
+    if(entry.require){
+      var req = entry.require;
+      if(req.type === 'stat'){
+        unlocked = (state.stats[req.key]||0) >= req.val;
+      } else if(req.type === 'achieve'){
+        unlocked = !!state.achievements[req.key];
+      }
+      // 有require时minExp是额外条件（0表示不看经验）
+      if(unlocked && entry.minExp > 0){
+        unlocked = state.totalExp >= entry.minExp;
+      }
+    } else {
+      unlocked = state.totalExp >= entry.minExp;
+    }
+    if(unlocked){
+      if(!state.diary) state.diary = [];
+      var tag = '';
+      if(entry.require){
+        if(entry.require.type === 'stat') tag = '行动解锁';
+        else if(entry.require.type === 'achieve') tag = '成就解锁';
+      }
+      state.diary.push({idx:i, time:dateStr(), text:entry.text, tag:tag});
+      state._newDiaryCount = (state._newDiaryCount||0) + 1;
       changed = true;
     }
   });
@@ -2599,25 +2885,45 @@ function checkDiary(){
 
 function renderDiary(){
   checkDiary();
-  const body = document.getElementById('diaryContent');
+  var body = document.getElementById('diaryContent');
   if(!body) return;
-  const diaryCount = document.getElementById('diaryCount');
-  const total = DIARY_ENTRIES.length;
-  const unlocked = (state.diary||[]).length;
-  if(diaryCount) diaryCount.textContent = unlocked+'/'+total;
+  var diaryCount = document.getElementById('diaryCount');
+  var total = DIARY_ENTRIES.length;
+  var unlocked = (state.diary||[]).length;
+ if(diaryCount) diaryCount.textContent = unlocked+'/'+total;
   if(!state.diary||state.diary.length===0){
     body.innerHTML='<div class="diary-empty"><div class="diary-empty-icon">📭</div><span>还没有日记呢，多互动就能解锁～</span></div>';
     return;
   }
-  const prevLen = parseInt(body.dataset.lastLen||'0');
-  const entries = [...state.diary].reverse().slice(0,8);
+  var prevLen = parseInt(body.dataset.lastLen||'0');
+  var entries = [].concat(state.diary).reverse();
   body.dataset.lastLen = String(entries.length);
-  body.innerHTML = entries.map((d,i)=>
-    '<div class="diary-entry'+(i===0&&entries.length>prevLen?' new-entry':'')+'">'
-    +'<div class="diary-entry-time">📅 '+d.time+'</div>'
-    +'<div class="diary-entry-text">'+d.text+'</div>'
-    +'</div>'
-  ).join('');
+  body.innerHTML = '<div class="diary-scroll-area">' + entries.map(function(d,i){
+    var preview = d.text.length > 36 ? d.text.slice(0,36)+'...' : d.text;
+    var tagHtml = d.tag ? '<span style="font-size:9px;color:var(--warn);background:rgba(255,179,71,.1);border:1px solid rgba(255,179,71,.25);padding:1px 6px;border-radius:6px;margin-left:6px;">'+d.tag+'</span>' : '';
+    return '<div class="diary-entry'+(i===0&&entries.length>prevLen?' new-entry':'')+'" onclick="openDiaryDetail('+d.idx+')" style="cursor:pointer;">'
+    +'<div class="diary-entry-time">📅 '+d.time+tagHtml+'</div>'
+    +'<div class="diary-entry-text">'+preview+'</div>'
+    +'</div>';
+  }).join('') + '</div>';
+}
+
+function openDiaryDetail(idx){
+  var entry = DIARY_ENTRIES[idx];
+  if(!entry) return;
+  var saved = (state.diary||[]).find(function(d){ return d.idx === idx; });
+  var time = saved ? saved.time : '';
+  var tag  = saved && saved.tag ? saved.tag : '';
+  var tagHtml = tag ? '<br><span style="font-size:10px;color:var(--warn);">✦ '+tag+'</span>' : '';
+  document.getElementById('diaryDetailTime').innerHTML = '📅 ' + time + tagHtml;
+  document.getElementById('diaryDetailText').textContent = entry.text;
+  document.getElementById('diaryDetailOverlay').classList.add('show');
+}
+
+function closeDiaryDetail(e){
+  if(e.target === document.getElementById('diaryDetailOverlay')){
+    document.getElementById('diaryDetailOverlay').classList.remove('show');
+  }
 }
 
 // ===== 台词（打字机效果） =====
@@ -2863,34 +3169,103 @@ function initStars(){
   }
   draw();
 }
+// ===== 好感等级系统 =====
+var AFF_LEVELS = [
+  {level:1, minAff:0,  label:'初识',     emoji:'🌸'},
+  {level:2, minAff:20, label:'熟悉',     emoji:'🙂'},
+  {level:3, minAff:40, label:'亲密',     emoji:'😊'},
+  {level:4, minAff:60, label:'亲密无间', emoji:'🥰'},
+  {level:5, minAff:80, label:'灵魂伴侣', emoji:'💜'},
+];
 
+// 通过好感获得的皮肤，好感等级低于要求时会被收回
+var SKIN_AFF_REQUIREMENTS = {
+  cherry: 3,  // 需维持好感等级 Lv.3（亲密，affection≥40）
+  secret: 5,  // 需维持好感等级 Lv.5（灵魂伴侣，affection≥80）
+};
+
+function getAffectionLevel(aff){
+  var result = AFF_LEVELS[0];
+  for(var i = 0; i < AFF_LEVELS.length; i++){
+    if(clamp(aff) >= AFF_LEVELS[i].minAff) result = AFF_LEVELS[i];
+    else break;
+  }
+  return result;
+}
+
+function checkAffectionLevelDown(){
+  var prevLevel = state.affectionLevel || 1;
+  var currLevelObj = getAffectionLevel(state.affection);
+  var currLevel = currLevelObj.level;
+  state.affectionLevel = currLevel;
+  if(currLevel >= prevLevel) return; // 没有下降，直接返回
+  // 下降了：检查并收回不符合条件的皮肤
+  var revoked = [];
+  Object.keys(SKIN_AFF_REQUIREMENTS).forEach(function(skinKey){
+    var required = SKIN_AFF_REQUIREMENTS[skinKey];
+    if(currLevel < required && state.ownedSkins && state.ownedSkins[skinKey]){
+      delete state.ownedSkins[skinKey];
+      revoked.push(skinKey);
+      if(state.currentSkin === skinKey){
+        state.currentSkin = 'default';
+        try{ localStorage.setItem('bj_xjSkin', 'default'); }catch(e){}
+        applySkinFromMain();
+      }
+    }
+  });
+  save();
+  if(revoked.length > 0){
+    var names = revoked.map(function(k){ return (XJ_SKINS_PET[k]||{}).label||k; });
+    setTimeout(function(){
+      showToast('💔 好感等级下降！皮肤「'+names.join('、')+'」已收回...');
+      setSpeech('你有一段时间没好好照顾我了...我有点难过。');
+      renderWardrobe();
+      updateUI();
+    }, 500);
+  } else {
+    setTimeout(function(){
+      showToast('😔 好感等级降至 '+currLevelObj.emoji+' '+currLevelObj.label+' Lv.'+currLevel+'...');
+    }, 500);
+  }
+}
 // ===== 自然衰减 =====
 function applyDecay(){
   if(!state.lastDate) return;
   const hours=Math.min((Date.now()-new Date(state.lastDate).getTime())/(36e5), 48);
   if(hours>1){
-    const decay=Math.min(hours*1.5, 25);
-    state.hunger  =Math.max(0, state.hunger  -decay);
-    state.happy   =Math.max(0, state.happy   -decay*0.6);
-    state.affection=Math.max(0, state.affection-decay*0.3);
-    state.energy  =Math.min(100, state.energy +decay*0.8);
+    const decay=Math.min(hours*1.2, 20);
+    // 低于30的属性每多一个，好感衰减系数额外叠加0.5
+    const lowCount=[state.hunger, state.happy, state.energy].filter(function(v){ return v<30; }).length;
+    const affPenalty = lowCount > 0 ? 1 + lowCount * 0.5 : 1;
+    state.hunger  =Math.max(0, state.hunger  -decay*0.8);
+    state.happy   =Math.max(0, state.happy   -decay*0.7);
+    state.affection=Math.max(0, state.affection-decay*0.5*affPenalty);
+    state.energy  =Math.min(100, state.energy +decay*0.4);
   }
   state.lastDate=new Date().toISOString();
+  checkAffectionLevelDown();
 }
 
 // ===== 每分钟恢复 =====
 function startAutoRecover(){
   setInterval(()=>{
     if(state.isSleeping && Date.now() < (state.sleepWakeAt||0)){
-      state.energy = clamp(state.energy + 2);
+      state.energy = clamp(state.energy + 1.5);
+      state.hunger = clamp(state.hunger - 0.5);
       state.lastDate = new Date().toISOString();
       save();
       return;
     }
-    state.energy    = clamp(state.energy + 1.5);
-    state.hunger    = clamp(state.hunger - 0.3);
-    state.happy     = clamp(state.happy  - 0.15);
-    state.lastDate=new Date().toISOString();
+    state.energy = clamp(state.energy + 0.3);
+    state.hunger = clamp(state.hunger - 0.8);
+    state.happy  = clamp(state.happy  - 0.5);
+    // 属性低于30时，每分钟好感度额外下降（每多一个低属性 -0.2）
+    const lowCount = [state.hunger, state.happy, state.energy].filter(function(v){ return clamp(v) < 30; }).length;
+    if(lowCount > 0){
+      state.affection = Math.max(0, state.affection - lowCount * 0.2);
+      checkAffectionLevelDown();
+    }
+    state.lastDate = new Date().toISOString();
     save();
   }, 60000);
 }
@@ -2903,6 +3278,7 @@ function init(){
   if(!state.firstDate){
     state.firstDate = new Date().toISOString();
     state.lastDate  = new Date().toISOString();
+    state.affectionLevel = getAffectionLevel(state.affection).level;
   } else {
     applyDecay();
   }
@@ -3133,7 +3509,7 @@ function onSkinCardClick(key){
   }
   // 隐藏皮肤：特殊解锁
   if(s.unlockType === 'secret'){
-    showToast('🔮 解锁条件：全成就 + 连续签到30天 + 好感度满级（Lv.10）');
+    showToast('🔮 解锁条件：全成就 + 连续签到30天 + Lv.10 + 好感等级Lv.5（灵魂伴侣）');
     return;
   }
   // 成就皮肤：不可购买

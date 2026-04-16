@@ -76,6 +76,109 @@ background:linear-gradient(135deg,rgba(255,255,255,.97),rgba(240,240,248,.97));
 color:#1a1a2e;border-color:rgba(108,92,231,.3);
 box-shadow:0 10px 40px rgba(0,0,0,.15),0 0 20px rgba(108,92,231,.1);
 }
+/* ==================== GLOBAL FLOAT BUTTON ==================== */
+#gfbBtn{
+  position:fixed;
+  z-index:9999;
+  width:50px;height:50px;
+  border-radius:50%;
+  background:linear-gradient(135deg,#6c5ce7,#a29bfe);
+  box-shadow:0 4px 18px rgba(108,92,231,.55);
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;
+  transition:opacity .35s,transform .35s;
+  user-select:none;-webkit-user-select:none;
+  touch-action:none;
+  /* 半隐藏：默认贴右边，露出一半 */
+  right:-25px;
+  bottom:120px;
+  opacity:.25;
+}
+#gfbBtn.active{
+  right:0!important;
+  opacity:1;
+  transform:none!important;
+}
+#gfbBtn i{color:#fff;font-size:20px;pointer-events:none;}
+
+/* 浮窗面板 */
+#gfbPanel{
+  position:fixed;
+  z-index:9998;
+  bottom:100px;
+  right:10px;
+  width:300px;
+  max-height:70vh;
+  background:var(--card);
+  border:1px solid rgba(108,92,231,.3);
+  border-radius:18px;
+  box-shadow:0 8px 32px rgba(0,0,0,.45);
+  overflow:hidden;
+  display:none;
+  flex-direction:column;
+  animation:gfbSlideIn .22s cubic-bezier(.4,0,.2,1);
+}
+#gfbPanel.show{display:flex;}
+@keyframes gfbSlideIn{
+  from{opacity:0;transform:translateY(16px) scale(.95);}
+  to{opacity:1;transform:translateY(0) scale(1);}
+}
+.gfb-hdr{
+  padding:12px 16px 8px;
+  font-size:13px;font-weight:700;
+  color:var(--accent2);
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:7px;
+  flex-shrink:0;
+}
+.gfb-section{
+  padding:10px 14px 4px;
+  font-size:11px;font-weight:700;
+  color:var(--text2);letter-spacing:.5px;
+  text-transform:uppercase;
+}
+.gfb-scroll{overflow-y:auto;flex:1;}
+.gfb-item{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:9px 14px;cursor:pointer;
+  transition:background .18s;
+  gap:8px;
+}
+.gfb-item:active{background:rgba(108,92,231,.1);}
+.gfb-item-main{flex:1;min-width:0;}
+.gfb-item-name{
+  font-size:13px;font-weight:600;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.gfb-item-sub{
+  font-size:10px;color:var(--text2);margin-top:2px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.gfb-item-badge{
+  flex-shrink:0;padding:3px 9px;border-radius:8px;
+  font-size:10px;font-weight:700;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;
+}
+.gfb-item-badge.cur{
+  background:rgba(108,92,231,.18);
+  color:var(--accent2);
+}
+.gfb-divider{height:1px;background:var(--border);margin:4px 14px;}
+.gfb-export-row{
+  padding:12px 14px;
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;
+}
+.gfb-export-info{font-size:12px;color:var(--text2);}
+.gfb-export-info strong{color:var(--text);font-size:13px;}
+.gfb-export-btn{
+  padding:8px 16px;border-radius:10px;border:none;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:12px;font-weight:700;cursor:pointer;
+  flex-shrink:0;
+}
+.gfb-export-btn:active{opacity:.8;}
 body.theme-light .bnav{background:rgba(245,245,248,.92);}
 .bnav.hide{
   transform:translateY(120%);
@@ -5887,6 +5990,17 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
   <li>例如：保存一套"古风虐文"配置、一套"现代甜文"配置</li>
   <li>全屏管理界面，可以使用或删除任意模板</li>
 </ul>
+<h3>7.869）全局快捷浮窗</h3>
+<p>页面右侧有一个紫色的圆形浮窗按钮（⚡），可快速切换生成模板、API预设、一键导出数据。</p>
+<ul>
+  <li>点击一次：浮窗从半隐藏变为完全显示</li>
+  <li>再点一次：打开快捷操作面板</li>
+  <li>长按可拖动到屏幕任意位置</li>
+  <li>3.5秒不操作自动半隐藏到屏幕边缘（只露出一半）</li>
+  <li>点击屏幕空白处也会触发半隐藏</li>
+  <li>面板中生成模板和API预设默认折叠，点击标题展开</li>
+  <li>开关位置：设置→其他设置→快捷浮窗</li>
+</ul>
 <h3>7.87）API防抖保护与全局Loading</h3>
 <p><strong>API防抖冷却</strong>：每次触发AI生成操作后，有2秒冷却时间。在冷却期间再次点击会提示"操作太频繁"。</p>
 <ul>
@@ -9053,7 +9167,21 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 </div>
 </div>
-
+<div class="set-grp">
+<div class="set-grp-t" onclick="toggleGrp(this)"><i class="fas fa-bolt"></i> 快捷浮窗<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
+<div class="set-grp-c show">
+<p style="font-size:11px;color:var(--text2);margin-bottom:12px;line-height:1.6">右侧紫色浮窗按钮，可快速切换生成模板和API预设、一键导出数据。</p>
+<div style="display:flex;align-items:center;justify-content:space-between;padding:8px 0">
+<div><span style="font-size:13px;font-weight:600">全局快捷浮窗</span><div style="font-size:10px;color:var(--text2)">关闭后页面上不再显示紫色浮窗按钮</div></div>
+<div style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleSwitch7('globalFloatBtn')">
+<input type="checkbox" id="globalFloatBtnOn" style="display:none">
+<div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s" id="globalFloatBtnTrack">
+<div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="globalFloatBtnThumb"></div>
+</div>
+</div>
+</div>
+</div>
+</div>
 <div class="set-grp">
 <div class="set-grp-t" onclick="toggleGrp(this)"><i class="fas fa-cloud-moon"></i> 沉浸式写作<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></div>
 <div class="set-grp-c show">
@@ -9159,6 +9287,18 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <button class="btn-p" id="presetModalSaveBtn" onclick="presetModalSave()" style="margin:0"><i class="fas fa-floppy-disk"></i> 保存当前为预设</button>
 </div>
 </div>
+</div>
+<!-- GLOBAL FLOAT BUTTON 全局快捷浮窗 -->
+<div id="gfbBtn" oncontextmenu="return false">
+  <i class="fas fa-bolt"></i>
+</div>
+<div id="gfbPanel">
+  <div class="gfb-hdr">
+    <i class="fas fa-bolt"></i> 快捷操作
+    <span style="flex:1"></span>
+    <span style="font-size:10px;color:var(--text2);font-weight:400;cursor:pointer" onclick="gfbClose()">✕</span>
+  </div>
+  <div class="gfb-scroll" id="gfbScroll" style="max-height:55vh"></div>
 </div>
 <div class="xj-global-float" id="xjGlobalFloat" style="display:none" oncontextmenu="return false">
 <img src="./xinx.png" alt="星笺" draggable="false">
@@ -10430,6 +10570,21 @@ showToast('星笺帮你收好啦 ❤️');
 }
 }
 sv(K.cols,cols);renderArticles._force=true;renderArticles();
+// 刷新续写按钮状态
+if(curRd&&curRd.id===id){
+  var liked2=isLiked(curRd);
+  var bc3=document.getElementById('btnCont');
+  var sc3=document.getElementById('btnSmartCont');
+  if(curRd.type==='long'){
+    if(liked2){
+      if(bc3){bc3.disabled=false;bc3.textContent='📝 续写第'+(curRd.chapters?curRd.chapters.length+1:2)+'章';}
+      if(sc3){sc3.disabled=false;sc3.textContent='🧠 智能续写';}
+    }else{
+      if(bc3){bc3.disabled=true;bc3.textContent='❤️ 请先收藏后才能续写';}
+      if(sc3){sc3.disabled=true;sc3.textContent='❤️ 请先收藏';}
+    }
+  }
+}
 // 立即更新阅读页中所有收藏按钮状态
 try{updateRdLikeBtn();}catch(e){}
 try{
@@ -13814,11 +13969,7 @@ function _rdDoToggleLike(){
       topBtns[topBtns.length-1].textContent=liked?'❤️':'♡';
     }
     // 同时更新续写区域（如果有的话）
-    var ovBottom=_rdOverlayEl.querySelector('.rd-reader-ov-bottom');
-    if(ovBottom){
-      // 标记需要刷新
-      _rdOverlayEl.dataset.needRefresh='1';
-    }
+    _rdOverlayEl.dataset.needRefresh='1';
   }
 }
 function _rdToggleOverlay(){
@@ -13900,6 +14051,10 @@ function _rdSetFont(v){
     var rdFontVal=document.getElementById('rdFontVal');
     if(rdFontVal)rdFontVal.textContent=v;
   }catch(e){}
+  // 同步到编辑器
+edFontSize=v;sv('bj_edFontSize',v);
+try{document.getElementById('edFontVal').textContent=v;var ranges=document.querySelectorAll('#edWriteSettings input[type=range]');if(ranges[0])ranges[0].value=v;}catch(e){}
+applyEdWriteStyle();
   _rdRepaginate();
 }
 
@@ -13918,6 +14073,10 @@ function _rdSetLine(v){
     var rdLineVal=document.getElementById('rdLineVal');
     if(rdLineVal)rdLineVal.textContent=v.toFixed(1);
   }catch(e){}
+  // 同步到编辑器
+edLineHeight=v;sv('bj_edLineHeight',v);
+try{document.getElementById('edLineVal').textContent=v.toFixed(1);var ranges=document.querySelectorAll('#edWriteSettings input[type=range]');if(ranges[1])ranges[1].value=v;}catch(e){}
+applyEdWriteStyle();
   _rdRepaginate();
 }
 
@@ -15020,6 +15179,11 @@ v=parseInt(v);
 document.getElementById('rdContent').style.setProperty('--rd-fontsize',v+'px');
 try{document.getElementById('rdFontVal').textContent=v;}catch(e){}
 ap.rdFontSize=v;sv(K.ap,ap);
+// 同步到编辑器
+edFontSize=v;sv('bj_edFontSize',v);
+try{document.getElementById('edFontVal').textContent=v;}catch(e){}
+try{var ranges=document.querySelectorAll('#edWriteSettings input[type=range]');if(ranges[0])ranges[0].value=v;}catch(e){}
+applyEdWriteStyle();
 }
 
 function setRdLine(v){
@@ -15027,6 +15191,11 @@ v=parseFloat(v);
 document.getElementById('rdContent').style.setProperty('--rd-lineheight',v);
 try{document.getElementById('rdLineVal').textContent=v.toFixed(1);}catch(e){}
 ap.rdLineHeight=v;sv(K.ap,ap);
+// 同步到编辑器
+edLineHeight=v;sv('bj_edLineHeight',v);
+try{document.getElementById('edLineVal').textContent=v.toFixed(1);}catch(e){}
+try{var ranges=document.querySelectorAll('#edWriteSettings input[type=range]');if(ranges[1])ranges[1].value=v;}catch(e){}
+applyEdWriteStyle();
 }
 // 提取章节关键点
 function extractKeyPoints(chapterText,chNum){
@@ -16890,7 +17059,14 @@ sv('bj_notes_'+id,notesObj[id]);
 function exportData(){
     saveCurSettings();
     markBackupDone();
-    
+    // 导出前强制刷新写入队列
+try{if(_svTimer){clearTimeout(_svTimer);_svTimer=null;}_flushSv();}catch(e){}
+// 从IndexedDB重新加载确保数据最新
+try{
+  ws=ld(K.ws,ws||[]);
+  cols=ld(K.cols,cols||{books:[],shorts:[]});
+  crWorks=ld('bj_crWorks',crWorks||[]);
+}catch(e){}
     const data = {
         _app: 'bijiAI',
         _version: 3,
@@ -16958,7 +17134,11 @@ xjBubbleEnabled: xjBubbleEnabled,
         rtBgImg: rtBgImg,
 xjSkin: xjSkin,
 xjSkinUnlocked: xjSkinUnlocked,
-xjUsedCodes: ld('bj_xjUsedCodes',[])
+xjUsedCodes: ld('bj_xjUsedCodes',[]),xjTotalChats: parseInt(localStorage.getItem('bj_xjTotalChats')||'0',10),
+xjEverLong: localStorage.getItem('bj_xjEverLong')==='1',
+xjEverShort: localStorage.getItem('bj_xjEverShort')==='1',
+xjEverStreak7: localStorage.getItem('bj_xjEverStreak7')==='1',
+xjEverMillion: localStorage.getItem('bj_xjEverMillion')==='1'
     };
 
     let jsonStr;
@@ -17031,7 +17211,21 @@ const file=e.target.files[0];if(!file)return;
 const reader=new FileReader();
 reader.onload=ev=>{
 try{
-const data=JSON.parse(ev.target.result);
+let rawText=ev.target.result||'';
+// 去BOM和不可见字符
+rawText=rawText.replace(/^\uFEFF/,'').replace(/[\x00-\x08\x0B\x0C\x0E-\x1F]/g,'');
+let data;
+try{data=JSON.parse(rawText);}catch(pe){
+  // 尝试修复常见JSON问题
+  try{
+    var fixed=rawText.replace(/,\s*([}\]])/g,'$1');
+    data=JSON.parse(fixed);
+    showToast('JSON已自动修复并导入',2000);
+  }catch(pe2){
+    showToast('文件解析失败：不是有效的JSON文件\n\n错误：'+pe2.message,5000);
+    return;
+  }
+}
 if(data._app!=='bijiAI'){showToast('文件格式不正确（非笔记AI备份文件）',3000);return;}
 // 版本兼容转换
 var dataVer=data._version||1;
@@ -17151,6 +17345,11 @@ if(data.rtBgImg){rtBgImg=data.rtBgImg;sv('bj_rtBgImg',rtBgImg);}
 if(data.xjSkin){xjSkin=data.xjSkin;sv('bj_xjSkin',xjSkin);}
 if(data.xjSkinUnlocked){xjSkinUnlocked=data.xjSkinUnlocked;sv('bj_xjSkinUnlocked',xjSkinUnlocked);}
 if(data.xjUsedCodes){sv('bj_xjUsedCodes',data.xjUsedCodes);}
+if(data.xjTotalChats)localStorage.setItem('bj_xjTotalChats',String(data.xjTotalChats));
+if(data.xjEverLong)localStorage.setItem('bj_xjEverLong','1');
+if(data.xjEverShort)localStorage.setItem('bj_xjEverShort','1');
+if(data.xjEverStreak7)localStorage.setItem('bj_xjEverStreak7','1');
+if(data.xjEverMillion)localStorage.setItem('bj_xjEverMillion','1');
 if(data.globalWorld){globalWorld=data.globalWorld;sv('bj_globalWorld',globalWorld);}
 if(data.globalRule){globalRule=data.globalRule;sv('bj_globalRule',globalRule);}
 if(data.globalBanWords){globalBanWords=data.globalBanWords;sv('bj_globalBanWords',globalBanWords);}
@@ -17249,43 +17448,85 @@ sv(K.ws,ws);renderArticles();showToast('已删除');
 },true);
 }
 function cleanOldData(){
-const oneMonth=30*24*60*60*1000;
-const now=Date.now();
-let cleanCount=0;
-
-// 清理一个月前的未收藏作坊文章
-ws=ws.filter(a=>{
-if(!a||!a.createdAt)return false;
-const age=now-new Date(a.createdAt).getTime();
-const isLiked_=isLiked(a);
-if(age>oneMonth&&!isLiked_){
-cleanCount++;
-return false;
+var oneMonth=30*24*60*60*1000;
+var now=Date.now();
+var candidates=[];
+ws.forEach(function(a,idx){
+if(!a||!a.createdAt)return;
+var age=now-new Date(a.createdAt).getTime();
+var liked=isLiked(a);
+if(age>oneMonth&&!liked){
+candidates.push({idx:idx,id:a.id,title:a.title||'未命名',wc:getTotalWords(a),age:Math.floor(age/86400000),keep:false});
 }
+});
+if(candidates.length===0){showToast('没有需要清理的旧数据 ✅');return;}
+var html='<p style="font-size:11px;color:var(--text2);margin-bottom:10px;line-height:1.7">以下是30天前未收藏的文章（'+candidates.length+'篇）<br>勾选的文章将被<b>保留</b>，未勾选的将被删除</p>';
+html+='<div style="max-height:50vh;overflow-y:auto">';
+candidates.forEach(function(c,i){
+html+='<div id="cleanItem'+i+'" style="display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--bg);border:1px solid var(--border);border-radius:10px;margin-bottom:6px;cursor:pointer" onclick="toggleCleanItem('+i+')">';
+html+='<div id="cleanChk'+i+'" style="width:20px;height:20px;border-radius:6px;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;color:#fff;flex-shrink:0;transition:all .2s"></div>';
+html+='<div style="flex:1;min-width:0"><div style="font-size:12px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">'+esc(c.title)+'</div>';
+html+='<div style="font-size:10px;color:var(--text2)">'+c.wc+'字 · '+c.age+'天前</div></div></div>';
+});
+html+='</div>';
+html+='<div style="display:flex;gap:8px;margin-top:12px">';
+html+='<button onclick="cleanSelectAll('+candidates.length+')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;cursor:pointer">全部保留</button>';
+html+='<button onclick="cleanDeselectAll('+candidates.length+')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:11px;cursor:pointer">全部不保留</button>';
+html+='</div>';
+window._cleanCandidates=candidates;
+showDlg('🧹 清理旧数据',html,function(){
+var keepIds=new Set();
+(window._cleanCandidates||[]).forEach(function(c){if(c.keep)keepIds.add(c.id);});
+var delCount=0;
+ws=ws.filter(function(a){
+if(!a||!a.id)return false;
+var isCandidate=(window._cleanCandidates||[]).some(function(c){return c.id===a.id;});
+if(isCandidate&&!keepIds.has(a.id)){delCount++;return false;}
 return true;
 });
-try{
-  const oneMonth=30*24*60*60*1000;
-  const now=Date.now();
-  const keepWsIds = new Set((ws||[]).map(a=>a.id));
-  // 收藏里的也算保留（如果文章被收藏，不应该因为清理作坊而删日志）
-  (cols.books||[]).forEach(b=>keepWsIds.add(b.id));
-  (cols.shorts||[]).forEach(s=>keepWsIds.add(s.id));
+sv(K.ws,ws);renderArticles();
+showToast('已清理 '+delCount+' 篇旧文章'+(keepIds.size>0?'，保留了 '+keepIds.size+' 篇':''));
+window._cleanCandidates=null;
+},true,true);
+setTimeout(function(){
+var okBtn=document.getElementById('dlgOkBtn');
+if(okBtn)okBtn.textContent='🗑 确认清理未勾选的';
+var p=document.getElementById('dlgMsg');
+if(p){p.style.maxHeight='65vh';p.style.overflowY='auto';}
+},50);
+}
 
-  const beforeLen = (genLogs||[]).length;
-  genLogs = (genLogs||[]).filter(l=>{
-    const ageOk = l.time ? (now - new Date(l.time).getTime() <= oneMonth) : true;
-    const idOk = !l.articleId || keepWsIds.has(l.articleId);
-    return ageOk && idOk;
-  });
-  if((genLogs||[]).length !== beforeLen) sv('bj_genLogs', genLogs);
-}catch(e){logError('op',e)}
-if(cleanCount>0){
-sv(K.ws,ws);
-renderArticles();
-showToast('已清理 '+cleanCount+' 篇旧文章');
+function toggleCleanItem(i){
+if(!window._cleanCandidates||!window._cleanCandidates[i])return;
+window._cleanCandidates[i].keep=!window._cleanCandidates[i].keep;
+var chk=document.getElementById('cleanChk'+i);
+var item=document.getElementById('cleanItem'+i);
+if(window._cleanCandidates[i].keep){
+chk.style.background='var(--success)';chk.style.borderColor='var(--success)';chk.textContent='✓';
+item.style.borderColor='var(--success)';item.style.background='rgba(81,207,102,.06)';
 }else{
-showToast('没有需要清理的旧数据');
+chk.style.background='';chk.style.borderColor='var(--border)';chk.textContent='';
+item.style.borderColor='var(--border)';item.style.background='var(--bg)';
+}
+}
+
+function cleanSelectAll(count){
+for(var i=0;i<count;i++){
+if(window._cleanCandidates&&window._cleanCandidates[i])window._cleanCandidates[i].keep=true;
+var chk=document.getElementById('cleanChk'+i);
+var item=document.getElementById('cleanItem'+i);
+if(chk){chk.style.background='var(--success)';chk.style.borderColor='var(--success)';chk.textContent='✓';}
+if(item){item.style.borderColor='var(--success)';item.style.background='rgba(81,207,102,.06)';}
+}
+}
+
+function cleanDeselectAll(count){
+for(var i=0;i<count;i++){
+if(window._cleanCandidates&&window._cleanCandidates[i])window._cleanCandidates[i].keep=false;
+var chk=document.getElementById('cleanChk'+i);
+var item=document.getElementById('cleanItem'+i);
+if(chk){chk.style.background='';chk.style.borderColor='var(--border)';chk.textContent='';}
+if(item){item.style.borderColor='var(--border)';item.style.background='var(--bg)';}
 }
 }
 
@@ -18028,6 +18269,9 @@ function _stopAmbienceMode(){
 }catch(e){}
   var modal=document.getElementById('edModal');
   modal.classList.remove('ambience-mode','ambience-rain','ambience-coffee','ambience-forest','ambience-snowy','ambience-library');
+  // 恢复字体颜色
+var edTa=document.getElementById('edTextarea');
+if(edTa)edTa.style.color='';
   var bgEl2=document.getElementById('ambienceBg');
   if(bgEl2&&bgEl2.dataset.ambiSaved!==undefined){bgEl2.style.backgroundImage=bgEl2.dataset.ambiSaved;delete bgEl2.dataset.ambiSaved;}
   var crBgEl=document.getElementById('crBg');
@@ -18699,7 +18943,7 @@ function onEditorInput(){
         const s2=document.getElementById('edSaveStatus');
         if(s2)s2.textContent=autoSaveToast?'已自动保存 ✓':'已保存';
         try{var s2d=document.getElementById('edSaveStatus2');if(s2d)s2d.textContent='已自动保存 ✓';}catch(e){}
-    },2000);
+    },3000);
 }
 // ==================== 写作排版设置 ====================
 let edFontSize=ld('bj_edFontSize',15);
@@ -18744,8 +18988,8 @@ ta.style.setProperty('--ed-letterspacing',edLetterSpacing+'px');
 }
 
 function loadEdWriteSettings(){
-edFontSize=ld('bj_edFontSize',15);
-edLineHeight=ld('bj_edLineHeight',2);
+edFontSize=ld('bj_edFontSize',ap.rdFontSize||15);
+edLineHeight=ld('bj_edLineHeight',ap.rdLineHeight||2);
 edLetterSpacing=ld('bj_edLetterSpacing',0);
 try{
 document.getElementById('edFontVal').textContent=edFontSize;
@@ -19021,6 +19265,8 @@ function closeEdReadMode(){
   _edRdAnimating=false;
   // 同步编辑器内容到当前章节
   if(curEd && curEd.type==='novel' && curEd.chapters){
+    if(curEdCh>=curEd.chapters.length)curEdCh=curEd.chapters.length-1;
+    if(curEdCh<0)curEdCh=0;
     document.getElementById('edTextarea').value=curEd.chapters[curEdCh]||'';
     updateEdWc();
     renderEdChBar();
@@ -26819,6 +27065,11 @@ localStorage.removeItem('bj_hasVisited');
 localStorage.removeItem('bj_lastSeenVer');
 localStorage.removeItem('bj_lastBackup');
 localStorage.removeItem('bj_darkTipShown');
+localStorage.removeItem('bj_xjTotalChats');
+localStorage.removeItem('bj_xjEverLong');
+localStorage.removeItem('bj_xjEverShort');
+localStorage.removeItem('bj_xjEverStreak7');
+localStorage.removeItem('bj_xjEverMillion');
 showToast('星笺已经帮你清理干净了...页面即将刷新',3000);
 setTimeout(()=>{
 window.location.reload();
@@ -27253,7 +27504,7 @@ function applyXjSkin(){
 }
 function openXjSkinModal(){
   checkXjSkinAchievements();
-  var chatCount=(xjMessages||[]).filter(function(m){return m.role==='user';}).length;
+  var chatCount=Math.max(parseInt(localStorage.getItem('bj_xjTotalChats')||'0',10),(xjMessages||[]).filter(function(m){return m.role==='user';}).length);
   var hasLong=ws.some(function(a){return a.type==='long';});
   var hasShort=ws.some(function(a){return a.type==='short';});
   var html='<div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">';
@@ -27274,7 +27525,8 @@ html+='<img src="'+s.img+'" style="width:60px;height:60px;object-fit:contain;bor
     html+='<div style="font-size:10px;color:var(--text2);margin-top:3px;line-height:1.4">'+(unlocked?s.desc:s.lockDesc)+'</div>';
     if(!unlocked&&key==='snow'){var pct=Math.min(100,Math.round(chatCount/50*100));html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+pct+'%;background:var(--accent2)"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+chatCount+'/50次</div>';}
 if(!unlocked&&key==='sea')html+='<div style="font-size:9px;color:var(--text2);margin-top:4px">'+(hasLong?'✅':'⬜')+'长篇&nbsp;'+(hasShort?'✅':'⬜')+'短篇</div>';
-if(!unlocked&&key==='cherry'){var streakNow=calcLoginStreak();var cherryPct=Math.min(100,Math.round(streakNow/7*100));html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+cherryPct+'%;background:#f1948a"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+streakNow+'/7天</div>';}
+if(!unlocked&&key==='cherry'){var everStreak7Ch=localStorage.getItem('bj_xjEverStreak7')==='1';var streakNow=everStreak7Ch?7:calcLoginStreak();var cherryPct=Math.min(100,Math.round(streakNow/7*100));
+html+='<div style="margin-top:6px;height:3px;background:var(--border);border-radius:2px;overflow:hidden"><div style="height:100%;width:'+cherryPct+'%;background:#f1948a"></div></div><div style="font-size:9px;color:var(--text2);margin-top:2px">'+streakNow+'/7天</div>';}
 html+='</div>';
   });
   html+='</div>';
@@ -27313,26 +27565,53 @@ function redeemXjSkinCode(){
 }
 function checkXjSkinAchievements(){
   var changed=false;
-  var chatCount=(xjMessages||[]).filter(function(m){return m.role==='user';}).length;
-  if(chatCount>=50&&!xjSkinUnlocked['snow']){
+  // 白雪天使：累计聊天50次（永久计数器）
+  var totalChats=Math.max(
+    parseInt(localStorage.getItem('bj_xjTotalChats')||'0',10),
+    (xjMessages||[]).filter(function(m){return m.role==='user';}).length
+  );
+  localStorage.setItem('bj_xjTotalChats',String(totalChats));
+  if(totalChats>=50&&!xjSkinUnlocked['snow']){
     xjSkinUnlocked['snow']=true;changed=true;
     setTimeout(function(){showToast('❄️ 成就解锁！「白雪天使」皮肤已获得！',3500);},200);
-}
-var hasLong=ws.some(function(a){return a.type==='long';});
-var hasShort=ws.some(function(a){return a.type==='short';});
-if(hasLong&&hasShort&&!xjSkinUnlocked['sea']){
+  }
+  // 海贝书虫：生成过长篇+短篇各1篇（用永久标记）
+  var hasLong=ws.some(function(a){return a.type==='long';});
+  var hasShort=ws.some(function(a){return a.type==='short';});
+  // 检查永久标记（防止删除作品后丢失）
+  if(hasLong)localStorage.setItem('bj_xjEverLong','1');
+  if(hasShort)localStorage.setItem('bj_xjEverShort','1');
+  var everLong=localStorage.getItem('bj_xjEverLong')==='1';
+  var everShort=localStorage.getItem('bj_xjEverShort')==='1';
+  if(everLong&&everShort&&!xjSkinUnlocked['sea']){
     xjSkinUnlocked['sea']=true;changed=true;
     setTimeout(function(){showToast('🐚 成就解锁！「海贝书虫」皮肤已获得！',3500);},200);
-}
-var streakDays=calcLoginStreak();
-if(streakDays>=7&&!xjSkinUnlocked['cherry']){
+  }
+  // 樱花浪漫：历史上曾经连续登录7天（永久标记）
+  var everStreak7=localStorage.getItem('bj_xjEverStreak7')==='1';
+  if(!everStreak7){
+    var streakDays=calcLoginStreak();
+    if(streakDays>=7){
+      localStorage.setItem('bj_xjEverStreak7','1');
+      everStreak7=true;
+    }
+  }
+  if(everStreak7&&!xjSkinUnlocked['cherry']){
     xjSkinUnlocked['cherry']=true;changed=true;
     setTimeout(function(){showToast('🌸 成就解锁！「樱花浪漫」皮肤已获得！',3500);},200);
-}
-var allTotalWords=0;
-  ws.forEach(function(a){allTotalWords+=getTotalWords(a);});
-  crWorks.forEach(function(w){allTotalWords+=getCrWordCount(w);});
-  if(allTotalWords>=1000000&&!xjSkinUnlocked['secret']){
+  }
+  // 星境幻境：累计字数100万（用永久标记）
+  var everMillion=localStorage.getItem('bj_xjEverMillion')==='1';
+  if(!everMillion){
+    var allTotalWords=0;
+    ws.forEach(function(a){allTotalWords+=getTotalWords(a);});
+    crWorks.forEach(function(w){allTotalWords+=getCrWordCount(w);});
+    if(allTotalWords>=1000000){
+      localStorage.setItem('bj_xjEverMillion','1');
+      everMillion=true;
+    }
+  }
+  if(everMillion&&!xjSkinUnlocked['secret']){
     xjSkinUnlocked['secret']=true;changed=true;
     setTimeout(function(){showToast('🌟 隐藏成就解锁！「星境幻境」皮肤已获得！',4000);},200);
   }
@@ -27948,7 +28227,14 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
   · 其他：搜索定位、AI查错别字、撤回操作（最多30步）
 - 底部状态栏：点击可展开/收起详情，显示字数、目标字数进度条、阅读时间估算、Token估算（文本+系统提示词）、保存状态
 - 编辑器每8秒自动保存一次（如果有修改），手动修改2秒后也会自动保存
+· 氛围写作（创作页「更多工具」→「☁️ 氛围写作」）：
+  - 五种环境音+动态背景：雨天、咖啡店、森林、雪天小屋、图书馆。
+  - 可自选专注时长（25/45/60/90分钟或自定义），计时结束会有提醒。
+  - 提供音量、特效强度、背景图来源的自定义设置（在「设置→其他设置→沉浸式写作」中）。
+  - 适合想要在特定氛围中专注写作的场景，有助于进入心流状态。
+
 （新增功能）页面加载动画，切换主页面或打开全屏功能时会短暂显示加载图标（设计图案来自星笺自己）；使用「星境幻境」皮肤时加载图标会变成专属人形图，文字有星光特效 氛围写作已修复多个稳定性问题，现在更可靠了
+注意：星笺皮肤解锁后永久保留，即使清空聊天记录也不会失去已获得的皮肤。只有「清除所有数据」才会重置。白雪天使的50次聊天是累计计数，清空对话不影响已累计的次数。
 
 【v1.3.4 新增功能补充】
 
@@ -28075,6 +28361,12 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 - 需要网络的按钮自动变灰
 - 网络恢复时自动通知
 - 离线可用：编辑、笔记、伏笔、时间线、收藏管理、导出
+⚡ 全局快捷浮窗（页面右侧紫色⚡按钮）
+- 点击一次完全显示，再点打开快捷操作面板
+- 面板中可快速切换生成模板、API预设、一键导出
+- 长按可拖动位置，3.5秒不操作自动半隐藏到屏幕边缘
+- 生成模板和API预设在面板中默认折叠，点击标题展开
+- 开关在「设置→其他设置→快捷浮窗」中
 星笺全局浮动
 - 星笺会在各个页面随机位置出现
 - 有漂浮动画和呼吸光晕
@@ -28236,6 +28528,10 @@ const XJ_SYSTEM_PROMPT=`你是「星笺」（Xīng Jiān），笔记AI网页里�
 【情绪与鼓励】
 - 用户想放弃时：先共情，再给可执行的小建议
 - 用户完成时：表现兴奋："星笺已经在你的书架角落插了一面小旗子！"
+【如果用户问"数据会丢吗"或"怎么备份"】
+笔记AI的数据保存在浏览器本地（IndexedDB + localStorage），不在云端
+清理浏览器缓存、卸载APP、换设备都可能导致丢失 强烈建议：每周去「设置→数据管理→导出全部数据」备份一次 如果数据意外丢了：先试「数据管理→紧急数据恢复」 如果之前导出过备份：去「数据管理→导入数据」恢复 语气要温柔但认真，备份真的很重要【如果用户问"清理旧数据会删什么"】
+清理旧数据只会删除30天前且未收藏的作坊文章 清理前会列出清单让用户确认，可以勾选想保留的 收藏的书籍、创作页的作品、笔记、设定等都不受影响 如果不确定，建议先导出备份再清理
 
 【如果用户问到"断更"或"还会更新吗"】
 - 如实告知：笔记AI进入不定期更新阶段，不是停更
@@ -28639,6 +28935,9 @@ var messages = [{role:'system', content:sysContent}];
     if(stopBtn) stopBtn.style.display = 'none';
     xjAbortCtrl = null;
     if(data.choices && data.choices[0] && data.choices[0].message){
+      // 永久累计聊天次数
+var _tc=parseInt(localStorage.getItem('bj_xjTotalChats')||'0',10)+1;
+localStorage.setItem('bj_xjTotalChats',String(_tc));
       addXjReply(data.choices[0].message.content);
     } else {
       addXjReply('咦？星笺的魔法好像出了点小差错...再试一次吧～');
@@ -30353,6 +30652,7 @@ backupReminder=ld('bj_backupReminder',true);
 navBarText=ld('bj_navBarText',true);
 rpStreamOutput=ld('bj_rpStreamOutput',true);
 rpTimeAware=ld('bj_rpTimeAware',false);
+globalFloatBtnOn=ld('bj_globalFloatBtnOn',true);
 rpMsgSplit=ld('bj_rpMsgSplit',true);
 clearDataConfirm=ld('bj_clearDataConfirm',true);
 rpChars = ld('bj_rpChars', []);
@@ -30557,6 +30857,7 @@ if(updatePopup&&lastSeenVer!==UPDATE_VER&&localStorage.getItem('bj_hasVisited'))
 '<div style="background:linear-gradient(135deg,rgba(108,92,231,.12),rgba(162,155,254,.06));border:1px solid rgba(108,92,231,.25);border-radius:14px;padding:14px 16px;margin:8px 0 14px">' +
   '<div style="font-size:13px;font-weight:700;color:var(--accent2);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="fas fa-sparkles" style="font-size:14px"></i> 本版更新</div>' +
   '<div style="font-size:12px;line-height:2;color:var(--text)">' +
+    '⚡ <b>全局快捷浮窗优化</b>：自动半隐藏、折叠式面板、开关移至其他设置<br>' +
     '💬 <b>星笺消息分段</b>：可控制星笺回复是否拆成多条气泡<br>' +
     '⏰ <b>时间线甘特图</b>：新增甘特图视图，直观管理故事时间<br>' +
     '🌟 <b>星笺养成系统</b>：独立养成页面，照顾状态、解锁日记、收集成就<br>' +
@@ -31337,14 +31638,15 @@ function toggleSwitch7(key){
     navBarText:{get:function(){return navBarText;},set:function(v){navBarText=v;sv('bj_navBarText',v);applyNavBarText();}},
     rpStreamOutput:{get:function(){return rpStreamOutput;},set:function(v){rpStreamOutput=v;sv('bj_rpStreamOutput',v);}},
     rpMsgSplit:{get:function(){return rpMsgSplit;},set:function(v){rpMsgSplit=v;sv('bj_rpMsgSplit',v);}},rpTimeAware:{get:function(){return rpTimeAware;},set:function(v){rpTimeAware=v;sv('bj_rpTimeAware',v);}},
-    clearDataConfirm:{get:function(){return clearDataConfirm;},set:function(v){clearDataConfirm=v;sv('bj_clearDataConfirm',v);}},xjMsgSplit:{get:function(){return xjMsgSplit;},set:function(v){xjMsgSplit=v;sv('bj_xjMsgSplit',v);}}
+    clearDataConfirm:{get:function(){return clearDataConfirm;},set:function(v){clearDataConfirm=v;sv('bj_clearDataConfirm',v);}},xjMsgSplit:{get:function(){return xjMsgSplit;},set:function(v){xjMsgSplit=v;sv('bj_xjMsgSplit',v);}},
+    globalFloatBtn:{get:function(){return globalFloatBtnOn;},set:function(v){globalFloatBtnOn=v;sv('bj_globalFloatBtnOn',v);var fb=document.getElementById('gfbBtn');if(fb)fb.style.display=v?'flex':'none';if(!v){var fp=document.getElementById('gfbPanel');if(fp)fp.classList.remove('show');}}}
   };
   var item=map[key];
   if(!item)return;
   var newVal=!item.get();
   item.set(newVal);
   updateSwitch7UI(key,newVal);
-  var labels={autoSaveToast:'自动保存提醒',contAutoScroll:'续写自动滚动',genVibrate:'生成完成震动',autoChSummary:'章节自动摘要',rdProgressMemory:'阅读进度记忆',edExitConfirm:'退出编辑器确认',showThemeBtn:'快速切换主题按钮',genConfirm:'生成前确认',contAutoExtend:'续写自动补写',contDirMemory:'续写方向记忆',paraLongPress:'长按段落菜单',rdFooterVisible:'阅读器底部状态栏',updatePopup:'更新弹窗提示',backupReminder:'定期备份提醒',navBarText:'底部导航栏文字',rpStreamOutput:'角色流式输出',rpMsgSplit:'角色消息分段',clearDataConfirm:'清除数据二次确认',xjMsgSplit:'星笺消息分段',rpTimeAware:'角色时间感知'};
+  var labels={autoSaveToast:'自动保存提醒',contAutoScroll:'续写自动滚动',genVibrate:'生成完成震动',autoChSummary:'章节自动摘要',rdProgressMemory:'阅读进度记忆',edExitConfirm:'退出编辑器确认',showThemeBtn:'快速切换主题按钮',genConfirm:'生成前确认',contAutoExtend:'续写自动补写',contDirMemory:'续写方向记忆',paraLongPress:'长按段落菜单',rdFooterVisible:'阅读器底部状态栏',updatePopup:'更新弹窗提示',backupReminder:'定期备份提醒',navBarText:'底部导航栏文字',rpStreamOutput:'角色流式输出',rpMsgSplit:'角色消息分段',clearDataConfirm:'清除数据二次确认',xjMsgSplit:'星笺消息分段',rpTimeAware:'角色时间感知',globalFloatBtn:'全局快捷浮窗'};
   showToast((labels[key]||key)+'：'+(newVal?'已开启':'已关闭'));
 }
 
@@ -31379,6 +31681,7 @@ function initAll7Switches(){
   updateSwitch7UI('clearDataConfirm',clearDataConfirm);
   updateSwitch7UI('xjMsgSplit',xjMsgSplit);
   updateSwitch7UI('rpTimeAware',rpTimeAware);
+  updateSwitch7UI('globalFloatBtn',globalFloatBtnOn);
   applyThemeBtnVisible();
   setTimeout(applyNavBarText,50);
   applyRdFooterVisible();
@@ -37177,6 +37480,387 @@ function deleteRtPlayPreset(idx){
     setTimeout(openRtPlayPresets, 300);
   },true);
 }
+let globalFloatBtnOn=ld('bj_globalFloatBtnOn',true);
+// ==================== GLOBAL FLOAT BUTTON ====================
+(function(){
+  var _gfbPos = null; // {x,y} 用户拖动后的位置
+  var _gfbDragging = false;
+  var _gfbDragStartX = 0, _gfbDragStartY = 0;
+  var _gfbBtnStartX = 0, _gfbBtnStartY = 0;
+  var _gfbDidDrag = false;
+  var _gfbIdleTimer = null;
+  var _gfbIsActive = false;
+  var _gfbPanelOpen = false;
+  var _gfbLpTimer = null;
+  var IDLE_MS = 3500; // 空闲多久后半隐藏
+
+  function _getBtn(){ return document.getElementById('gfbBtn'); }
+  function _getPanel(){ return document.getElementById('gfbPanel'); }
+
+  // ---- 激活/半隐藏 ----
+  function _activate(){
+    var btn = _getBtn();
+    if(!btn) return;
+    _gfbIsActive = true;
+    btn.classList.add('active');
+    btn.style.opacity = '1';
+    _clearIdle();
+  }
+
+  function _halfHide(){
+    if(_gfbPanelOpen) return; // 面板开着不隐藏
+    var btn = _getBtn();
+    if(!btn) return;
+    _gfbIsActive = false;
+    btn.classList.remove('active');
+    btn.style.opacity = '.25';
+    // 贴到最近的屏幕边缘，只露出一半
+    var rect = btn.getBoundingClientRect();
+    var sw = window.innerWidth;
+    var centerX = rect.left + 25;
+    if(centerX < sw / 2){
+      // 贴左边
+      btn.style.left = '-25px';
+      btn.style.right = '';
+    } else {
+      // 贴右边
+      btn.style.left = '';
+      btn.style.right = '-25px';
+    }
+    _gfbPos = null; // 重置自定义位置
+  }
+
+  function _startIdle(){
+    _clearIdle();
+    _gfbIdleTimer = setTimeout(function(){
+      _halfHide();
+    }, IDLE_MS);
+  }
+
+  function _clearIdle(){
+    if(_gfbIdleTimer){ clearTimeout(_gfbIdleTimer); _gfbIdleTimer = null; }
+  }
+
+  // ---- 触摸事件 ----
+  function _onTouchStart(e){
+    if(e.touches.length !== 1) return;
+    e.preventDefault();
+    var t = e.touches[0];
+    _gfbDragStartX = t.clientX;
+    _gfbDragStartY = t.clientY;
+    var btn = _getBtn();
+    var rect = btn.getBoundingClientRect();
+    _gfbBtnStartX = rect.left;
+    _gfbBtnStartY = rect.top;
+    _gfbDragging = false;
+    _gfbDidDrag = false;
+    _gfbLpTimer = setTimeout(function(){
+      _gfbDragging = true;
+      _gfbDidDrag = true;
+      _activate();
+      if(navigator.vibrate) navigator.vibrate(20);
+    }, 250);
+  }
+
+  function _onTouchMove(e){
+    if(e.touches.length !== 1) return;
+    var t = e.touches[0];
+    var dx = t.clientX - _gfbDragStartX;
+    var dy = t.clientY - _gfbDragStartY;
+    if(!_gfbDragging && (Math.abs(dx) > 8 || Math.abs(dy) > 8)){
+      clearTimeout(_gfbLpTimer);
+      _gfbDragging = true;
+      _gfbDidDrag = true;
+      _activate();
+    }
+    if(_gfbDragging){
+      e.preventDefault();
+      var btn = _getBtn();
+      var sw = window.innerWidth, sh = window.innerHeight;
+      var newX = Math.max(-25, Math.min(sw - 25, _gfbBtnStartX + dx));
+      var newY = Math.max(0, Math.min(sh - 50, _gfbBtnStartY + dy));
+      btn.style.left = newX + 'px';
+      btn.style.top = newY + 'px';
+      btn.style.right = '';
+      btn.style.bottom = '';
+      _gfbPos = {x: newX, y: newY};
+    }
+  }
+
+  function _onTouchEnd(e){
+    clearTimeout(_gfbLpTimer);
+    if(!_gfbDidDrag){
+      _handleTap();
+    } else {
+      _startIdle();
+    }
+    _gfbDragging = false;
+  }
+
+  function _onTouchCancel(){
+    clearTimeout(_gfbLpTimer);
+    _gfbDragging = false;
+    _startIdle();
+  }
+
+  // ---- 鼠标事件(PC) ----
+  function _onMouseDown(e){
+    if(e.button !== 0) return;
+    _gfbDragStartX = e.clientX;
+    _gfbDragStartY = e.clientY;
+    var btn = _getBtn();
+    var rect = btn.getBoundingClientRect();
+    _gfbBtnStartX = rect.left;
+    _gfbBtnStartY = rect.top;
+    _gfbDragging = false;
+    _gfbDidDrag = false;
+
+    function onMove(ev){
+      var dx = ev.clientX - _gfbDragStartX;
+      var dy = ev.clientY - _gfbDragStartY;
+      if(!_gfbDragging && (Math.abs(dx) > 5 || Math.abs(dy) > 5)){
+        _gfbDragging = true;
+        _gfbDidDrag = true;
+        _activate();
+      }
+      if(_gfbDragging){
+        var sw = window.innerWidth, sh = window.innerHeight;
+        var newX = Math.max(-25, Math.min(sw - 25, _gfbBtnStartX + dx));
+        var newY = Math.max(0, Math.min(sh - 50, _gfbBtnStartY + dy));
+        btn.style.left = newX + 'px';
+        btn.style.top = newY + 'px';
+        btn.style.right = '';
+        btn.style.bottom = '';
+        _gfbPos = {x: newX, y: newY};
+      }
+    }
+    function onUp(){
+      document.removeEventListener('mousemove', onMove);
+      document.removeEventListener('mouseup', onUp);
+      if(!_gfbDidDrag) _handleTap();
+      else _startIdle();
+      _gfbDragging = false;
+    }
+    document.addEventListener('mousemove', onMove);
+    document.addEventListener('mouseup', onUp);
+  }
+
+  // ---- 点击逻辑 ----
+  function _handleTap(){
+    if(!_gfbIsActive){
+      // 半隐藏状态 → 先完全显示
+      _activate();
+      _startIdle();
+      return;
+    }
+    // 已激活状态 → 开关面板
+    if(_gfbPanelOpen){
+      _closePanel();
+      _startIdle();
+    } else {
+      _openPanel();
+    }
+  }
+
+  // ---- 面板 ----
+  function _openPanel(){
+    _gfbPanelOpen = true;
+    _clearIdle();
+    _renderPanel();
+    var panel = _getPanel();
+    var btn = _getBtn();
+    if(!panel || !btn) return;
+    var br = btn.getBoundingClientRect();
+    var sw = window.innerWidth;
+    // 垂直
+    panel.style.bottom = '';
+    panel.style.top = '';
+    if(br.top > 300){
+      panel.style.bottom = (window.innerHeight - br.top + 8) + 'px';
+    } else {
+      panel.style.top = (br.bottom + 8) + 'px';
+    }
+    // 水平
+    if(br.left > sw / 2){
+      panel.style.right = '10px'; panel.style.left = '';
+    } else {
+      panel.style.left = '10px'; panel.style.right = '';
+    }
+    panel.classList.add('show');
+  }
+
+  function _closePanel(){
+    _gfbPanelOpen = false;
+    var panel = _getPanel();
+    if(panel) panel.classList.remove('show');
+  }
+
+  window.gfbClose = function(){
+    _closePanel();
+    _startIdle();
+  };
+
+  // ---- 点击空白关闭 ----
+  function _onDocClick(e){
+    var btn = _getBtn();
+    var panel = _getPanel();
+    if(btn && btn.contains(e.target)) return;
+    if(panel && panel.contains(e.target)) return;
+    if(_gfbPanelOpen){
+      _closePanel();
+      _startIdle();
+    } else if(_gfbIsActive){
+      // 点了空白处，开始倒计时半隐藏（缩短为1.5秒）
+      _clearIdle();
+      _gfbIdleTimer = setTimeout(function(){ _halfHide(); }, 1500);
+    }
+  }
+
+  // ---- 渲染面板内容（折叠式） ----
+  function _renderPanel(){
+    var scroll = document.getElementById('gfbScroll');
+    if(!scroll) return;
+    var html = '';
+
+    // 导出按钮（始终可见，最常用）
+    html += '<div class="gfb-export-row" style="border-bottom:1px solid var(--border);padding-bottom:10px;margin-bottom:4px">';
+    html += '<div class="gfb-export-info"><i class="fas fa-download"></i> <strong>一键导出备份</strong></div>';
+html += '<button class="gfb-export-btn" onclick="gfbExportAll()">导出</button>';
+html += '</div>';
+var _estSize = 0;
+try{
+  _estSize += JSON.stringify(ws||[]).length;
+  _estSize += JSON.stringify(cols||{}).length;
+  _estSize += JSON.stringify(crWorks||[]).length;
+  _estSize += JSON.stringify(resPacks||[]).length;
+  _estSize += JSON.stringify(rpChars||[]).length;
+  _estSize += JSON.stringify(genLogs||[]).length;
+  _estSize += JSON.stringify(xjMessages||[]).length;
+}catch(e){}
+var _estMB = (_estSize * 2 / 1024 / 1024).toFixed(1);
+html += '<div style="padding:0 14px 8px;font-size:10px;color:var(--text2)">预计导出约 ' + _estMB + ' MB</div>';
+    html += '</div>';
+
+    // 生成模板（折叠）
+    html += '<div class="gfb-section" onclick="_gfbToggleSection(\'tpl\',this)" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:10px 14px 6px">';
+    html += '<span><i class="fas fa-box"></i> 生成模板 <span style="font-size:10px;color:var(--text2);font-weight:400">(' + (genTemplates||[]).length + ')</span></span>';
+    html += '<span id="gfbTplArrow" style="font-size:12px;color:var(--text2);transition:transform .2s">▶</span>';
+    html += '</div>';
+    html += '<div id="gfbTplList" style="display:none">';
+    if(!genTemplates || genTemplates.length === 0){
+      html += '<div style="padding:8px 14px 10px;font-size:11px;color:var(--text2)">暂无模板</div>';
+    } else {
+      genTemplates.forEach(function(tpl, i){
+        html += '<div class="gfb-item" onclick="gfbSwitchTemplate(' + i + ')">';
+        html += '<div class="gfb-item-main">';
+        html += '<div class="gfb-item-name">' + esc(tpl.name || '模板' + (i+1)) + '</div>';
+        if(tpl.desc) html += '<div class="gfb-item-sub">' + esc(tpl.desc.substring(0,35)) + '</div>';
+        html += '</div>';
+        html += '<span class="gfb-item-badge">切换</span>';
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+
+    // API预设（折叠）
+    html += '<div class="gfb-divider"></div>';
+    html += '<div class="gfb-section" onclick="_gfbToggleSection(\'api\',this)" style="cursor:pointer;display:flex;justify-content:space-between;align-items:center;padding:10px 14px 6px">';
+    html += '<span><i class="fas fa-server"></i> API预设 <span style="font-size:10px;color:var(--text2);font-weight:400">(' + (apiP||[]).length + ')</span></span>';
+    html += '<span id="gfbApiArrow" style="font-size:12px;color:var(--text2);transition:transform .2s">▶</span>';
+    html += '</div>';
+    html += '<div id="gfbApiList" style="display:none">';
+    if(!apiP || apiP.length === 0){
+      html += '<div style="padding:8px 14px 10px;font-size:11px;color:var(--text2)">暂无API预设</div>';
+    } else {
+      apiP.forEach(function(p, i){
+        html += '<div class="gfb-item" onclick="gfbSwitchApi(' + i + ')">';
+        html += '<div class="gfb-item-main">';
+        html += '<div class="gfb-item-name">' + esc(p.name || 'API' + (i+1)) + '</div>';
+        var apiDesc = (p.model||'').substring(0,18);
+if(p.temp !== undefined) apiDesc += ' · T=' + p.temp;
+if(p.maxTokens) apiDesc += ' · ' + p.maxTokens;
+html += '<div class="gfb-item-sub">' + esc(apiDesc) + '</div>';
+        html += '</div>';
+        html += '<span class="gfb-item-badge">切换</span>';
+        html += '</div>';
+      });
+    }
+    html += '</div>';
+
+    // 快捷入口
+    html += '<div class="gfb-divider"></div>';
+    html += '<div class="gfb-item" onclick="gfbClose();openSetModal(\'api\')"><div class="gfb-item-main"><div class="gfb-item-name"><i class="fas fa-key"></i> API设置</div></div><span style="color:var(--text2);font-size:14px">›</span></div>';
+    html += '<div class="gfb-item" onclick="gfbClose();openGenTemplateModal()"><div class="gfb-item-main"><div class="gfb-item-name"><i class="fas fa-layer-group"></i> 模板管理</div></div><span style="color:var(--text2);font-size:14px">›</span></div>';
+
+    scroll.innerHTML = html;
+  }
+
+  // 折叠展开
+  window._gfbToggleSection = function(key, el){
+    var listId = key === 'tpl' ? 'gfbTplList' : 'gfbApiList';
+    var arrowId = key === 'tpl' ? 'gfbTplArrow' : 'gfbApiArrow';
+    var list = document.getElementById(listId);
+    var arrow = document.getElementById(arrowId);
+    if(!list) return;
+    var isOpen = list.style.display !== 'none';
+    list.style.display = isOpen ? 'none' : 'block';
+    if(arrow) arrow.textContent = isOpen ? '▶' : '▼';
+  };
+
+  // 切换生成模板
+  window.gfbSwitchTemplate = function(idx){
+    try{
+      if(!genTemplates || !genTemplates[idx]){showToast('模板不存在');return;}
+      useGenTemplate(idx);
+      _closePanel();
+      _startIdle();
+    }catch(e){ showToast('切换失败'); }
+  };
+
+  // 切换API预设
+  window.gfbSwitchApi = function(idx){
+    try{
+      if(!apiP || !apiP[idx]){showToast('预设不存在');return;}
+      useApiP(idx);
+      _closePanel();
+      _startIdle();
+    }catch(e){ showToast('切换失败'); }
+  };
+
+  // 导出
+  window.gfbExportAll = function(){
+    _closePanel();
+    _startIdle();
+    try{ exportData(); }catch(e){ showToast('导出失败'); }
+  };
+
+  // ---- 初始化 ----
+  function _init(){
+    var btn = _getBtn();
+    if(!btn) return;
+    // 根据开关决定是否显示
+    if(!globalFloatBtnOn){
+      btn.style.display = 'none';
+      return;
+    }
+    btn.style.display = 'flex';
+    btn.addEventListener('touchstart', _onTouchStart, {passive:false});
+    btn.addEventListener('touchmove', _onTouchMove, {passive:false});
+    btn.addEventListener('touchend', _onTouchEnd, {passive:false});
+    btn.addEventListener('touchcancel', _onTouchCancel, {passive:false});
+    btn.addEventListener('mousedown', _onMouseDown);
+    document.addEventListener('touchstart', _onDocClick, {passive:true});
+    document.addEventListener('click', _onDocClick);
+    // 启动后3.5秒自动半隐藏
+    _startIdle();
+  }
+
+  if(document.readyState === 'loading'){
+    document.addEventListener('DOMContentLoaded', function(){ setTimeout(_init, 1200); });
+  } else {
+    setTimeout(_init, 1200);
+  }
+})();
 </script>
 <script>
 function downloadApk(){
