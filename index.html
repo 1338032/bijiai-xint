@@ -1718,7 +1718,7 @@ background-clip:text;
 .set-sec{padding:14px 18px;}
 /* SETTINGS MODAL */
 .set-modal{
-display:none;position:fixed;inset:0;z-index:9600;
+display:none;position:fixed;inset:0;z-index:600;
 background:var(--bg);overflow-y:auto;
 }
 .set-modal{will-change:transform;}
@@ -7431,7 +7431,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <!-- SETTINGS MODALS -->
-<div class="set-modal" id="setModalApi" role="dialog" aria-label="API设置" style="z-index:9100;">
+<div class="set-modal" id="setModalApi" role="dialog" aria-label="API设置">
 <div class="set-modal-hdr"><button onclick="closeSetModal('api')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button><h2><i class="fas fa-key"></i> API设置</h2><a href="./api-guide.html" target="_blank" style="flex-shrink:0;display:flex;align-items:center;gap:5px;padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:rgba(108,92,231,.1);color:var(--accent2);font-size:12px;text-decoration:none;"><i class="fas fa-book-open"></i> 配置教程</a></div>
 <div class="set-modal-body">
 <div class="fg"><label class="fl">API地址</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
@@ -9243,7 +9243,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 <!-- GEN TEMPLATE 生成模板全屏弹窗 -->
-<div class="set-modal" id="genTemplateModal" style="z-index:9100;">
+<div class="set-modal" id="genTemplateModal">
 <div class="set-modal-hdr">
 <button onclick="closeGenTemplateModal()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>返回</button>
 <h2><i class="fas fa-box"></i> 生成模板</h2>
@@ -9465,17 +9465,7 @@ function dbSet(key, value) {
             tx.oncomplete = () => resolve(true);
             tx.onerror = (e) => {
                 console.warn('IndexedDB写入失败('+key+'):', e);
-                try{var s=JSON.stringify(value);try{
-  if(s.length<50000){
-    localStorage.setItem(key,s);
-  }else{
-    console.warn('数据太大无法降级到localStorage:',key,s.length);
-    // 只在开发者模式下提示
-    if(devMode)showToast('⚠️ '+key+' 太大('+Math.round(s.length/1024)+'KB)，仅存IndexedDB',3000);
-  }
-}catch(le){
-  console.error('localStorage降级失败:',key,le);
-}}catch(le){}
+                try{var s=JSON.stringify(value);if(s.length<50000)localStorage.setItem(key,s);}catch(le){}
                 resolve(false);
             };
         } catch (e) {
@@ -9615,9 +9605,9 @@ function _flushSv() {
                     localStorage.setItem(k, JSON.stringify(d));
                 } catch (e2) {
             console.warn('localStorage 空间不足，数据仅保存在IndexedDB:', k);
-            if(typeof showToastForce === 'function' && backupReminder){
-  showToastForce('⚠️ 本地存储已满！建议立即导出备份，否则数据可能丢失', 6000);
-}
+            if(typeof showToastForce === 'function'){
+              showToastForce('⚠️ 本地存储已满！建议立即导出备份，否则数据可能丢失', 6000);
+            }
         }
             }
         }
@@ -9921,11 +9911,10 @@ function showDlg(title,msg,onOk,danger=false,asHtml=false){
 function closeDlg(){
   navPop('dlgOv');
   document.getElementById('dlgOkBtn').style.display='';
-  var dlgEl=document.getElementById('dlgOv');
-  dlgEl.classList.remove('show');
-  // 恢复默认z-index，防止残留影响其他弹窗
-  dlgEl.style.zIndex='';
-  var p=document.getElementById('dlgMsg');
+  document.getElementById('dlgOv').classList.remove('show');
+
+  // 关闭时恢复 dlgMsg 的滚动样式（避免影响其他弹窗）
+  const p=document.getElementById('dlgMsg');
   if(p){
     p.style.maxHeight='';
     p.style.overflowY='';
@@ -10636,14 +10625,7 @@ cols.books[bIdx].cover=cover;
 cols.books[bIdx].status=status;
 cols.books[bIdx].rating=rating;
 if(!cols.books[bIdx].chOutlines&&chOutlines)cols.books[bIdx].chOutlines=chOutlines;
-// 合并章节摘要，不丢失任何一方的数据
-if(article.chSummaries||cols.books[bIdx].chSummaries){
-  var merged=cols.books[bIdx].chSummaries||[];
-  (article.chSummaries||[]).forEach(function(s,i){
-    if(s&&!merged[i])merged[i]=s;
-  });
-  cols.books[bIdx].chSummaries=merged;
-}
+if(article.chSummaries)cols.books[bIdx].chSummaries=article.chSummaries;
 sv(K.cols,cols);
 }
 }else{
@@ -11256,8 +11238,6 @@ if(!cfg.url||!cfg.key){showToast('请先配置API');return;}
 const names=getAllCharNames();
 if(names.length<2){showToast('至少需要2个角色（主角或NPC）才能生成关系');return;}
 showToast('AI正在分析人物关系...',3000);
-var aiGenBtn=document.querySelector('[onclick="aiGenRelations()"]');
-if(aiGenBtn){aiGenBtn.disabled=true;aiGenBtn.textContent='分析中...';}
 let charInfo='';
 characters.forEach(c=>{
 if(c.name){
@@ -11300,7 +11280,6 @@ addCount++;
 sv('bj_charRelations',charRelations);
 renderRelList();
 showToast('AI生成了'+addCount+'条关系 🔗');
-if(aiGenBtn){aiGenBtn.disabled=false;aiGenBtn.textContent='🤖 AI生成';}
 }
 
 // ==================== NPC设定 ====================
@@ -12168,65 +12147,75 @@ return issues;
 }
 
 function showSettingPreview(){
-  // 这个函数自己就是弹dlg，不需要关闭别的
-  // 但如果当前有大弹窗打开时被调用，dlg会盖在上面
-  // 解决方法：让dlg的z-index跟随当前最高层级
-  var short10 = (s)=>{
+  const short10 = (s)=>{
     s = (s||'').toString().trim().replace(/\s+/g,' ');
     return s ? (s.length>10 ? s.slice(0,10)+'…' : s) : '（未设置）';
   };
-  var shortName10 = (s)=>{
+  const shortName10 = (s)=>{
     s = (s||'').toString().trim();
     return s ? (s.length>10 ? s.slice(0,10)+'…' : s) : '（未命名）';
   };
-  var getVal = (id, fb='')=>{
-    var el = document.getElementById(id);
+
+  // 读取：优先取输入框（实时），再回退到变量
+  const getVal = (id, fb='')=>{
+    const el = document.getElementById(id);
     return (el && typeof el.value==='string') ? el.value : fb;
   };
-  var gWorld = (getVal('globalWorldDesc', globalWorld)||'').trim();
-  var lWorld = (getVal('worldDesc', '')||'').trim();
-  var gRule  = (getVal('globalRuleDesc', globalRule)||'').trim();
-  var lRule  = (getVal('ruleDesc', curRule)||'').trim();
-  var lStyle = (getVal('styleDesc', ap.curStyle||'')||'').trim();
-  var gBan = (getVal('globalBanWordsInput', globalBanWords)||'').trim();
-  var lBan = (getVal('banWordsInput', banWords)||'').trim();
-  var minW = parseInt(getVal('minWords', 0), 10) || 0;
-  var validChars = (characters||[]).filter(c=>c && (c.name||c.desc));
-  var charNames = validChars.map(c=>shortName10(c.name)).join('、') || '（暂无角色）';
-  var info = '';
+
+  const gWorld = (getVal('globalWorldDesc', globalWorld)||'').trim();
+  const lWorld = (getVal('worldDesc', '')||'').trim();
+
+  const gRule  = (getVal('globalRuleDesc', globalRule)||'').trim();
+  const lRule  = (getVal('ruleDesc', curRule)||'').trim();
+
+  const lStyle = (getVal('styleDesc', ap.curStyle||'')||'').trim();
+
+  const gBan = (getVal('globalBanWordsInput', globalBanWords)||'').trim();
+  const lBan = (getVal('banWordsInput', banWords)||'').trim();
+
+  const minW = parseInt(getVal('minWords', 0), 10) || 0;
+
+  const validChars = (characters||[]).filter(c=>c && (c.name||c.desc));
+  const charNames = validChars.map(c=>shortName10(c.name)).join('、') || '（暂无角色）';
+
+  let info = '';
   info += '📋 当前生效设定（仅展示每项前10字）\n\n';
+
   info += '👤 人物（'+validChars.length+'个）\n';
   info += '名称：'+charNames+'\n\n';
+
   info += '🌍 世界观\n';
   info += '全局：'+short10(gWorld)+'\n';
   info += '局部：'+short10(lWorld)+'\n';
   info += '每章最少字数：'+(minW?minW+'字':'（未设置）')+'\n\n';
+
   info += '✒️ 文风（局部）\n';
   info += short10(lStyle)+'\n\n';
+
   info += '📜 规则\n';
   info += '全局：'+short10(gRule)+'\n';
   info += '局部：'+short10(lRule)+'\n\n';
+
   info += '🚫 禁用词\n';
   info += '全局：'+short10(gBan)+'\n';
   info += '局部：'+short10(lBan)+'\n\n';
+
+  // 绑定信息（如果你没绑定过，会显示空）
   info += '🔗 当前局部绑定对象（角色预设名）\n';
   info += '世界观绑定：'+(currentWorldBinding||'（未绑定）')+'\n';
   info += '文风绑定：'+(currentStyleBinding||'（未绑定）')+'\n';
   info += '规则绑定：'+(currentRuleBinding||'（未绑定）')+'\n';
   info += '禁用词绑定：'+(currentBanBinding||'（未绑定）')+'\n';
+
   showDlg('当前设定', info, ()=>{});
-  // 关键：让这个dlg的z-index高于所有set-modal
-  setTimeout(function(){
-    var dlgOv=document.getElementById('dlgOv');
-    if(dlgOv)dlgOv.style.zIndex='9700';
-    var p=document.getElementById('dlgMsg');
-    if(p){
-      p.style.maxHeight='60vh';
-      p.style.overflowY='auto';
-      p.style.paddingRight='6px';
-      p.style.webkitOverflowScrolling='touch';
-    }
-  },30);
+// 仅“当前设定”弹窗启用竖向滚动
+  const p=document.getElementById('dlgMsg');
+  if(p){
+    p.style.maxHeight='60vh';
+    p.style.overflowY='auto';
+    p.style.paddingRight='6px';
+    p.style.webkitOverflowScrolling='touch';
+  }
 }
 function filterWorkshopArticles(kw){
 kw=(kw||'').trim().toLowerCase();
@@ -13756,7 +13745,7 @@ function _rdCreateOverlay(){
   const ov=document.createElement('div');
   ov.className='rd-reader-overlay';
   ov.id='rdReaderOverlay';
-  ov.style.zIndex='15';
+
   const isLong=curRd&&curRd.type==='long';
   const totalCh=curRd&&curRd.chapters?curRd.chapters.length:0;
 
@@ -16084,89 +16073,36 @@ function exportShort(id){
 }
 // ==================== SETTINGS ====================
 // ==================== SETTINGS MODAL ====================
-function _closeAllSmallOvs(){
-  // 关闭通用对话框（最关键！showDlg/showInp弹出的都是这两个）
-  try{
-    var dlgOv=document.getElementById('dlgOv');
-    if(dlgOv&&dlgOv.classList.contains('show')){
-      dlgOv.classList.remove('show');
-      // 清理navStack里的dlgOv
-      try{navPop('dlgOv');}catch(e){}
-    }
-  }catch(e){}
-  try{
-    var inpOv=document.getElementById('inpOv');
-    if(inpOv&&inpOv.classList.contains('show')){
-      inpOv.classList.remove('show');
-      try{navPop('inpOv');}catch(e){}
-      // 恢复inpField（防止textarea残留）
-      try{restoreInpField();}catch(e){}
-    }
-  }catch(e){}
-  // 关闭所有小浮层弹窗
-  var smallOvs=[
-    'phraseModalOv','resExpOv','regenFeedbackOv',
-    'expOv','fanwaiOv','outlineOv','branchOv',
-    'nameGenOv','importTxtOv','wizardOv',
-    'coverGenOv','diffCompareOv','expandOv',
-    'versionOv','chOutlineOv','presetModalOv',
-    'rpCharListOv','wheelEditOv','presetOptOv',
-    'advLoadOv','contextEditorOv','foreshadowOv',
-    'addRelOv','addNpcOv','addFsOv','rewriteOv',
-    'lockSetOv','proofreadOv','typoOv',
-    'aiReviewOv','ambiencePanelOv','resExpOv',
-    'addFsOv','chOutlineOv'
-  ];
-  smallOvs.forEach(function(id){
-    var el=document.getElementById(id);
-    if(el&&el.classList.contains('show')){
-      el.classList.remove('show');
-      try{navPop(id);}catch(e){}
-    }
-  });
-  // 关闭更多下拉菜单
-  try{
-    var moreMenu=document.getElementById('moreMenuPanel');
-    if(moreMenu)moreMenu.style.display='none';
-  }catch(e){}
-  // 关闭所有弹出式菜单（书架操作菜单等）
-  try{
-    ['bookMenuPop','shortMenuPop','crCardMenuPop','resActionMenuPop'].forEach(function(pid){
-      var pop=document.getElementById(pid);
-      if(pop)pop.remove();
-    });
-  }catch(e){}
-}
 function openSetModal(type){
-  // 先关闭所有可能开着的小弹窗
-  _closeAllSmallOvs();
-  var map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',notify:'setModalNotify',data:'setModalData',sysPrompt:'setModalSysPrompt',other:'setModalOther'};
-  var id=map[type];if(!id)return;
-  document.getElementById(id).classList.add('show');
-  navPush(id);
-  if(type==='other'){updateXjVisibleUI();updateXjBubbleUI();updateContQualityUINew();initAll7Switches();}
-  if(type==='data')updateStorageDisplay();
-  if(type==='data')setTimeout(updateDevUI,50);
-  if(type==='sysPrompt'){
-    if(document.getElementById('customSysPromptInput')){
-      document.getElementById('customSysPromptInput').value=customSysPrompt||'';
-      var c=document.getElementById('customSysPromptCount');
-      if(c)c.textContent=(customSysPrompt||'').trim().length+' 字';
-    }
-    renderSysPromptPresets();
-    setTimeout(function(){
-      var head=document.getElementById('posHead');
-      var tail=document.getElementById('posTail');
-      if(head && tail){
-        head.classList.toggle('act',customSysPromptPosition==='head');
-        tail.classList.toggle('act',customSysPromptPosition==='tail');
-      }
-    },50);
-    return;
+const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',notify:'setModalNotify',data:'setModalData',sysPrompt:'setModalSysPrompt',other:'setModalOther'};
+const id=map[type];if(!id)return;
+document.getElementById(id).classList.add('show');
+navPush(id);
+  // 打开其他设置时恢复氛围写作控件状态
+  if(type==='other') setTimeout(_restoreAmbienceSettings, 50);
+document.getElementById('bnav').classList.add('hide');
+if(type==='char'){renderCharCards();renderCustomTraitList();renderRelList();renderNpcCards();}
+if(type==='other'){updateXjVisibleUI();updateXjBubbleUI();updateContQualityUINew();initAll7Switches();}
+if(type==='data')updateStorageDisplay();
+if(type==='data')setTimeout(updateDevUI,50);
+if(type==='sysPrompt'){
+  if(document.getElementById('customSysPromptInput')){
+    document.getElementById('customSysPromptInput').value=customSysPrompt||'';
+    var c=document.getElementById('customSysPromptCount');
+    if(c)c.textContent=(customSysPrompt||'').trim().length+' 字';
   }
-  renderAllPresets();
-  document.getElementById('bnav').classList.add('hide');
-  if(type==='char'){renderCharCards();renderCustomTraitList();renderRelList();renderNpcCards();}
+  renderSysPromptPresets();
+  setTimeout(function(){
+    const head=document.getElementById('posHead');
+    const tail=document.getElementById('posTail');
+    if(head && tail){
+      head.classList.toggle('act',customSysPromptPosition==='head');
+      tail.classList.toggle('act',customSysPromptPosition==='tail');
+    }
+  },50);
+  return;
+}
+renderAllPresets();
 }
 function closeSetModal(type){
 const map={api:'setModalApi',char:'setModalChar',world:'setModalWorld',style:'setModalStyle',rule:'setModalRule',ban:'setModalBan',theme:'setModalTheme',notify:'setModalNotify',data:'setModalData',sysPrompt:'setModalSysPrompt',other:'setModalOther'};
@@ -17240,7 +17176,7 @@ try{
         setTimeout(() => {
             URL.revokeObjectURL(url);
             document.body.removeChild(a);
-            showToast('数据备份已导出 📥（注意：密钥已脱敏，恢复后需重新填写密钥）',4000);
+            showToast('数据备份已导出 📥');
         }, 1000);
         
     } catch (e) {
@@ -17649,11 +17585,7 @@ btn.classList.remove('open');
 function renderCrList(){
 const list=document.getElementById('crList');
 const filtered=crWorks.filter(w=>w.type===crTab);
-filtered.sort(function(a,b){
-  if((b.pinned?1:0)!==(a.pinned?1:0)) return (b.pinned?1:0)-(a.pinned?1:0);
-  // 置顶内的文章按更新时间排
-  return new Date(b.updatedAt||0)-new Date(a.updatedAt||0);
-});
+filtered.sort(function(a,b){return (b.pinned?1:0)-(a.pinned?1:0);});
 if(filtered.length===0){
 list.innerHTML='<div class="empty-st"><p>'+(crTab==='draft'?'还没有草稿<br>点击上方「新建草稿」开始写作':'还没有小说<br>点击上方「新建小说」开始连载')+'</p></div>';
 return;
@@ -21221,8 +21153,8 @@ function checkStorageHealth(){
 const used=getStorageUsage();
 const usedMB=(used/1024/1024).toFixed(2);
 const percent=(used/(5*1024*1024)*100).toFixed(1);
-if(percent>80 && backupReminder){
-  showToast('⚠️ 存储已用'+percent+'%，建议导出备份',4000);
+if(percent>80){
+showToast('⚠️ 存储已用'+percent+'%，建议导出备份',4000);
 }
 return {used,usedMB,percent};
 }
@@ -21303,23 +21235,6 @@ async function updateStorageDisplay() {
     document.getElementById('storagePercent').textContent = '计算失败';
     document.getElementById('storageDetail').textContent = '请刷新页面重试';
   }
-  // 显示上次备份时间
-try{
-  var lastBackup=localStorage.getItem('bj_lastBackup');
-  var backupInfoEl=document.getElementById('storageInfo');
-  if(backupInfoEl&&lastBackup){
-    var lastDate=new Date(parseInt(lastBackup));
-    var diffDays=Math.floor((Date.now()-parseInt(lastBackup))/(1000*60*60*24));
-    var color=diffDays>7?'var(--danger)':diffDays>3?'#f0a030':'var(--success)';
-    var oldTip=document.getElementById('backupTimeTip');
-    if(oldTip)oldTip.remove();
-    var tip=document.createElement('div');
-    tip.id='backupTimeTip';
-    tip.style.cssText='margin-top:10px;padding:10px 14px;border-radius:12px;border:1px solid '+color+';background:rgba(0,0,0,.04);font-size:11px;color:'+color+';display:flex;justify-content:space-between;align-items:center';
-    tip.innerHTML='<span><i class="fas fa-clock"></i> 上次备份：'+lastDate.toLocaleString()+'</span><span style="font-weight:700">'+diffDays+'天前</span>';
-    backupInfoEl.parentElement.insertBefore(tip,backupInfoEl.nextSibling);
-  }
-}catch(e){}
 }
 function formatNum(n){
 if(n>=10000)return (n/10000).toFixed(1)+'万';
@@ -28987,7 +28902,7 @@ var maxCtx = xjContextLen || XJ_MAX_CONTEXT;
 var contextMsgs = xjMessages.slice(-maxCtx*2);
 var contextText = contextMsgs.map(function(m){return m.content||'';}).join('');
 var estTotal = estimateTokens(fullSysContent) + estimateTokens(contextText);
-var modelMaxCtx = 32768; // 默认假设32k，大多数现代模型都支持
+var modelMaxCtx = 8192; // 默认假设8k
 var modelName = (getCurApi().model||'').toLowerCase();
 if(modelName.includes('gpt-4o')||modelName.includes('claude'))modelMaxCtx=128000;
 else if(modelName.includes('gpt-3.5'))modelMaxCtx=16384;
@@ -30872,21 +30787,15 @@ try{updateStreamUI();}catch(e){logError('op',e)}
 renderTags();applyAppearance();
 // 先渲染首屏（作坊），其他页面延迟渲染
 renderArticles();
-// 第一阶段延迟：用户卡片和统计（800ms后）
+// 延迟渲染非首屏内容，避免启动卡顿
 setTimeout(function(){
-  try{renderUserCard();}catch(e){logError('renderUserCard',e);}
-  try{updateStats();}catch(e){logError('updateStats',e);}
-},800);
-// 第二阶段延迟：设置页内容（1.5秒后）
-setTimeout(function(){
-  try{renderCharCards();}catch(e){logError('renderCharCards',e);}
-  try{renderAllPresets();}catch(e){logError('renderAllPresets',e);}
-  try{refreshAllCounters();}catch(e){logError('refreshAllCounters',e);}
-},1500);
-// 第三阶段延迟：备份提醒等非关键任务（3秒后）
-setTimeout(function(){
-  try{autoBackup();}catch(e){logError('autoBackup',e);}
-},3000);
+    try{renderCharCards();}catch(e){logError('renderCharCards',e);}
+    try{renderAllPresets();}catch(e){logError('renderAllPresets',e);}
+    try{renderUserCard();}catch(e){logError('renderUserCard',e);}
+    try{updateStats();}catch(e){logError('updateStats',e);}
+    try{refreshAllCounters();}catch(e){logError('refreshAllCounters',e);}
+    try{autoBackup();}catch(e){logError('autoBackup',e);}
+},500);
 document.getElementById('splashVer').textContent=APP_VER;
 // 监听系统主题变化（auto模式下自动切换）
 if(window.matchMedia){
@@ -31507,23 +31416,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             el.addEventListener('change', saveCurSettings);
         }
     });
-    // 监听移动端键盘弹起，动态调整编辑器高度
-if(window.visualViewport){
-  window.visualViewport.addEventListener('resize',function(){
-    var edModal=document.getElementById('edModal');
-    if(!edModal||!edModal.classList.contains('show'))return;
-    var edBody=document.getElementById('edTextarea');
-    if(!edBody)return;
-    var vpH=window.visualViewport.height;
-    var offset=window.innerHeight-vpH;
-    if(offset>100){
-      // 键盘弹起了，调整编辑器底部padding
-      edModal.style.paddingBottom=offset+'px';
-    }else{
-      edModal.style.paddingBottom='';
-    }
-  });
-}
 });
 function exportAllCrWorks(){
     var data = {_app:'bijiAI_crExport',_ver:APP_VER,crWorks:crWorks,exportedAt:new Date().toISOString()};
@@ -33112,7 +33004,6 @@ async function aiDetectTimeline(){
 }
 // ==================== 自定义生成模板 ====================
 function openGenTemplateModal(){
-  _closeAllSmallOvs();
   var body=document.getElementById('genTemplateBody');
   var html='';
   html+='<p style="font-size:11px;color:var(--text2);margin-bottom:14px">保存当前的人物+世界观+文风+规则+禁用词为一个模板，下次一键切换整套配置</p>';
@@ -34318,18 +34209,16 @@ function renderRpMemoryPanel(){
   
   // 兼容旧数据：如果有旧的 memory 字符串，迁移为数组
   if(ch.memory && !ch.memories){
-  ch.memories = [{
-    id: uid(),
-    text: ch.memory,
-    time: new Date().toISOString(),
-    startIdx: 0,
-    endIdx: ch.lastSumIdx || 0,
-    _migrated: true  // 加这个标记
-  }];
-  delete ch.memory;
-  ch._memoryMigrated = true;  // 也在角色上标记
-  saveRpChars();
-}
+    ch.memories = [{
+      id: uid(),
+      text: ch.memory,
+      time: new Date().toISOString(),
+      startIdx: 0,
+      endIdx: ch.lastSumIdx || 0
+    }];
+    delete ch.memory;
+    saveRpChars();
+  }
   if(!ch.memories) ch.memories = [];
   
   const lastIdx = ch.lastSumIdx || 0;
