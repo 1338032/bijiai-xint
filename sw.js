@@ -1,5 +1,5 @@
 // ⚠️ 每次更新 index.html 后必须手动修改这里的版本号，否则用户看不到更新！
-const CACHE_NAME = 'bijiai-v29';
+const CACHE_NAME = 'bijiai-v30';
 
 self.addEventListener('install', function(e) {
   self.skipWaiting();

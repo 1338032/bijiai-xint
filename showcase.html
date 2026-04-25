@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>笔记AI · AI创作工坊</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<style>
+:root{
+  --accent:#6c5ce7;
+  --accent2:#a29bfe;
+  --accent3:#fd79a8;
+  --bg:#0a0a12;
+  --bg2:#0f0f1a;
+  --bg3:#13131f;
+  --card:#161624;
+  --card2:#1c1c2e;
+  --border:rgba(108,92,231,.2);
+  --text:#f0eeff;
+  --text2:rgba(255,255,255,.5);
+  --text3:rgba(255,255,255,.25);
+  --glow:rgba(108,92,231,.35);
+  --glow2:rgba(162,155,254,.15);
+}
+
+*{margin:0;padding:0;box-sizing:border-box;}
+
+html{scroll-behavior:smooth;overflow-x:hidden;}
+
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'PingFang SC','Microsoft YaHei',sans-serif;
+  overflow-x:hidden;
+  line-height:1.6;
+}
+
+/* ── 星空背景 ── */
+.starfield{
+  position:fixed;inset:0;pointer-events:none;z-index:0;overflow:hidden;
+}
+.starfield::before,.starfield::after{
+  content:'';position:absolute;inset:0;
+  background-image:
+    radial-gradient(1px 1px at 20% 30%, rgba(255,255,255,.6) 0%, transparent 0%),
+    radial-gradient(1px 1px at 80% 10%, rgba(255,255,255,.5) 0%, transparent 0%),
+    radial-gradient(1.5px 1.5px at 50% 60%, rgba(162,155,254,.8) 0%, transparent 0%),
+    radial-gradient(1px 1px at 10% 80%, rgba(255,255,255,.4) 0%, transparent 0%),
+    radial-gradient(1px 1px at 90% 70%, rgba(255,255,255,.5) 0%, transparent 0%),
+    radial-gradient(1px 1px at 30% 90%, rgba(162,155,254,.6) 0%, transparent 0%),
+    radial-gradient(1.5px 1.5px at 70% 40%, rgba(255,255,255,.7) 0%, transparent 0%),
+    radial-gradient(1px 1px at 40% 15%, rgba(255,255,255,.5) 0%, transparent 0%),
+    radial-gradient(1px 1px at 60% 85%, rgba(162,155,254,.5) 0%, transparent 0%),
+    radial-gradient(1px 1px at 15% 50%, rgba(255,255,255,.4) 0%, transparent 0%);
+  background-size:300px 300px;
+  animation:starDrift 80s linear infinite;
+}
+.starfield::after{
+  background-size:500px 500px;
+  animation-duration:120s;
+  animation-direction:reverse;
+  opacity:.5;
+}
+@keyframes starDrift{to{transform:translateY(-300px);}}
+
+/* ── 全局布局 ── */
+section{position:relative;z-index:1;}
+
+/* ── NAV ── */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:100;
+  padding:14px 24px;
+  display:flex;align-items:center;justify-content:space-between;
+  background:rgba(10,10,18,.7);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  transition:background .3s;
+}
+.nav-logo{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:20px;
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  letter-spacing:2px;
+}
+.nav-links{display:flex;gap:20px;}
+.nav-links a{
+  color:var(--text2);font-size:13px;text-decoration:none;
+  transition:color .2s;letter-spacing:.5px;
+}
+.nav-links a:hover{color:var(--accent2);}
+.nav-cta{
+  padding:7px 18px;border-radius:20px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:12px;text-decoration:none;
+  letter-spacing:.5px;transition:opacity .2s,transform .2s;
+  white-space:nowrap;
+}
+.nav-cta:hover{opacity:.85;transform:translateY(-1px);}
+
+/* ── HERO ── */
+.hero{
+  min-height:100vh;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:100px 24px 60px;
+  position:relative;overflow:hidden;
+}
+.hero-nebula{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 50% at 50% 40%, rgba(108,92,231,.12) 0%, transparent 70%),
+    radial-gradient(ellipse 40% 30% at 30% 60%, rgba(253,121,168,.06) 0%, transparent 60%),
+    radial-gradient(ellipse 50% 40% at 70% 30%, rgba(162,155,254,.08) 0%, transparent 60%);
+}
+.hero-badge{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:5px 14px;border-radius:20px;
+  border:1px solid var(--border);background:rgba(108,92,231,.08);
+  font-size:11px;color:var(--accent2);letter-spacing:1px;
+  margin-bottom:28px;
+  animation:fadeInDown .8s ease both;
+}
+.hero-badge i{font-size:10px;}
+
+.hero-logo{
+  width:min(320px,70vw);height:auto;
+  margin-bottom:28px;
+  filter:drop-shadow(0 0 30px rgba(108,92,231,.4));
+  animation:heroLogoFloat 6s ease-in-out infinite, fadeInDown .9s ease both;
+  animation-delay:0s,.1s;
+}
+@keyframes heroLogoFloat{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-10px);}
+}
+.hero-tagline{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:clamp(36px,7vw,64px);
+  line-height:1.2;
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 40%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  margin-bottom:14px;
+  animation:fadeInUp .9s ease both;animation-delay:.2s;
+}
+.hero-sub{
+  font-size:clamp(14px,3vw,18px);color:var(--text2);
+  max-width:500px;line-height:1.8;
+  animation:fadeInUp .9s ease both;animation-delay:.35s;
+  margin-bottom:40px;
+}
+.hero-sub em{
+  font-style:normal;color:var(--accent2);font-weight:600;
+}
+.hero-btns{
+  display:flex;gap:12px;flex-wrap:wrap;justify-content:center;
+  animation:fadeInUp .9s ease both;animation-delay:.5s;
+  margin-bottom:70px;
+}
+.btn-primary{
+  padding:13px 32px;border-radius:30px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:15px;text-decoration:none;
+  letter-spacing:.5px;font-weight:600;
+  box-shadow:0 8px 30px rgba(108,92,231,.4);
+  transition:transform .2s,box-shadow .2s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 12px 40px rgba(108,92,231,.55);}
+.btn-secondary{
+  padding:13px 32px;border-radius:30px;
+  border:1px solid var(--border);background:rgba(108,92,231,.06);
+  color:var(--text2);font-size:15px;text-decoration:none;
+  letter-spacing:.5px;
+  transition:border-color .2s,color .2s,background .2s;
+  display:inline-flex;align-items:center;gap:8px;
+}
+.btn-secondary:hover{border-color:var(--accent2);color:var(--accent2);background:rgba(108,92,231,.1);}
+
+/* hero stats */
+.hero-stats{
+  display:flex;gap:40px;flex-wrap:wrap;justify-content:center;
+  animation:fadeInUp .9s ease both;animation-delay:.65s;
+}
+.hero-stat{text-align:center;}
+.hero-stat-num{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:32px;
+  background:linear-gradient(135deg,var(--accent2),var(--accent));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+.hero-stat-label{font-size:11px;color:var(--text3);letter-spacing:1px;margin-top:2px;}
+
+/* scroll hint */
+.scroll-hint{
+  position:absolute;bottom:28px;left:50%;transform:translateX(-50%);
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  color:var(--text3);font-size:10px;letter-spacing:2px;
+  animation:fadeIn 2s ease 1.5s both;
+}
+.scroll-hint-arrow{
+  width:20px;height:20px;border-right:1.5px solid var(--text3);border-bottom:1.5px solid var(--text3);
+  transform:rotate(45deg);
+  animation:scrollBounce 2s ease-in-out infinite;
+}
+@keyframes scrollBounce{0%,100%{transform:rotate(45deg) translateY(0);}50%{transform:rotate(45deg) translateY(5px);}}
+
+/* ── SECTION COMMON ── */
+.section{padding:90px 24px;}
+.section-inner{max-width:1000px;margin:0 auto;}
+.section-label{
+  font-size:11px;letter-spacing:3px;text-transform:uppercase;
+  color:var(--accent2);margin-bottom:12px;
+  display:flex;align-items:center;gap:8px;
+}
+.section-label::before{
+  content:'';display:block;width:24px;height:1px;background:var(--accent2);
+}
+.section-title{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:clamp(26px,5vw,40px);
+  line-height:1.25;margin-bottom:14px;
+}
+.section-desc{font-size:14px;color:var(--text2);max-width:520px;line-height:1.9;}
+
+/* ── DIVIDER ── */
+.divider{
+  height:1px;background:linear-gradient(90deg,transparent,var(--border),transparent);
+  margin:0 auto;max-width:800px;
+}
+
+/* ── FEATURES GRID ── */
+.features-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(280px,1fr));
+  gap:16px;margin-top:48px;
+}
+.feat-card{
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:18px;
+  padding:26px 24px;
+  transition:transform .3s,border-color .3s,box-shadow .3s;
+  position:relative;overflow:hidden;
+}
+.feat-card::before{
+  content:'';position:absolute;inset:0;border-radius:18px;
+  background:radial-gradient(ellipse 80% 60% at 50% 0%, rgba(108,92,231,.08) 0%, transparent 70%);
+  opacity:0;transition:opacity .3s;pointer-events:none;
+}
+.feat-card:hover{
+  transform:translateY(-4px);
+  border-color:rgba(108,92,231,.45);
+  box-shadow:0 16px 48px rgba(108,92,231,.2);
+}
+.feat-card:hover::before{opacity:1;}
+.feat-icon{
+  width:44px;height:44px;border-radius:12px;
+  background:linear-gradient(135deg,rgba(108,92,231,.25),rgba(162,155,254,.1));
+  border:1px solid rgba(108,92,231,.3);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;color:var(--accent2);margin-bottom:16px;
+  transition:transform .2s;
+}
+.feat-card:hover .feat-icon{transform:scale(1.1) rotate(-5deg);}
+.feat-title{font-size:15px;font-weight:600;margin-bottom:8px;color:var(--text);}
+.feat-desc{font-size:12px;color:var(--text2);line-height:1.8;}
+.feat-tag{
+  display:inline-block;margin-top:12px;padding:2px 10px;border-radius:20px;
+  font-size:10px;background:rgba(108,92,231,.12);border:1px solid rgba(108,92,231,.2);
+  color:var(--accent2);letter-spacing:.5px;
+}
+
+/* ── MASCOT SECTION ── */
+.xj-section{
+  padding:90px 24px;
+  position:relative;overflow:hidden;
+}
+.xj-section::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 60% at 50% 50%, rgba(108,92,231,.07) 0%, transparent 70%);
+}
+.xj-inner{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;
+}
+.xj-img-wrap{
+  display:flex;justify-content:center;position:relative;
+}
+.xj-img-glow{
+  position:absolute;
+  width:200px;height:200px;border-radius:50%;
+  background:radial-gradient(circle,rgba(108,92,231,.3) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);
+  filter:blur(30px);animation:glowPulse 4s ease-in-out infinite;
+}
+@keyframes glowPulse{0%,100%{opacity:.5;transform:translate(-50%,-50%) scale(1);}50%{opacity:1;transform:translate(-50%,-50%) scale(1.2);}}
+.xj-img{
+  width:min(220px,50vw);height:auto;
+  filter:drop-shadow(0 10px 40px rgba(108,92,231,.5));
+  animation:xjFloat 5s ease-in-out infinite;
+  position:relative;z-index:1;
+}
+@keyframes xjFloat{0%,100%{transform:translateY(0) rotate(0deg);}50%{transform:translateY(-14px) rotate(1deg);}}
+.xj-content{position:relative;z-index:1;}
+.xj-name{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:36px;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:6px;
+}
+.xj-subtitle{font-size:13px;color:var(--accent2);letter-spacing:2px;margin-bottom:18px;}
+.xj-desc{font-size:14px;color:var(--text2);line-height:2;margin-bottom:24px;}
+.xj-skins{display:flex;gap:10px;flex-wrap:wrap;}
+.xj-skin{
+  display:flex;flex-direction:column;align-items:center;gap:5px;
+  cursor:pointer;transition:transform .2s;
+}
+.xj-skin:hover{transform:scale(1.08);}
+.xj-skin-dot{
+  width:36px;height:36px;border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-size:14px;color:var(--accent2);background:var(--card2);
+  transition:border-color .2s;
+}
+.xj-skin:hover .xj-skin-dot{border-color:var(--accent);}
+.xj-skin-name{font-size:10px;color:var(--text3);letter-spacing:.5px;}
+.xj-skin-locked{position:relative;}
+.xj-skin-locked::after{
+  content:'🔒';position:absolute;
+  font-size:9px;bottom:-2px;right:-2px;
+}
+
+/* ── WORKFLOW ── */
+.workflow{padding:90px 24px;}
+.steps{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:0;margin-top:52px;position:relative;
+}
+.steps::before{
+  content:'';position:absolute;
+  top:32px;left:10%;width:80%;height:1px;
+  background:linear-gradient(90deg,transparent,var(--border),var(--border),transparent);
+  display:none;
+}
+@media(min-width:800px){.steps::before{display:block;}}
+.step{
+  display:flex;flex-direction:column;align-items:center;text-align:center;
+  padding:24px 16px;position:relative;
+}
+.step-num{
+  width:64px;height:64px;border-radius:50%;
+  background:var(--card);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;font-size:22px;
+  color:var(--accent2);margin-bottom:16px;
+  position:relative;z-index:1;
+  transition:border-color .3s,box-shadow .3s;
+}
+.step:hover .step-num{
+  border-color:var(--accent);box-shadow:0 0 20px var(--glow);
+}
+.step-title{font-size:14px;font-weight:600;margin-bottom:8px;}
+.step-desc{font-size:12px;color:var(--text2);line-height:1.7;}
+
+/* ── SHOWCASE SLIDER ── */
+.showcase{padding:90px 24px;overflow:hidden;}
+.showcase-track{
+  display:flex;gap:16px;margin-top:48px;
+  animation:slideTrack 30s linear infinite;
+  width:max-content;
+}
+.showcase-track:hover{animation-play-state:paused;}
+@keyframes slideTrack{0%{transform:translateX(0);}100%{transform:translateX(-50%);}}
+.showcase-card{
+  flex-shrink:0;width:260px;
+  background:var(--card);border:1px solid var(--border);border-radius:16px;
+  padding:20px;
+  transition:border-color .2s;
+}
+.showcase-card:hover{border-color:rgba(108,92,231,.4);}
+.sc-icon{font-size:22px;color:var(--accent2);margin-bottom:12px;}
+.sc-title{font-size:13px;font-weight:600;margin-bottom:6px;}
+.sc-text{font-size:11px;color:var(--text2);line-height:1.7;}
+
+/* ── LOCAL DATA SECTION ── */
+.local-section{
+  padding:90px 24px;
+  background:linear-gradient(180deg,transparent,rgba(108,92,231,.04),transparent);
+}
+.local-inner{
+  max-width:900px;margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;
+}
+.local-visual{
+  background:var(--card2);border:1px solid var(--border);border-radius:20px;
+  padding:28px;position:relative;overflow:hidden;
+}
+.local-visual::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 30% 30%,rgba(108,92,231,.07) 0%,transparent 70%);
+  pointer-events:none;
+}
+.data-bars{display:flex;flex-direction:column;gap:12px;}
+.data-bar-row{display:flex;align-items:center;gap:12px;}
+.data-bar-label{font-size:11px;color:var(--text2);width:60px;flex-shrink:0;}
+.data-bar-track{flex:1;height:6px;border-radius:3px;background:rgba(255,255,255,.06);}
+.data-bar-fill{
+  height:100%;border-radius:3px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  animation:barGrow 1.5s ease both;
+}
+@keyframes barGrow{from{width:0;}to{width:var(--pct);}}
+.data-bar-val{font-size:11px;color:var(--accent2);width:32px;text-align:right;flex-shrink:0;}
+.local-lock{
+  display:flex;align-items:center;gap:10px;
+  margin-top:20px;padding:12px 14px;
+  border-radius:10px;background:rgba(108,92,231,.07);border:1px solid var(--border);
+  font-size:12px;color:var(--text2);
+}
+.local-lock i{color:var(--accent2);font-size:14px;}
+.local-content{}
+.local-points{display:flex;flex-direction:column;gap:14px;margin-top:24px;}
+.local-point{
+  display:flex;align-items:flex-start;gap:12px;
+}
+.lp-icon{
+  width:32px;height:32px;border-radius:8px;flex-shrink:0;
+  background:rgba(108,92,231,.1);border:1px solid var(--border);
+  display:flex;align-items:center;justify-content:center;font-size:14px;
+}
+.lp-text strong{display:block;font-size:13px;margin-bottom:2px;}
+.lp-text span{font-size:11px;color:var(--text2);}
+
+/* ── CTA ── */
+.cta{
+  padding:100px 24px;text-align:center;
+  position:relative;overflow:hidden;
+}
+.cta::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%, rgba(108,92,231,.1) 0%, transparent 70%);
+}
+.cta-ring{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);
+  width:500px;height:500px;border-radius:50%;
+  border:1px solid rgba(108,92,231,.1);
+  animation:ctaRing 20s linear infinite;
+}
+.cta-ring:nth-child(2){width:350px;height:350px;animation-duration:14s;animation-direction:reverse;border-color:rgba(162,155,254,.08);}
+@keyframes ctaRing{from{transform:translate(-50%,-50%) rotate(0);}to{transform:translate(-50%,-50%) rotate(360deg);}}
+.cta-content{position:relative;z-index:1;}
+.cta-title{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:clamp(28px,6vw,52px);
+  background:linear-gradient(135deg,#fff 0%,var(--accent2) 50%,var(--accent) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  line-height:1.3;margin-bottom:16px;
+}
+.cta-sub{font-size:14px;color:var(--text2);max-width:440px;margin:0 auto 36px;line-height:1.9;}
+.cta-version{
+  margin-top:24px;font-size:11px;color:var(--text3);letter-spacing:1px;
+}
+
+/* ── FOOTER ── */
+footer{
+  border-top:1px solid var(--border);padding:36px 24px;
+  text-align:center;
+  position:relative;z-index:1;
+}
+.footer-logo-text{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:18px;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+}
+.footer-info{font-size:11px;color:var(--text3);line-height:2;letter-spacing:.5px;}
+.footer-contacts{
+  display:flex;gap:20px;justify-content:center;flex-wrap:wrap;
+  margin-top:14px;
+}
+.footer-contact{
+  display:flex;align-items:center;gap:6px;
+  font-size:11px;color:var(--text3);
+}
+.footer-contact i{color:var(--accent2);}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeInDown{
+  from{opacity:0;transform:translateY(-20px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeInUp{
+  from{opacity:0;transform:translateY(24px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes fadeIn{from{opacity:0;}to{opacity:1;}}
+
+/* reveal on scroll */
+.reveal{opacity:0;transform:translateY(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal.visible{opacity:1;transform:none;}
+.reveal-l{opacity:0;transform:translateX(-30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-l.visible{opacity:1;transform:none;}
+.reveal-r{opacity:0;transform:translateX(30px);transition:opacity .7s ease,transform .7s ease;}
+.reveal-r.visible{opacity:1;transform:none;}
+
+/* stagger children */
+.stagger > *{opacity:0;transform:translateY(20px);transition:opacity .6s ease,transform .6s ease;}
+.stagger.visible > *{opacity:1;transform:none;}
+.stagger.visible > *:nth-child(1){transition-delay:.05s;}
+.stagger.visible > *:nth-child(2){transition-delay:.12s;}
+.stagger.visible > *:nth-child(3){transition-delay:.19s;}
+.stagger.visible > *:nth-child(4){transition-delay:.26s;}
+.stagger.visible > *:nth-child(5){transition-delay:.33s;}
+.stagger.visible > *:nth-child(6){transition-delay:.40s;}
+
+/* ── RESPONSIVE ── */
+@media(max-width:680px){
+  .nav-links{display:none;}
+  .xj-inner,.local-inner{grid-template-columns:1fr;gap:32px;}
+  .xj-img-wrap{order:-1;}
+  .hero-stats{gap:24px;}
+}
+
+/* ── 顶部紫色渐变线 ── */
+.topbar{
+  height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
+  position:fixed;top:0;left:0;right:0;z-index:200;
+}
+</style>
+</head>
+<body>
+
+<div class="topbar"></div>
+<div class="starfield"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">笔记AI</div>
+  <div class="nav-links">
+    <a href="#features">功能</a>
+    <a href="#mascot">星笺</a>
+    <a href="#workflow">使用流程</a>
+    <a href="#data">数据安全</a>
+  </div>
+  <a href="./index.html" class="nav-cta"><i class="fas fa-pen-nib"></i> 立即使用</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-nebula"></div>
+
+  <div class="hero-badge"><i class="fas fa-star"></i> AI创作工坊 · 让灵感落笔成章</div>
+
+  <img src="./logo.png" alt="NotesAI Logo" class="hero-logo"
+       onerror="this.style.display='none';document.querySelector('.hero-fallback').style.display='block'">
+  <div class="hero-fallback" style="display:none;font-family:'ZCOOL QingKe HuangYou',sans-serif;font-size:52px;background:linear-gradient(135deg,#fff,#a29bfe,#6c5ce7);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:28px;animation:heroLogoFloat 6s ease-in-out infinite">笔记AI</div>
+
+  <h1 class="hero-tagline">你才是作者<br>AI是你的写作搭子</h1>
+  <p class="hero-sub">不是"一键出爽文"，而是<em>帮你写完一本书</em>。<br>想点子、出大纲、写段落、润色文字，随叫随到。</p>
+
+  <div class="hero-btns">
+    <a href="./index.html" class="btn-primary"><i class="fas fa-rocket"></i> 开始创作</a>
+    <a href="#features" class="btn-secondary"><i class="fas fa-compass"></i> 了解功能</a>
+  </div>
+
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <div class="hero-stat-num">5</div>
+      <div class="hero-stat-label">核心页面</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">30+</div>
+      <div class="hero-stat-label">创作工具</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">7</div>
+      <div class="hero-stat-label">星笺皮肤</div>
+    </div>
+    <div class="hero-stat">
+      <div class="hero-stat-num">100%</div>
+      <div class="hero-stat-label">本地存储</div>
+    </div>
+  </div>
+
+  <div class="scroll-hint">
+    <span>向下探索</span>
+    <div class="scroll-hint-arrow"></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FEATURES -->
+<section class="section" id="features">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label"><i class="fas fa-layer-group"></i> 核心功能</div>
+      <h2 class="section-title">五大页面<br>覆盖创作全流程</h2>
+      <p class="section-desc">从灵感一闪而过，到长篇完整收尾，每一步都有工具陪你。</p>
+    </div>
+
+    <div class="features-grid stagger" style="--stagger:.08s">
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-hammer"></i></div>
+        <div class="feat-title">作坊 · AI写作主战场</div>
+        <div class="feat-desc">一句话生成长篇第一章或完整短篇。标签、创意度、故事转盘辅助，卡文的时候随机一转，灵感立现。</div>
+        <span class="feat-tag">长篇 · 短篇 · 转盘</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-book-open"></i></div>
+        <div class="feat-title">收藏 · 你的私人书架</div>
+        <div class="feat-desc">长篇书架支持封面、状态、星级评分，短篇抽屉随时翻阅。续写入口直接从书架打开，不迷路。</div>
+        <span class="feat-tag">书架 · 短篇集 · 导出</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-pen-nib"></i></div>
+        <div class="feat-title">创作 · 私人写作间</div>
+        <div class="feat-desc">草稿箱 + 多章节小说。AI大纲、高级逐章创作、情节分支、AI润色/重写/扩写，每个工具都标明用途。</div>
+        <span class="feat-tag">编辑器 · 高级创作 · 工具箱</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-sliders-h"></i></div>
+        <div class="feat-title">设置 · 精细控制中心</div>
+        <div class="feat-desc">人物设定、世界观、文风、规则、禁用词精细配置。API设置、主题美化、数据管理，所有开关一处搞定。</div>
+        <span class="feat-tag">人物 · 世界观 · 文风</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-store"></i></div>
+        <div class="feat-title">资源广场 · 分享与导入</div>
+        <div class="feat-desc">把自己的人物设定、世界观、作品打包成资源文件，发给别人；也可以导入别人分享的资源包，一键应用。</div>
+        <span class="feat-tag">导入 · 导出 · 资源包</span>
+      </div>
+      <div class="feat-card">
+        <div class="feat-icon"><i class="fas fa-book-reader"></i></div>
+        <div class="feat-title">阅读器 · 翻页式电子书</div>
+        <div class="feat-desc">沉浸阅读、TTS语音朗读、章节笔记（支持打标签）、伏笔追踪、AI改写、番外续写，边读边管理。</div>
+        <span class="feat-tag">沉浸 · 笔记 · 伏笔</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- MASCOT -->
+<section class="xj-section" id="mascot">
+  <div class="xj-inner">
+    <div class="xj-img-wrap reveal-l">
+      <div class="xj-img-glow"></div>
+      <img src="./xinx.png" alt="星笺" class="xj-img"
+           onerror="this.src='';this.style.cssText='width:160px;height:160px;display:flex;align-items:center;justify-content:center;font-size:80px;'">
+    </div>
+    <div class="xj-content reveal-r">
+      <div class="section-label"><i class="fas fa-star"></i> 专属陪伴</div>
+      <div class="xj-name">星笺</div>
+      <div class="xj-subtitle">你的 AI 写作灵精</div>
+      <p class="xj-desc">
+        不只是一个聊天机器人。星笺会记住你的名字、和你一起看书、帮你管理角色设定，知道你们正在共读哪本书，陪你把一个灵感从零写成完整的故事。
+      </p>
+      <div style="font-size:12px;color:var(--text2);margin-bottom:16px;display:flex;align-items:center;gap:6px"><i class="fas fa-palette" style="color:var(--accent2)"></i> 解锁更多皮肤，换一种心情写作</div>
+      <div class="xj-skins">
+        <div class="xj-skin">
+          <div class="xj-skin-dot"><i class="fas fa-star"></i></div>
+          <div class="xj-skin-name">原版</div>
+        </div>
+        <div class="xj-skin">
+          <div class="xj-skin-dot"><i class="fas fa-moon"></i></div>
+          <div class="xj-skin-name">赛博</div>
+        </div>
+        <div class="xj-skin xj-skin-locked">
+          <div class="xj-skin-dot"><i class="fas fa-leaf"></i></div>
+          <div class="xj-skin-name">绿野</div>
+        </div>
+        <div class="xj-skin xj-skin-locked">
+          <div class="xj-skin-dot"><i class="fas fa-snowflake"></i></div>
+          <div class="xj-skin-name">白雪</div>
+        </div>
+        <div class="xj-skin xj-skin-locked">
+          <div class="xj-skin-dot"><i class="fas fa-fish"></i></div>
+          <div class="xj-skin-name">海贝</div>
+        </div>
+        <div class="xj-skin xj-skin-locked">
+          <div class="xj-skin-dot"><i class="fas fa-spa"></i></div>
+          <div class="xj-skin-name">樱花</div>
+        </div>
+        <div class="xj-skin xj-skin-locked">
+          <div class="xj-skin-dot"><i class="fas fa-heart"></i></div>
+          <div class="xj-skin-name">星境</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- WORKFLOW -->
+<section class="workflow" id="workflow">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label"><i class="fas fa-map"></i> 使用流程</div>
+      <h2 class="section-title">四步<br>开始你的第一篇故事</h2>
+    </div>
+    <div class="steps stagger">
+      <div class="step">
+        <div class="step-num">01</div>
+        <div class="step-title">配置 API</div>
+        <div class="step-desc">填写 API 地址、密钥、模型名称，点击测试连接，绿灯亮起才算好。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">02</div>
+        <div class="step-title">写下灵感</div>
+        <div class="step-desc">在作坊输入你的故事设想，选择标签，调整创意度，长篇短篇任选。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">03</div>
+        <div class="step-title">收藏 & 续写</div>
+        <div class="step-desc">对结果满意就收藏，进书架随时续写下一章，上下文设置让情节不跑偏。</div>
+      </div>
+      <div class="step">
+        <div class="step-num">04</div>
+        <div class="step-title">精修 & 导出</div>
+        <div class="step-desc">润色、重写、做笔记、追踪伏笔，导出 TXT 或分享资源包给朋友。</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE STRIP -->
+<section class="showcase">
+  <div class="section-inner">
+    <div class="reveal">
+      <div class="section-label"><i class="fas fa-tools"></i> 工具细节</div>
+      <h2 class="section-title">每一个细节<br>都是为了让你写得更好</h2>
+    </div>
+  </div>
+  <!-- Track 1 -->
+  <div class="showcase-track" style="margin-top:48px">
+    <!-- 第一组 -->
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-crosshairs"></i></div><div class="sc-title">高级逐章创作</div><div class="sc-text">先写好每章大纲，设定字数，AI按章节自动创作，随时可停、可保存项目。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-search"></i></div><div class="sc-title">伏笔追踪器</div><div class="sc-text">记录每条伏笔，标记预埋章节和预计回收位置，不怕写到后面自己都忘了。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-brain"></i></div><div class="sc-title">AI大纲生成</div><div class="sc-text">输入故事设想 + 章节数，自动生成整本书的大纲框架，一键变成创作脚手架。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-code-branch"></i></div><div class="sc-title">情节分支器</div><div class="sc-text">卡住不知道怎么写？输入节点，AI给出甜向/虐向/反转三条路线，点击即用。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-volume-up"></i></div><div class="sc-title">TTS 语音朗读</div><div class="sc-text">边听边校对，逐段朗读，调速调音调，挑剔的耳朵比眼睛更容易发现问题。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-compress-alt"></i></div><div class="sc-title">精华压缩器</div><div class="sc-text">把长篇设定压缩成精华摘要，节省 Token、减少跑偏，超长作品也能保持连贯。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-magic"></i></div><div class="sc-title">AI起名助手</div><div class="sc-text">人名/书名/地名，一次生成5个，附带寓意说明，再也不用对着空白发呆。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-book"></i></div><div class="sc-title">角色日记系统</div><div class="sc-text">AI以角色第一人称写600+字私人日记，涵盖事件/思考/情感，支持定时自动生成。</div></div>
+    <!-- 复制一份，形成无缝循环 -->
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-crosshairs"></i></div><div class="sc-title">高级逐章创作</div><div class="sc-text">先写好每章大纲，设定字数，AI按章节自动创作，随时可停、可保存项目。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-search"></i></div><div class="sc-title">伏笔追踪器</div><div class="sc-text">记录每条伏笔，标记预埋章节和预计回收位置，不怕写到后面自己都忘了。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-brain"></i></div><div class="sc-title">AI大纲生成</div><div class="sc-text">输入故事设想 + 章节数，自动生成整本书的大纲框架，一键变成创作脚手架。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-code-branch"></i></div><div class="sc-title">情节分支器</div><div class="sc-text">卡住不知道怎么写？输入节点，AI给出甜向/虐向/反转三条路线，点击即用。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-volume-up"></i></div><div class="sc-title">TTS 语音朗读</div><div class="sc-text">边听边校对，逐段朗读，调速调音调，挑剔的耳朵比眼睛更容易发现问题。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-compress-alt"></i></div><div class="sc-title">精华压缩器</div><div class="sc-text">把长篇设定压缩成精华摘要，节省 Token、减少跑偏，超长作品也能保持连贯。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-magic"></i></div><div class="sc-title">AI起名助手</div><div class="sc-text">人名/书名/地名，一次生成5个，附带寓意说明，再也不用对着空白发呆。</div></div>
+    <div class="showcase-card"><div class="sc-icon"><i class="fas fa-book"></i></div><div class="sc-title">角色日记系统</div><div class="sc-text">AI以角色第一人称写600+字私人日记，涵盖事件/思考/情感，支持定时自动生成。</div></div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- LOCAL DATA -->
+<section class="local-section" id="data">
+  <div class="local-inner">
+    <div class="local-visual reveal-l">
+      <div style="font-size:12px;color:var(--text2);margin-bottom:18px;letter-spacing:.5px;"><i class="fas fa-database" style="color:var(--accent2);margin-right:6px"></i> 你的数据存在哪里</div>
+      <div class="data-bars">
+        <div class="data-bar-row">
+          <div class="data-bar-label">作品</div>
+          <div class="data-bar-track"><div class="data-bar-fill" style="--pct:90%"></div></div>
+          <div class="data-bar-val">本地</div>
+        </div>
+        <div class="data-bar-row">
+          <div class="data-bar-label">设定</div>
+          <div class="data-bar-track"><div class="data-bar-fill" style="--pct:100%"></div></div>
+          <div class="data-bar-val">本地</div>
+        </div>
+        <div class="data-bar-row">
+          <div class="data-bar-label">笔记</div>
+          <div class="data-bar-track"><div class="data-bar-fill" style="--pct:85%"></div></div>
+          <div class="data-bar-val">本地</div>
+        </div>
+        <div class="data-bar-row">
+          <div class="data-bar-label">星笺记忆</div>
+          <div class="data-bar-track"><div class="data-bar-fill" style="--pct:100%"></div></div>
+          <div class="data-bar-val">本地</div>
+        </div>
+      </div>
+      <div class="local-lock">
+        <i class="fas fa-lock"></i>
+        <span>所有数据保存在你的浏览器本地，不上传任何服务器，随时可导出备份。</span>
+      </div>
+    </div>
+    <div class="local-content reveal-r">
+      <div class="section-label"><i class="fas fa-shield-alt"></i> 数据安全</div>
+      <h2 class="section-title">你的故事<br>只属于你</h2>
+      <div class="local-points">
+        <div class="local-point">
+          <div class="lp-icon"><i class="fas fa-home"></i></div>
+          <div class="lp-text">
+            <strong>完全本地运行</strong>
+            <span>数据存储在浏览器 localStorage，无需账号，不绑定平台。</span>
+          </div>
+        </div>
+        <div class="local-point">
+          <div class="lp-icon"><i class="fas fa-box-open"></i></div>
+          <div class="lp-text">
+            <strong>导入导出自由</strong>
+            <span>支持一键导出全部数据备份，换设备直接导入，不丢失任何内容。</span>
+          </div>
+        </div>
+        <div class="local-point">
+          <div class="lp-icon"><i class="fas fa-key"></i></div>
+          <div class="lp-text">
+            <strong>API 密钥只在本地</strong>
+            <span>你填写的 API 密钥仅存储在本地，不会被上传或共享。</span>
+          </div>
+        </div>
+        <div class="local-point">
+          <div class="lp-icon"><i class="fas fa-lock"></i></div>
+          <div class="lp-text">
+            <strong>锁屏保护</strong>
+            <span>设置密码锁屏，保护创作内容不被他人查看。</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- CTA -->
+<section class="cta">
+  <div class="cta-ring"></div>
+  <div class="cta-ring"></div>
+  <div class="cta-content reveal">
+    <img src="./logo.png" alt="NotesAI" style="max-width:200px;width:55%;height:auto;margin:0 auto 24px;display:block;filter:drop-shadow(0 0 24px rgba(108,92,231,.4))"
+         onerror="this.style.display='none'">
+    <h2 class="cta-title">开始写你的故事</h2>
+    <p class="cta-sub">把"有一天我要写一本书"<br>变成今天就动手的第一章。</p>
+    <a href="./index.html" class="btn-primary" style="font-size:16px;padding:15px 40px">
+      <i class="fas fa-pen-nib"></i> 立即开始创作
+    </a>
+    <div class="cta-version">笔记AI v1.3.8 · Created by 心田</div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo-text">笔记AI</div>
+  <div class="footer-info">
+    AI创作工坊 · 让每一个灵感都有机会长成作品<br>
+    个人创作者独立开发 · 为爱发电
+  </div>
+  <div class="footer-contacts">
+    <div class="footer-contact"><i class="fas fa-book-open"></i><span>小红书：95567118758</span></div>
+    <div class="footer-contact"><i class="fab fa-qq"></i><span>QQ：962005530</span></div>
+    <div class="footer-contact"><i class="fas fa-video"></i><span>抖音：60372879897</span></div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, {threshold:0.12});
+
+document.querySelectorAll('.reveal,.reveal-l,.reveal-r,.stagger').forEach(el => {
+  observer.observe(el);
+});
+
+// Nav transparency
+const nav = document.querySelector('nav');
+window.addEventListener('scroll', () => {
+  nav.style.background = window.scrollY > 40
+    ? 'rgba(10,10,18,.92)'
+    : 'rgba(10,10,18,.7)';
+}, {passive:true});
+
+// Data bars animate on visible
+const barObserver = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if(e.isIntersecting){
+      e.target.querySelectorAll('.data-bar-fill').forEach((bar, i) => {
+        bar.style.transition = `width 1.2s cubic-bezier(.4,0,.2,1) ${i * 0.15}s`;
+      });
+      barObserver.unobserve(e.target);
+    }
+  });
+}, {threshold:0.3});
+document.querySelectorAll('.local-visual').forEach(el => barObserver.observe(el));
+</script>
+</body>
+</html>

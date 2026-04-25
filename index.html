@@ -723,10 +723,10 @@ display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hi
 .acard-wc{font-size:10px;color:var(--text2);margin-right:8px;white-space:nowrap;}
 .btn-like{
 display:flex;align-items:center;gap:3px;padding:5px 11px;border-radius:9px;
-border:1px solid var(--border);background:transparent;color:var(--text2);
+border:none;background:transparent;color:var(--text2);
 font-size:11px;cursor:pointer;transition:all .3s;flex-shrink:0;
 }
-.btn-like.liked{background:rgba(255,107,107,.13);border-color:var(--danger);color:var(--danger);}
+.btn-like.liked{background:rgba(255,107,107,.13);color:var(--danger);}
 .empty-st{text-align:center;padding:40px 18px;color:var(--text2);}
 .empty-st svg{width:48px;height:48px;margin-bottom:12px;opacity:.25;animation:emptyFloat 3s ease-in-out infinite;}
 .empty-st p{font-size:13px;line-height:1.8;}
@@ -1038,8 +1038,8 @@ padding-bottom:2px;
 flex-shrink:0;
 padding:6px 11px;border-radius:10px;
 min-width:32px;text-align:center;
-border:1px solid var(--border);
-background:var(--card);color:var(--text2);font-size:11px;cursor:pointer;
+border:none;
+background:transparent;color:var(--text2);font-size:11px;cursor:pointer;
 transition:all .3s;white-space:nowrap;
 }
 .rd-body{padding:22px 20px 70px;position:relative;z-index:1;}
@@ -1188,7 +1188,7 @@ body.theme-light .rd-reader-footer .rrf-wc{color:var(--text);text-shadow:none;}
 }
 .rd-reader-ov-btn{
   padding:8px 14px;border-radius:10px;
-  border:1px solid var(--border);background:var(--card);
+  border:none;background:transparent;
   color:var(--text);font-size:12px;cursor:pointer;
   white-space:nowrap;flex-shrink:0;transition:all .2s;
 }
@@ -2720,12 +2720,12 @@ display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hi
 .res-card-info{font-size:9px;color:var(--text2);}
 .res-card-acts{display:flex;gap:5px;}
 .res-card-acts button{
-padding:4px 10px;border-radius:7px;border:1px solid var(--border);
+padding:4px 10px;border-radius:7px;border:none;
 background:transparent;color:var(--text2);font-size:9px;cursor:pointer;
 transition:all .3s;
 }
-.res-card-acts button.use{color:var(--accent2);border-color:var(--accent);}
-.res-card-acts button.danger{border-color:rgba(255,107,107,.3);color:var(--danger);}
+.res-card-acts button.use{color:var(--accent2);}
+.res-card-acts button.danger{color:var(--danger);}
 
 /* RESOURCE EXPORT DIALOG */
 .res-exp-ov{
@@ -2995,8 +2995,8 @@ display:flex;align-items:center;gap:5px;
 .wheel-modal-hdr h2{flex:1;font-size:18px;font-weight:700;margin:0;}
 .wheel-hdr-acts{display:flex;gap:6px;}
 .wheel-hdr-acts button{
-padding:6px 12px;border-radius:8px;border:1px solid var(--border);
-background:var(--card);color:var(--text);font-size:11px;cursor:pointer;
+padding:6px 12px;border-radius:8px;border:none;
+background:transparent;color:var(--text);font-size:11px;cursor:pointer;
 transition:all .2s;
 }
 .wheel-hdr-acts button:active{transform:scale(.95);border-color:var(--accent);}
@@ -3045,14 +3045,12 @@ padding:2px 6px;background:var(--card2);border-radius:4px;
 }
 .wheel-card-acts{display:flex;gap:4px;}
 .wheel-card-acts button{
-width:28px;height:28px;border-radius:8px;
-border:1px solid var(--border);background:var(--card);
-color:var(--text2);font-size:12px;cursor:pointer;
-display:flex;align-items:center;justify-content:center;
-transition:all .2s;
+padding:4px 10px;border-radius:7px;
+border:none;background:transparent;
+color:var(--text2);font-size:10px;cursor:pointer;transition:all .2s;
 }
-.wheel-card-acts button:hover{border-color:var(--accent);color:var(--accent2);}
-.wheel-card-acts button.del:hover{border-color:var(--danger);color:var(--danger);}
+.wheel-card-acts button:hover{color:var(--accent2);}
+.wheel-card-acts button.del:hover{color:var(--danger);}
 
 /* 转盘主体 */
 .wheel-display{
@@ -3337,7 +3335,7 @@ background:#f0f0f5;color:#333;
 .fav-item-text{font-size:13px;line-height:1.8;color:var(--text);margin-bottom:8px;white-space:pre-wrap;word-wrap:break-word}
 .fav-item-source{font-size:10px;color:var(--text2);display:flex;justify-content:space-between;align-items:center}
 .fav-item-acts{display:flex;gap:6px;margin-top:8px}
-.fav-item-acts button{padding:5px 10px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--text2);font-size:10px;cursor:pointer;transition:all .2s}
+.fav-item-acts button{padding:5px 10px;border-radius:8px;border:none;background:transparent;color:var(--text2);font-size:10px;cursor:pointer;transition:all .2s}
 .fav-item-acts button:active{transform:scale(.95)}
 .fav-item-acts button.danger{border-color:rgba(255,107,107,.3);color:var(--danger)}
 .fav-item-acts button.primary{border-color:var(--accent);color:var(--accent2)}
@@ -4223,15 +4221,15 @@ body.theme-light .ed-reader-footer{background:var(--bg);}
 }
 /* ==================== 桌面端PC优化 ==================== */
 @media (min-width: 769px) {
-  /* 整体内容居中，最大宽度520px，两侧有紫色边框装饰 */
+  /* 整体内容居中，最大宽度520px */
   body {
     max-width: 520px;
     margin: 0 auto;
     box-shadow: 0 0 80px rgba(0,0,0,0.7), 0 0 0 1px rgba(108,92,231,.2);
   }
-  /* 底部导航栏也跟着居中 */
+  /* 底部导航栏居中（width精确固定，避免宽度计算错误） */
   .bnav {
-    max-width: 520px;
+    width: 520px;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
@@ -4240,46 +4238,62 @@ body.theme-light .ed-reader-footer{background:var(--bg);}
   .bnav.hide {
     transform: translateX(-50%) translateY(120%) !important;
   }
-  /* 所有全屏弹窗（阅读/编辑/设置）都居中 */
-  .modal, .set-modal {
+  /* 所有全屏弹窗统一居中 */
+  .modal, .set-modal,
+  .wheel-modal, .ed-modal,
+  .hb-ov, .xj-modal,
+  .rel-graph-modal, .char-designer-ov,
+  .rp-theater-modal, .rp-theater-read {
     max-width: 520px;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
     box-shadow: 0 0 80px rgba(0,0,0,0.6);
   }
+  /* 右侧抽屉面板（更多菜单）跟随居中 */
+  .more-menu-panel {
+    right: calc(50% - 260px);
+  }
   /* 顶部阅读进度条居中 */
   .rd-progress-bar {
+    width: 520px;
+    left: 50%;
+    right: auto;
+    transform: translateX(-50%);
+  }
+  /* TTS语音栏、笔记侧边栏跟随body */
+  .tts-bar {
     max-width: 520px;
     left: 50%;
     right: auto;
     transform: translateX(-50%);
   }
-  /* 弹窗动画在PC端去掉滑入，改为淡入更自然 */
-  .modal.show { animation: fadeIn .2s ease; }
+  /* 弹窗动画在PC端改为淡入 */
+  .modal.show,
+  .wheel-modal.show,
+  .ed-modal.show,
+  .hb-ov.show,
+  .xj-modal.show { animation: fadeIn .2s ease; }
   /* 沉浸阅读退出按钮位置修正 */
   .immersive-exit-float { right: calc(50% - 240px); }
-  /* 自定义鼠标滚动条（PC端专属，好看又实用） */
+  /* 自定义鼠标滚动条 */
   ::-webkit-scrollbar { width: 5px; height: 5px; }
   ::-webkit-scrollbar-track { background: transparent; }
   ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
   ::-webkit-scrollbar-thumb:hover { background: var(--accent); }
-  /* 卡片悬停更强调 */
+  /* 卡片悬停 */
   .acard:hover {
     transform: translateY(-4px);
     box-shadow: 0 14px 40px rgba(108,92,231,.22);
     border-color: rgba(108,92,231,.35);
   }
-  /* 按钮有悬停高亮 */
+  /* 按钮悬停 */
   .btn-gen:hover { transform: translateY(-1px); }
   .hdr-btn:hover { border-color: var(--accent); color: var(--accent2); }
-  /* 导航图标鼠标悬停效果 */
   .bnav-i:hover { color: var(--accent2); background: rgba(108,92,231,.08); border-radius: 14px; }
-  /* 设置列表项悬停 */
   .set-entry:hover { border-color: var(--accent); background: rgba(108,92,231,.04); }
-  /* 阅读文字在PC端稍微大一点 */
+  /* 阅读文字稍大 */
   .rd-content { font-size: var(--rd-fontsize, 17px); line-height: var(--rd-lineheight, 2.4); max-width: 700px; margin: 0 auto; padding: 0 16px; }
-  /* 减少粒子数量以降低CPU占用 */
   .splash-particle { animation-duration: 14s; }
 }
 /* ==================== 数据管理页面美化 ==================== */
@@ -5839,11 +5853,11 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 返回
 </button>
 <div style="display:flex;align-items:center;gap:6px">
-<button style="padding:6px 12px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px" onclick="toggleRdToolbar()" id="rdToolToggle">
+<button style="padding:6px 12px;border-radius:10px;border:none;background:transparent;color:var(--text);font-size:12px;cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:4px" onclick="toggleRdToolbar()" id="rdToolToggle">
 <i class="fas fa-tools"></i> 工具 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="width:14px;height:14px"><path d="M6 9l6 6 6-6"/></svg>
 </button>
-<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()"><i class="fas fa-cog"></i> 设置</button>
-<button style="padding:6px 11px;border-radius:10px;border:1px solid var(--border);background:var(--card);color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn"><i class="far fa-heart"></i></button>
+<button style="padding:6px 11px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleRdSettings()"><i class="fas fa-cog"></i> 设置</button>
+<button style="padding:6px 11px;border-radius:10px;border:none;background:transparent;color:var(--text2);font-size:11px;cursor:pointer" onclick="toggleCurrentLike()" id="rdLikeBtn"><i class="far fa-heart"></i></button>
 </div>
 <div id="rdToolPanel" class="tool-bar-panel" style="margin:0">
 <div class="tool-group">
@@ -6811,9 +6825,10 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
     （联系方式已在上面，欢迎友好交流～）
   </div>
 </div>
-<p style="text-align:center;color:var(--text2);margin-top:28px;font-size:11px">
-笔记AI v1.3.8 · Created by 心田<br>让每一个灵感都有机会长成作品
-</p>
+<div style="text-align:center;margin-top:28px">
+  <img src="logo.png" style="max-width:220px;width:65%;height:auto;display:block;margin:0 auto 10px">
+  <p style="color:var(--text2);font-size:11px;margin:0">v1.3.8 · Created by 心田<br>让每一个灵感都有机会长成作品</p>
+</div>
 
 </div>
 <div class="hb-body hb-page" id="hbPageProtocol">
@@ -6992,6 +7007,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <!-- RESOURCE EXPORT DIALOG -->
 <div class="res-exp-ov" id="resExpOv" onclick="if(event.target===this)closeResExport()">
 <div class="res-exp-box" id="resExpBox">
+<div style="text-align:center;margin-bottom:12px"><img src="logo.png" style="max-width:130px;width:42%;height:auto;opacity:0.88"></div>
 <h3><i class="fas fa-file-export"></i> 打包资源</h3>
 <p style="font-size:11px;color:var(--text2);margin-bottom:12px">勾选你想分享的内容，打包成资源文件发给别人</p>
 <div id="resExpList"></div>
@@ -11352,7 +11368,7 @@ card.innerHTML=
 '<div class="acard-ft">'+
 '<span class="acard-wc">'+(chCount>0?chCount+'章 · ':'')+wc+'字 · '+new Date(article.createdAt).toLocaleDateString()+'</span>'+
 '<button class="btn-like '+(liked?'liked':'')+'" onclick="event.stopPropagation();toggleLike(\''+article.id+'\')" title="'+(liked?'取消收藏':'收藏')+'">'+(liked?'<i class="fas fa-heart" style="color:#ff6b6b"></i>':'♡')+'</button>'+
-'<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger);border-color:rgba(255,107,107,.3)" title="删除"><i class="fas fa-trash-can"></i></button>'+
+'<button class="btn-like" onclick="event.stopPropagation();deleteWsArticle(\''+article.id+'\')" style="color:var(--danger)" title="删除"><i class="fas fa-trash-can"></i></button>'+
 '</div>'+
 '<div class="acard-tags" style="margin-top:8px">'+tagsHtml+'</div>';
 artFrag.appendChild(card);
@@ -13595,7 +13611,7 @@ _btnClickLock=true;setTimeout(function(){_btnClickLock=false;},1000);
 if(isGen&&abortCtrl){
 showDlg('停止生成', '确定要停止当前生成吗？', () => {
   abortCtrl.abort();
-  isGen = false;
+  setIsGen(false);
   const btn = document.getElementById('btnGen');
   btn.disabled = false; btn.textContent = '生成';
   showToast('已停止生成');
@@ -13972,9 +13988,16 @@ btn.innerHTML='<span class="ldots"><span></span><span></span><span></span></span
 
 const mWCheck2=parseInt(document.getElementById('minWords').value)||800;
 const fallbackMaxTokens=Math.max(getCurApi().maxTokens||4096,Math.ceil(mWCheck2*1.8)+800);
-const result=await callAPINonStream(messages,2,{maxTokens:fallbackMaxTokens});
-setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';
-btn.style.background='';
+let result;
+try{
+result=await callAPINonStream(messages,2,{maxTokens:fallbackMaxTokens});
+}catch(e){
+console.error('[generateNonStream]',e);
+result=null;
+showToast('生成失败：'+e.message,4000);
+}finally{
+setIsGen(false);btn.disabled=false;btn.textContent='生成';btn.style.minWidth='';btn.style.background='';
+}
 if(!result)return;
 
 let title='',content=result;
@@ -16188,6 +16211,14 @@ setIsGen(true);
 const btn=document.getElementById('btnCont');
 btn.disabled=true;
 btn.innerHTML='正在创作 <span class="ldots"><span></span><span></span><span></span></span>';
+var _contSafetyTimer=setTimeout(function(){
+  if(isGen){
+    setIsGen(false);
+    var _b=document.getElementById('btnCont');
+    if(_b){_b.disabled=false;_b.textContent='📝 续写下一章';}
+    showToast('生成超时，请重试',3000);
+  }
+},300000);
 
 const chNum=curRd.chapters.length+1;
 const direction=(document.getElementById('dirInput').value||'').trim();
@@ -16341,6 +16372,7 @@ if(!useStream){
 const result=await callAPINonStream(messages);
 setIsGen(false);btn.disabled=false;btn.textContent='📝 续写第'+(curRd.chapters?curRd.chapters.length+1:2)+'章';
 if(!result)return;
+clearTimeout(_contSafetyTimer);
 curRd.chapters.push(result);
 syncArticle(curRd);
 curCh=curRd.chapters.length-1;
@@ -23144,8 +23176,8 @@ userMsg+='故事描述：'+desc;
 const messages=[{role:'system',content:sysMsg},{role:'user',content:userMsg}];
 const contentEl=document.getElementById('outlineContent');
 outlineText='';
+try{
 var result=await callToolAPINonStream(messages);
-btn.disabled=false;btn.textContent='🧠 生成大纲';
 if(result){
 outlineText=result;
 contentEl.value=result;
@@ -23153,6 +23185,14 @@ btn.style.display='none';
 document.getElementById('outlineActions').style.display='block';
 }else{
 contentEl.value='生成失败，请检查API设置';
+}
+}catch(e){
+console.error('[doGenOutline]',e);
+contentEl.value='生成出错：'+e.message;
+showToast('大纲生成失败',4000);
+}finally{
+btn.disabled=false;
+btn.textContent='🧠 生成大纲';
 }
 }
 // ==================== 精华压缩器执行 ====================
@@ -26769,6 +26809,7 @@ document.getElementById('advProgress').style.display='block';
 document.getElementById('advStartBtn').disabled=true;
 document.getElementById('advStartBtn').textContent='创作中...';
 advCreateAbort=false;
+try{
 // 创建小说对象
 const novel={
 id:uid(),
@@ -26831,19 +26872,20 @@ if(chNum===1)userMsg+='这是开篇，需要抓人的开场\n\n';
 else if(chNum===totalCh)userMsg+='这是结局章，需要收束故事\n\n';
 else userMsg+='请根据全文梗概推进情节\n\n';
 }
-// 前文回顾
+// 前文回顾（动态控制长度，避免 Token 随章数增长）
 if(novel.chapters.length>0){
 userMsg+='【前文回顾】\n';
-// 简要回顾前几章
-const reviewStart=Math.max(0,novel.chapters.length-3);
+// 只回顾最近 2 章摘要（每章限 60 字）
+const reviewStart=Math.max(0,novel.chapters.length-2);
 for(let j=reviewStart;j<novel.chapters.length;j++){
 const prevCh=novel.chapters[j];
 const prevTitle=advChapters[j]&&advChapters[j].title?'「'+advChapters[j].title+'」':'';
-userMsg+='第'+(j+1)+'章'+prevTitle+'：'+prevCh.substring(0,100).replace(/\n/g,' ')+'...\n';
+userMsg+='第'+(j+1)+'章'+prevTitle+'：'+prevCh.substring(0,60).replace(/\n/g,' ')+'...\n';
 }
-// 上一章结尾
+// 上一章结尾：章数越多越短，最多 600 字
 const lastCh=novel.chapters[novel.chapters.length-1];
-userMsg+='\n【上一章结尾】\n'+lastCh.substring(Math.max(0,lastCh.length-800))+'\n\n';
+const _snipLen=Math.max(200,Math.min(600,Math.floor(8000/Math.max(totalCh,1))));
+userMsg+='\n【上一章结尾】\n'+lastCh.substring(Math.max(0,lastCh.length-_snipLen))+'\n\n';
 }
 userMsg+='【创作要求】\n';
 userMsg+='- 【字数硬性要求】正文字数严格不少于'+wordsPerCh+'字！这是铁律，低于此字数视为创作失败。建议写到'+(wordsPerCh+500)+'字以上确保达标\n';
@@ -26867,31 +26909,64 @@ const cfg2=getCurApi();
 const neededTokens=Math.max(4096, Math.ceil(wordsPerCh*1.8)+800);
 const advMaxTokens=cfg2.maxTokens?Math.max(neededTokens,cfg2.maxTokens):neededTokens;
 
-// 检查 sysPrompt 是否过长，如果总估算 tokens > 12000，裁剪 sysPrompt
+// ── Token 三级降级策略 ──
+// 精简备用提示词（超限时用）
+const _minSys='你是专业小说家，严格按大纲创作。每章字数不少于'+wordsPerCh+'字。直接输出正文，不加标题章节号。\n\n'
+  +(useChars&&characters&&characters.filter(c=>c.name).length>0
+    ?'【核心人物】\n'+characters.filter(c=>c.name).slice(0,4).map(c=>c.name+(c.desc?'：'+c.desc.substring(0,120):'')).join('\n')+'\n\n'
+    :'')
+  +(synopsis?'【全文梗概】\n'+synopsis.substring(0,400)+'\n\n':'')
+  +(avoid?'【禁止出现】'+avoid+'\n':'');
+
 const inputEstimate=estimateTokens(sysPrompt)+estimateTokens(userMsg);
-let finalSysPrompt=sysPrompt;
-if(inputEstimate>10000){
-  // 裁剪写作技巧部分，只保留核心身份、人物设定、世界观、格式要求
+let finalSysPrompt;
+if(inputEstimate<=7000){
+  // 正常：使用完整提示词
+  finalSysPrompt=sysPrompt;
+}else if(inputEstimate<=11000){
+  // 偏大：裁剪写作技巧长段，保留人设/世界观
   finalSysPrompt=sysPrompt
     .replace(/【反套路宣言】[\s\S]*?【创作信条】/,'【创作信条】')
     .replace(/【让文字有温度——五感写作法】[\s\S]*?【七条红线/,'【七条红线')
     .replace(/【对话的艺术】[\s\S]*?【节奏呼吸】/,'')
     .replace(/【节奏呼吸】[\s\S]*?永远不要匀速行驶。\n\n/,'')
     .replace(/【长篇连载专项指南】[\s\S]*?现在，深呼吸[\s\S]*?\n/,'');
+}else{
+  // 超大：直接用最小版
+  finalSysPrompt=_minSys;
 }
-// 二次检查：如果裁剪后还是很大，直接用精简版 sysPrompt
-if(estimateTokens(finalSysPrompt)+estimateTokens(userMsg)>14000){
-  finalSysPrompt='你是一位专业的小说家，根据大纲和要求创作高质量小说正文。每章字数严格不少于'+wordsPerCh+'字。只输出正文，不加标题章节号说明。\n\n'+(
-    useChars?'【核心人物】\n'+characters.filter(c=>c.name).slice(0,5).map(c=>c.name+(c.desc?'：'+c.desc.substring(0,200):'')).join('\n')+'\n\n':''
-  )+(synopsis?'【全文梗概】\n'+synopsis.substring(0,800)+'\n\n':'');
+// 二次兜底
+if(estimateTokens(finalSysPrompt)+estimateTokens(userMsg)>11000){
+  finalSysPrompt=_minSys;
+}
+// 三次兜底：压缩 userMsg 里的"上一章结尾"到 200 字
+let finalUserMsg=userMsg;
+if(estimateTokens(finalSysPrompt)+estimateTokens(finalUserMsg)>13000){
+  finalUserMsg=finalUserMsg.replace(/(【上一章结尾】\n)([\s\S]*?)(\n\n【创作要求】)/,function(m,p1,p2,p3){
+    return p1+p2.substring(Math.max(0,p2.length-200))+p3;
+  });
 }
 
-const messages=[{role:'system',content:finalSysPrompt},{role:'user',content:userMsg}];
-// 调用API，显式传入足够大的 max_tokens
-const result=await callAPINonStream(messages,2,{maxTokens:advMaxTokens});
+const messages=[{role:'system',content:finalSysPrompt},{role:'user',content:finalUserMsg}];
+
+// ── 调用 API，失败后用最小提示词自动重试一次 ──
+let result=await callAPINonStream(messages,2,{maxTokens:advMaxTokens});
+if(!result&&!advCreateAbort){
+  document.getElementById('advProgressInfo').textContent='⏳ 第'+chNum+'章出错，精简后重试...';
+  showToast('第'+chNum+'章出错，3秒后用精简提示词重试...',3000);
+  await new Promise(r=>setTimeout(r,3000));
+  if(!advCreateAbort){
+    result=await callAPINonStream(
+      [{role:'system',content:_minSys},{role:'user',content:finalUserMsg}],
+      1,
+      {maxTokens:Math.min(neededTokens,6000)}
+    );
+  }
+}
 if(!result){
-showToast('第'+chNum+'章创作失败，请检查API配置或减少大纲长度');
-break;
+  document.getElementById('advProgressInfo').textContent='❌ 第'+chNum+'章创作失败（已保存前'+novel.chapters.length+'章）';
+  showToast('第'+chNum+'章两次均失败。已保存前'+novel.chapters.length+'章，请检查API或减少人设内容后重试',6000);
+  break;
 }
 novel.chapters.push(result);
 novel.updatedAt=new Date().toISOString();
@@ -26903,37 +26978,65 @@ sv('bj_crWorks',crWorks);
 // 延迟避免限流
 await new Promise(r=>setTimeout(r,800));
 }
-// 完成
-document.getElementById('advProgressBar').style.width='100%';
+// ── 收尾：区分三种结果 ──
+const _totalWords=novel.chapters.reduce((sum,ch)=>sum+countWords(ch),0);
+const _donePct=(novel.chapters.length/totalCh*100).toFixed(0);
+
 document.getElementById('advProgressText').textContent=novel.chapters.length+'/'+totalCh+' 章';
-document.getElementById('advProgressInfo').textContent='创作完成！';
 document.getElementById('advStartBtn').disabled=false;
 document.getElementById('advStartBtn').textContent='开始创作';
-if(novel.chapters.length>0){
-// 保存到创作页
-crWorks.unshift(novel);
+
+if(novel.chapters.length===0){
+  // 完全失败：0 章都没生成
+  document.getElementById('advProgressBar').style.width='0%';
+  document.getElementById('advProgressBar').style.background='var(--danger)';
+  document.getElementById('advProgressInfo').textContent='❌ 创作失败，未生成任何章节';
+  showToast('创作失败：API 返回错误。建议：①检查 API Key ②减少人设/世界观内容 ③缩短每章字数后重试',7000);
+  return;
+}
+
+// 有内容：保存并展示结果
+document.getElementById('advProgressBar').style.width=_donePct+'%';
+if(novel.chapters.length===totalCh&&!advCreateAbort){
+  document.getElementById('advProgressInfo').textContent='🎉 全部创作完成！共'+_totalWords+'字';
+  showToast('🎉 创作完成！共'+novel.chapters.length+'章，'+_totalWords+'字',4000);
+}else{
+  document.getElementById('advProgressInfo').textContent='⏸ 已完成 '+novel.chapters.length+'/'+totalCh+' 章，共 '+_totalWords+' 字（已自动保存）';
+  showToast('已保存前'+novel.chapters.length+'章（共'+_totalWords+'字），可在创作页继续编辑',5000);
+}
+
+// 保存到创作页（去重）
+const _saveIdx=crWorks.findIndex(w=>w.id===novel.id);
+if(_saveIdx>-1){crWorks[_saveIdx]=JSON.parse(JSON.stringify(novel));}
+else{crWorks.unshift(JSON.parse(JSON.stringify(novel)));}
 sv('bj_crWorks',crWorks);
 
-// 自动收藏
+// 自动收藏（去重）
 const colCopy=JSON.parse(JSON.stringify(novel));
 colCopy.cover=null;
-colCopy.status='ongoing';
+colCopy.status=novel.chapters.length===totalCh?'complete':'ongoing';
 colCopy.rating=0;
-cols.books.push(colCopy);
+const _colIdx=cols.books.findIndex(b=>b.id===novel.id);
+if(_colIdx>-1){cols.books[_colIdx]=colCopy;}
+else{cols.books.push(colCopy);}
 sv(K.cols,cols);
-
-const totalWords=novel.chapters.reduce((sum,ch)=>sum+countWords(ch),0);
-showToast('🎉 创作完成！共'+novel.chapters.length+'章，'+totalWords+'字',4000);
 
 setTimeout(()=>{
 closeAdvancedCreate();
 renderCrList();
 renderCollections();
-// 询问是否打开阅读
-if(confirm('创作完成！是否立即阅读《'+novel.title+'》？')){
-openReading(colCopy);
-}
+var _dlgMsg=novel.chapters.length===totalCh
+  ?'创作完成！是否立即阅读《'+novel.title+'》？'
+  :'已保存'+novel.chapters.length+'章，是否立即打开查看？';
+showDlg('创作完成',_dlgMsg,function(){openReading(colCopy);},true);
 },1000);
+}catch(e){
+console.error('[startAdvCreate]',e);
+showToast('创作中断：'+e.message,5000);
+}finally{
+var _sb=document.getElementById('advStartBtn');
+if(_sb){_sb.disabled=false;_sb.textContent='开始创作';}
+advCreateAbort=false;
 }
 }
 // ==================== 上下文编辑器 ====================
@@ -27394,20 +27497,22 @@ const extMsg2=[
 {role:'system',content:buildSysPrompt()},
 {role:'user',content:'以下是一个章节的内容，只有'+chWc+'字，需要至少'+mWCh+'字。请直接续写下去，不要重复已有内容，不要加标题说明，直接输出续写部分：\n\n'+fullText}
 ];
+var _snapRd=curRd;
 callAPINonStream(extMsg2).then(function(extR2){
+if(!_snapRd)return;
 if(extR2)finalText=fullText+'\n\n'+extR2;
-curRd.chapters.push(finalText);
-syncArticle(curRd);
-curCh=curRd.chapters.length-1;
+_snapRd.chapters.push(finalText);
+syncArticle(_snapRd);
+curCh=_snapRd.chapters.length-1;
 renderChContent();
 document.getElementById('rdMeta').innerHTML=
-'<span><i class="fas fa-book"></i> 长篇连载</span><span>🕐 '+new Date(curRd.createdAt).toLocaleDateString()+'</span>'+
-'<span>共 '+curRd.chapters.length+' 章</span><span>'+getTotalWords(curRd)+' 字</span>';
+'<span><i class="fas fa-book"></i> 长篇连载</span><span>🕐 '+new Date(_snapRd.createdAt).toLocaleDateString()+'</span>'+
+'<span>共 '+_snapRd.chapters.length+' 章</span><span>'+getTotalWords(_snapRd)+' 字</span>';
 document.getElementById('btnUndo').style.display='inline-block';
-if(contDirMemory&&curRd&&curRd.id){localStorage.setItem('bj_lastDir_'+curRd.id,document.getElementById('dirInput').value);}
+if(contDirMemory&&_snapRd&&_snapRd.id){localStorage.setItem('bj_lastDir_'+_snapRd.id,document.getElementById('dirInput').value);}
 document.getElementById('dirInput').value='';
 showToast('第'+chNum+'章创作完成！'+countWords(finalText)+'字 ✨');
-if(autoChSummary)setTimeout(function(){autoGenChSummary(curRd, curRd.chapters.length-1);}, 500);
+if(autoChSummary)setTimeout(function(){autoGenChSummary(_snapRd, _snapRd.chapters.length-1);}, 500);
 try{if(ld('bj_contQualityOn',true))renderContQualityCard(finalText,document.getElementById('rdContent').parentElement);}catch(e){logError('op',e)}
 });
 }else{
@@ -28741,40 +28846,41 @@ let _xjGDragging=false;
 function initXjGlobalFloat(){
   var el=document.getElementById('xjGlobalFloat');
   if(!el)return;
-  // 绑定拖动
+  // 绑定拖动（Pointer Events，全设备兼容）
   var isDrag=false,hasMoved=false,lpTimer=null;
-  var sx=0,sy=0,sLeft=0,sTop=0;
+  var sx=0,sy=0,sLeft=0,sTop=0,activePtr=null;
+  el.style.touchAction='none';
 
-  el.addEventListener('touchstart',function(e){
+  function _xjPtrDown(e){
     e.preventDefault();
+    if(activePtr!==null)return;
+    activePtr=e.pointerId;
+    try{el.setPointerCapture(e.pointerId);}catch(ex){}
     hasMoved=false;
-    var t=e.touches[0];
-    sx=t.clientX;sy=t.clientY;
+    sx=e.clientX;sy=e.clientY;
     sLeft=el.offsetLeft;sTop=el.offsetTop;
     lpTimer=setTimeout(function(){
-      isDrag=true;
-      _xjGDragging=true;
+      isDrag=true;_xjGDragging=true;
       el.classList.add('dragging');
       if(navigator.vibrate)navigator.vibrate(20);
-    },180);
-  },{passive:false});
-
-  el.addEventListener('touchmove',function(e){
-    var t=e.touches[0];
-    var dx=Math.abs(t.clientX-sx),dy=Math.abs(t.clientY-sy);
+    },300);
+  }
+  function _xjPtrMove(e){
+    if(e.pointerId!==activePtr)return;
+    var dx=Math.abs(e.clientX-sx),dy=Math.abs(e.clientY-sy);
     if(dx>8||dy>8)hasMoved=true;
     if(!isDrag){if(hasMoved)clearTimeout(lpTimer);return;}
     e.preventDefault();
-    var newL=sLeft+(t.clientX-sx);
-    var newT=sTop+(t.clientY-sy);
+    var newL=sLeft+(e.clientX-sx);
+    var newT=sTop+(e.clientY-sy);
     newL=Math.max(0,Math.min(window.innerWidth-44,newL));
     newT=Math.max(0,Math.min(window.innerHeight-56,newT));
     el.style.left=newL+'px';
     el.style.top=newT+'px';
     // 隐藏皮肤专属：柔和星光拖尾
     if(xjSkin==='secret'){
-      if(!el._ltx||Math.hypot(t.clientX-el._ltx,t.clientY-el._lty)>10){
-        el._ltx=t.clientX;el._lty=t.clientY;
+      if(!el._ltx||Math.hypot(e.clientX-el._ltx,e.clientY-el._lty)>10){
+        el._ltx=e.clientX;el._lty=e.clientY;
         var sz=12+Math.random()*16;
         var dur=800+Math.random()*600;
         var tr=document.createElement('div');
@@ -28783,7 +28889,7 @@ function initXjGlobalFloat(){
           ?'radial-gradient(circle,rgba(210,160,255,'+(0.5+Math.random()*0.25)+') 0%,rgba(140,80,240,0) 70%)'
           :'radial-gradient(circle,rgba(255,230,120,'+(0.4+Math.random()*0.2)+') 0%,rgba(220,160,40,0) 70%)';
         tr.style.cssText='position:fixed;pointer-events:none;z-index:299;border-radius:50%;'
-          +'left:'+t.clientX+'px;top:'+t.clientY+'px;'
+          +'left:'+e.clientX+'px;top:'+e.clientY+'px;'
           +'width:'+sz+'px;height:'+sz+'px;'
           +'transform:translate(-50%,-50%);'
           +'background:'+bg+';'
@@ -28793,9 +28899,10 @@ function initXjGlobalFloat(){
         setTimeout(function(){if(tr.parentNode)tr.parentNode.removeChild(tr);},dur+100);
       }
     }
-  },{passive:false});
-
-  el.addEventListener('touchend',function(){
+  }
+  function _xjPtrUp(e){
+    if(e.pointerId!==activePtr)return;
+    activePtr=null;
     clearTimeout(lpTimer);
     if(isDrag){
       isDrag=false;_xjGDragging=false;
@@ -28803,15 +28910,18 @@ function initXjGlobalFloat(){
       try{localStorage.setItem('bj_xjGPos',JSON.stringify({left:el.style.left,top:el.style.top}));}catch(ex){}
       return;
     }
-    if(!hasMoved){
-      onXjGlobalClick();
-    }
-  });
-
-  el.addEventListener('touchcancel',function(){
+    if(!hasMoved)onXjGlobalClick();
+  }
+  function _xjPtrCancel(e){
+    if(e.pointerId!==activePtr)return;
+    activePtr=null;
     clearTimeout(lpTimer);isDrag=false;_xjGDragging=false;
     el.classList.remove('dragging');
-  });
+  }
+  el.addEventListener('pointerdown',_xjPtrDown,{passive:false});
+  el.addEventListener('pointermove',_xjPtrMove,{passive:false});
+  el.addEventListener('pointerup',_xjPtrUp);
+  el.addEventListener('pointercancel',_xjPtrCancel);
 
   // 随机位置出现
   repositionXjGlobal();
@@ -31933,10 +32043,11 @@ initLockSystem();
   }
 }
 // 初始化勿扰和铃声
-document.getElementById('dndOn').checked=dndMode;
-updateDndUI();
-updateRingInfo();
-document.getElementById('ringVolume').value=ringVolume_;
+var _dndEl=document.getElementById('dndOn'); if(_dndEl)_dndEl.checked=dndMode;
+try{updateDndUI();}catch(e){}
+try{updateRingInfo();}catch(e){}
+var _rvEl=document.getElementById('ringVolume'); if(_rvEl)_rvEl.value=ringVolume_;
+var _rvvEl=document.getElementById('ringVolVal'); if(_rvvEl)_rvvEl.textContent=Math.round(ringVolume_*100)+'%';
 document.getElementById('ringVolVal').textContent=Math.round(ringVolume_*100)+'%';
 // 启动时数据完整性检查 + 数据清除检测
 (function startupIntegrityCheck(){
@@ -32105,15 +32216,11 @@ function showDailyTip(){
   },4000);
 }
 setTimeout(showDailyTip,2000);
-// 首次使用引导
-const hasVisited=localStorage.getItem('bj_hasVisited');
-if(!hasVisited){
-localStorage.setItem('bj_hasVisited','1');
-setTimeout(()=>{
-showDlg('✨ 你好呀，我是星笺！','很高兴认识你！我是住在这个网页里的小书精灵～\n\n在开始创作之前，需要你帮星笺做两件小事：\n\n1️⃣ 点底部「设置」→「API设置」填写接口信息\n2️⃣ 有不懂的随时来找我聊天（设置页左上角那个紫色小头像就是我哦）\n\n准备好了吗？我们一起开始吧！',()=>{
-switchPage('settings',document.querySelectorAll('.bnav-i')[3]);
-});
-},1500);
+// 首次使用引导（欢迎弹窗移至取名完成后触发，见 splashConfirmName）
+if(!localStorage.getItem('bj_hasVisited')){
+  localStorage.setItem('bj_hasVisited','1');
+  // 标记待触发，由 splashConfirmName 完成后执行
+  window._needFirstGuide = true;
 }
 }
 
@@ -32451,23 +32558,41 @@ function splashConfirmName() {
         '<span style="color:var(--accent2);font-weight:600;font-size:20px">' + name + '</span>！' +
         '</div>';
 
-    // 1.5秒后进入主界面
+    // 1.5秒后弹出选项：进入产品介绍 or 跳过
     setTimeout(function() {
-        renderUserCard();
-        var splash = document.getElementById('splash');
-        var app = document.getElementById('app');
-        splash.classList.add('hide');
-        app.classList.add('show');
-        setTimeout(function() {
-            splash.style.display = 'none';
-            try {
-              splash.querySelectorAll('*').forEach(function(el){
-                el.style.animation='none';
-                el.style.willChange='auto';
-              });
-              splash.innerHTML = '';
-            } catch(e) {}
-        }, 800);
+        document.getElementById('splashNameBox').innerHTML =
+            '<div style="margin-top:16px">' +
+            '<div style="font-size:13px;color:var(--text2);margin-bottom:16px;letter-spacing:.5px">想先了解一下笔记AI有哪些功能吗？</div>' +
+            '<div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap">' +
+            '<button onclick="window.location.href=\'./showcase.html\'" style="padding:10px 24px;border-radius:20px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:13px;cursor:pointer;letter-spacing:.5px"><i class=\"fas fa-compass\"></i> 看看功能介绍</button>' +
+            '<button onclick="window._splashSkip()" style="padding:10px 24px;border-radius:20px;border:1px solid rgba(255,255,255,.15);background:transparent;color:var(--text2);font-size:13px;cursor:pointer;letter-spacing:.5px"><i class=\"fas fa-forward\"></i> 直接开始</button>' +
+            '</div></div>';
+
+        window._splashSkip = function() {
+            renderUserCard();
+            var splash = document.getElementById('splash');
+            var app = document.getElementById('app');
+            splash.classList.add('hide');
+            app.classList.add('show');
+            setTimeout(function() {
+                splash.style.display = 'none';
+                try {
+                  splash.querySelectorAll('*').forEach(function(el){
+                    el.style.animation='none';
+                    el.style.willChange='auto';
+                  });
+                  splash.innerHTML = '';
+                } catch(e) {}
+                if(window._needFirstGuide){
+                  window._needFirstGuide = false;
+                  setTimeout(function(){
+                    showDlg('✨ 你好呀，我是星笺！','很高兴认识你，' + name + '！我是住在这个网页里的小书精灵～\n\n在开始创作之前，需要你帮星笺做两件小事：\n\n1️⃣ 点底部「设置」→「API设置」填写接口信息\n2️⃣ 有不懂的随时来找我聊天（设置页左上角那个紫色小头像就是我哦）\n\n准备好了吗？我们一起开始吧！',function(){
+                      switchPage('settings',document.querySelectorAll('.bnav-i')[3]);
+                    });
+                  }, 600);
+                }
+            }, 800);
+        };
     }, 1500);
 }
 
@@ -32550,12 +32675,26 @@ document.addEventListener('DOMContentLoaded', async () => {
         }, 400);
     } catch (e) {
         console.error('初始化失败:', e);
-        txt.textContent = '初始化失败，尝试进入...';
         bar.style.width = '100%';
-        setTimeout(() => {
-            splash.classList.add('hide');
-            app.classList.add('show');
-        }, 1000);
+        // 即使初始化失败，新用户仍需完成取名步骤
+        if (!userCard.name) {
+            txt.textContent = '加载遇到小问题，请先输入你的名字～';
+            try {
+                document.querySelector('.splash-progress').style.display = 'none';
+                document.querySelector('.splash-status').style.display = 'none';
+                document.querySelector('.splash-sub').style.display = 'none';
+                document.getElementById('splashNameBox').style.display = 'block';
+            } catch(e2) {
+                // 兜底：取名界面也无法显示时，直接进入
+                setTimeout(() => { splash.classList.add('hide'); app.classList.add('show'); }, 1000);
+            }
+        } else {
+            txt.textContent = '初始化失败，尝试进入...';
+            setTimeout(() => {
+                splash.classList.add('hide');
+                app.classList.add('show');
+            }, 1000);
+        }
     }
 
     // Auto-save on input changes
@@ -41382,18 +41521,71 @@ let globalFloatBtnOn=ld('bj_globalFloatBtnOn',true);
     var scroll = document.getElementById('gfbScroll');
     if(!scroll) return;
 
-    // 估算数据大小
-    var _estSize = 0;
-    try{
-      [ws||[],cols||{},crWorks||[],resPacks||[],rpChars||[],genLogs||[],xjMessages||[],
-       exportAllNotes()||{},favItems||[],savedPhrases||[],genTemplates||[],rtInterviews||{},
-       rtPlays||{},storyWheels||[],apiP||[],charP||[],worldP||[],styleP||[],ruleP||[],
-       banWordsP||[],sysPromptP||[],fontP||[],rtPlayPresets||[],goalProgress||{},
-       goalYearStats||{},articleContexts||{}
-      ].forEach(function(d){ _estSize += JSON.stringify(d).length; });
-      _estSize = Math.ceil(_estSize * 1.4) + 5000;
-    }catch(e){}
-    var _estMB = (_estSize/1024/1024).toFixed(1);
+    // 精准估算：构建与 exportData() 完全相同的数据快照，逐字段计算
+    var _estSizeStr = '计算中...';
+    try {
+      // 1. 获取 notes（与 exportData 一致）
+      var _notesSnap = exportAllNotes() || {};
+      // 2. 获取 xjPetData（来自 localStorage）
+      var _xjPetSnap = null;
+      try {
+        var _pr = localStorage.getItem('xj_pet_v3');
+        _xjPetSnap = _pr ? JSON.parse(_pr) : null;
+      } catch(e) {}
+
+      // 3. 构建与 exportData() 完全对齐的数据对象（不脱漏任何字段）
+      var _snap = {
+        apiPresets: apiP, charPresets: charP, worldPresets: worldP,
+        stylePresets: styleP, rulePresets: ruleP,
+        curRule: curRule, banWords: banWords, banWordsPresets: banWordsP,
+        curChars: characters, charRelations: charRelations, npcList: npcList,
+        curWorld: ld(K.curWorld, {}),
+        collections: cols, workshop: ws, crWorks: crWorks,
+        resPacks: resPacks, tags: tags, appearance: ap,
+        userCard: userCard, lockSettings: lockSettings,
+        goalSettings: goalSettings, goalProgress: goalProgress,
+        goalYearStats: goalYearStats, goalDailyStats: goalDailyStats,
+        globalWorld: globalWorld, globalRule: globalRule,
+        globalBanWords: globalBanWords,
+        localWorldBindings: localWorldBindings,
+        localRuleBindings: localRuleBindings,
+        localBanWordsBindings: localBanWordsBindings,
+        localStyleBindings: localStyleBindings,
+        currentCharPresetName: currentCharPresetName,
+        articleContexts: articleContexts, storyWheels: storyWheels,
+        genLogs: genLogs, fontPresets: fontP, sysPromptPresets: sysPromptP,
+        customTraits: customTraits, customSysPrompt: customSysPrompt,
+        rpChars: rpChars, rpSettings: rpSettings, rpGroups: rpGroups,
+        rpWorldFolders: rpWorldFolders, rpBookLib: rpBookLib,
+        rpGrpPlayPresets: rpGrpPlayPresets,
+        ttsSettings: ttsSettings_,
+        // base64 背景图是体积大户，必须纳入估算
+        rdBgImg: rdBgImg, rtBgImg: rtBgImg,
+        favItems: favItems, savedPhrases: savedPhrases,
+        genTemplates: genTemplates, rtInterviews: rtInterviews,
+        rtPlays: rtPlays, rtPlayPresets: rtPlayPresets,
+        xjSkin: xjSkin, xjSkinUnlocked: xjSkinUnlocked,
+        xjPetData: _xjPetSnap,
+        notes: _notesSnap
+      };
+
+      // 4. 用与 exportData() 完全相同的 pretty-print 序列化
+      var _jsonStr = JSON.stringify(_snap, null, 2);
+
+      // 5. Blob.size 返回真实 UTF-8 字节数（中文=3字节，英文=1字节），最准确
+      var _byteSize = new Blob([_jsonStr]).size;
+
+      // 6. 格式化显示
+      if (_byteSize < 1024) {
+        _estSizeStr = _byteSize + ' B';
+      } else if (_byteSize < 1024 * 1024) {
+        _estSizeStr = (_byteSize / 1024).toFixed(1) + ' KB';
+      } else {
+        _estSizeStr = (_byteSize / 1024 / 1024).toFixed(2) + ' MB';
+      }
+    } catch(e) {
+      _estSizeStr = '未知';
+    }
 
     var html = '';
 
@@ -41401,7 +41593,7 @@ let globalFloatBtnOn=ld('bj_globalFloatBtnOn',true);
     html += '<div style="margin:12px 12px 4px;background:linear-gradient(135deg,rgba(108,92,231,.18),rgba(162,155,254,.08));border:1px solid rgba(108,92,231,.28);border-radius:14px;padding:13px 14px">';
     html += '<div style="display:flex;justify-content:space-between;align-items:center;gap:10px">';
     html += '<div><div style="font-size:13px;font-weight:700;color:var(--text);margin-bottom:2px;display:flex;align-items:center;gap:6px"><i class="fas fa-box-archive" style="color:var(--accent2)"></i> 一键备份</div>';
-    html += '<div style="font-size:10px;color:var(--text2)">预计约 <span style="color:var(--accent2);font-weight:600">' + _estMB + ' MB</span></div></div>';
+    html += '<div style="font-size:10px;color:var(--text2)">导出约 <span style="color:var(--accent2);font-weight:600">' + _estSizeStr + '</span></div></div>';
     html += '<button onclick="gfbExportAll()" style="flex-shrink:0;padding:9px 18px;border-radius:11px;border:none;background:linear-gradient(135deg,var(--accent),var(--accent2));color:#fff;font-size:12px;font-weight:700;cursor:pointer;box-shadow:0 3px 10px rgba(108,92,231,.4);display:flex;align-items:center;gap:5px"><i class="fas fa-download"></i> 导出</button>';
     html += '</div></div>';
 
