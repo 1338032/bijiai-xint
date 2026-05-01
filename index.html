@@ -8140,7 +8140,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="fg"><label class="fl">API地址</label><input class="fi" id="apiUrl" placeholder="https://api.openai.com/v1"></div>
 <div class="fg"><label class="fl">API密钥 <span style="font-size:9px;color:var(--danger);font-weight:400">（仅存本地，勿在公共设备使用）</span></label><div style="display:flex;gap:6px"><input class="fi" id="apiKey" type="password" placeholder="sk-..." style="flex:1"><button class="btn-s" onclick="const k=document.getElementById('apiKey');k.type=k.type==='password'?'text':'password'" style="width:auto;padding:6px 10px;margin:0"><i class="fas fa-eye"></i></button></div></div>
 <div class="fg"><label class="fl">模型名称</label><div style="display:flex;gap:6px"><input class="fi" id="apiModel" placeholder="gpt-4o-mini" value="gpt-4o-mini" list="modelSuggest" style="flex:1"><datalist id="modelSuggest"></datalist><button class="btn-s" onclick="fetchModels()" style="width:auto;padding:6px 12px;margin:0">拉取</button></div></div>
-<div class="frow"><div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="2" value="0.8"></div><div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div></div>
+<div class="frow"><div class="fg"><label class="fl">Temperature</label><input class="fi" id="apiTemp" type="number" step="0.1" min="0" max="1.5" value="0.8" oninput="var v=Math.min(parseFloat(this.value)||0.8,1.5);var s=document.getElementById('quickTemp');var q=document.getElementById('qtVal');if(s)s.value=v;if(q)q.textContent=v;"></div><div class="fg"><label class="fl">Max Tokens</label><input class="fi" id="apiMaxTokens" type="number" value="4096"></div></div>
 <div class="fg"><label class="fl">场景预设</label><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:4px"><button class="tag" onclick="setTempPreset(0.5,'严谨')"><i class="fas fa-drafting-compass"></i> 严谨</button><button class="tag" onclick="setTempPreset(0.7,'平衡')"><i class="fas fa-balance-scale"></i> 平衡</button><button class="tag" onclick="setTempPreset(0.9,'创意')"><i class="fas fa-lightbulb"></i> 创意</button><button class="tag" onclick="setTempPreset(1.1,'狂野')"><i class="fas fa-fire"></i> 狂野</button></div></div>
 <div class="fg" style="display:flex;align-items:center;justify-content:space-between"><label class="fl" style="margin:0">流式输出</label><div role="switch" aria-checked="true" aria-label="流式输出" style="position:relative;width:44px;height:24px;cursor:pointer" onclick="toggleStreamSwitch(this)"><input type="checkbox" id="streamOn" checked style="display:none"><div style="width:44px;height:24px;border-radius:12px;background:var(--accent);transition:background .3s" id="streamTrack"><div style="width:20px;height:20px;border-radius:50%;background:#fff;position:absolute;top:2px;left:22px;transition:left .3s;box-shadow:0 1px 3px rgba(0,0,0,.3)" id="streamThumb"></div></div></div></div>
 <div style="margin-top:16px;padding-top:14px;border-top:1px solid var(--border)">
@@ -11677,7 +11677,7 @@ if(curRd&&curRd.id===id){
   if(curRd.type==='long'){
     if(liked2){
       if(bc3){bc3.disabled=false;bc3.textContent='📝 续写第'+(curRd.chapters?curRd.chapters.length+1:2)+'章';}
-      if(sc3){sc3.disabled=false;sc3.textContent='🧠 智能续写';}
+      if(sc3){sc3.disabled=false;sc3.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
     }else{
       if(bc3){bc3.disabled=true;bc3.textContent='❤️ 请先收藏后才能续写';}
       if(sc3){sc3.disabled=true;sc3.textContent='❤️ 请先收藏';}
@@ -11753,7 +11753,7 @@ function getCurApi(){
     console.warn('API地址未使用HTTPS，密钥可能被窃听');
   }
   let model = (document.getElementById('apiModel') && document.getElementById('apiModel').value || '').trim();
-  let temp = parseFloat(document.getElementById('apiTemp') && document.getElementById('apiTemp').value) || 0.8;
+  let temp = Math.min(parseFloat(document.getElementById('apiTemp') && document.getElementById('apiTemp').value) || 0.8, 1.5);
   let maxTokens = parseInt(document.getElementById('apiMaxTokens') && document.getElementById('apiMaxTokens').value) || 4096;
 
   // 如果用户没写 http/https，自动补成 https://
@@ -11895,7 +11895,7 @@ async function testToolApiConnection(){
     if(e.name==='AbortError')showToastForce('❌ 测试超时（60秒），请检查地址',5000);
     else showToastForce('测试失败：'+e.message,3000);
   }
-  finally{btn.disabled=false;btn.textContent='🔗 测试工具API连接';}
+  finally{btn.disabled=false;btn.innerHTML='<i class="fas fa-link"></i> 测试工具API连接';}
 }
 // 根据用户填写的 URL 智能生成 chat/completions 完整地址
 function buildChatEndpoint(rawUrl){
@@ -12128,7 +12128,7 @@ async function testApiConnection(){
     }
   }finally{
     btn.disabled = false;
-    btn.textContent = '🔗 测试连接';
+    btn.innerHTML = '<i class="fas fa-link"></i> 测试连接';
   }
 }
 
@@ -14401,7 +14401,7 @@ document.getElementById('dirInputWrap').style.display='none';
 }else if(liked){
 btnCont.disabled=false;
 btnCont.textContent='📝 续写第'+(curRd&&curRd.chapters?curRd.chapters.length+1:2)+'章';
-if(smartBtn){smartBtn.disabled=false;smartBtn.textContent='🧠 智能续写';}
+if(smartBtn){smartBtn.disabled=false;smartBtn.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
 }else{
 btnCont.disabled=true;
 btnCont.textContent='❤️ 请先收藏后才能续写';
@@ -15324,7 +15324,7 @@ if(bc2){
   else{bc2.disabled=true;bc2.textContent='❤️ 请先收藏后才能续写';}
 }
 if(smartBtn){
-  if(liked){smartBtn.disabled=false;smartBtn.textContent='🧠 智能续写';}
+  if(liked){smartBtn.disabled=false;smartBtn.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
   else{smartBtn.disabled=true;smartBtn.textContent='❤️ 请先收藏';}
 }
 if(liked && bc2) bc2.scrollIntoView({behavior:'smooth',block:'center'});
@@ -23561,7 +23561,7 @@ document.getElementById('outlineResult').style.display='none';
 document.getElementById('outlineActions').style.display='none';
 document.getElementById('outlineGenBtn').style.display='';
 document.getElementById('outlineGenBtn').disabled=false;
-document.getElementById('outlineGenBtn').textContent='🧠 生成大纲';
+document.getElementById('outlineGenBtn').innerHTML='<i class="fas fa-brain"></i> 生成大纲';
 document.getElementById('outlineChInput').value=outlineChCount;
 outlineText='';
 document.getElementById('outlineOv').classList.add('show');
@@ -23670,7 +23670,7 @@ contentEl.value='生成出错：'+e.message;
 showToast('大纲生成失败',4000);
 }finally{
 btn.disabled=false;
-btn.textContent='🧠 生成大纲';
+btn.innerHTML='<i class="fas fa-brain"></i> 生成大纲';
 }
 }
 // ==================== 精华压缩器执行 ====================
@@ -27779,12 +27779,12 @@ showToast('✅ 分析完成，开始续写！',2000);
 await new Promise(function(r){setTimeout(r,500);});
 
 btn.disabled=false;
-btn.textContent='🧠 智能续写';
+btn.innerHTML='<i class="fas fa-brain"></i> 智能续写';
 continueChapterWithContext();
 
 }catch(e){
 btn.disabled=false;
-btn.textContent='🧠 智能续写';
+btn.innerHTML='<i class="fas fa-brain"></i> 智能续写';
 var errMsg=(e&&e.message)?e.message:'未知错误';
 showToast('分析失败：'+errMsg+'，切换为快速续写',3000);
 continueChapterWithContext();
@@ -27836,7 +27836,7 @@ var _contSafetyTimer=setTimeout(function(){
     var _b1=document.getElementById('btnCont');
     var _b2=document.getElementById('btnSmartCont');
     if(_b1){_b1.disabled=false;_b1.textContent='📝 续写下一章';}
-    if(_b2){_b2.disabled=false;_b2.textContent='🧠 智能续写';}
+    if(_b2){_b2.disabled=false;_b2.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
     showToast('生成超时，请重试',3000);
   }
 },300000);
@@ -27946,7 +27946,7 @@ if(!useStream){
 const result=await callAPINonStream(messages);
 setIsGen(false);btn.disabled=false;btn.textContent='📝 继续连载下一章';
 clearTimeout(_contSafetyTimer);
-var smartBtn2=document.getElementById('btnSmartCont');if(smartBtn2){smartBtn2.disabled=false;smartBtn2.textContent='🧠 智能续写';}
+var smartBtn2=document.getElementById('btnSmartCont');if(smartBtn2){smartBtn2.disabled=false;smartBtn2.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
 if(!result)return;
 curRd.chapters.push(result);
 syncArticle(curRd);
@@ -27979,7 +27979,7 @@ await callAPIStream(messages,
 (fullText)=>{
 setIsGen(false);btn.disabled=false;btn.textContent='📝 继续连载下一章';
 clearTimeout(_contSafetyTimer);
-var smartBtn2=document.getElementById('btnSmartCont');if(smartBtn2){smartBtn2.disabled=false;smartBtn2.textContent='🧠 智能续写';}
+var smartBtn2=document.getElementById('btnSmartCont');if(smartBtn2){smartBtn2.disabled=false;smartBtn2.innerHTML='<i class="fas fa-brain"></i> 智能续写';}
 if(!fullText){
   // 断点续写：检查是否有部分生成的内容
   var partialEl=document.getElementById('rdContent');
