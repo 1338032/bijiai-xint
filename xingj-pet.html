@@ -2023,7 +2023,7 @@ setTxt('shopCoinsDisplay', state.coins);
   // 今日互动次数
   const ac = document.getElementById('actionCount');
   if(ac) ac.textContent = '今日 '+( state.todayActions||0)+' 次互动';
-// 状态不足时高亮对应按钮
+  // 状态不足时高亮对应按钮（每项只设置一次）
   const btnFeed = document.getElementById('btnFeed');
   const btnRest = document.getElementById('btnRest');
   const btnPlay = document.getElementById('btnPlay');
@@ -2048,15 +2048,10 @@ setTxt('shopCoinsDisplay', state.coins);
       btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
     }
   }
-  if(btnRest && !btnRest.classList.contains('disabled') && !btnRest.classList.contains('sleeping')){
-    btnRest.classList.toggle('highlight', clamp(state.energy)<35);
-  }
-  if(btnPlay && !btnPlay.classList.contains('disabled') && !btnPlay.classList.contains('sleeping')){
-    btnPlay.classList.toggle('highlight', clamp(state.happy)<35);
-  }
   updateCheckinBanner();
-if((state.coins||0)>=50 && !state.achievements['coins_50'])  unlockAchievement('coins_50');
+  if((state.coins||0)>=50  && !state.achievements['coins_50'])  unlockAchievement('coins_50');
   if((state.coins||0)>=200 && !state.achievements['coins_200']) unlockAchievement('coins_200');
+  // [FIX] 已删除此处对 btnRest/btnPlay highlight 的重复设置（上方已处理）
   updateWarnDots();
   updateFullBadges();
   updateNotifyDots();
@@ -2535,9 +2530,7 @@ function buyItem(type){
   if(!sleepingNow) setSpeech('哇！你给我买了'+names[type]+'！谢谢你～💜');
   spawnParticles(sleepingNow ? 3 : 5);
   save(); updateUI();
-  // 同步商店金币显示
-  const shopCoins = document.getElementById('shopCoinsDisplay');
-  if(shopCoins) shopCoins.textContent = state.coins;
+  // [FIX] 已删除此处对 shopCoinsDisplay 的重复手动更新，updateUI() 已统一处理
 }
 // ===== 使用道具 =====
 const ITEM_EFFECTS = {
@@ -2715,8 +2708,10 @@ function renderAchievements(){
   grid.innerHTML = ACHIEVEMENTS.map(a=>{
     const isUnlocked = !!state.achievements[a.id];
     const isNew      = !!state.newAchievements[a.id];
+    // [FIX] 对 title 属性内容转义，防止含引号的 desc 破坏 HTML 属性
+    const safeDesc = a.desc.replace(/&/g,'&amp;').replace(/"/g,'&quot;');
     return '<div class="achieve-item'+(isUnlocked?' unlocked':'')+'"'
-      +' title="'+a.desc+'"'
+      +' title="'+safeDesc+'"'
       +' onclick="onAchieveClick(\''+a.id+'\')">'
       +'<div class="achieve-icon">'+a.icon+'</div>'
       +'<div class="achieve-label">'+a.label+'</div>'
@@ -2928,6 +2923,8 @@ function closeDiaryDetail(e){
 
 // ===== 台词（打字机效果） =====
 let speechTimer=null, cursorTimer=null;
+// [FIX] 代次计数器：每次调用 setSpeech 自增，旧的 type() 链发现代次不符时立即中止
+let _speechGen=0;
 function setSpeech(text){
   if(speechTimer) clearTimeout(speechTimer);
   // 自动把台词里的"你"替换成当前专属称呼（仅在亲密度足够时）
@@ -2944,13 +2941,15 @@ function setSpeech(text){
 
   el.textContent='';
   if(cursor) cursor.style.display='inline-block';
+  const gen = ++_speechGen; // [FIX] 记录本次代次
   let i=0;
   function type(){
+    if(gen !== _speechGen) return; // [FIX] 有新的setSpeech调用，中止本轮
     if(i<text.length){
       el.textContent+=text[i++];
       speechTimer=setTimeout(type, 40);
     } else {
-      if(cursor) setTimeout(()=>cursor.style.display='none', 2000);
+      if(cursor) setTimeout(()=>{ if(gen===_speechGen) cursor.style.display='none'; }, 2000);
     }
   }
   type();
@@ -3323,16 +3322,19 @@ function init(){
   // 定时器
   setInterval(()=>{
     const today = dateStr();
-    if(state.lastCheckin === today) return;
+    // [FIX] 原代码在 lastCheckin===today 时 return，导致已签到的用户
+    // checkWakeUp/updateUI/applySleepUI 全部跳过，睡眠倒计时冻结
+    // 修复：无论是否签到，UI更新都必须执行
+    checkWakeUp();
+    updateUI();
+    applySleepUI();
+    // 跨日重置（只在日期真正变化时才执行一次）
     if(state._today !== today){
       state._today = today;
       state.todayActions = 0;
       renderBubbles(false);
       save();
     }
-    checkWakeUp();
-updateUI();
-applySleepUI();
   }, 1000);
   setInterval(()=>{
     if(document.hidden) return;
