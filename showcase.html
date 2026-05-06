@@ -534,6 +534,50 @@ footer{
   height:2px;background:linear-gradient(90deg,transparent,var(--accent),var(--accent2),var(--accent),transparent);
   position:fixed;top:0;left:0;right:0;z-index:200;
 }
+/* ── 汉堡菜单（手机端） ── */
+.nav-hamburger{
+  display:none;flex-direction:column;gap:5px;
+  cursor:pointer;padding:4px 2px;
+  background:none;border:none;
+}
+.nav-hamburger span{
+  display:block;width:22px;height:2px;border-radius:1px;
+  background:var(--text2);transition:all .3s;
+}
+.nav-hamburger.open span:nth-child(1){transform:translateY(7px) rotate(45deg);}
+.nav-hamburger.open span:nth-child(2){opacity:0;transform:translateX(8px);}
+.nav-hamburger.open span:nth-child(3){transform:translateY(-7px) rotate(-45deg);}
+.mobile-nav-menu{
+  display:none;position:fixed;inset:0;top:58px;z-index:98;
+  background:rgba(10,10,18,.97);
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  flex-direction:column;align-items:center;justify-content:center;gap:40px;
+}
+.mobile-nav-menu.open{display:flex;}
+.mobile-nav-menu a{
+  color:var(--text);font-size:22px;text-decoration:none;
+  letter-spacing:3px;transition:color .2s;
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+}
+.mobile-nav-menu a:hover{color:var(--accent2);}
+.mobile-nav-menu .m-cta{
+  margin-top:8px;padding:12px 32px;border-radius:30px;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;font-size:16px;
+}
+@media(max-width:680px){
+  .nav-hamburger{display:flex;}
+}
+/* ── 大屏优化（1200px+） ── */
+@media(min-width:1200px){
+  .hero{padding:130px 40px 90px;}
+  .section-inner{max-width:1160px;}
+  .local-inner,.xj-inner{max-width:1060px;}
+  .features-grid{grid-template-columns:repeat(3,1fr);}
+  nav{padding:16px 48px;}
+  .nav-links{gap:32px;}
+  .nav-links a{font-size:14px;}
+}
 </style>
 </head>
 <body>
@@ -550,8 +594,18 @@ footer{
     <a href="#workflow">使用流程</a>
     <a href="#data">数据安全</a>
   </div>
-  <a href="./index.html" class="nav-cta"><i class="fas fa-pen-nib"></i> 立即使用</a>
+  <button class="nav-hamburger" id="navHamburger" aria-label="菜单" onclick="toggleMobileNav()">
+    <span></span><span></span><span></span>
+  </button>
+  <a href="./index.html" class="nav-cta" style="display:none" id="navCtaDesktop"><i class="fas fa-pen-nib"></i> 立即使用</a>
 </nav>
+<div class="mobile-nav-menu" id="mobileNavMenu">
+  <a href="#features" onclick="closeMobileNav()">功能</a>
+  <a href="#mascot" onclick="closeMobileNav()">星笺</a>
+  <a href="#workflow" onclick="closeMobileNav()">使用流程</a>
+  <a href="#data" onclick="closeMobileNav()">数据安全</a>
+  <a href="./index.html" class="m-cta"><i class="fas fa-pen-nib"></i> 立即使用</a>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -869,6 +923,17 @@ footer{
 </footer>
 
 <script>
+// 汉堡菜单
+function toggleMobileNav(){
+  var menu=document.getElementById('mobileNavMenu');
+  var btn=document.getElementById('navHamburger');
+  menu.classList.toggle('open');
+  btn.classList.toggle('open');
+}
+function closeMobileNav(){
+  document.getElementById('mobileNavMenu').classList.remove('open');
+  document.getElementById('navHamburger').classList.remove('open');
+}
 // Scroll reveal
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(e => {

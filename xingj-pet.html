@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>星笺养成</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <link href="https://fonts.googleapis.com/css2?family=ZCOOL+QingKe+HuangYou&display=swap" rel="stylesheet">
@@ -699,6 +699,67 @@ body{
 }
 .items-header{
   margin-bottom:0;
+}
+/* ===== 桌面端适配（768px+） ===== */
+@media(min-width:768px){
+  .container{
+    max-width:900px !important;
+    margin:0 auto;
+    padding:0 24px 40px;
+    display:block; /* 不用 grid，保持原始单列流式布局，让卡片自然铺满 */
+  }
+  /* 顶部栏不再 sticky，改为 fixed 以免被容器 max-width 截断 */
+  .top-bar{
+    position:fixed;
+    top:0;left:0;right:0;
+    z-index:200;
+    border-radius:0;
+    margin:0;
+  }
+  /* 因为 top-bar 变 fixed，给容器加顶部 padding 防止内容被遮住 */
+  .container{
+    padding-top:70px;
+  }
+  /* 角色区、背包、日记等卡片在桌面端内部改为横向双列 */
+  .char-stage{
+    margin:0 0 14px;
+  }
+  .checkin-banner,
+  .sleep-banner{
+    margin:0 0 14px;
+  }
+  .pet-card{
+    margin:0 0 14px;
+  }
+  /* 状态栏四格改为四列 */
+  .status-grid{
+    grid-template-columns:repeat(4,1fr);
+    gap:16px;
+  }
+  /* 操作按钮改为六列（全部一行显示） */
+  .actions-grid{
+    grid-template-columns:repeat(6,1fr);
+  }
+  /* 背包道具行允许显示更多 */
+  .items-row{
+    flex-wrap:wrap;
+    overflow-x:visible;
+  }
+  /* 成就格改为6列 */
+  .achieve-grid{
+    grid-template-columns:repeat(6,1fr);
+  }
+  /* 日记滚动区增高 */
+  .diary-scroll-area{max-height:380px;}
+  /* 换装衣橱居中显示，不从底部弹出 */
+  .wardrobe-overlay{align-items:center;}
+  .wardrobe-panel{
+    border-radius:24px;
+    max-width:520px;
+    max-height:80vh;
+  }
+  .skin-grid{grid-template-columns:repeat(3,1fr);}
+  .pet-toast{max-width:380px;}
 }
 @media(prefers-reduced-motion:reduce){
   .char-avatar,.char-avatar-glow,.char-bg-circle,.word-bubble,

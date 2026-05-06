@@ -393,7 +393,48 @@ body::after{
 ::-webkit-scrollbar{width:6px;height:6px;}
 ::-webkit-scrollbar-thumb{background:rgba(108,92,231,.3);border-radius:3px;}
 ::-webkit-scrollbar-thumb:hover{background:rgba(108,92,231,.5);}
-
+/* ===== 桌面端顶部固定导航 ===== */
+.desktop-nav{
+  display:none;
+  position:fixed;top:0;left:0;right:0;z-index:50;
+  background:rgba(10,10,18,.88);
+  backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border-bottom:1px solid var(--border);
+  padding:0 32px;
+  align-items:center;justify-content:space-between;
+  height:52px;
+}
+.desktop-nav-logo{
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  font-size:16px;letter-spacing:2px;
+  background:linear-gradient(135deg,#fff,var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+}
+.desktop-nav-back{
+  display:flex;align-items:center;gap:6px;
+  padding:6px 14px;border-radius:20px;
+  border:1px solid var(--border);background:rgba(108,92,231,.08);
+  color:var(--text2);font-size:12px;text-decoration:none;
+  transition:all .2s;
+}
+.desktop-nav-back:hover{border-color:var(--accent);color:var(--accent2);}
+.desktop-nav-toc{
+  display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);
+}
+.desktop-nav-toc a{
+  color:var(--text2);text-decoration:none;padding:4px 10px;
+  border-radius:8px;transition:all .18s;white-space:nowrap;
+}
+.desktop-nav-toc a:hover{color:var(--accent2);background:rgba(108,92,231,.1);}
+@media(min-width:900px){
+  .desktop-nav{display:flex;}
+  .hero{padding-top:128px;}
+  .toc{margin-top:20px;}
+  .container{max-width:980px;}
+  .section-hdr{
+    top:52px;
+  }
+}
 /* 回到顶部 */
 .back-top{
   position:fixed;bottom:32px;right:32px;
@@ -446,7 +487,19 @@ body::after{
 </style>
 </head>
 <body>
-
+<!-- 桌面端顶部导航 -->
+<nav class="desktop-nav">
+  <a href="./index.html" class="desktop-nav-back"><i class="fas fa-chevron-left"></i> 返回笔记AI</a>
+  <div class="desktop-nav-logo">API 配置指南</div>
+  <div class="desktop-nav-toc">
+    <a href="#sec-basic">基础概念</a>
+    <a href="#sec-deepseek">DeepSeek</a>
+    <a href="#sec-qwen">通义千问</a>
+    <a href="#sec-relay">中转站</a>
+    <a href="#sec-integrate">接入配置</a>
+    <a href="#sec-trouble">常见问题</a>
+  </div>
+</nav>
 <!-- ===== HERO ===== -->
 <div class="hero">
   <div class="hero-orb" style="width:400px;height:400px;background:radial-gradient(circle,rgba(108,92,231,.12),transparent 70%);top:-100px;left:-100px;"></div>
