@@ -1423,6 +1423,40 @@ border:1px solid var(--border);background:var(--card);
 color:var(--text);font-size:12px;outline:none;
 }
 .col-search input::placeholder{color:var(--text2);}
+/* 收藏页自定义筛选按钮 */
+.col-filter-btns{display:flex;gap:8px;padding:10px 0 2px;align-items:center;justify-content:space-evenly;}
+.col-filter-btn{
+  appearance:none;-webkit-appearance:none;
+  padding:6px 12px;border-radius:20px;
+  border:1.5px solid rgba(108,92,231,.25);
+  background:rgba(108,92,231,.06);
+  color:var(--text);font-size:11px;font-weight:600;
+  cursor:pointer;flex:1;
+  display:flex;align-items:center;justify-content:center;gap:5px;
+  text-align:center;transition:border-color .2s,background .2s;
+  white-space:nowrap;overflow:hidden;
+  -webkit-tap-highlight-color:transparent;
+}
+.col-filter-btn:active{background:rgba(108,92,231,.15);border-color:var(--accent);}
+.col-filter-btn i.fa-chevron-down{font-size:9px;color:var(--text2);flex-shrink:0;}
+/* 收藏筛选选择器弹窗 */
+#colFilterPickerOv{z-index:3100;}
+.col-fp-item{
+  width:100%;padding:12px 16px;border-radius:10px;
+  border:1px solid var(--border);background:var(--bg);
+  color:var(--text);font-size:13px;font-weight:400;
+  cursor:pointer;text-align:left;
+  display:flex;align-items:center;justify-content:space-between;
+  transition:border-color .15s,background .15s;
+  -webkit-tap-highlight-color:transparent;
+}
+.col-fp-item:active{background:rgba(108,92,231,.08);}
+.col-fp-item.selected{
+  border-color:var(--accent);
+  background:rgba(108,92,231,.1);
+  color:var(--accent2);font-weight:600;
+}
+.col-fp-item .fp-check{font-size:13px;color:var(--accent2);flex-shrink:0;}
 .sec-div{padding:14px 18px 4px;display:flex;justify-content:space-between;align-items:center;}
 .sec-div h3{font-size:14px;font-weight:600;color:var(--text2);}
 .bgrid{
@@ -1871,7 +1905,7 @@ border:1px solid var(--border);background:var(--bg);
 color:var(--text);font-size:12px;outline:none;
 transition:border-color .3s;font-family:inherit;
 }
-#worldBindingSelect,#ruleBindingSelect,#banBindingSelect,#styleBindingSelect{
+#worldBindingDisplay,#ruleBindingDisplay,#banBindingDisplay,#styleBindingDisplay{
   min-width:0;
   max-width:100%;
 }
@@ -5072,6 +5106,97 @@ body.theme-light #rpCharBar{
   text-align:center;padding:30px 20px;color:var(--text2);font-size:12px;
   line-height:1.8;
 }
+/* ==================== BINDING PICKER ==================== */
+#bindingPickerOv{
+  display:none;position:fixed;inset:0;z-index:3000;
+  background:rgba(0,0,0,.52);
+}
+#bindingPickerOv.show{display:block;}
+#bindingPickerSheet{
+  position:fixed;left:0;right:0;bottom:0;
+  background:var(--card);
+  border-radius:22px 22px 0 0;
+  padding:0 0 calc(20px + env(safe-area-inset-bottom,0px)) 0;
+  max-height:72vh;overflow-y:auto;
+  border-top:1px solid var(--border);
+  box-shadow:0 -8px 32px rgba(0,0,0,.38);
+  animation:slideUp .22s cubic-bezier(.4,0,.2,1);
+}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0;}to{transform:translateY(0);opacity:1;}}
+#bindingPickerTitle{
+  font-size:13px;font-weight:600;color:var(--text2);
+  padding:16px 20px 12px;
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;background:var(--card);z-index:1;
+  display:flex;align-items:center;gap:8px;
+}
+#bindingPickerTitle i{color:var(--accent2);}
+.bp-item{
+  display:flex;align-items:center;gap:12px;
+  padding:14px 20px;cursor:pointer;
+  font-size:14px;color:var(--text);
+  transition:background .15s;border:none;
+  width:100%;background:none;text-align:left;
+  -webkit-tap-highlight-color:transparent;
+}
+.bp-item:active{background:rgba(108,92,231,.08);}
+.bp-item.bp-selected{color:var(--accent2);font-weight:600;}
+.bp-item-icon{font-size:16px;flex-shrink:0;width:24px;text-align:center;}
+.bp-radio{
+  width:22px;height:22px;border-radius:50%;
+  border:2px solid var(--border);
+  display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-left:auto;
+  transition:border-color .15s,background .15s;
+}
+.bp-item.bp-selected .bp-radio{border-color:var(--accent2);background:var(--accent2);}
+.bp-item.bp-selected .bp-radio::after{
+  content:'';width:8px;height:8px;border-radius:50%;background:#fff;display:block;
+}
+/* 绑定显示按钮 */
+.binding-display{
+  flex:1;display:flex;align-items:center;justify-content:space-between;
+  padding:7px 12px;border-radius:8px;
+  border:1px solid var(--border);background:var(--bg);
+  color:var(--text);font-size:11px;cursor:pointer;
+  transition:border-color .2s,background .2s;
+  -webkit-tap-highlight-color:transparent;
+  min-width:0;gap:6px;
+}
+.binding-display:active{border-color:var(--accent);background:rgba(108,92,231,.06);}
+.binding-display span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.binding-display i{flex-shrink:0;font-size:9px;color:var(--text2);}
+/* ==================== PRESET CATEGORY FILTER TABS ==================== */
+.preset-filter-tabs{
+  display:flex;gap:6px;padding:10px 16px 0;
+  flex-shrink:0;border-bottom:1px solid var(--border);
+  padding-bottom:10px;
+}
+.preset-filter-tab{
+  padding:5px 14px;border-radius:20px;font-size:11px;font-weight:600;
+  cursor:pointer;border:1px solid var(--border);
+  background:transparent;color:var(--text2);
+  transition:all .2s;-webkit-tap-highlight-color:transparent;
+}
+.preset-filter-tab.act{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  color:#fff;border-color:transparent;
+}
+.preset-category-badge{
+  display:inline-block;padding:2px 7px;border-radius:8px;
+  font-size:9px;font-weight:600;margin-left:4px;
+  vertical-align:middle;
+}
+.pcb-book{background:rgba(41,128,185,.15);color:#5dade2;}
+.pcb-series{background:rgba(39,174,96,.15);color:#58d68d;}
+.p-cat{
+  flex-shrink:0;padding:5px 8px;border-radius:7px;
+  border:1px solid var(--border);background:transparent;
+  color:var(--text2);font-size:10px;cursor:pointer;
+  transition:all .2s;
+}
+.p-cat:active{transform:scale(.95);}
+/* ==================== END NEW CSS ==================== */
 .preset-manage-btn{
   width:100%;padding:12px;border-radius:12px;
   border:1px solid var(--accent);
@@ -5902,25 +6027,10 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 <div class="col-search">
 <input type="text" id="colSearchInput" placeholder="🔍 搜索书名或文章名..." oninput="colBookPage=1;colShortPage=1;renderCollections()">
-<div style="display:flex;gap:8px;padding:10px 0 2px;align-items:center;justify-content:space-evenly">
-<select id="colSortSelect" onchange="renderCollections()" style="appearance:none;-webkit-appearance:none;padding:6px 14px;border-radius:20px;border:1.5px solid rgba(108,92,231,.25);background:rgba(108,92,231,.06);color:var(--text);font-size:11px;font-weight:600;outline:none;cursor:pointer;flex:1;text-align:center;text-align-last:center;">
-<option value="update">最近更新</option>
-<option value="create">创建时间</option>
-<option value="words">按字数</option>
-<option value="rating">按评分</option>
-</select>
-<select id="colStatusFilter" onchange="renderCollections()" style="appearance:none;-webkit-appearance:none;padding:6px 14px;border-radius:20px;border:1.5px solid rgba(108,92,231,.25);background:rgba(108,92,231,.06);color:var(--text);font-size:11px;font-weight:600;outline:none;cursor:pointer;flex:1;text-align:center;text-align-last:center;">
-<option value="all">全部</option>
-<option value="ongoing">连载中</option>
-<option value="complete">已完结</option>
-<option value="paused">暂停</option>
-</select>
-<select id="colRatingFilter" onchange="renderCollections()" style="appearance:none;-webkit-appearance:none;padding:6px 14px;border-radius:20px;border:1.5px solid rgba(108,92,231,.25);background:rgba(108,92,231,.06);color:var(--text);font-size:11px;font-weight:600;outline:none;cursor:pointer;flex:1;text-align:center;text-align-last:center;">
-<option value="0">全部评分</option>
-<option value="3">3星以上</option>
-<option value="4">4星以上</option>
-<option value="5">仅5星</option>
-</select>
+<div class="col-filter-btns">
+<button class="col-filter-btn" id="colSortBtn" onclick="openColFilterPicker('sort')"><span id="colSortLabel">最近更新</span><i class="fas fa-chevron-down"></i></button>
+<button class="col-filter-btn" id="colStatusBtn" onclick="openColFilterPicker('status')"><span id="colStatusLabel">全部</span><i class="fas fa-chevron-down"></i></button>
+<button class="col-filter-btn" id="colRatingBtn" onclick="openColFilterPicker('rating')"><span id="colRatingLabel">全部评分</span><i class="fas fa-chevron-down"></i></button>
 </div>
 </div>
 <div class="sec-div"><h3>长篇书架</h3></div>
@@ -7339,6 +7449,16 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 </div>
 </div>
 </div>
+<!-- COL FILTER PICKER 收藏页筛选选择器 -->
+<div class="res-exp-ov" id="colFilterPickerOv" onclick="if(event.target===this)closeColFilterPicker()">
+<div class="res-exp-box" style="max-width:320px">
+<h3 id="colFilterPickerTitle" style="display:flex;align-items:center;gap:8px"><i class="fas fa-sliders-h"></i> 筛选</h3>
+<div id="colFilterPickerList" style="display:flex;flex-direction:column;gap:8px;margin-top:4px"></div>
+<div class="res-exp-btns" style="margin-top:14px">
+<button class="dlg-cancel" onclick="closeColFilterPicker()">取消</button>
+</div>
+</div>
+</div>
 <!-- PHRASE MODAL 快捷短语浮窗 -->
 <div class="res-exp-ov" id="phraseModalOv" onclick="if(event.target===this)closePhraseModal()" style="z-index:820">
 <div class="res-exp-box" style="max-width:92vw;max-height:80vh;display:flex;flex-direction:column">
@@ -8485,7 +8605,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
 <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px"><i class="fas fa-map-pin"></i> 局部世界观（绑定角色预设）</div>
-<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<select id="worldBindingSelect" style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px" onchange="switchWorldBinding(this.value)"></select></div>
+<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<div class="binding-display" id="worldBindingDisplay" onclick="openBindingPicker('world')" role="button" aria-label="选择世界观绑定预设"><span id="worldBindingLabel">— 不绑定 —</span><i class="fas fa-chevron-down"></i></div></div>
 <textarea class="fta" id="worldDesc" maxlength="3000" placeholder="局部世界观设定，仅在使用绑定的角色预设时生效..." style="min-height:100px" oninput="limitTextarea(this,3000,'lwCount');saveLocalWorld()"></textarea> <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:6px" id="lwCount">0/3000</div>
 <button class="btn-s" onclick="showTemplateChooser('🌍 选择局部世界观模板',['现代都市','古代宫廷','仙侠修真','西方奇幻','末日废土','校园青春','民国乱世','星际科幻','克苏鲁诡异','赛博朋克','东方玄幻','都市异能'],applyWorldTemplate)" style="margin-top:8px"><i class="fas fa-box-open"></i> 选择模板</button>
 </div>
@@ -8502,7 +8622,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <div class="set-modal-body">
 <div style="background:rgba(230,126,34,.1);border:1px solid rgba(230,126,34,.3);border-radius:12px;padding:14px;margin-bottom:14px">
 <div style="font-size:13px;font-weight:600;color:#e67e22;margin-bottom:4px"><i class="fas fa-feather-alt"></i> 文风设置（仅局部，绑定角色预设）</div>
-<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<select id="styleBindingSelect" style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px" onchange="switchStyleBinding(this.value)"></select></div>
+<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<div class="binding-display" id="styleBindingDisplay" onclick="openBindingPicker('style')" role="button" aria-label="选择文风绑定预设"><span id="styleBindingLabel">— 不绑定 —</span><i class="fas fa-chevron-down"></i></div></div>
 <textarea class="fta" id="styleDesc" maxlength="600" placeholder="文风描述，仅在使用绑定的角色预设时生效..." style="min-height:100px" oninput="limitTextarea(this,600,'stCount');saveLocalStyle()"></textarea>
 <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:6px" id="stCount">0/600</div>
 <div class="fg" style="margin-top:10px"><label class="fl">快捷文风模板</label>
@@ -8528,7 +8648,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
 <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px"><i class="fas fa-map-pin"></i> 局部规则（绑定角色预设）</div>
-<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<select id="ruleBindingSelect" style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px" onchange="switchRuleBinding(this.value)"></select></div>
+<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<div class="binding-display" id="ruleBindingDisplay" onclick="openBindingPicker('rule')" role="button" aria-label="选择规则绑定预设"><span id="ruleBindingLabel">— 不绑定 —</span><i class="fas fa-chevron-down"></i></div></div>
 <textarea class="fta" id="ruleDesc" maxlength="2000" placeholder="局部规则，仅在使用绑定的角色预设时生效..." style="min-height:100px" oninput="limitTextarea(this,2000,'lrCount');saveLocalRule()"></textarea>
 <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:6px" id="lrCount">0/2000</div>
 <button class="btn-s" onclick="showTemplateChooser('📜 选择局部规则模板',['古风限定','现代限定','BE向','高虐向','禁止升级打怪','双男主','女强型','互虐型'],applyRuleTemplate)" style="margin-top:8px"><i class="fas fa-box-open"></i> 选择模板</button>
@@ -8623,7 +8743,7 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 
 <div style="background:var(--card);border:1px solid var(--border);border-radius:12px;padding:14px;margin-bottom:14px">
 <div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:4px"><i class="fas fa-map-pin"></i> 局部禁用词（绑定角色预设）</div>
-<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<select id="banBindingSelect" style="flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--border);background:var(--bg);color:var(--text);font-size:11px" onchange="switchBanBinding(this.value)"></select></div>
+<div style="font-size:10px;color:var(--text2);margin-bottom:10px;display:flex;align-items:center;gap:8px">绑定到：<div class="binding-display" id="banBindingDisplay" onclick="openBindingPicker('ban')" role="button" aria-label="选择禁用词绑定预设"><span id="banBindingLabel">— 不绑定 —</span><i class="fas fa-chevron-down"></i></div></div>
 <textarea class="fta" id="banWordsInput" placeholder="局部禁用词，每行一个，仅在使用绑定的角色预设时生效..." style="min-height:80px" oninput="limitLines(this,30,'lbwCount');saveLocalBanWords()"></textarea>
 <div style="font-size:10px;color:var(--text2);text-align:right;margin-top:6px" id="lbwCount">0/30 行</div>
 </div>
@@ -10593,11 +10713,19 @@ i.fas,i.far,i.fab{font-size:1em;margin-right:3px;vertical-align:middle;font-styl
 <h3 id="presetModalTitle"><i class="fas fa-box-open"></i> 预设管理</h3>
 <button class="preset-modal-close" onclick="closePresetModal()"><i class="fas fa-times"></i></button>
 </div>
+<div id="presetFilterTabsArea" style="display:none"></div>
 <div class="preset-modal-body" id="presetModalBody"></div>
 <div class="preset-modal-ft">
 <button class="btn-p" id="presetModalSaveBtn" onclick="presetModalSave()" style="margin:0"><i class="fas fa-floppy-disk"></i> 保存当前为预设</button>
 </div>
 </div>
+</div>
+<!-- 绑定预设选择器（美化底部弹出） -->
+<div id="bindingPickerOv" onclick="closeBindingPicker()">
+  <div id="bindingPickerSheet" onclick="event.stopPropagation()">
+    <div id="bindingPickerTitle"><i class="fas fa-link"></i> 选择绑定预设</div>
+    <div id="bindingPickerList"></div>
+  </div>
 </div>
 <!-- GLOBAL FLOAT BUTTON 全局快捷浮窗 -->
 <div id="gfbBtn" oncontextmenu="return false">
@@ -17138,6 +17266,84 @@ if(fsBtn)fsBtn.innerHTML='⛶ 全屏模式';
 });
 
 // ==================== COLLECTIONS ====================
+// ==================== 收藏页筛选器 ====================
+var _colSortValue = 'update';
+var _colStatusValue = 'all';
+var _colRatingValue = '0';
+var _colFilterPickerType = '';
+var _colFilterOptions = {
+  sort:[
+    {value:'update',label:'最近更新'},
+    {value:'create',label:'创建时间'},
+    {value:'words',label:'按字数'},
+    {value:'rating',label:'按评分'}
+  ],
+  status:[
+    {value:'all',label:'全部'},
+    {value:'ongoing',label:'连载中'},
+    {value:'complete',label:'已完结'},
+    {value:'paused',label:'暂停'}
+  ],
+  rating:[
+    {value:'0',label:'全部评分'},
+    {value:'3',label:'3星以上'},
+    {value:'4',label:'4星以上'},
+    {value:'5',label:'仅5星'}
+  ]
+};
+var _colFilterTitles = {sort:'排序方式',status:'状态筛选',rating:'评分筛选'};
+var _colFilterIcons = {sort:'fa-sort-amount-down',status:'fa-circle-dot',rating:'fa-star'};
+
+function openColFilterPicker(type) {
+  _colFilterPickerType = type;
+  var current = type==='sort'?_colSortValue:type==='status'?_colStatusValue:_colRatingValue;
+  var opts = _colFilterOptions[type];
+  var titleEl = document.getElementById('colFilterPickerTitle');
+  var listEl = document.getElementById('colFilterPickerList');
+  if(!titleEl||!listEl) return;
+  titleEl.innerHTML = '<i class="fas '+(_colFilterIcons[type]||'fa-sliders-h')+'"></i> '+_colFilterTitles[type];
+  var html = '';
+  opts.forEach(function(o){
+    var sel = o.value === current;
+    html += '<button class="col-fp-item'+(sel?' selected':'') +'" onclick="pickColFilter(\''+o.value+'\')">'+
+      '<span>'+o.label+'</span>'+
+      (sel?'<i class="fas fa-check fp-check"></i>':'') +
+    '</button>';
+  });
+  listEl.innerHTML = html;
+  document.getElementById('colFilterPickerOv').classList.add('show');
+}
+
+function pickColFilter(value) {
+  var type = _colFilterPickerType;
+  closeColFilterPicker();
+  if(!type) return;
+  var opts = _colFilterOptions[type];
+  var label = (opts.find(function(o){return o.value===value;})||{}).label || value;
+  if(type==='sort'){
+    _colSortValue = value;
+    var el = document.getElementById('colSortLabel');
+    if(el) el.textContent = label;
+  } else if(type==='status'){
+    _colStatusValue = value;
+    var el2 = document.getElementById('colStatusLabel');
+    if(el2) el2.textContent = label;
+  } else {
+    _colRatingValue = value;
+    var el3 = document.getElementById('colRatingLabel');
+    if(el3) el3.textContent = label;
+  }
+  colBookPage = 1;
+  colShortPage = 1;
+  renderCollections();
+}
+
+function closeColFilterPicker() {
+  var ov = document.getElementById('colFilterPickerOv');
+  if(ov) ov.classList.remove('show');
+  _colFilterPickerType = '';
+}
+
 function renderCollections(){
 const sv_=(document.getElementById('colSearchInput').value||'').trim().toLowerCase();
 
@@ -17145,13 +17351,13 @@ const grid=document.getElementById('bookGrid');
 let books=cols.books.slice();
 if(sv_)books=books.filter(b=>b.title.toLowerCase().includes(sv_));
 // 状态筛选
-var statusF=(document.getElementById('colStatusFilter')||{}).value||'all';
+var statusF=_colStatusValue||'all';
 if(statusF!=='all')books=books.filter(function(b){return(b.status||'ongoing')===statusF;});
 // 评分筛选
-var ratingF=parseInt((document.getElementById('colRatingFilter')||{}).value)||0;
+var ratingF=parseInt(_colRatingValue)||0;
 if(ratingF>0)books=books.filter(function(b){return(b.rating||0)>=ratingF;});
 // 排序
-var sortF=(document.getElementById('colSortSelect')||{}).value||'update';
+var sortF=_colSortValue||'update';
 books.sort(function(a,b){
   if(sortF==='update')return new Date(b.updatedAt||b.createdAt||0)-new Date(a.updatedAt||a.createdAt||0);
   if(sortF==='create')return new Date(b.createdAt||0)-new Date(a.createdAt||0);
@@ -17210,9 +17416,9 @@ if(books.length===0){
 const sl=document.getElementById('shortList');
 let shorts=cols.shorts.slice();
 if(sv_) shorts=shorts.filter(s=>(s.title||'').toLowerCase().includes(sv_));
-var ratingFS=parseInt((document.getElementById('colRatingFilter')||{}).value)||0;
+var ratingFS=parseInt(_colRatingValue)||0;
 if(ratingFS>0)shorts=shorts.filter(function(s){return(s.rating||0)>=ratingFS;});
-var sortFS=(document.getElementById('colSortSelect')||{}).value||'update';
+var sortFS=_colSortValue||'update';
 shorts.sort(function(a,b){
   if(sortFS==='rating')return(b.rating||0)-(a.rating||0);
   if(sortFS==='words')return countWords(b.content||'')-countWords(a.content||'');
@@ -18036,28 +18242,17 @@ showToast('已加载「'+presetName+'」的绑定设定');
 }
 
 // 更新界面上显示的绑定名称
-// 更新绑定下拉框选项
+// 更新绑定显示按钮标签
 function updateBindingNames(){
-const selects=['worldBindingSelect','ruleBindingSelect','banBindingSelect','styleBindingSelect'];
-selects.forEach(id=>{
-const sel=document.getElementById(id);
-if(!sel)return;
-sel.innerHTML='<option value="">-- 不绑定 --</option>';
-charP.forEach(p=>{
-const opt=document.createElement('option');
-opt.value=p.name;
-opt.textContent=p.name;
-sel.appendChild(opt);
-});
-});
-const ws=document.getElementById('worldBindingSelect');
-const rs=document.getElementById('ruleBindingSelect');
-const bs=document.getElementById('banBindingSelect');
-const ss=document.getElementById('styleBindingSelect');
-if(ws)ws.value=currentWorldBinding||'';
-if(rs)rs.value=currentRuleBinding||'';
-if(bs)bs.value=currentBanBinding||'';
-if(ss)ss.value=currentStyleBinding||'';
+// 同步更新四个绑定显示按钮的标签文字
+function _setLabel(id, value){
+  var el = document.getElementById(id);
+  if(el) el.textContent = value || '— 不绑定 —';
+}
+_setLabel('worldBindingLabel', currentWorldBinding);
+_setLabel('styleBindingLabel', currentStyleBinding);
+_setLabel('ruleBindingLabel', currentRuleBinding);
+_setLabel('banBindingLabel', currentBanBinding);
 }
 
 function switchWorldBinding(presetName){
@@ -18072,6 +18267,8 @@ document.getElementById('worldDesc').value=content;
 const el=document.getElementById('worldDesc');
 if(el) limitTextarea(el,3000,'lwCount');
 if(presetName)showToast('已切换到「'+presetName+'」的世界观');
+// 同步更新显示标签
+updateBindingNames();
 }
 
 function switchRuleBinding(presetName){
@@ -18086,6 +18283,8 @@ document.getElementById('ruleDesc').value=content;
 curRule=content;
 sv('bj_curRule',curRule);
 if(presetName)showToast('已切换到「'+presetName+'」的规则');
+// 同步更新显示标签
+updateBindingNames();
 }
 
 function switchBanBinding(presetName){
@@ -18100,6 +18299,8 @@ document.getElementById('banWordsInput').value=content;
 banWords=content;
 sv('bj_banWords',banWords);
 if(presetName)showToast('已切换到「'+presetName+'」的禁用词');
+// 同步更新显示标签
+updateBindingNames();
 }
 
 function switchStyleBinding(presetName){
@@ -18114,6 +18315,144 @@ document.getElementById('styleDesc').value=content;
 ap.curStyle=content;
 sv(K.ap,ap);
 if(presetName)showToast('已切换到「'+presetName+'」的文风');
+// 同步更新显示标签
+updateBindingNames();
+}
+
+// ==================== 绑定预设美化选择器 ====================
+var _bindingPickerType = '';
+
+function openBindingPicker(type) {
+  _bindingPickerType = type;
+  var titles = {
+    world: '绑定局部世界观到角色预设',
+    style: '绑定文风到角色预设',
+    rule: '绑定局部规则到角色预设',
+    ban: '绑定局部禁用词到角色预设'
+  };
+  var icons = {
+    world: 'fa-globe',
+    style: 'fa-feather-alt',
+    rule: 'fa-scroll',
+    ban: 'fa-ban'
+  };
+  var currentValues = {
+    world: currentWorldBinding,
+    style: currentStyleBinding,
+    rule: currentRuleBinding,
+    ban: currentBanBinding
+  };
+  var current = currentValues[type] || '';
+  var titleEl = document.getElementById('bindingPickerTitle');
+  var listEl = document.getElementById('bindingPickerList');
+  if (!titleEl || !listEl) return;
+  titleEl.innerHTML = '<i class="fas ' + (icons[type] || 'fa-link') + '"></i> ' + (titles[type] || '选择绑定预设');
+
+  var html = '';
+  // 不绑定选项
+  var notBound = !current;
+  html += '<button class="bp-item' + (notBound ? ' bp-selected' : '') + '" onclick="pickBinding(\'\')">' +
+    '<span class="bp-item-icon">🚫</span>' +
+    '<span>— 不绑定 —</span>' +
+    '<div class="bp-radio"></div>' +
+  '</button>';
+
+  if (charP.length === 0) {
+    html += '<div style="padding:20px;text-align:center;color:var(--text2);font-size:12px"><i class="fas fa-user-slash" style="font-size:24px;opacity:.4;display:block;margin-bottom:8px"></i>暂无人物预设<br><span style="font-size:10px">请先在「人物设定」中保存人物预设</span></div>';
+  } else {
+    charP.forEach(function(p) {
+      var sel = p.name === current;
+      html += '<button class="bp-item' + (sel ? ' bp-selected' : '') + '" onclick="pickBinding(\'' + p.name.replace(/\\/g,'\\\\').replace(/'/g,"\\'") + '\')">' +
+        '<span class="bp-item-icon">👤</span>' +
+        '<span>' + esc(p.name) + '</span>' +
+        '<div class="bp-radio"></div>' +
+      '</button>';
+    });
+  }
+  listEl.innerHTML = html;
+  document.getElementById('bindingPickerOv').classList.add('show');
+}
+
+function pickBinding(value) {
+  // 必须在 closeBindingPicker() 之前保存 type，
+  // 因为 closeBindingPicker 会把 _bindingPickerType 清空
+  var type = _bindingPickerType;
+  closeBindingPicker();
+  if (type === 'world') switchWorldBinding(value);
+  else if (type === 'style') switchStyleBinding(value);
+  else if (type === 'rule') switchRuleBinding(value);
+  else if (type === 'ban') switchBanBinding(value);
+}
+
+function closeBindingPicker() {
+  var ov = document.getElementById('bindingPickerOv');
+  if (ov) ov.classList.remove('show');
+  _bindingPickerType = '';
+}
+
+// ==================== 预设分类过滤 ====================
+var _presetFilter = 'all'; // 'all' | 'book' | 'series'
+
+// 支持分类过滤的预设类型
+var PRESET_FILTER_TYPES = ['char', 'world', 'style'];
+
+function setPresetFilter(filter) {
+  _presetFilter = filter;
+  renderPresetModalList();
+  // 更新 Tab 高亮
+  var tabs = document.querySelectorAll('.preset-filter-tab');
+  tabs.forEach(function(t) {
+    t.classList.toggle('act', t.dataset.filter === filter);
+  });
+}
+
+function setPresetCategory(idx, category) {
+  var cfg = PRESET_CONFIG[_presetType];
+  if (!cfg) return;
+  var list = cfg.getList();
+  if (idx < 0 || idx >= list.length) return;
+  list[idx].category = category;
+  cfg.setList(list);
+  renderPresetModalList();
+  showToast('分类已更新');
+}
+
+function _openCategoryPicker(idx) {
+  var cats = [
+    { value: '', label: '全部（不指定分类）', icon: '📋' },
+    { value: 'book', label: '书籍（单部作品专属）', icon: '📖' },
+    { value: 'series', label: '系列（跨书共用）', icon: '📚' }
+  ];
+  var cfg = PRESET_CONFIG[_presetType];
+  if (!cfg) return;
+  var list = cfg.getList();
+  if (idx < 0 || idx >= list.length) return;
+  var current = list[idx].category || '';
+
+  var titleEl = document.getElementById('bindingPickerTitle');
+  var listEl = document.getElementById('bindingPickerList');
+  if (!titleEl || !listEl) return;
+  titleEl.innerHTML = '<i class="fas fa-folder"></i> 设置「' + esc(list[idx].name || '未命名') + '」的分类';
+  _bindingPickerType = '__category__' + idx;
+  var html = cats.map(function(c) {
+    var sel = c.value === current;
+    return '<button class="bp-item' + (sel ? ' bp-selected' : '') + '" onclick="pickCategory(\'' + c.value + '\')">' +
+      '<span class="bp-item-icon">' + c.icon + '</span>' +
+      '<span>' + c.label + '</span>' +
+      '<div class="bp-radio"></div>' +
+    '</button>';
+  }).join('');
+  listEl.innerHTML = html;
+  document.getElementById('bindingPickerOv').classList.add('show');
+}
+
+function pickCategory(value) {
+  var raw = _bindingPickerType; // '__category__N'
+  closeBindingPicker();
+  if (!raw.startsWith('__category__')) return;
+  var idx = parseInt(raw.replace('__category__', ''), 10);
+  if (isNaN(idx)) return;
+  setPresetCategory(idx, value);
 }
 
 // ==================== 通用模板选择弹窗 ====================
@@ -33187,7 +33526,18 @@ function showDailyTip(){
   if(!localStorage.getItem('bj_hasVisited'))return;
   var todayKey='bj_tipDate_'+new Date().toDateString();
   if(localStorage.getItem(todayKey))return;
-  localStorage.setItem(todayKey,'1');
+  // 清理所有历史 bj_tipDate_ 键，防止 localStorage 日积月累被占满
+  try{
+    var _expiredKeys=[];
+    for(var _i=0;_i<localStorage.length;_i++){
+      var _k=localStorage.key(_i);
+      if(_k&&_k.startsWith('bj_tipDate_')&&_k!==todayKey)_expiredKeys.push(_k);
+    }
+    _expiredKeys.forEach(function(_ek){try{localStorage.removeItem(_ek);}catch(e){}});
+    localStorage.setItem(todayKey,'1');
+  }catch(e){
+    // localStorage 已满时静默失败，不影响每日提示正常展示
+  }
   var tip=_dailyTips[Math.floor(Math.random()*_dailyTips.length)];
   setTimeout(function(){
     _originalShowToast(tip,4000);
@@ -40706,10 +41056,27 @@ const PRESET_CONFIG = {
 
 function openPresetModal(type) {
   _presetType = type;
+  _presetFilter = 'all'; // 重置过滤器
   var cfg = PRESET_CONFIG[type];
   if (!cfg) { showToast('未知预设类型'); return; }
 
   document.getElementById('presetModalTitle').textContent = cfg.title;
+  // 仅在支持分类过滤的类型显示 Tabs
+  var tabsArea = document.getElementById('presetFilterTabsArea');
+  if (tabsArea) {
+    if (PRESET_FILTER_TYPES.indexOf(type) !== -1) {
+      tabsArea.style.display = 'block';
+      tabsArea.innerHTML =
+        '<div class="preset-filter-tabs">' +
+        '<button class="preset-filter-tab act" data-filter="all" onclick="setPresetFilter(\'all\')">📋 全部</button>' +
+        '<button class="preset-filter-tab" data-filter="book" onclick="setPresetFilter(\'book\')">📖 书籍</button>' +
+        '<button class="preset-filter-tab" data-filter="series" onclick="setPresetFilter(\'series\')">📚 系列</button>' +
+        '</div>';
+    } else {
+      tabsArea.style.display = 'none';
+      tabsArea.innerHTML = '';
+    }
+  }
   renderPresetModalList();
   document.getElementById('presetModalOv').classList.add('show');
   navPush('presetModalOv');
@@ -40719,6 +41086,7 @@ function closePresetModal() {
   navPop('presetModalOv');
   document.getElementById('presetModalOv').classList.remove('show');
   _presetType = '';
+  _presetFilter = 'all';
 }
 
 function renderPresetModalList() {
@@ -40726,27 +41094,61 @@ function renderPresetModalList() {
   if (!cfg) return;
   var list = cfg.getList();
   var body = document.getElementById('presetModalBody');
+  var supportsFilter = PRESET_FILTER_TYPES.indexOf(_presetType) !== -1;
+
+  // 过滤列表（带原始索引）
+  var filteredItems = [];
+  (list || []).forEach(function(p, i) {
+    if (!supportsFilter || _presetFilter === 'all') {
+      filteredItems.push({ p: p, origIdx: i });
+    } else if (_presetFilter === 'book' && (p.category || '') === 'book') {
+      filteredItems.push({ p: p, origIdx: i });
+    } else if (_presetFilter === 'series' && (p.category || '') === 'series') {
+      filteredItems.push({ p: p, origIdx: i });
+    }
+  });
 
   if (!list || list.length === 0) {
     body.innerHTML = '<div class="preset-empty"><i class="fas fa-box-open"></i> 还没有预设<br><br>点击下方按钮保存当前设定为预设</div>';
     return;
   }
 
+  if (filteredItems.length === 0) {
+    var filterLabels = { book: '书籍', series: '系列' };
+    body.innerHTML = '<div class="preset-empty"><i class="fas fa-filter"></i> 没有「' + (filterLabels[_presetFilter] || '') + '」分类的预设<br><br><span style="font-size:10px">点击预设卡片的 <i class="fas fa-folder" style="font-size:10px"></i> 按钮来设置分类</span></div>';
+    return;
+  }
+
   body.innerHTML = '';
-  list.forEach(function (p, i) {
+  filteredItems.forEach(function (item) {
+    var p = item.p;
+    var i = item.origIdx;
     var div = document.createElement('div');
     div.className = 'preset-item';
     var desc = '';
     try { desc = cfg.getDesc(p); } catch (e) { desc = ''; }
 
+    // 分类徽标 HTML
+    var catBadge = '';
+    if (supportsFilter) {
+      if (p.category === 'book') catBadge = '<span class="preset-category-badge pcb-book">📖 书籍</span>';
+      else if (p.category === 'series') catBadge = '<span class="preset-category-badge pcb-series">📚 系列</span>';
+    }
+
+    // 分类按钮（仅支持分类的类型显示）
+    var catBtn = supportsFilter
+      ? '<button class="p-cat" onclick="event.stopPropagation();_openCategoryPicker(' + i + ')" title="设置分类"><i class="fas fa-folder"></i></button>'
+      : '';
+
     div.innerHTML =
       '<div class="preset-item-hdr">' +
-      '<span class="preset-item-name">' + esc(p.name || '未命名') + '</span>' +
+      '<span class="preset-item-name">' + esc(p.name || '未命名') + catBadge + '</span>' +
       '<span style="font-size:9px;color:var(--text2)">#' + (i + 1) + '</span>' +
       '</div>' +
       '<div class="preset-item-desc">' + esc(desc) + '</div>' +
       '<div class="preset-item-acts">' +
       '<button class="p-use" onclick="presetModalUse(' + i + ')"><i class="fas fa-check-circle"></i> 使用</button>' +
+      catBtn +
       '<button class="p-del" onclick="presetModalDel(' + i + ')"><i class="fas fa-trash-alt"></i> 删除</button>' +
       '</div>';
     body.appendChild(div);

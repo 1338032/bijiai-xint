@@ -1955,6 +1955,13 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
       <h3><i class="fas fa-link" style="color:var(--success)"></i> 设定绑定</h3>
       <button class="modal-close" onclick="TB.closeModal('modal-binding')"><i class="fas fa-times"></i></button>
     </div>
+    <div class="list-filter-bar">
+      <div class="list-filter-seg">
+        <button class="filter-btn act" id="bind-filter-all" onclick="TB.setBindFilter('all')">全部</button>
+        <button class="filter-btn" id="bind-filter-book" onclick="TB.setBindFilter('book')">书籍</button>
+        <button class="filter-btn" id="bind-filter-series" onclick="TB.setBindFilter('series')">系列</button>
+      </div>
+    </div>
     <div class="modal-body" id="binding-body"></div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="TB.closeModal('modal-binding')">关闭</button>
@@ -5512,6 +5519,24 @@ function fetchModels() {
     });
   }
 
+  var _bindFilter = 'all';
+
+  function setBindFilter(type) {
+    _bindFilter = type;
+    var types = ['all', 'book', 'series'];
+    for (var i = 0; i < types.length; i++) {
+      var btn = document.getElementById('bind-filter-' + types[i]);
+      if (btn) {
+        if (types[i] === type) {
+          btn.classList.add('act');
+        } else {
+          btn.classList.remove('act');
+        }
+      }
+    }
+    _renderBindingModal();
+  }
+
   // ── 绑定设定 ──
   function _renderBindingModal() {
     var body = document.getElementById('binding-body');
@@ -5578,7 +5603,10 @@ function fetchModels() {
 
     var html = '<p style="font-size:11px;color:var(--text2);margin-bottom:14px;line-height:1.7">点击选择框选取预设。每本书/系列各绑定一套人设、世界观、文风。</p>';
 
-    Object.keys(seriesMap).forEach(function (leadId) {
+    var showSeries = (_bindFilter === 'all' || _bindFilter === 'series');
+    var showBooks = (_bindFilter === 'all' || _bindFilter === 'book');
+
+    if (showSeries) Object.keys(seriesMap).forEach(function (leadId) {
       var sg = seriesMap[leadId];
       var bKey = 'series_' + leadId;
       html +=
@@ -5591,7 +5619,7 @@ function fetchModels() {
         '</div>';
     });
 
-    singleJourneys.forEach(function (j) {
+    if (showBooks) singleJourneys.forEach(function (j) {
       html +=
         '<div style="margin-bottom:18px;padding:14px;background:var(--card2);border-radius:14px;border:1px solid var(--border)">' +
         '<div style="font-size:13px;font-weight:700;margin-bottom:12px;display:flex;align-items:center;gap:6px"><i class="fas fa-book" style="color:var(--accent2)"></i>' + _esc(j.novelTitle) + '</div>' +
@@ -7129,11 +7157,11 @@ function _renderMarkdown(text) {
             htmlContent += '<div class="time-node">⏱ ' + _esc(timeMatch[1]) + '</div>\n';
           }
           if (p.trim()) {
-            var lines = p.split('\n');
-            lines.forEach(function (line) {
-              if (line.trim()) htmlContent += '<p>' + _esc(line.trim()) + '</p>\n';
-            });
-          }
+          var lines = p.split('\n');
+          lines.forEach(function (line) {
+            if (line.trim()) html += '<p>' + _renderMarkdown(line.trim()) + '</p>';
+          });
+        }
         });
       });
       htmlContent += '<div class="footer">本作品由 <a href="#">笔记AI · 穿书系统</a> 生成<br>创作者：心田<br>本文包含AI辅助创作内容</div>\n';
@@ -7210,7 +7238,7 @@ function _renderMarkdown(text) {
         if (p.trim()) {
           var lines = p.split('\n');
           lines.forEach(function (line) {
-            if (line.trim()) html += '<p>' + _esc(line.trim()) + '</p>';
+            if (line.trim()) html += '<p>' + _renderMarkdown(line.trim()) + '</p>';
           });
         }
       });
@@ -8396,6 +8424,7 @@ function _initPhraseManageDrag() {
     goBack: goBack,
     renderJourneys: renderJourneys,
     setListFilter: setListFilter,
+    setBindFilter: setBindFilter,
     openJourney: openJourney,
     sendMsg: sendMsg,
     stopGen: stopGen,
