@@ -5977,17 +5977,13 @@ function deleteCurrentVersion(idx) {
     var tail = content.slice(-tailLen);
 
     // 根据对话轮数估算阅读进度（假设整本书对应约200轮对话）
-    var estimatedProgress = Math.min(progress / 200, 0.9);
-    var midStart = Math.floor(totalLen * Math.max(0, estimatedProgress - 0.1));
-    var midEnd = midStart + midBudget;
-    if (midEnd > totalLen - tailLen) {
-      midStart = Math.max(headLen, totalLen - tailLen - midBudget);
-      midEnd = midStart + midBudget;
-    }
+    var midStart = Math.floor(totalLen / 2 - midBudget / 2);
+    if (midStart < headLen) midStart = headLen;
+    if (midStart + midBudget > totalLen - tailLen) midStart = totalLen - tailLen - midBudget;
 
     var mid = '';
-    if (midBudget > 200 && midStart > headLen && midStart < totalLen - tailLen) {
-      mid = content.slice(midStart, Math.min(midEnd, totalLen - tailLen));
+    if (midBudget > 200 && midStart > headLen) {
+      mid = content.slice(midStart, midStart + midBudget);
     }
 
     var result = head;
