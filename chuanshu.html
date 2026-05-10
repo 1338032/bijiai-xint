@@ -268,7 +268,7 @@ body.theme-light .jcard-popup{
 }
 #chat-hdr .chat-act:hover{color:var(--accent2);background:rgba(108,92,231,.1);}
 #chat-body{
-  flex:1;overflow-y:auto;padding:16px 18px 0;
+  flex:1;overflow-y:auto;padding:16px 18px 60px;
   display:flex;flex-direction:column;gap:0;
   background-image:var(--chat-bg);
   background-size:cover;background-position:center;
@@ -2074,7 +2074,6 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
 <div class="pg" id="pg-chat">
   <div id="chat-body" onclick="TB.hideCtxMenu()" style="position:relative">
   <div id="pull-refresh-indicator"><i class="fas fa-arrow-down pri-icon"></i><span class="pri-text">下拉加载更早消息</span></div>
-  <div id="chat-body-spacer" style="flex-shrink:0;height:16px;pointer-events:none"></div>
 </div>
   <div id="batch-toolbar">
     <div class="batch-count" id="batchCount">已选 0 条</div>
@@ -5472,15 +5471,13 @@ function deleteCurrentVersion(idx) {
     var pgChat = document.getElementById('pg-chat');
     var inputArea = document.getElementById('chat-input-area');
     var body = document.getElementById('chat-body');
-    var spacer = document.getElementById('chat-body-spacer');
     if (!pgChat || !inputArea || !body) return;
 
-    // 用 visualViewport 高度（精确到键盘缩进后的可视区）
     var vvh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
     var inputH = inputArea.offsetHeight || 64;
 
-    // 让 chat-body spacer 等于输入区高度，确保最后一条消息完全可见
-    if (spacer) spacer.style.height = (inputH + 8) + 'px';
+    // 用输入区实际高度动态撑开底部，确保最后一条消息完全可见
+    body.style.paddingBottom = (inputH + 16) + 'px';
 
     // 修正 pg-chat 高度，防止键盘收起后底部残留空白
     pgChat.style.height = vvh + 'px';
