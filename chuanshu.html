@@ -5959,7 +5959,7 @@ function deleteCurrentVersion(idx) {
     if (!content) return '';
     var totalLen = content.length;
     // 预算：原文总共给 system 的字符数上限，控制 token 消耗
-    var BUDGET = 4500;
+    var BUDGET = 60000;
 
     if (totalLen <= BUDGET) return content;
 
@@ -5967,9 +5967,9 @@ function deleteCurrentVersion(idx) {
     var progress = msgs.length;
 
     // 总是保留开头（建立世界观和人物）
-    var headLen = 1500;
+    var headLen = 20000;
     // 总是保留结尾（最新情节参考）
-    var tailLen = 1000;
+    var tailLen = 20000;
     // 中间部分：根据进度选取
     var midBudget = BUDGET - headLen - tailLen;
 
