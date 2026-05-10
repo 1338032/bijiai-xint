@@ -268,7 +268,7 @@ body.theme-light .jcard-popup{
 }
 #chat-hdr .chat-act:hover{color:var(--accent2);background:rgba(108,92,231,.1);}
 #chat-body{
-  flex:1;overflow-y:auto;padding:16px 18px 8px;
+  flex:1;overflow-y:auto;padding:16px 18px 60px;
   display:flex;flex-direction:column;gap:0;
   background-image:var(--chat-bg);
   background-size:cover;background-position:center;
@@ -293,6 +293,45 @@ body.theme-light .jcard-popup{
   color:var(--accent2);
 }
 .story-msg.user em{color:var(--accent2);}
+/* ── 气泡模式 ── */
+body.bubble-mode .story-msg{
+  max-width:80%;padding:12px 16px;border-radius:18px;
+  backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
+  margin-bottom:10px;position:relative;
+  font-family:inherit;line-height:1.8;
+}
+body.bubble-mode .story-msg.ai{
+  align-self:flex-start;text-align:left;padding-right:16px;
+  border-bottom-left-radius:4px;
+}
+body.bubble-mode .story-msg.user{
+  align-self:flex-end;text-align:left;padding-left:16px;
+  border-bottom-right-radius:4px;
+}
+/* 气泡形状 */
+body.bubble-round .story-msg{border-radius:22px;}
+body.bubble-round .story-msg.ai{border-bottom-left-radius:6px;}
+body.bubble-round .story-msg.user{border-bottom-right-radius:6px;}
+body.bubble-sharp .story-msg{border-radius:4px;}
+body.bubble-sharp .story-msg.ai{border-bottom-left-radius:0;}
+body.bubble-sharp .story-msg.user{border-bottom-right-radius:0;}
+/* 气泡颜色 */
+body.bubble-color-fogwhite .story-msg.ai{background:rgba(255,255,255,.12);}
+body.bubble-color-fogwhite .story-msg.user{background:rgba(255,255,255,.18);}
+body.bubble-color-pinkwhite .story-msg.ai{background:rgba(255,200,220,.15);}
+body.bubble-color-pinkwhite .story-msg.user{background:rgba(255,180,200,.22);}
+body.bubble-color-purpleblack .story-msg.ai{background:rgba(108,92,231,.18);}
+body.bubble-color-purpleblack .story-msg.user{background:rgba(162,155,254,.22);}
+body.bubble-color-bluewhite .story-msg.ai{background:rgba(93,173,226,.15);}
+body.bubble-color-bluewhite .story-msg.user{background:rgba(93,173,226,.22);}
+body.bubble-color-redblack .story-msg.ai{background:rgba(231,76,60,.15);}
+body.bubble-color-redblack .story-msg.user{background:rgba(255,107,107,.2);}
+body.bubble-color-orangeyellow .story-msg.ai{background:rgba(253,203,110,.15);}
+body.bubble-color-orangeyellow .story-msg.user{background:rgba(230,126,34,.2);}
+body.bubble-color-cyan .story-msg.ai{background:rgba(81,207,102,.12);}
+body.bubble-color-cyan .story-msg.user{background:rgba(39,174,96,.18);}
+body.theme-light.bubble-color-fogwhite .story-msg.ai{background:rgba(0,0,0,.04);}
+body.theme-light.bubble-color-fogwhite .story-msg.user{background:rgba(0,0,0,.07);}
 .story-msg.user .dialogue{color:var(--text);}
 body.theme-light .story-msg.user{color:var(--accent);}
 .story-msg.time-mark{
@@ -390,6 +429,7 @@ body.theme-light #shortcut-bar{background:transparent;}
 }
 .sc-pill:active{transform:scale(.93);background:rgba(108,92,231,.35);}
 .sc-pill.dragging{opacity:.45;transform:scale(.94);}
+.qp-pill.dragging{opacity:.45;transform:scale(.94);}
 body.theme-light .sc-pill{
   background:rgba(108,92,231,.12);
   color:var(--accent);
@@ -602,6 +642,7 @@ body.theme-light .modal-hdr{background:linear-gradient(180deg,rgba(108,92,231,.0
 .tab-bar{
   display:flex;border-bottom:1px solid var(--border);
   flex-shrink:0;background:var(--card);
+  gap:0;position:relative;z-index:1;
 }
 .tab-item{
   flex:1;padding:12px 8px;background:none;border:none;
@@ -729,27 +770,27 @@ body.theme-light .modal-hdr{background:linear-gradient(180deg,rgba(108,92,231,.0
   font-size:13px;color:var(--text);
   z-index:4000;pointer-events:none;
   opacity:0;transition:opacity .25s,transform .25s cubic-bezier(.4,0,.2,1);
-  white-space:nowrap;max-width:90vw;
+  white-space:normal;max-width:85vw;word-break:break-all;text-align:center;line-height:1.5;
   box-shadow:0 8px 32px rgba(0,0,0,.45),0 0 0 1px rgba(108,92,231,.1);
   backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
 }
 body.theme-light #tb-toast{background:rgba(255,255,255,.96);}
 #tb-toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
-/* ── 滚动条美化（与笔记AI一致，兼容Android Chrome） ── */
-::-webkit-scrollbar{width:4px;height:4px;}
+/* ── 滚动条美化（与笔记AI保持一致） ── */
+::-webkit-scrollbar{width:5px;height:5px;}
 ::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(108,92,231,.35);border-radius:4px;}
-::-webkit-scrollbar-thumb:hover{background:rgba(108,92,231,.65);}
+::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 #pg-list,#pg-settings,.modal-body,#chat-body,#journeyList{
   scrollbar-width:thin;
-  scrollbar-color:rgba(108,92,231,.35) transparent;
+  scrollbar-color:var(--border) transparent;
 }
-body.theme-light ::-webkit-scrollbar-thumb{background:rgba(108,92,231,.22);}
-body.theme-light ::-webkit-scrollbar-thumb:hover{background:rgba(108,92,231,.5);}
+body.theme-light ::-webkit-scrollbar-thumb{background:rgba(0,0,0,.15);}
+body.theme-light ::-webkit-scrollbar-thumb:hover{background:var(--accent);}
 body.theme-light #pg-list,
 body.theme-light #pg-settings,
 body.theme-light .modal-body,
-body.theme-light #chat-body{scrollbar-color:rgba(108,92,231,.22) transparent;}
+body.theme-light #chat-body{scrollbar-color:rgba(0,0,0,.15) transparent;}
 /* ── 主题色彩块 ── */
 .theme-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;}
 .theme-chip{
@@ -885,6 +926,30 @@ body.theme-light #chat-body{scrollbar-color:rgba(108,92,231,.22) transparent;}
 .jcard-meta{font-size:11px;color:var(--text2);line-height:1.5;
   display:flex;align-items:center;gap:6px;}
 .jcard-meta-dot{width:3px;height:3px;border-radius:50%;background:var(--text2);flex-shrink:0;}
+.jcard-tags{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px;}
+.jcard-tag{
+  font-size:10px;padding:1px 8px;border-radius:10px;
+  background:rgba(108,92,231,.1);color:var(--accent2);
+  border:1px solid rgba(108,92,231,.15);
+  white-space:nowrap;
+}
+.tag-filter-bar{
+  display:flex;gap:6px;overflow-x:auto;padding:0 14px 6px;
+  scrollbar-width:none;-webkit-overflow-scrolling:touch;
+}
+.tag-filter-bar::-webkit-scrollbar{display:none;}
+.tag-filter-chip{
+  padding:4px 12px;border-radius:14px;
+  background:var(--card);border:1px solid var(--border);
+  color:var(--text2);font-size:11px;cursor:pointer;
+  white-space:nowrap;flex-shrink:0;
+  transition:all .15s;
+}
+.tag-filter-chip.act{
+  background:rgba(108,92,231,.15);border-color:rgba(108,92,231,.3);
+  color:var(--accent2);font-weight:600;
+}
+.tag-filter-chip:active{transform:scale(.95);}
 .jcard-preview{
   font-size:12px;color:var(--text2);line-height:1.5;
   overflow:hidden;display:-webkit-box;-webkit-line-clamp:1;-webkit-box-orient:vertical;
@@ -1016,8 +1081,59 @@ body.theme-light .reader-settings{background:rgba(245,245,248,.95);}
 .reader-settings-row input[type=range]{
   flex:1;accent-color:var(--accent);
 }
-.reader-settings-row .rs-val{
-  font-size:12px;color:var(--accent2);width:36px;text-align:right;
+.reader-settings-row input[type=range]{
+  flex:1;
+}
+input[type=range]{
+  -webkit-appearance:none;
+  appearance:none;
+  height:4px;
+  border-radius:2px;
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent) var(--pct,0%),rgba(108,92,231,.15) var(--pct,0%),rgba(108,92,231,.15) 100%);
+  outline:none;
+  cursor:pointer;
+}
+input[type=range]:focus{outline:none;}
+input[type=range]::-webkit-slider-runnable-track{
+  height:4px;
+  border-radius:2px;
+}
+input[type=range]::-webkit-slider-thumb{
+  -webkit-appearance:none;
+  appearance:none;
+  width:22px;height:22px;
+  margin-top:-9px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 2px 8px rgba(108,92,231,.5),0 0 0 4px rgba(162,155,254,.18);
+  cursor:pointer;
+  transition:transform .15s cubic-bezier(.4,0,.2,1),box-shadow .15s;
+  border:2px solid rgba(255,255,255,.35);
+}
+input[type=range]::-webkit-slider-thumb:active{
+  transform:scale(1.25);
+  box-shadow:0 0 0 8px rgba(108,92,231,.18),0 2px 10px rgba(108,92,231,.6);
+}
+input[type=range]::-moz-range-track{
+  height:4px;border-radius:2px;
+  background:rgba(108,92,231,.15);border:none;
+}
+input[type=range]::-moz-range-progress{
+  height:4px;border-radius:2px 0 0 2px;
+  background:var(--accent);
+}
+input[type=range]::-moz-range-thumb{
+  width:22px;height:22px;
+  border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  box-shadow:0 2px 8px rgba(108,92,231,.5);
+  cursor:pointer;
+  border:2px solid rgba(255,255,255,.35);
+  transition:transform .15s;
+}
+input[type=range]::-moz-range-thumb:active{transform:scale(1.25);}
+body.theme-light input[type=range]{
+  background:linear-gradient(90deg,var(--accent) 0%,var(--accent) var(--pct,0%),rgba(108,92,231,.1) var(--pct,0%),rgba(108,92,231,.1) 100%);
 }
 .reader-mode-btns{display:flex;gap:8px;}
 .reader-mode-btn{
@@ -1146,6 +1262,55 @@ body.theme-light .scroll-fab{background:rgba(255,255,255,.45);border:none;box-sh
   z-index:2;
 }
 .story-msg.msg-collapsed .msg-expand-btn{display:inline-flex;align-items:center;gap:4px;}
+/* ── AI消息底部快捷操作按钮 ── */
+.msg-quick-actions{
+  display:flex;align-items:center;gap:10px;
+  margin-top:8px;
+  justify-content:flex-start;
+}
+body.bubble-mode .msg-quick-actions{
+  justify-content:flex-start;
+  margin-left:4px;
+  max-width:80%;
+}
+.msg-qa-btn{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:34px;height:34px;border-radius:50%;
+  background:rgba(108,92,231,.1);
+  border:1px solid rgba(108,92,231,.15);
+  color:var(--accent2);font-size:13px;
+  cursor:pointer;transition:all .15s;
+  -webkit-tap-highlight-color:transparent;
+  opacity:.7;
+}
+.msg-qa-btn:active{transform:scale(.85);opacity:1;}
+.msg-qa-btn.danger{color:var(--danger);background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.15);}
+.msg-qa-btn.danger:active{color:#fff;background:rgba(255,107,107,.35);}
+@media(hover:hover){
+  .msg-qa-btn:hover{color:#fff;background:rgba(108,92,231,.25);border-color:rgba(108,92,231,.3);}
+  .msg-qa-btn.danger:hover{color:#fff;background:rgba(255,107,107,.25);border-color:rgba(255,107,107,.3);}
+}
+/* ── 下拉刷新指示器 ── */
+#pull-refresh-indicator{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:center;
+  height:0;overflow:hidden;
+  transition:height .2s;
+  color:var(--accent2);font-size:12px;
+  gap:6px;z-index:5;
+  background:transparent;
+}
+#pull-refresh-indicator.pulling{transition:none;}
+#pull-refresh-indicator .pri-icon{
+  transition:transform .2s;font-size:14px;
+}
+#pull-refresh-indicator.ready .pri-icon{
+  transform:rotate(180deg);
+}
+#pull-refresh-indicator.loading .pri-icon{
+  animation:spin .8s linear infinite;
+}
+@keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 /* ── 虚拟加载区 ── */
 .virt-load-trigger{
   text-align:center;padding:16px;cursor:pointer;
@@ -1369,6 +1534,267 @@ body.theme-light #inspiration-panel{background:rgba(248,248,252,.96);}
 }
 body.theme-light .qp-pill{background:rgba(81,207,102,.1);color:#27ae60;}
 .qp-pill i{margin-right:4px;font-size:10px;}
+.qp-group-pill{
+  display:inline-flex;align-items:center;
+  padding:5px 12px;border-radius:20px;
+  background:rgba(81,207,102,.1);
+  border:1px solid rgba(81,207,102,.2);
+  color:var(--success);font-size:12px;font-weight:600;
+  cursor:pointer;flex-shrink:0;
+  transition:all .15s;white-space:nowrap;
+  -webkit-tap-highlight-color:transparent;
+  touch-action:manipulation;
+  pointer-events:auto;
+  gap:4px;
+}
+.qp-group-pill:active{transform:scale(.93);background:rgba(81,207,102,.25);}
+.qp-group-pill.open{background:rgba(81,207,102,.25);border-color:rgba(81,207,102,.35);}
+body.theme-light .qp-group-pill{background:rgba(81,207,102,.08);color:#27ae60;}
+.qp-group-expand{
+  display:none;position:absolute;bottom:calc(100% + 4px);left:14px;right:14px;
+  background:rgba(26,26,36,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(81,207,102,.25);border-radius:14px;
+  padding:10px;z-index:35;box-shadow:0 8px 28px rgba(0,0,0,.45);
+  flex-wrap:wrap;gap:6px;
+}
+body.theme-light .qp-group-expand{background:rgba(248,248,252,.96);}
+.qp-group-expand.show{display:flex;animation:ctxIn .15s ease;}
+.qp-group-header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;
+  margin-bottom:4px;padding:0 4px;
+}
+.qp-group-header span{font-size:11px;font-weight:700;color:var(--success);}
+.qp-group-header button{background:none;border:none;color:var(--text2);font-size:13px;cursor:pointer;padding:2px 6px;}
+/* ── 设置页旅途信息卡片 ── */
+.tb-info-card{
+  margin:12px 14px 0;
+  border-radius:20px;
+  background:linear-gradient(135deg,rgba(108,92,231,.14) 0%,rgba(162,155,254,.06) 50%,rgba(108,92,231,.1) 100%);
+  border:1px solid rgba(108,92,231,.22);
+  overflow:hidden;position:relative;
+}
+.tb-info-card::before{
+  content:'';position:absolute;top:-40px;right:-30px;
+  width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle,rgba(108,92,231,.12),transparent 70%);
+  pointer-events:none;
+}
+.tb-info-card::after{
+  content:'';position:absolute;bottom:-30px;left:-20px;
+  width:90px;height:90px;border-radius:50%;
+  background:radial-gradient(circle,rgba(162,155,254,.1),transparent 70%);
+  pointer-events:none;
+}
+.tb-info-header{
+  display:flex;align-items:center;gap:10px;
+  padding:18px 20px 0;position:relative;z-index:1;
+}
+.tb-info-avatar{
+  width:48px;height:48px;border-radius:50%;
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;color:#fff;flex-shrink:0;
+  box-shadow:0 4px 14px rgba(108,92,231,.35);
+  overflow:hidden;
+}
+.tb-info-title-area{flex:1;min-width:0;}
+.tb-info-title{
+  font-size:16px;font-weight:800;color:var(--text);
+  font-family:'ZCOOL QingKe HuangYou',sans-serif;
+  letter-spacing:1px;
+  overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.tb-info-subtitle{
+  font-size:11px;color:var(--text2);margin-top:2px;
+  display:flex;align-items:center;gap:6px;
+}
+.tb-info-subtitle .tb-streak{
+  display:inline-flex;align-items:center;gap:3px;
+  padding:1px 8px;border-radius:10px;
+  background:linear-gradient(135deg,rgba(253,203,110,.2),rgba(230,126,34,.1));
+  color:#fdcb6e;font-size:10px;font-weight:700;
+}
+.tb-info-grid{
+  display:grid;grid-template-columns:1fr 1fr 1fr 1fr;
+  gap:0;padding:16px 10px 18px;position:relative;z-index:1;
+}
+.tb-info-cell{
+  text-align:center;position:relative;
+  padding:8px 4px;
+}
+.tb-info-cell:not(:last-child)::after{
+  content:'';position:absolute;right:0;top:20%;height:60%;
+  width:1px;background:rgba(108,92,231,.15);
+}
+.tb-info-num{
+  font-size:22px;font-weight:800;
+  background:linear-gradient(135deg,var(--text),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+  line-height:1.2;margin-bottom:4px;
+}
+.tb-info-label{
+  font-size:10px;color:var(--text2);letter-spacing:.5px;
+  white-space:nowrap;
+}
+body.theme-light .tb-info-card{
+  background:linear-gradient(135deg,rgba(108,92,231,.08) 0%,rgba(162,155,254,.04) 50%,rgba(108,92,231,.06) 100%);
+  border-color:rgba(108,92,231,.15);
+}
+body.theme-light .tb-info-card::before{background:radial-gradient(circle,rgba(108,92,231,.06),transparent 70%);}
+body.theme-light .tb-info-num{
+  background:linear-gradient(135deg,var(--accent),var(--accent2));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+body.theme-warm .tb-info-card{
+  background:linear-gradient(135deg,rgba(230,126,34,.12) 0%,rgba(240,178,122,.05) 100%);
+  border-color:rgba(230,126,34,.2);
+}
+body.theme-green .tb-info-card{
+  background:linear-gradient(135deg,rgba(39,174,96,.12) 0%,rgba(88,214,141,.05) 100%);
+  border-color:rgba(39,174,96,.2);
+}
+body.theme-blue .tb-info-card{
+  background:linear-gradient(135deg,rgba(41,128,185,.12) 0%,rgba(93,173,226,.05) 100%);
+  border-color:rgba(41,128,185,.2);
+}
+/* ── 系统提示词专家模式 ── */
+.sysprompt-editor{
+  position:relative;
+  background:var(--bg);border:1px solid var(--border);
+  border-radius:12px;overflow:hidden;
+  margin-top:8px;
+}
+.sysprompt-editor textarea{
+  width:100%;min-height:300px;max-height:60vh;
+  background:transparent;border:none;outline:none;
+  color:var(--text);font-size:12px;line-height:1.8;
+  font-family:'Courier New',monospace;
+  padding:14px;resize:vertical;
+  scrollbar-width:thin;
+  scrollbar-color:var(--border) transparent;
+}
+.sysprompt-editor textarea::placeholder{color:var(--text2);}
+.sysprompt-toolbar{
+  display:flex;align-items:center;gap:8px;
+  padding:8px 14px;border-top:1px solid var(--border);
+  background:rgba(108,92,231,.04);
+}
+.sysprompt-toolbar .sp-count{font-size:10px;color:var(--text2);margin-left:auto;}
+.sysprompt-warn{
+  padding:10px 14px;margin-bottom:10px;
+  background:rgba(255,107,107,.06);border:1px solid rgba(255,107,107,.15);
+  border-radius:10px;font-size:11px;color:var(--danger);line-height:1.7;
+}
+.sysprompt-warn i{margin-right:4px;}
+/* ── 章节节点标记 ── */
+.story-msg.time-mark{cursor:default;-webkit-tap-highlight-color:transparent;position:relative;}
+.story-msg.time-mark .tm-del-hint{
+  display:none;position:absolute;top:50%;right:8px;transform:translateY(-50%);
+  font-size:9px;color:var(--danger);background:rgba(255,107,107,.06);
+  padding:1px 6px;border-radius:6px;white-space:nowrap;
+  animation:ovIn .15s ease;opacity:.6;
+}
+.story-msg.time-mark.long-pressed .tm-del-hint{display:inline-flex;align-items:center;gap:3px;}
+.chapter-mark{
+  margin:16px 0;padding:12px 16px;
+  background:linear-gradient(135deg,rgba(253,203,110,.08),rgba(253,203,110,.03));
+  border:1px solid rgba(253,203,110,.25);
+  border-left:4px solid #fdcb6e;
+  border-radius:0 12px 12px 0;
+  cursor:pointer;transition:all .18s;
+  position:relative;
+}
+.chapter-mark:active{transform:scale(.98);background:rgba(253,203,110,.12);}
+.chapter-mark.long-pressed{background:rgba(255,107,107,.08);border-color:rgba(255,107,107,.3);}
+.chapter-mark.long-pressed .tm-del-hint{display:inline-flex;align-items:center;gap:3px;}
+.chapter-mark .cm-header{
+  display:flex;align-items:center;gap:8px;margin-bottom:6px;
+}
+.chapter-mark .cm-icon{
+  width:26px;height:26px;border-radius:50%;
+  background:linear-gradient(135deg,#fdcb6e,#e67e22);
+  display:flex;align-items:center;justify-content:center;
+  color:#fff;font-size:11px;flex-shrink:0;
+  box-shadow:0 2px 6px rgba(253,203,110,.35);
+}
+.chapter-mark .cm-title{
+  font-size:13px;font-weight:700;color:var(--text);
+  flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+}
+.chapter-mark .cm-time{font-size:10px;color:var(--text2);}
+.chapter-mark .cm-snapshot{
+  font-size:11px;color:var(--text2);line-height:1.6;
+  padding:6px 10px;background:rgba(0,0,0,.08);border-radius:8px;
+  margin-top:4px;
+}
+body.theme-light .chapter-mark .cm-snapshot{background:rgba(0,0,0,.03);}
+.chapter-mark .cm-del-btn{
+  position:absolute;top:8px;right:8px;
+  background:none;border:none;color:var(--text2);font-size:11px;
+  cursor:pointer;padding:4px;border-radius:4px;opacity:0;
+  transition:opacity .2s,color .18s;
+}
+.chapter-mark:hover .cm-del-btn,.chapter-mark:active .cm-del-btn{opacity:1;}
+.chapter-mark .cm-del-btn:hover{color:var(--danger);}
+/* ── 重写对比面板 ── */
+.rewrite-compare-ov{
+  display:none;position:fixed;inset:0;z-index:2700;
+  background:rgba(0,0,0,.6);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  align-items:flex-end;justify-content:center;
+}
+.rewrite-compare-ov.show{display:flex;animation:ovIn .2s ease;}
+.rewrite-compare-sheet{
+  width:100%;max-width:600px;max-height:82vh;
+  background:var(--card);border-radius:22px 22px 0 0;
+  display:flex;flex-direction:column;overflow:hidden;
+  animation:ctxUp .22s cubic-bezier(.4,0,.2,1);
+  padding-bottom:var(--safe-bot);
+}
+.rewrite-compare-header{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 18px 12px;border-bottom:1px solid var(--border);flex-shrink:0;
+}
+.rewrite-compare-header h3{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;}
+.rewrite-compare-header button{background:none;border:none;color:var(--text2);font-size:16px;cursor:pointer;padding:6px;border-radius:8px;}
+.rewrite-compare-body{flex:1;overflow-y:auto;padding:14px 16px;}
+.rewrite-panel{
+  padding:14px;margin-bottom:12px;border-radius:14px;
+  border:2px solid transparent;cursor:pointer;
+  transition:all .18s;position:relative;
+}
+.rewrite-panel:active{transform:scale(.98);}
+.rewrite-panel.panel-original{
+  background:rgba(108,92,231,.06);border-color:rgba(108,92,231,.2);
+}
+.rewrite-panel.panel-rewrite{
+  background:rgba(81,207,102,.06);border-color:rgba(81,207,102,.2);
+}
+.rewrite-panel.panel-selected{
+  box-shadow:0 0 0 2px var(--accent),0 4px 16px rgba(108,92,231,.2);
+}
+.rewrite-panel-label{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:3px 10px;border-radius:8px;
+  font-size:10px;font-weight:700;margin-bottom:10px;
+}
+.panel-original .rewrite-panel-label{background:rgba(108,92,231,.12);color:var(--accent2);}
+.panel-rewrite .rewrite-panel-label{background:rgba(81,207,102,.12);color:var(--success);}
+.rewrite-panel-text{
+  font-size:14px;color:var(--text);line-height:2;
+  font-family:'Noto Serif SC','Source Han Serif SC',serif;
+  max-height:240px;overflow-y:auto;
+}
+.rewrite-panel-text::-webkit-scrollbar{width:5px;}
+.rewrite-panel-text::-webkit-scrollbar-thumb{background:var(--border);border-radius:3px;}
+.rewrite-panel-text::-webkit-scrollbar-thumb:hover{background:var(--accent);}
+.rewrite-compare-footer{
+  padding:12px 16px;padding-bottom:calc(12px + var(--safe-bot));
+  border-top:1px solid var(--border);
+  display:flex;gap:10px;flex-shrink:0;
+}
 /* ── 分支树 ── */
 .branch-tree-wrap{padding:12px 16px;}
 .branch-tree-title{
@@ -1627,7 +2053,9 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
 
 <!-- ===== 对话页 ===== -->
 <div class="pg" id="pg-chat">
-  <div id="chat-body" onclick="TB.hideCtxMenu()"></div>
+  <div id="chat-body" onclick="TB.hideCtxMenu()" style="position:relative">
+  <div id="pull-refresh-indicator"><i class="fas fa-arrow-down pri-icon"></i><span class="pri-text">下拉加载更早消息</span></div>
+</div>
   <div id="batch-toolbar">
     <div class="batch-count" id="batchCount">已选 0 条</div>
     <button id="batch-cancel" onclick="TB.exitBatchMode()">取消</button>
@@ -1645,7 +2073,7 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
     <div id="chat-input-wrap">
   <button id="chat-plus-btn" onclick="TB.togglePlusPopup()"><i class="fas fa-plus"></i></button>
   <textarea id="chat-input" rows="1" placeholder="在故事中做出你的选择..." 
-    oninput="TB.autoResizeInput(this)" 
+    oninput="TB.autoResizeInput(this);TB.checkAtMention(this)" 
     onkeydown="TB.onInputKeydown(event)"
     onfocus="TB.onInputFocus()"
     onblur="TB.onInputBlur()"></textarea>
@@ -1659,13 +2087,17 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
     <i class="fas fa-globe" style="color:var(--success)"></i> 世界状态
   </button>
 </div>
+<div id="at-mention-panel" style="display:none;position:absolute;bottom:calc(100% + 8px);left:14px;right:14px;background:rgba(26,26,36,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(81,207,102,.25);border-radius:14px;padding:8px;z-index:35;box-shadow:0 8px 28px rgba(0,0,0,.45);max-height:200px;overflow-y:auto"></div>
 <div id="inspiration-panel">
   <div class="insp-header">
     <h4><i class="fas fa-dice" style="color:var(--accent2)"></i> 行动建议</h4>
     <button onclick="TB.closeInspirationPanel()"><i class="fas fa-times"></i></button>
   </div>
   <div id="insp-content">
-    <div style="display:flex;justify-content:center;padding:14px 10px"><button class="btn-primary" style="padding:10px 24px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button></div>
+    <div style="display:flex;gap:8px;justify-content:center;padding:14px 10px;flex-wrap:wrap">
+      <button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button>
+      <button class="btn-primary" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#e67e22,#f0b27a);box-shadow:0 3px 14px rgba(230,126,34,.35)" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 剧情分析</button>
+    </div>
   </div>
 </div>
   </div>
@@ -1673,6 +2105,7 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
 
 <!-- ===== 设置页 ===== -->
 <div class="pg" id="pg-settings">
+  <div id="tb-info-card-wrap"></div>
   <div class="settings-section">
     <div class="settings-group">
       <div class="settings-group-label">核心配置</div>
@@ -1813,7 +2246,7 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
       </div>
     </div>
     <div style="text-align:center;padding:8px 0 4px;font-size:11px;color:var(--text2)">
-      穿书系统 v1.0 · 笔记AI 配套
+      穿书系统 v1.0.5 · 笔记AI 配套
     </div>
   </div>
 </div>
@@ -1874,6 +2307,7 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
       <button class="tab-item act" onclick="TB.switchAddTab('cols')" id="add-tab-cols">已完结收藏</button>
       <button class="tab-item" onclick="TB.switchAddTab('cr')" id="add-tab-cr">我的创作</button>
       <button class="tab-item" onclick="TB.switchAddTab('txt')" id="add-tab-txt">导入TXT</button>
+      <button class="tab-item" onclick="TB.switchAddTab('epub')" id="add-tab-epub">导入EPUB</button>
     </div>
     <div class="modal-body" id="add-body"></div>
     <div class="modal-footer">
@@ -1927,18 +2361,26 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
           <i class="fas fa-floppy-disk"></i> 保存为预设
         </button>
       </div>
-      <div class="form-group">
+            <div class="form-group">
         <label class="form-label">你在书中的身份设定</label>
         <textarea class="form-textarea" id="identity-input" 
           placeholder="描述你穿书后的身份：例如姓名、性别、与主角的关系、特殊技能或背景知识等。AI会以此为准，让你以这个身份参与故事。" 
-          maxlength="1000" style="min-height:160px"
+          maxlength="1000" style="min-height:140px"
           oninput="document.getElementById('identity-count').textContent=this.value.length+'/1000';document.getElementById('identity-count').className='char-count'+(this.value.length>900?' warn':'');"></textarea>
         <div class="char-count" id="identity-count">0/1000</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label"><i class="fas fa-scroll" style="color:var(--accent2);margin-right:4px"></i>设定说明（穿越时期 / AI回复规则）</label>
+        <textarea class="form-textarea" id="identity-rules-input" 
+          placeholder="在此填写额外的设定说明，例如：&#10;· 我想穿越到小说第三卷，女主尚未暴露身份的时期&#10;· AI回复时多描写心理活动，少用旁白&#10;· 对话风格偏古风，称呼用"公子""姑娘"&#10;· 战斗场景要详细描写招式过程&#10;· 不要出现现代用语&#10;&#10;这些规则会和身份设定一起发送给AI。" 
+          maxlength="1500" style="min-height:120px"
+          oninput="document.getElementById('rules-count').textContent=this.value.length+'/1500';document.getElementById('rules-count').className='char-count'+(this.value.length>1300?' warn':'');"></textarea>
+        <div class="char-count" id="rules-count">0/1500</div>
       </div>
       <div style="padding:12px;background:rgba(108,92,231,.06);border-radius:10px;border:1px solid rgba(108,92,231,.15)">
         <p style="font-size:12px;color:var(--text2);line-height:1.8">
           <i class="fas fa-lightbulb" style="color:var(--accent2);margin-right:4px"></i>
-          身份设定全局生效，对所有旅途有效。若要针对特定小说自定义，可在该旅途的记忆设置中补充说明。
+          身份设定和设定说明全局生效，对所有旅途有效。设定说明适合写穿越时期、AI回复规则等。预设保存时会同时保存这两项内容。
         </p>
       </div>
     </div>
@@ -1955,12 +2397,10 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
       <h3><i class="fas fa-link" style="color:var(--success)"></i> 设定绑定</h3>
       <button class="modal-close" onclick="TB.closeModal('modal-binding')"><i class="fas fa-times"></i></button>
     </div>
-    <div class="list-filter-bar">
-      <div class="list-filter-seg">
-        <button class="filter-btn act" id="bind-filter-all" onclick="TB.setBindFilter('all')">全部</button>
-        <button class="filter-btn" id="bind-filter-book" onclick="TB.setBindFilter('book')">书籍</button>
-        <button class="filter-btn" id="bind-filter-series" onclick="TB.setBindFilter('series')">系列</button>
-      </div>
+    <div class="tab-bar">
+      <button class="tab-item act" id="bind-filter-all" onclick="TB.setBindFilter('all')">全部</button>
+      <button class="tab-item" id="bind-filter-book" onclick="TB.setBindFilter('book')">书籍</button>
+      <button class="tab-item" id="bind-filter-series" onclick="TB.setBindFilter('series')">系列</button>
     </div>
     <div class="modal-body" id="binding-body"></div>
     <div class="modal-footer">
@@ -2310,12 +2750,145 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
         <li>从收藏夹选书时会自动带入原书封面</li>
       </ul>
 
+      <h3>🔧 系统提示词专家模式</h3>
+      <p>高级用户可以直接查看和编辑发送给AI的完整系统提示词：</p>
+      <ul>
+        <li>在旅途选项中点击<strong>「系统提示词（专家模式）」</strong></li>
+        <li>点击<strong>「生成当前提示词」</strong>查看系统默认生成的完整内容</li>
+        <li>开启<strong>自定义开关</strong>后，系统将完全使用你编辑的提示词</li>
+        <li>原著信息、记忆摘要、上下文对话仍会正常附带</li>
+        <li>回复质量变差时可点击<strong>「恢复默认」</strong>回到系统状态</li>
+      </ul>
+
+      <h3>📑 章节标记与场景快照</h3>
+      <p>对话框上方的黄色「✂️ 分隔」按钮已升级为章节标记系统：</p>
+      <ul>
+        <li>点击后输入章节/场景名称（如"第一章：初入书院"）</li>
+        <li>系统<strong>自动记录当时的世界状态快照</strong>（时间、人物、事件）</li>
+        <li>点击对话中的章节标记，可查看当时的<strong>世界状态快照</strong></li>
+        <li>有章节标记时，<strong>阅读模式会按标记分章</strong>，形成真正的章节目录</li>
+        <li>无章节标记时仍按字数自动分章</li>
+      </ul>
+
+      <h3>✍️ AI重写段落（对比展示）</h3>
+      <p>对AI的某段叙事不满意但不想丢弃：</p>
+      <ul>
+        <li>长按AI消息，选择<strong>「重写本段」</strong></li>
+        <li>AI会在<strong>对比面板</strong>中重写同一情节的不同版本</li>
+        <li>原文和重写版本<strong>并排展示</strong>，点击选中满意的版本</li>
+        <li>点击<strong>「再写一版」</strong>可以继续生成更多风格（最多5版）</li>
+        <li>选中后点击<strong>「使用选中版本」</strong>，自动替换并保存到版本系统</li>
+        <li>区别于「重新生成」：重写不会删除后续对话，只替换当前这一条</li>
+      </ul>
+
       <h3>⌨️ 电脑端操作</h3>
       <ul>
         <li>按 <strong>Esc</strong> 键快速关闭任何弹窗、面板、阅读器</li>
         <li>输入框中按 <strong>Ctrl+Enter</strong>（或 Cmd+Enter）直接发送消息</li>
         <li>鼠标悬停在卡片、按钮上有高亮交互效果</li>
         <li>右键点击消息可打开上下文菜单（等同于手机长按）</li>
+      </ul>
+      
+      <h3>🏷️ 旅途标签分类</h3>
+      <p>旅途多了之后可以用标签来分类管理：</p>
+      <ul>
+        <li>在书架卡片右上角菜单点<strong>「管理标签」</strong></li>
+        <li>输入标签名，用顿号、逗号或空格分隔，例如"玄幻、言情、修仙"</li>
+        <li>每个旅途最多 <strong>5 个标签</strong>，标签显示在卡片的书名下方</li>
+        <li>书架页顶部会自动出现<strong>标签筛选栏</strong>，点击标签快速过滤</li>
+        <li>搜索栏也支持按标签名搜索</li>
+        <li>标签名称相同的会自动归为一组，方便统一筛选</li>
+      </ul>
+
+      <h3>📂 快捷短语分组</h3>
+      <p>快捷短语多了之后可以用分组来整理：</p>
+      <ul>
+        <li>在「设置 → 快捷短语」中编辑短语时，可以填写<strong>「所属分组」</strong>字段</li>
+        <li>例如填写"节奏控制""场景切换""角色互动"等分组名</li>
+        <li>同组的短语会折叠在一个<strong>绿色组名胶囊</strong>下</li>
+        <li>点击组名胶囊，弹出该组所有短语，点击直接发送</li>
+        <li>不填分组的短语仍然直接显示在胶囊栏</li>
+        <li>建议将常用的短语不分组直接显示，不常用的归入分组节省空间</li>
+      </ul>
+
+      <h3>📥 EPUB 电子书导入</h3>
+      <p>除了 TXT，现在还支持导入 EPUB 格式的电子书：</p>
+      <ul>
+        <li>点击底部 <strong>+</strong> 按钮，切换到<strong>「导入EPUB」</strong>标签页</li>
+        <li>选择本地 .epub 文件，系统会自动解析提取文本内容</li>
+        <li>EPUB 是电子书最常见的格式，各平台下载的小说通常都是这个格式</li>
+        <li>系统会自动按章节顺序提取正文，去除格式标签</li>
+        <li>同样要求字数在 <strong>1万~20万字</strong> 之间</li>
+        <li>解析后可修改书名，点击「开始旅途」即可</li>
+        <li>如果解析失败，可能是加密的 EPUB 或非标准格式，建议转换为 TXT 后导入</li>
+      </ul>
+
+      <h3>🗑️ 分隔线与章节标记删除</h3>
+      <p>对话中的分隔线和章节标记的删除方式：</p>
+      <ul>
+        <li><strong>长按</strong>分隔线或章节标记约0.5秒，出现红色「松手删除」提示</li>
+        <li><strong>松手</strong>即可删除，无需二次确认</li>
+        <li>电脑端可以<strong>右键点击</strong>分隔线直接删除</li>
+        <li>误删后无法恢复，但可以随时重新插入新的分隔标记</li>
+      </ul>
+
+      <h3>📱 消息管理补充</h3>
+      <p>长按消息的上下文菜单现在对所有消息类型统一提供：</p>
+      <ul>
+        <li><strong>复制</strong>：复制消息文本到剪贴板</li>
+        <li><strong>改写</strong>：在原位编辑消息内容</li>
+        <li><strong>重写本段</strong>：仅对AI消息有效，在对比面板中重写</li>
+        <li><strong>删除</strong>：删除当前这条消息（AI和用户消息都可删除）</li>
+        <li><strong>书签 / 折叠 / 在此存档 / 批量选择</strong>：第二行操作</li>
+      </ul>
+      <p>AI消息底部还有三个快捷按钮：<strong>🗑️删除、✏️续写、🔄重新生成</strong>，无需长按即可操作。</p>
+      
+    <h3>💬 对话气泡模式</h3>
+      <p>在「设置 → 页面美化」中可以切换对话显示样式：</p>
+      <ul>
+        <li><strong>小说排版</strong>（默认）：传统小说排版风格，AI叙事左对齐，用户输入右对齐</li>
+        <li><strong>常规气泡</strong>：聊天软件风格的气泡样式</li>
+        <li><strong>圆角气泡</strong>：更圆润的气泡外观</li>
+        <li><strong>尖角气泡</strong>：棱角分明的气泡样式</li>
+      </ul>
+      <p>开启气泡模式后还可选择<strong>气泡颜色</strong>：雾白、粉白、紫黑、蓝白、红黑、橙黄、青绿七种配色。气泡模式和颜色搭配主题使用效果更佳。</p>
+
+      <h3>📈 旅途趋势图</h3>
+      <p>在设置页顶部的信息卡片上点击，可展开/收起<strong>近7日活跃趋势图</strong>：</p>
+      <ul>
+        <li>以柱状图展示最近7天每天的消息数量</li>
+        <li>帮助你了解自己的穿书频率和活跃度</li>
+        <li>签到状态会显示今日是否有过活动</li>
+      </ul>
+
+      <h3>🎭 角色好感度系统</h3>
+      <p>世界状态面板中的人物状态现在包含<strong>好感度</strong>信息：</p>
+      <ul>
+        <li>AI会自动追踪各角色对穿越者的好感度（0~100）</li>
+        <li>好感度以<strong>进度条+文字标签</strong>形式展示（亲密/友好/普通/冷淡/敌对）</li>
+        <li>颜色会根据好感度自动变化：绿色=高好感，黄色=中等，红色=低好感</li>
+        <li>你的行动和选择会影响好感度变化</li>
+        <li>好感度信息在每次AI回复后自动更新</li>
+      </ul>
+
+      <h3>✍️ 剧情走向建议（剧情分析）</h3>
+      <p>除了灵感骰子，还可以获取更深度的<strong>剧情走向分析</strong>：</p>
+      <ul>
+        <li>在灵感面板中点击<strong>「剧情分析」</strong>按钮</li>
+        <li>AI会综合当前故事摘要、世界状态和最近对话，给出3条走向建议</li>
+        <li>每条建议包含：<strong>具体行动、预期影响、风格标签</strong></li>
+        <li>三条建议分别对应：稳妥保守、激进冒险、出人意料三种风格</li>
+        <li>标签包括：好感提升、关系恶化、剧情加速、埋下伏笔、高风险高回报、稳扎稳打</li>
+        <li>点击建议可填入输入框，编辑后发送</li>
+      </ul>
+
+      <h3>📋 输入草稿自动保存</h3>
+      <p>输入框中正在编写的内容会自动保存：</p>
+      <ul>
+        <li>切换页面、刷新浏览器后，重新打开旅途时<strong>自动恢复草稿</strong></li>
+        <li>发送成功后<strong>自动清除</strong>草稿</li>
+        <li>每个旅途独立保存草稿，互不影响</li>
+        <li>草稿每1.5秒自动保存一次，无需手动操作</li>
       </ul>
     </div>
   </div>
@@ -2410,6 +2983,11 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
         <textarea class="form-textarea" id="phrase-content-input" placeholder="点击按钮后发送的完整内容&#10;例如：请继续往下写，保持当前节奏" style="min-height:100px" maxlength="500"></textarea>
         <div class="form-hint">按钮显示简短名称，实际发送的可以是更详细的指令。留空则直接发送按钮文字。</div>
       </div>
+      <div class="form-group">
+        <label class="form-label">所属分组（可选）</label>
+        <input class="form-input" type="text" id="phrase-group-input" placeholder="例如：节奏控制、场景切换、角色互动（留空则不分组）" maxlength="20">
+        <div class="form-hint">同组的短语会折叠在组名胶囊下，点击组名展开选择。留空则直接显示在胶囊栏。</div>
+      </div>
     </div>
     <div class="modal-footer">
       <button class="btn-secondary" onclick="TB.closeModal('modal-phrase-edit')">取消</button>
@@ -2452,9 +3030,9 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
       <button class="modal-close" onclick="TB.closeModal('modal-presets')"><i class="fas fa-times"></i></button>
     </div>
     <div class="tab-bar">
-      <button class="tab-item act" onclick="TB.switchPresetTab('char')" id="preset-tab-char">人设</button>
-      <button class="tab-item" onclick="TB.switchPresetTab('world')" id="preset-tab-world">世界观</button>
-      <button class="tab-item" onclick="TB.switchPresetTab('style')" id="preset-tab-style">文风</button>
+      <button class="tab-item act" id="preset-tab-char" onclick="TB.switchPresetTab('char')">人设</button>
+      <button class="tab-item" id="preset-tab-world" onclick="TB.switchPresetTab('world')">世界观</button>
+      <button class="tab-item" id="preset-tab-style" onclick="TB.switchPresetTab('style')">文风</button>
     </div>
     <div class="modal-body" id="presets-body"></div>
     <div class="modal-footer">
@@ -2656,7 +3234,36 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
     </div>
   </div>
 </div>
-
+<!-- ===== 重写对比面板 ===== -->
+<div class="rewrite-compare-ov" id="rewriteCompareOv" onclick="if(event.target===this)TB.closeRewriteCompare()">
+  <div class="rewrite-compare-sheet">
+    <div class="rewrite-compare-header">
+      <h3><i class="fas fa-arrows-left-right" style="color:var(--accent2)"></i> 段落重写对比</h3>
+      <button onclick="TB.closeRewriteCompare()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="rewrite-compare-body" id="rewriteCompareBody">
+      <div style="text-align:center;padding:30px"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:8px;font-size:12px;color:var(--text2)">AI正在重写...</p></div>
+    </div>
+    <div class="rewrite-compare-footer" id="rewriteCompareFooter" style="display:none">
+      <button class="btn-secondary" onclick="TB.rewriteAgain()" style="flex:0 0 auto;padding:12px 16px"><i class="fas fa-rotate-right"></i> 再写一版</button>
+      <button class="btn-primary" id="rewrite-apply-btn" onclick="TB.applyRewrite()" disabled><i class="fas fa-check"></i> 使用选中版本</button>
+    </div>
+  </div>
+</div>
+<!-- ===== 模态：系统提示词编辑 ===== -->
+<div class="modal-ov" id="modal-sysprompt" onclick="if(event.target===this)TB.closeModal('modal-sysprompt')">
+  <div class="modal-box">
+    <div class="modal-hdr">
+      <h3><i class="fas fa-terminal" style="color:#e74c3c"></i> 系统提示词（专家模式）</h3>
+      <button class="modal-close" onclick="TB.closeModal('modal-sysprompt')"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="modal-body" id="sysprompt-body"></div>
+    <div class="modal-footer">
+      <button class="btn-secondary" onclick="TB.resetSysPrompt()"><i class="fas fa-rotate-left"></i> 恢复默认</button>
+      <button class="btn-primary" onclick="TB.saveSysPrompt()"><i class="fas fa-floppy-disk"></i> 保存</button>
+    </div>
+  </div>
+</div>
 <!-- ===== 模态：导出排版小说 ===== -->
 <div class="modal-ov" id="modal-export-novel" style="z-index:620" onclick="if(event.target===this)TB.closeModal('modal-export-novel')">
   <div class="modal-box">
@@ -2731,7 +3338,8 @@ var TB = (function () {
   var _assocGroupName = '';     // 关联系列名称
   var _toastTimer = null;
   var _typingEl = null;        // 正在打字的元素
-  var _listFilter = 'all';     // 列表筛选：all / book / series
+  var _listFilter = 'all';
+  var _tagFilter = '';     // 列表筛选：all / book / series
   var _presetTab = 'char';     // 预设弹窗当前tab
   var _presetEditType = 'char'; // 正在编辑的预设类型
   var _presetEditIdx = -1;     // 正在编辑的预设索引（-1=新建）
@@ -2766,6 +3374,7 @@ var TB = (function () {
     _renderShortcutBar();
     _updateSettingsDesc();
     renderJourneys();
+    _renderInfoCard();
 
     // 首次访问引导
     if (!localStorage.getItem(TB_VISITED_KEY)) {
@@ -2797,6 +3406,14 @@ var TB = (function () {
     } else if (_beauty.customFontUrl && _beauty.customFontName) {
       _loadCustomFont(_beauty.customFontUrl, _beauty.customFontName, null);
     }
+    // 气泡模式
+    document.body.classList.remove('bubble-mode','bubble-round','bubble-sharp','bubble-color-fogwhite','bubble-color-pinkwhite','bubble-color-purpleblack','bubble-color-bluewhite','bubble-color-redblack','bubble-color-orangeyellow','bubble-color-cyan');
+    if (_beauty.bubbleMode) {
+      document.body.classList.add('bubble-mode');
+      if (_beauty.bubbleShape === 'round') document.body.classList.add('bubble-round');
+      else if (_beauty.bubbleShape === 'sharp') document.body.classList.add('bubble-sharp');
+      if (_beauty.bubbleColor) document.body.classList.add('bubble-color-' + _beauty.bubbleColor);
+    }
     var chatBody = document.getElementById('chat-body');
     if (chatBody) {
       chatBody.style.backgroundImage = _beauty.bgImage ? 'url(' + _beauty.bgImage + ')' : '';
@@ -2810,7 +3427,7 @@ var TB = (function () {
     var ws = parseFloat(_beauty.wordSpacing) || 0;
     var fs = parseInt(_beauty.fontSize) || 0;
     if (fontFamily || ls > 0 || ws > 0 || (fs > 0 && fs !== 15)) {
-      var css = '#chat-body .story-msg,#readerContent{';
+      var css = '#chat-body .story-msg{';
       if (fontFamily) css += "font-family:'" + fontFamily + "','Noto Serif SC',serif!important;";
       if (ls > 0) css += 'letter-spacing:' + ls + 'px!important;';
       if (ws > 0) css += 'word-spacing:' + ws + 'px!important;';
@@ -2837,7 +3454,153 @@ var TB = (function () {
     document.head.appendChild(style);
     if (callback) callback(true);
   }
+// ── 设置页旅途信息卡片 ──
+  function _renderInfoCard() {
+    var wrap = document.getElementById('tb-info-card-wrap');
+    if (!wrap) return;
 
+    // 统计数据
+    var totalMsgs = 0;
+    var totalChars = 0;
+    var finishedCount = 0;
+    var activeCount = 0;
+
+    _journeys.forEach(function (j) {
+      var msgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+      totalMsgs += msgs.length;
+      msgs.forEach(function (m) { totalChars += (m.content || '').length; });
+      if (j.status === 'stopped') finishedCount++;
+      else activeCount++;
+    });
+
+    // 旅行天数（签到天数）：统计有过活动的不同日期数
+    var daySet = {};
+    _journeys.forEach(function (j) {
+      // 创建日期
+      if (j.createdAt) {
+        var d1 = new Date(j.createdAt).toLocaleDateString();
+        daySet[d1] = true;
+      }
+      // 最后更新日期
+      if (j.updatedAt) {
+        var d2 = new Date(j.updatedAt).toLocaleDateString();
+        daySet[d2] = true;
+      }
+      // 每条消息的日期
+      (j.messages || []).forEach(function (m) {
+        if (m.ts) {
+          var d3 = new Date(m.ts).toLocaleDateString();
+          daySet[d3] = true;
+        }
+      });
+    });
+    var travelDays = Object.keys(daySet).length;
+
+    // 格式化
+    function fmtNum(n) {
+      if (n >= 100000) return (n / 10000).toFixed(1) + '万';
+      if (n >= 10000) return (n / 10000).toFixed(1) + '万';
+      if (n >= 1000) return (n / 1000).toFixed(1) + 'K';
+      return String(n);
+    }
+
+    // 今日是否有活动（签到状态）
+    var todayStr = new Date().toLocaleDateString();
+    var todayActive = !!daySet[todayStr];
+    var streakText = todayActive ? '今日已签到' : '今日未活跃';
+    var streakIcon = todayActive ? 'fa-fire' : 'fa-moon';
+
+    // 7日活跃数据
+    var last7 = [];
+    for (var di = 6; di >= 0; di--) {
+      var d = new Date();
+      d.setDate(d.getDate() - di);
+      var dStr = d.toLocaleDateString();
+      var count = 0;
+      _journeys.forEach(function (j) {
+        (j.messages || []).forEach(function (m) {
+          if (m.ts && new Date(m.ts).toLocaleDateString() === dStr) count++;
+        });
+      });
+      last7.push({ label: (d.getMonth() + 1) + '/' + d.getDate(), count: count });
+    }
+    var maxCount = Math.max.apply(null, last7.map(function (x) { return x.count; })) || 1;
+
+    // 读取笔记AI用户信息
+    var _bjUserCard = {};
+    try { _bjUserCard = JSON.parse(localStorage.getItem('bj_userCard') || '{}'); } catch(e) {}
+    var _bjUserName = (_bjUserCard.name || '').trim();
+    var _bjUserAvatar = (_bjUserCard.avatar || '').trim();
+    var _defaultAvatar = './Default%20Avatar.png';
+
+    // 头像 HTML：用户头像 → 默认图片 → 图标兜底（纯 JS 构建，避免 onerror 嵌套引号问题）
+    var _avatarSrc = _bjUserAvatar || _defaultAvatar;
+    var _avatarHtml = '<img src="' + _avatarSrc + '" alt="头像" id="tb-card-avatar-img" style="width:100%;height:100%;object-fit:cover;border-radius:50%">';
+
+    // 标题：穿书旅人：用户名（无用户名时只显示穿书旅人）
+    var _cardTitle = _bjUserName ? ('穿书旅人：' + _bjUserName) : '穿书旅人';
+
+    wrap.innerHTML =
+      '<div class="tb-info-card" onclick="TB.toggleTrendChart()" style="cursor:pointer">' +
+        '<div class="tb-info-header">' +
+          '<div class="tb-info-avatar">'+_avatarHtml+'</div>' +
+          '<div class="tb-info-title-area">' +
+            '<div class="tb-info-title">'+_esc(_cardTitle)+'</div>' +
+            '<div class="tb-info-subtitle">' +
+              '<span>共 ' + _journeys.length + ' 段旅途</span>' +
+              '<span class="tb-streak"><i class="fas ' + streakIcon + '"></i> ' + streakText + '</span>' +
+            '</div>' +
+          '</div>' +
+        '</div>' +
+        '<div class="tb-info-grid">' +
+          '<div class="tb-info-cell">' +
+            '<div class="tb-info-num">' + fmtNum(totalMsgs) + '</div>' +
+            '<div class="tb-info-label">对话总数</div>' +
+          '</div>' +
+          '<div class="tb-info-cell">' +
+            '<div class="tb-info-num">' + fmtNum(totalChars) + '</div>' +
+            '<div class="tb-info-label">总字数</div>' +
+          '</div>' +
+          '<div class="tb-info-cell">' +
+            '<div class="tb-info-num">' + finishedCount + '</div>' +
+            '<div class="tb-info-label">已完结</div>' +
+          '</div>' +
+          '<div class="tb-info-cell">' +
+            '<div class="tb-info-num">' + travelDays + '</div>' +
+            '<div class="tb-info-label">旅行天数</div>' +
+          '</div>' +
+        '</div>' +
+        '<div id="tb-trend-chart" style="display:none;padding:0 20px 18px;position:relative;z-index:1">' +
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:8px;display:flex;align-items:center;gap:6px"><i class="fas fa-chart-bar" style="color:var(--accent2)"></i> 近7日活跃</div>' +
+          '<div style="display:flex;align-items:flex-end;gap:6px;height:60px">' +
+            last7.map(function (day) {
+              var h = Math.max(4, Math.round(day.count / maxCount * 56));
+              return '<div style="flex:1;display:flex;flex-direction:column;align-items:center;gap:3px">' +
+                '<span style="font-size:9px;color:var(--accent2);font-weight:700">' + (day.count || '') + '</span>' +
+                '<div style="width:100%;height:' + h + 'px;border-radius:4px;background:linear-gradient(180deg,var(--accent2),var(--accent));opacity:.7;transition:height .3s"></div>' +
+                '<span style="font-size:9px;color:var(--text2)">' + day.label + '</span>' +
+              '</div>';
+            }).join('') +
+          '</div>' +
+        '</div>' +
+      '</div>';
+
+    // 头像加载失败时用图标兜底
+    var _avatarImg = document.getElementById('tb-card-avatar-img');
+    if (_avatarImg) {
+      _avatarImg.onerror = function() {
+        this.onerror = null;
+        var parent = this.parentNode;
+        if (parent) { parent.innerHTML = '<i class="fas fa-book-open-reader"></i>'; }
+      };
+    }
+  }
+  function toggleTrendChart() {
+    var chart = document.getElementById('tb-trend-chart');
+    if (!chart) return;
+    chart.style.display = chart.style.display === 'none' ? '' : 'none';
+  }
+  
   function _updateSettingsDesc() {
     var api = _getActiveApi();
     var apiDesc = document.getElementById('set-api-desc');
@@ -2847,7 +3610,10 @@ var TB = (function () {
     var idDesc = document.getElementById('set-identity-desc');
     if (idDesc) {
       var id = _settings.userIdentity || '';
-      idDesc.textContent = id ? id.slice(0, 30) + (id.length > 30 ? '...' : '') : '尚未设定身份';
+      var hasRules = !!(_settings.identityRules);
+      var desc = id ? id.slice(0, 25) + (id.length > 25 ? '...' : '') : '尚未设定身份';
+      if (hasRules) desc += ' · 含设定说明';
+      idDesc.textContent = desc;
     }
   }
 
@@ -2882,6 +3648,7 @@ var TB = (function () {
     var navEl = document.getElementById('bnav-' + page);
     if (navEl) navEl.classList.add('act');
     _updateHdr(page);
+    if (page === 'settings') _renderInfoCard();
   }
 
   function _updateHdr(page) {
@@ -2929,14 +3696,64 @@ var TB = (function () {
 
   function _doExitChat() {
     if (_draftTimer) { clearTimeout(_draftTimer); _draftTimer = null; }
+    // 若重写面板开着且有在途请求，先中止
+    var rewriteOv = document.getElementById('rewriteCompareOv');
+    if (rewriteOv && rewriteOv.classList.contains('show')) {
+      closeRewriteCompare();
+    }
+    _isGenerating = false;
+    _abortCtrl = null;
+    _regenVersionTarget = null;
     _curJourneyId = null;
     _batchMode = false;
     _batchSelected.clear();
-    document.getElementById('batch-toolbar').classList.remove('show');
+    var batchEl = document.getElementById('batch-toolbar');
+    if (batchEl) batchEl.classList.remove('show');
+    var stopBtn = document.getElementById('chat-stop-btn');
+    if (stopBtn) stopBtn.classList.remove('show');
+    var sendBtn = document.getElementById('chat-send');
+    if (sendBtn) sendBtn.disabled = false;
+    var inspPanel = document.getElementById('inspiration-panel');
+    if (inspPanel) inspPanel.classList.remove('show');
+    var plusPopup = document.getElementById('plus-popup');
+    if (plusPopup) plusPopup.classList.remove('show');
+    var atPanel = document.getElementById('at-mention-panel');
+    if (atPanel) atPanel.style.display = 'none';
+    var phraseExpand = document.getElementById('phrase-group-expand');
+    if (phraseExpand) phraseExpand.remove();
+    var plusBtn = document.getElementById('chat-plus-btn');
+    if (plusBtn) plusBtn.classList.remove('open');
     switchPage('list');
     renderJourneys();
+    _renderInfoCard();
+  }
+function _renderTagFilterBar() {
+    var existing = document.getElementById('tag-filter-bar');
+    if (existing) existing.remove();
+    // 收集所有标签
+    var allTags = {};
+    _journeys.forEach(function (j) {
+      (j.tags || []).forEach(function (t) { allTags[t] = (allTags[t] || 0) + 1; });
+    });
+    var tagNames = Object.keys(allTags);
+    if (tagNames.length === 0) return;
+    tagNames.sort(function (a, b) { return allTags[b] - allTags[a]; });
+    var bar = document.createElement('div');
+    bar.id = 'tag-filter-bar';
+    bar.className = 'tag-filter-bar';
+    var html = '<div class="tag-filter-chip' + (!_tagFilter ? ' act' : '') + '" onclick="TB.setTagFilter(\'\')">全部</div>';
+    tagNames.forEach(function (t) {
+      html += '<div class="tag-filter-chip' + (_tagFilter === t ? ' act' : '') + '" onclick="TB.setTagFilter(\'' + _esc(t).replace(/'/g, "\\'") + '\')">' + _esc(t) + ' <span style="opacity:.5">' + allTags[t] + '</span></div>';
+    });
+    bar.innerHTML = html;
+    var container = document.getElementById('journeyList');
+    if (container) container.parentNode.insertBefore(bar, container);
   }
 
+  function setTagFilter(tag) {
+    _tagFilter = tag;
+    renderJourneys();
+  }
   // ── 列表筛选 ──
   function setListFilter(type) {
     _listFilter = type;
@@ -2951,13 +3768,20 @@ var TB = (function () {
   function renderJourneys() {
     var container = document.getElementById('journeyList');
     if (!container) return;
+    // 渲染标签筛选栏
+    _renderTagFilterBar();
     var query = (document.getElementById('listSearch').value || '').trim().toLowerCase();
     var journeys = _journeys.filter(function (j) {
+      // 标签筛选
+      if (_tagFilter && !(j.tags && j.tags.indexOf(_tagFilter) !== -1)) return false;
       if (!query) return true;
       if (j.novelTitle.toLowerCase().indexOf(query) !== -1) return true;
       // 搜索系列名称
       var gName = (j.assocGroupName || '').toLowerCase();
-      return gName && gName.indexOf(query) !== -1;
+      if (gName && gName.indexOf(query) !== -1) return true;
+      // 搜索标签
+      if (j.tags && j.tags.some(function(t){ return t.toLowerCase().indexOf(query) !== -1; })) return true;
+      return false;
     });
     if (journeys.length === 0) {
       container.innerHTML =
@@ -3051,6 +3875,7 @@ var TB = (function () {
         '<span>' + msgCount + ' 条记录</span>' +
         stoppedBadge +
       '</div>' +
+      ((j.tags && j.tags.length > 0) ? '<div class="jcard-tags">' + j.tags.map(function(t){ return '<span class="jcard-tag">' + _esc(t) + '</span>'; }).join('') + '</div>' : '') +
       '<div class="jcard-preview">' + _esc(preview) + '</div>' +
       '</div></div>' +
       '</div>'
@@ -3194,6 +4019,7 @@ function toggleFolder(leadId) {
       _cardItem('fa-layer-group', '关联系列', 'TB.openAssocModal(\'' + id + '\');TB._hideCardMenuPub()') +
       _cardItem('fa-download', '导出记录', 'TB.exportJourney(\'' + id + '\');TB._hideCardMenuPub()') +
       _cardItem('fa-image', '更换封面', 'TB.changeCover(\'' + id + '\');TB._hideCardMenuPub()') +
+      _cardItem('fa-tags', '管理标签', 'TB.manageTags(\'' + id + '\');TB._hideCardMenuPub()') +
       '<div style="height:1px;background:var(--border);margin:4px 6px"></div>' +
       _cardItem('fa-trash-alt danger', '删除旅途', 'TB.confirmDelete(\'' + id + '\');TB._hideCardMenuPub()', true);
     // 定位
@@ -3312,7 +4138,11 @@ function toggleFolder(leadId) {
     for (var i = startIdx; i < msgs.length; i++) {
       html += _renderMsgEl(msgs[i], i);
     }
+    var pullIndicator = document.getElementById('pull-refresh-indicator');
     body.innerHTML = html;
+    if (pullIndicator && !document.getElementById('pull-refresh-indicator')) {
+      body.insertBefore(pullIndicator, body.firstChild);
+    }
     _bindMsgEvents();
     _applyBeauty();
     _initChatScroll();
@@ -3344,7 +4174,11 @@ function toggleFolder(leadId) {
     for (var i = newStart; i < msgs.length; i++) {
       html += _renderMsgEl(msgs[i], i);
     }
+    var pullIndicator2 = document.getElementById('pull-refresh-indicator');
     body.innerHTML = html;
+    if (pullIndicator2 && !document.getElementById('pull-refresh-indicator')) {
+      body.insertBefore(pullIndicator2, body.firstChild);
+    }
     _bindMsgEvents();
     _applyBeauty();
 
@@ -3352,15 +4186,101 @@ function toggleFolder(leadId) {
     body.scrollTop = newScrollHeight - oldScrollHeight;
     tbToast('已加载更多消息' + (_chatVisibleCount >= _chatMaxDOM ? '（已达显示上限）' : ''));
   }
+// ── 下拉刷新手势（加载更早消息） ──
+  var _pullStartY = 0;
+  var _pullDelta = 0;
+  var _isPulling = false;
+  var _pullThreshold = 60;
+  var _canPullRefresh = false;
 
+  function _initPullRefresh() {
+    var body = document.getElementById('chat-body');
+    if (!body) return;
+    body.removeEventListener('touchstart', _onPullTouchStart);
+    body.removeEventListener('touchmove', _onPullTouchMove);
+    body.removeEventListener('touchend', _onPullTouchEnd);
+    body.addEventListener('touchstart', _onPullTouchStart, { passive: true });
+    body.addEventListener('touchmove', _onPullTouchMove, { passive: false });
+    body.addEventListener('touchend', _onPullTouchEnd, { passive: true });
+  }
+
+  function _onPullTouchStart(e) {
+    var body = document.getElementById('chat-body');
+    if (!body) return;
+    // 只在滚动到顶部时允许下拉
+    _canPullRefresh = (body.scrollTop <= 2);
+    if (_canPullRefresh) {
+      _pullStartY = e.touches[0].clientY;
+      _pullDelta = 0;
+      _isPulling = false;
+    }
+  }
+
+  function _onPullTouchMove(e) {
+    if (!_canPullRefresh) return;
+    var body = document.getElementById('chat-body');
+    if (!body || body.scrollTop > 2) { _canPullRefresh = false; return; }
+    var currentY = e.touches[0].clientY;
+    _pullDelta = currentY - _pullStartY;
+    if (_pullDelta <= 0) { _pullDelta = 0; return; }
+    // 有更早消息才允许下拉
+    var loadBtn = document.getElementById('virt-load-more');
+    if (!loadBtn) { _pullDelta = 0; return; }
+    e.preventDefault();
+    _isPulling = true;
+    var indicator = document.getElementById('pull-refresh-indicator');
+    if (!indicator) return;
+    var displayDelta = Math.min(_pullDelta * 0.5, 80);
+    indicator.style.height = displayDelta + 'px';
+    indicator.classList.add('pulling');
+    indicator.classList.remove('loading');
+    if (displayDelta >= _pullThreshold) {
+      indicator.classList.add('ready');
+      indicator.querySelector('.pri-text').textContent = '松手加载更早消息';
+    } else {
+      indicator.classList.remove('ready');
+      indicator.querySelector('.pri-text').textContent = '下拉加载更早消息';
+    }
+  }
+
+  function _onPullTouchEnd() {
+    if (!_isPulling) return;
+    _isPulling = false;
+    _canPullRefresh = false;
+    var indicator = document.getElementById('pull-refresh-indicator');
+    if (!indicator) return;
+    var displayDelta = Math.min(_pullDelta * 0.5, 80);
+    if (displayDelta >= _pullThreshold) {
+      // 触发加载
+      indicator.classList.remove('pulling');
+      indicator.classList.remove('ready');
+      indicator.classList.add('loading');
+      indicator.querySelector('.pri-text').textContent = '加载中...';
+      indicator.querySelector('.pri-icon').className = 'fas fa-spinner pri-icon';
+      setTimeout(function () {
+        loadMoreMessages();
+        // 收起指示器
+        indicator.style.height = '0';
+        indicator.classList.remove('loading');
+        indicator.querySelector('.pri-icon').className = 'fas fa-arrow-down pri-icon';
+        indicator.querySelector('.pri-text').textContent = '下拉加载更早消息';
+      }, 400);
+    } else {
+      // 未达阈值，回弹
+      indicator.classList.remove('pulling');
+      indicator.classList.remove('ready');
+      indicator.style.height = '0';
+    }
+    _pullDelta = 0;
+  }
   // ── 滚动监听（方向检测 + 快捷按钮）──
   function _initChatScroll() {
     var body = document.getElementById('chat-body');
     if (!body) return;
-    // 移除旧监听避免重复
     body.removeEventListener('scroll', _onChatScroll);
     body.addEventListener('scroll', _onChatScroll, { passive: true });
     _lastScrollTop = body.scrollTop;
+    _initPullRefresh();
   }
 
   function _onChatScroll() {
@@ -3431,18 +4351,322 @@ function toggleFolder(leadId) {
     if (botBtn) setTimeout(function () { botBtn.classList.remove('show'); }, 600);
   }
 var _tmLpTimer = null;
+  // ── AI重写当前段落（对比展示） ──
+  var _rewriteTargetIdx = -1;
+  var _rewriteOriginal = '';
+  var _rewriteVersions = []; // 存放重写版本
+  var _rewriteSelectedIdx = -1; // 用户选中的版本索引，-1=原文，0+=重写版本
+
+  function rewriteParagraph(idx) {
+    var j = _getJourney(_curJourneyId);
+    if (!j || j.status === 'stopped') return;
+    if (_isGenerating) { tbToast('正在生成中，请稍候'); return; }
+    var msg = (j.messages || [])[idx];
+    if (!msg || msg.role !== 'ai') { tbToast('只能重写AI消息'); return; }
+    var api = _getActiveApi();
+    if (!api || !api.url || !api.key) { tbToast('请先配置API'); return; }
+
+    _rewriteTargetIdx = idx;
+    _rewriteOriginal = msg.content;
+    _rewriteVersions = [];
+    _rewriteSelectedIdx = -1;
+
+    // 显示面板
+    var ov = document.getElementById('rewriteCompareOv');
+    if (ov) ov.classList.add('show');
+    var footer = document.getElementById('rewriteCompareFooter');
+    if (footer) footer.style.display = 'none';
+    var applyBtn = document.getElementById('rewrite-apply-btn');
+    if (applyBtn) applyBtn.disabled = true;
+
+    var body = document.getElementById('rewriteCompareBody');
+    if (body) body.innerHTML = '<div style="text-align:center;padding:30px"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:8px;font-size:12px;color:var(--text2)">AI正在重写这段内容...</p></div>';
+
+    // 构建上下文让AI重写
+    _doRewrite(j, idx);
+  }
+
+  function _doRewrite(j, idx) {
+    var api = _getActiveApi();
+    if (!api || !api.url || !api.key) return;
+    var msg = (j.messages || [])[idx];
+    if (!msg) return;
+
+    // 收集上下文：前几条消息
+    var histMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+    var contextSlice = [];
+    var targetInHist = -1;
+    for (var ci = 0; ci < histMsgs.length; ci++) {
+      if (histMsgs[ci] === msg) { targetInHist = ci; break; }
+    }
+    // 取目标前6条 + 目标本身作为上下文
+    var startC = Math.max(0, targetInHist - 6);
+    contextSlice = histMsgs.slice(startC, targetInHist);
+
+    var contextText = contextSlice.map(function (m) {
+      var role = m.role === 'ai' ? '[叙事]' : '[玩家行动]';
+      return role + ' ' + m.content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim().slice(0, 300);
+    }).join('\n\n');
+
+    var originalClean = _rewriteOriginal.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+
+    var sysPrompt = '你是一位小说作者。任务：根据上下文，重写下面这段叙事内容。\n\n' +
+      '要求：\n' +
+      '1. 保持同样的情节走向和关键事件不变\n' +
+      '2. 重写措辞、描写角度、修辞手法、叙事节奏\n' +
+      '3. 字数与原文相近（±20%）\n' +
+      '4. 保持人物性格一致\n' +
+      '5. 只输出重写后的纯叙事文本，不要任何解释说明\n' +
+      '6. 不要输出"重写版本"之类的标题\n' +
+      (_rewriteVersions.length > 0 ? '7. 注意：这是第' + (_rewriteVersions.length + 1) + '次重写，请尝试与之前完全不同的写法和视角\n' : '');
+
+    var url = api.url.replace(/\/$/, '') + '/chat/completions';
+
+    _isGenerating = true;
+    _abortCtrl = new AbortController();
+    var accumulated = '';
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
+      body: JSON.stringify({
+        model: api.model || 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: sysPrompt },
+          { role: 'user', content: '上下文：\n' + contextText + '\n\n需要重写的原文：\n' + originalClean + '\n\n请直接输出重写后的内容：' }
+        ],
+        max_tokens: Math.max(400, Math.min(1200, Math.round(originalClean.length * 1.5))),
+        temperature: 0.95,
+        stream: true
+      }),
+      signal: _abortCtrl.signal
+    }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error('API错误: ' + res.status); });
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+
+      function pump() {
+        return reader.read().then(function (result) {
+          if (result.done) {
+            _onRewriteDone(accumulated);
+            return;
+          }
+          var chunk = decoder.decode(result.value, { stream: true });
+          var lines = chunk.split('\n');
+          lines.forEach(function (line) {
+            if (!line.startsWith('data: ')) return;
+            var data = line.slice(6).trim();
+            if (data === '[DONE]') return;
+            try {
+              var parsed = JSON.parse(data);
+              var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content;
+              if (delta) {
+                accumulated += delta;
+                _updateRewritePreview(accumulated);
+              }
+            } catch (e) { /* ignore */ }
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (e) {
+      if (e.name === 'AbortError') {
+        // 面板已关闭或用户手动中止，安静退出
+        return;
+      }
+      if (accumulated.trim()) {
+        _onRewriteDone(accumulated);
+      } else {
+        var rwBody = document.getElementById('rewriteCompareBody');
+        if (rwBody) rwBody.innerHTML = '<div style="text-align:center;padding:20px;color:var(--danger);font-size:12px"><i class="fas fa-circle-xmark"></i> 重写失败：' + _esc(e.message) + '</div>';
+        var footer = document.getElementById('rewriteCompareFooter');
+        if (footer) footer.style.display = 'flex';
+      }
+    }).finally(function () {
+      _isGenerating = false;
+      _abortCtrl = null;
+    });
+  }
+
+  function _updateRewritePreview(currentText) {
+    var body = document.getElementById('rewriteCompareBody');
+    if (!body) return;
+    var originalClean = _rewriteOriginal.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+    var html = '';
+
+    // 原文面板
+    html += '<div class="rewrite-panel panel-original' + (_rewriteSelectedIdx === -1 ? ' panel-selected' : '') + '" onclick="TB.selectRewriteVersion(-1)">' +
+      '<div class="rewrite-panel-label"><i class="fas fa-file-alt"></i> 原文</div>' +
+      '<div class="rewrite-panel-text">' + _renderMarkdown(originalClean) + '</div>' +
+    '</div>';
+
+    // 已有的重写版本
+    _rewriteVersions.forEach(function (ver, vi) {
+      html += '<div class="rewrite-panel panel-rewrite' + (_rewriteSelectedIdx === vi ? ' panel-selected' : '') + '" onclick="TB.selectRewriteVersion(' + vi + ')">' +
+        '<div class="rewrite-panel-label"><i class="fas fa-pen-fancy"></i> 重写版本 ' + (vi + 1) + '</div>' +
+        '<div class="rewrite-panel-text">' + _renderMarkdown(ver) + '</div>' +
+      '</div>';
+    });
+
+    // 正在生成的版本
+    html += '<div class="rewrite-panel panel-rewrite" style="border-style:dashed">' +
+      '<div class="rewrite-panel-label"><i class="fas fa-pen-fancy"></i> 重写版本 ' + (_rewriteVersions.length + 1) + ' <span class="typing-cursor" style="font-size:10px"></span></div>' +
+      '<div class="rewrite-panel-text">' + _renderMarkdown(currentText) + '</div>' +
+    '</div>';
+
+    body.innerHTML = html;
+    body.scrollTop = body.scrollHeight;
+  }
+
+  function _onRewriteDone(content) {
+    _isGenerating = false;
+    var trimmed = content.trim();
+    if (trimmed) {
+      _rewriteVersions.push(trimmed);
+    }
+    _renderRewriteCompare();
+    var footer = document.getElementById('rewriteCompareFooter');
+    if (footer) footer.style.display = 'flex';
+  }
+
+  function _renderRewriteCompare() {
+    var body = document.getElementById('rewriteCompareBody');
+    if (!body) return;
+    var originalClean = _rewriteOriginal.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+    var html = '';
+
+    // 原文面板
+    html += '<div class="rewrite-panel panel-original' + (_rewriteSelectedIdx === -1 ? ' panel-selected' : '') + '" onclick="TB.selectRewriteVersion(-1)">' +
+      '<div class="rewrite-panel-label"><i class="fas fa-file-alt"></i> 原文（' + originalClean.length + '字）</div>' +
+      '<div class="rewrite-panel-text">' + _renderMarkdown(originalClean) + '</div>' +
+    '</div>';
+
+    // 所有重写版本
+    _rewriteVersions.forEach(function (ver, vi) {
+      html += '<div class="rewrite-panel panel-rewrite' + (_rewriteSelectedIdx === vi ? ' panel-selected' : '') + '" onclick="TB.selectRewriteVersion(' + vi + ')">' +
+        '<div class="rewrite-panel-label"><i class="fas fa-pen-fancy"></i> 重写版本 ' + (vi + 1) + '（' + ver.length + '字）</div>' +
+        '<div class="rewrite-panel-text">' + _renderMarkdown(ver) + '</div>' +
+      '</div>';
+    });
+
+    html += '<p style="text-align:center;font-size:11px;color:var(--text2);padding:8px 0">点击选中想要使用的版本，然后点击「使用选中版本」</p>';
+
+    body.innerHTML = html;
+  }
+
+  function selectRewriteVersion(idx) {
+    _rewriteSelectedIdx = idx;
+    _renderRewriteCompare();
+    var applyBtn = document.getElementById('rewrite-apply-btn');
+    if (applyBtn) applyBtn.disabled = false;
+  }
+
+  function rewriteAgain() {
+    if (_isGenerating) { tbToast('正在生成中'); return; }
+    if (_rewriteVersions.length >= 5) { tbToast('最多重写5个版本'); return; }
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var body = document.getElementById('rewriteCompareBody');
+    if (body) {
+      // 在已有内容后面加一个加载提示
+      var loadingDiv = document.createElement('div');
+      loadingDiv.style.cssText = 'text-align:center;padding:16px';
+      loadingDiv.innerHTML = '<div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:6px;font-size:11px;color:var(--text2)">正在生成第 ' + (_rewriteVersions.length + 1) + ' 个版本...</p>';
+      body.appendChild(loadingDiv);
+      body.scrollTop = body.scrollHeight;
+    }
+    var footer = document.getElementById('rewriteCompareFooter');
+    if (footer) footer.style.display = 'none';
+    _doRewrite(j, _rewriteTargetIdx);
+  }
+
+  function applyRewrite() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var msg = (j.messages || [])[_rewriteTargetIdx];
+    if (!msg) return;
+
+    if (_rewriteSelectedIdx === -1) {
+      // 选择了原文，不做修改
+      closeRewriteCompare();
+      tbToast('保持原文不变');
+      return;
+    }
+
+    var selectedContent = _rewriteVersions[_rewriteSelectedIdx];
+    if (!selectedContent) return;
+
+    // 把重写版本应用到消息中（同时保存到版本系统）
+    if (!msg.alternatives) msg.alternatives = [];
+    if (msg.alternatives.length === 0) {
+      msg.alternatives.push(msg.content); // 保存原文
+    }
+    msg.alternatives.push(selectedContent);
+    msg.altIndex = msg.alternatives.length - 1;
+    msg.content = selectedContent;
+    j.updatedAt = new Date().toISOString();
+    _saveJourneys();
+
+    closeRewriteCompare();
+    _renderChat();
+    _scrollToBottom();
+    tbToast('已应用重写版本 ' + (_rewriteSelectedIdx + 1));
+  }
+
+  function closeRewriteCompare() {
+    // 中止正在进行的重写请求
+    if (_isGenerating && _abortCtrl) {
+      try { _abortCtrl.abort(); } catch (e) {}
+      _abortCtrl = null;
+    }
+    _isGenerating = false;
+    var ov = document.getElementById('rewriteCompareOv');
+    if (ov) ov.classList.remove('show');
+    _rewriteTargetIdx = -1;
+    _rewriteOriginal = '';
+    _rewriteVersions = [];
+    _rewriteSelectedIdx = -1;
+  }
+function showChapterSnapshot(idx) {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var msg = (j.messages || [])[idx];
+    if (!msg || !msg.isChapterMark) return;
+    if (!msg.worldSnapshot) {
+      tbToast('此章节标记没有世界状态快照');
+      return;
+    }
+    // 临时替换世界状态面板的内容来展示快照
+    var savedWs = j.worldState;
+    j.worldState = msg.worldSnapshot;
+    _renderWorldStateBody(j);
+    j.worldState = savedWs;
+    // 修改标题
+    var wsHeader = document.querySelector('#wsBody').parentElement.querySelector('.ws-header h3');
+    if (wsHeader) {
+      wsHeader.innerHTML = '<i class="fas fa-camera" style="color:#fdcb6e"></i> 章节快照：' + _esc(msg.content);
+    }
+    document.getElementById('wsOverlay').classList.add('show');
+  }
   function deleteTimeMark(idx) {
     var j = _getJourney(_curJourneyId);
     if (!j) return;
     var msg = (j.messages || [])[idx];
     if (!msg || !msg.isTimeMark) return;
-    tbConfirm('删除这条分隔线吗？', function() {
-      j.messages.splice(idx, 1);
-      j.updatedAt = new Date().toISOString();
-      _saveJourneys();
-      _renderChat();
-      tbToast('分隔线已删除');
-    });
+    var label = msg.isChapterMark ? '章节标记' : '分隔线';
+    j.messages.splice(idx, 1);
+    if (j.bookmarks) {
+      j.bookmarks = j.bookmarks.filter(function (bk) { return bk.msgIdx !== idx; });
+      j.bookmarks.forEach(function (bk) {
+        if (bk.msgIdx > idx) bk.msgIdx--;
+      });
+    }
+    j.updatedAt = new Date().toISOString();
+    _saveJourneys();
+    _renderChat();
+    _scrollToBottom();
+    tbToast(label + '已删除');
   }
 // ── 消息折叠/展开 ──
   function toggleMsgCollapse(idx) {
@@ -3481,7 +4705,33 @@ var _tmLpTimer = null;
   }
   function _renderMsgEl(m, i) {
     if (m.isTimeMark) {
-      return '<div class="story-msg time-mark" data-idx="' + i + '" onclick="TB.deleteTimeMark(' + i + ')"><span>' + _esc(m.content) + '</span></div>';
+      if (m.isChapterMark) {
+        var cmTime = m.ts ? new Date(m.ts).toLocaleString('zh-CN', { month:'short', day:'numeric', hour:'2-digit', minute:'2-digit' }) : '';
+        var snapHtml = '';
+        if (m.worldSnapshot) {
+          var snParts = [];
+          if (m.worldSnapshot.time) snParts.push('⏱ ' + _esc(m.worldSnapshot.time));
+          if (m.worldSnapshot.event) snParts.push('📌 ' + _esc(m.worldSnapshot.event));
+          if (m.worldSnapshot.characters && m.worldSnapshot.characters.length > 0) {
+            var charNames = m.worldSnapshot.characters.map(function(c){ return _esc(c.name); }).slice(0,4).join('、');
+            snParts.push('👥 ' + charNames);
+          }
+          if (snParts.length > 0) {
+            snapHtml = '<div class="cm-snapshot">' + snParts.join(' · ') + '</div>';
+          }
+        }
+        return '<div class="chapter-mark" data-idx="' + i + '"' + (m.worldSnapshot ? ' onclick="TB.showChapterSnapshot(' + i + ')"' : '') + '>' +
+          '' +
+          '<div class="cm-header">' +
+            '<div class="cm-icon"><i class="fas fa-bookmark"></i></div>' +
+            '<div class="cm-title">' + _esc(m.content) + '</div>' +
+            '<div class="cm-time">' + cmTime + '</div>' +
+          '</div>' +
+          snapHtml +
+        '<span class="tm-del-hint" style="position:absolute;bottom:6px;right:6px;top:auto;transform:none;font-size:9px;opacity:.6;padding:1px 6px"><i class="fas fa-trash-alt"></i> 松手删除</span>' +
+        '</div>';
+      }
+      return '<div class="story-msg time-mark" data-idx="' + i + '"><span>' + _esc(m.content) + '</span><span class="tm-del-hint"><i class="fas fa-trash-alt"></i> 松手删除</span></div>';
     }
     var cls = 'story-msg ' + (m.role === 'ai' ? 'ai' : 'user');
     var j = _getJourney(_curJourneyId);
@@ -3494,11 +4744,51 @@ var _tmLpTimer = null;
     var bmBtn = m.role === 'ai' ? '<button class="' + bmBtnCls + '" onclick="event.stopPropagation();TB.toggleBookmark(' + i + ')" title="书签"><i class="fas fa-bookmark"></i></button>' : '';
     var expandBtn = isCollapsed ? '<button class="msg-expand-btn" onclick="event.stopPropagation();TB.toggleMsgCollapse(' + i + ')"><i class="fas fa-expand"></i> 点击展开</button>' : '';
     var versionBar = (m.role === 'ai' && m.alternatives && m.alternatives.length > 1) ? _buildVersionBar(i, m) : '';
-    return '<div class="' + cls + '" data-idx="' + i + '" style="position:relative">' + bmBtn + versionBar + rendered + expandBtn + '</div>';
+    var quickActions = '';
+    if (m.role === 'ai') {
+      quickActions = '<div class="msg-quick-actions">' +
+        '<button class="msg-qa-btn danger" onclick="event.stopPropagation();TB.deleteMsg(' + i + ')" title="删除"><i class="fas fa-trash-alt"></i></button>' +
+        '<button class="msg-qa-btn" onclick="event.stopPropagation();TB.continueGen(' + i + ')" title="续写"><i class="fas fa-pen-nib"></i></button>' +
+        '<button class="msg-qa-btn" onclick="event.stopPropagation();TB.regenWithVersion(' + i + ')" title="重新生成"><i class="fas fa-rotate-right"></i></button>' +
+        '</div>';
+    }
+    return '<div class="' + cls + '" data-idx="' + i + '" style="position:relative">' + bmBtn + versionBar + rendered + expandBtn + '</div>' + quickActions;
   }
 
   function _bindMsgEvents() {
     var body = document.getElementById('chat-body');
+    // 绑定分隔线和章节标记的长按删除
+    var timeMarks = body.querySelectorAll('.story-msg.time-mark, .chapter-mark');
+    timeMarks.forEach(function (el) {
+      var tmIdx = parseInt(el.dataset.idx);
+      if (isNaN(tmIdx)) return;
+      var tmLp = null;
+      el.addEventListener('touchstart', function (e) {
+        var self = this;
+        tmLp = setTimeout(function () {
+          tmLp = null;
+          self.classList.add('long-pressed');
+          if (navigator.vibrate) navigator.vibrate(30);
+        }, 500);
+      }, { passive: true });
+      el.addEventListener('touchend', function (e) {
+        var wasLongPressed = this.classList.contains('long-pressed');
+        if (tmLp) { clearTimeout(tmLp); tmLp = null; }
+        this.classList.remove('long-pressed');
+        if (wasLongPressed) {
+          TB.deleteTimeMark(tmIdx);
+        }
+      }, { passive: true });
+      el.addEventListener('touchcancel', function () {
+        if (tmLp) { clearTimeout(tmLp); tmLp = null; }
+        this.classList.remove('long-pressed');
+      }, { passive: true });
+      // 电脑端右键删除
+      el.addEventListener('contextmenu', function (e) {
+        e.preventDefault();
+        TB.deleteTimeMark(tmIdx);
+      });
+    });
     var msgs = body.querySelectorAll('.story-msg:not(.time-mark)');
     msgs.forEach(function (el) {
       el.addEventListener('touchstart', _onMsgTouchStart, { passive: true });
@@ -3554,8 +4844,10 @@ var _tmLpTimer = null;
     var row1 =
       _ctxBtn('fa-copy',        '复制',   'TB.copyMsg('+idx+');TB.hideCtxMenu()') +
       _ctxBtn('fa-pen',         '改写',   'TB.editMsg('+idx+');TB.hideCtxMenu()') +
-      _ctxBtn('fa-rotate-right','重新生成', isUser?'':'TB.regenWithVersion('+idx+');TB.hideCtxMenu()', '', isUser) +
+      _ctxBtn('fa-wand-magic-sparkles','重写本段', isUser?'':'TB.rewriteParagraph('+idx+');TB.hideCtxMenu()', '', isUser) +
       _ctxBtn('fa-trash-alt',   '删除',   'TB.deleteMsg('+idx+');TB.hideCtxMenu()', 'danger');
+
+    var row1b = '';
 
     var j2 = _getJourney(_curJourneyId);
     var isCollapsed = j2 && j2._collapsedMsgs && j2._collapsedMsgs[idx];
@@ -3589,6 +4881,8 @@ var _tmLpTimer = null;
     if (plusBtn) plusBtn.classList.remove('open');
     var inspP = document.getElementById('inspiration-panel');
     if (inspP) inspP.classList.remove('show');
+    var atPanel = document.getElementById('at-mention-panel');
+    if (atPanel) atPanel.style.display = 'none';
   }
 
   // ── 消息操作 ──
@@ -3669,7 +4963,177 @@ var _tmLpTimer = null;
     _renderChat();
     _genResponse();
   }
+  // ── AI续写（从当前消息末尾继续生成） ──
+  function continueGen(idx) {
+    var j = _getJourney(_curJourneyId);
+    if (!j || j.status === 'stopped') { tbToast('旅途已停止'); return; }
+    if (_isGenerating) { tbToast('正在生成中，请稍候'); return; }
+    var msg = (j.messages || [])[idx];
+    if (!msg || msg.role !== 'ai') { tbToast('只能续写AI消息'); return; }
+    var api = _getActiveApi();
+    if (!api || !api.url || !api.key) { tbToast('请先配置API'); return; }
 
+    // 删除这条消息之后的所有消息（续写当前消息）
+    var afterMsgs = j.messages.slice(idx + 1);
+    j.messages = j.messages.slice(0, idx + 1);
+    j.updatedAt = new Date().toISOString();
+    _saveJourneys();
+
+    _isGenerating = true;
+    document.getElementById('chat-send').disabled = true;
+    document.getElementById('chat-stop-btn').classList.add('show');
+    _abortCtrl = new AbortController();
+
+    var existingContent = msg.content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+    var accumulated = '';
+
+    // 构建上下文消息
+    var messages = _buildMessages(j, null, false);
+    // 把最后一条 assistant 消息（就是当前这条）的内容追加前缀提示
+    // 查找messages数组中最后一条 assistant
+    var lastAssistantIdx = -1;
+    for (var mi = messages.length - 1; mi >= 0; mi--) {
+      if (messages[mi].role === 'assistant') { lastAssistantIdx = mi; break; }
+    }
+
+    // 在消息末尾追加系统指令，让AI从上次断点继续
+    messages.push({
+      role: 'system',
+      content: '[续写指令] 上一条AI回复在中途被截断了，内容到"' +
+        existingContent.slice(-60).replace(/"/g, '') +
+        '"为止。请从这里紧接着往下写，不要重复已有内容，不要加任何开头语，直接续写后续情节。保持文风和叙事一致。'
+    });
+    messages.push({
+      role: 'user',
+      content: '请直接续写，从上次截断的地方接着写，不要重复。'
+    });
+
+    var url = api.url.replace(/\/$/, '') + '/chat/completions';
+    var body = document.getElementById('chat-body');
+
+    // 找到对应的DOM元素直接在上面续写
+    var targetEl = body ? body.querySelector('[data-idx="' + idx + '"]') : null;
+    if (targetEl) {
+      targetEl.classList.add('typing-cursor');
+    }
+
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
+      body: JSON.stringify({
+        model: api.model || 'gpt-3.5-turbo',
+        messages: messages,
+        max_tokens: (function(){ var rl = _getEffectiveReplyLength(j); if(rl==='short') return Math.min(api.maxTokens || 600, 300); if(rl==='long') return Math.max(api.maxTokens || 600, 1000); return api.maxTokens || 600; }()),
+        temperature: Math.max(0, Math.min(1.5, api.temp !== undefined ? api.temp : 0.78)),
+        top_p: 0.92,
+        frequency_penalty: 0.15,
+        presence_penalty: 0.1,
+        stream: true
+      }),
+      signal: _abortCtrl.signal
+    }).then(function (res) {
+      if (!res.ok) return res.text().then(function (t) { throw new Error('API错误: ' + res.status); });
+      var reader = res.body.getReader();
+      var decoder = new TextDecoder();
+
+      function pump() {
+        return reader.read().then(function (result) {
+          if (result.done) {
+            _onContinueDone(j, idx, existingContent, accumulated, afterMsgs, targetEl);
+            return;
+          }
+          var chunk = decoder.decode(result.value, { stream: true });
+          var lines = chunk.split('\n');
+          lines.forEach(function (line) {
+            if (!line.startsWith('data: ')) return;
+            var data = line.slice(6).trim();
+            if (data === '[DONE]') return;
+            try {
+              var parsed = JSON.parse(data);
+              var delta = parsed.choices && parsed.choices[0] && parsed.choices[0].delta && parsed.choices[0].delta.content;
+              if (delta) {
+                accumulated += delta;
+                // 实时显示：原内容 + 续写内容
+                var combinedDisplay = existingContent + accumulated;
+                var wsOpenIdx = combinedDisplay.lastIndexOf('<!--WS');
+                if (wsOpenIdx !== -1 && combinedDisplay.indexOf('WS-->', wsOpenIdx) === -1) {
+                  combinedDisplay = combinedDisplay.slice(0, wsOpenIdx);
+                }
+                if (targetEl) {
+                  var isBookmarked = j.bookmarks && j.bookmarks.some(function(bk) { return bk.msgIdx === idx; });
+                  var bmCls = 'bookmark-float-btn' + (isBookmarked ? ' active' : '');
+                  var bmBtn = '<button class="' + bmCls + '" onclick="event.stopPropagation();TB.toggleBookmark(' + idx + ')" title="书签"><i class="fas fa-bookmark"></i></button>';
+                  targetEl.innerHTML = bmBtn + _renderMarkdown(combinedDisplay);
+                  _scrollToBottom();
+                }
+              }
+            } catch (e) { /* ignore */ }
+          });
+          return pump();
+        });
+      }
+      return pump();
+    }).catch(function (e) {
+      if (targetEl) targetEl.classList.remove('typing-cursor');
+      if (e.name === 'AbortError') {
+        if (accumulated) {
+          _onContinueDone(j, idx, existingContent, accumulated, afterMsgs, targetEl);
+        } else {
+          // 恢复后续消息
+          j.messages = j.messages.concat(afterMsgs);
+          _saveJourneys();
+          _renderChat();
+          _scrollToBottom();
+        }
+      } else {
+        // 恢复后续消息
+        j.messages = j.messages.concat(afterMsgs);
+        _saveJourneys();
+        _renderChat();
+        tbToast('续写失败：' + e.message);
+      }
+    }).finally(function () {
+      _isGenerating = false;
+      _abortCtrl = null;
+      var sendBtn = document.getElementById('chat-send');
+      if (sendBtn) sendBtn.disabled = false;
+      var stopBtn = document.getElementById('chat-stop-btn');
+      if (stopBtn) stopBtn.classList.remove('show');
+    });
+  }
+
+  function _onContinueDone(j, idx, existingContent, newContent, afterMsgs, targetEl) {
+    if (targetEl) targetEl.classList.remove('typing-cursor');
+    if (!newContent.trim()) {
+      // 无新内容，恢复后续消息
+      j.messages = j.messages.concat(afterMsgs);
+      _saveJourneys();
+      _renderChat();
+      _scrollToBottom();
+      tbToast('续写无新内容');
+      return;
+    }
+    // 合并内容
+    var combined = existingContent + '\n\n' + newContent.trim();
+    var parsedCombined = _parseAndStoreWorldState(j, combined);
+    var msg = j.messages[idx];
+    if (!msg) return;
+    // 保存旧版本到alternatives
+    if (!msg.alternatives) msg.alternatives = [];
+    if (msg.alternatives.length === 0) {
+      msg.alternatives.push(msg.content); // 保存续写前的版本
+    }
+    msg.alternatives.push(parsedCombined);
+    msg.altIndex = msg.alternatives.length - 1;
+    msg.content = parsedCombined;
+    msg.ts = new Date().toISOString();
+    // 注意：续写后不恢复afterMsgs（因为内容已变，后续对话可能不再连贯）
+    j.updatedAt = new Date().toISOString();
+    _saveJourneys();
+    _renderChat();
+    _scrollToBottom();
+    tbToast('续写完成');
+  }
   function regenWithVersion(idx) {
     var j = _getJourney(_curJourneyId);
     if (!j || j.status === 'stopped') return;
@@ -3881,11 +5345,9 @@ function deleteCurrentVersion(idx) {
     if (newIdx >= msg.alternatives.length) newIdx = 0;
     msg.altIndex = newIdx;
     msg.content = msg.alternatives[newIdx];
-    // 清除可能残留的世界状态标签
-    msg.content = msg.content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
     j.updatedAt = new Date().toISOString();
     _saveJourneys();
-    // 只更新该条消息的DOM
+    // 只更新该条消息的DOM，显示时清除WS标签
     var body = document.getElementById('chat-body');
     var el = body ? body.querySelector('[data-idx="' + idx + '"]') : null;
     if (el) {
@@ -3970,9 +5432,11 @@ function deleteCurrentVersion(idx) {
     setTimeout(function () {
       var body = document.getElementById('chat-body');
       if (body) body.scrollTop = body.scrollHeight;
-      var inputArea = document.getElementById('chat-input-area');
-      if (inputArea) inputArea.scrollIntoView({ block: 'end', behavior: 'smooth' });
     }, 300);
+    setTimeout(function () {
+      var body = document.getElementById('chat-body');
+      if (body) body.scrollTop = body.scrollHeight;
+    }, 600);
   }
 
   function onInputBlur() {
@@ -4104,7 +5568,7 @@ function deleteCurrentVersion(idx) {
       body: JSON.stringify({
         model: api.model || 'gpt-3.5-turbo',
         messages: messages,
-        max_tokens: api.maxTokens || 600,
+        max_tokens: (function(){ var j2 = _getJourney(_curJourneyId); var rl = _getEffectiveReplyLength(j2); if(rl==='short') return Math.min(api.maxTokens || 600, 300); if(rl==='long') return Math.max(api.maxTokens || 600, 1000); return api.maxTokens || 600; }()),
         temperature: Math.max(0, Math.min(1.5, api.temp !== undefined ? api.temp : 0.78)),
         top_p: 0.92,
         frequency_penalty: 0.15,
@@ -4193,7 +5657,14 @@ function deleteCurrentVersion(idx) {
     var idx = j.messages.length - 1;
     placeholder.dataset.idx = idx;
     var bmBtn = '<button class="bookmark-float-btn" onclick="event.stopPropagation();TB.toggleBookmark(' + idx + ')" title="书签"><i class="fas fa-bookmark"></i></button>';
-placeholder.innerHTML = bmBtn + _renderMarkdown(parsedContent);
+    placeholder.innerHTML = bmBtn + _renderMarkdown(parsedContent);
+    var qaDiv = document.createElement('div');
+    qaDiv.className = 'msg-quick-actions';
+    qaDiv.innerHTML =
+      '<button class="msg-qa-btn danger" onclick="event.stopPropagation();TB.deleteMsg(' + idx + ')" title="删除"><i class="fas fa-trash-alt"></i></button>' +
+      '<button class="msg-qa-btn" onclick="event.stopPropagation();TB.continueGen(' + idx + ')" title="续写"><i class="fas fa-pen-nib"></i></button>' +
+      '<button class="msg-qa-btn" onclick="event.stopPropagation();TB.regenWithVersion(' + idx + ')" title="重新生成"><i class="fas fa-rotate-right"></i></button>';
+    placeholder.parentNode.insertBefore(qaDiv, placeholder.nextSibling);
     placeholder.addEventListener('touchstart', _onMsgTouchStart, { passive: true });
     placeholder.addEventListener('touchend', _onMsgTouchEnd, { passive: true });
     placeholder.addEventListener('touchcancel', _onMsgTouchCancel, { passive: true });
@@ -4298,7 +5769,65 @@ placeholder.innerHTML = bmBtn + _renderMarkdown(parsedContent);
     if (totalMsgs <= 6) stageHint = '当前处于故事开篇阶段，注重铺垫氛围和人物登场。';
     else if (totalMsgs <= 30) stageHint = '当前处于故事发展阶段，推进情节矛盾和人物关系变化。';
     else stageHint = '当前处于故事深入阶段，前期铺垫应开始收束，注意前后呼应。';
+    var worldStateHint = '';
+    if (j.worldState && j.worldState.updatedAt) {
+      var wsIsRecent = false;
+      var allMsgsForWs = (j.messages || []).filter(function (m) { return !m.isTimeMark && m.role === 'ai'; });
+      if (allMsgsForWs.length > 0) {
+        var lastAiTs = allMsgsForWs[allMsgsForWs.length - 1].ts || '';
+        var wsTs = j.worldState.updatedAt || '';
+        if (wsTs && lastAiTs && wsTs >= lastAiTs) {
+          wsIsRecent = true;
+        }
+      }
+      if (wsIsRecent) {
+        var _ws = j.worldState;
+        var wsParts = [];
+        if (_ws.time) wsParts.push('时间：' + _ws.time);
+        if (_ws.event) wsParts.push('正在发生：' + _ws.event);
+        if (_ws.characters && _ws.characters.length > 0) {
+          var charDescs = _ws.characters.map(function (c) {
+            var desc = c.name;
+            if (c.location) desc += '（在' + c.location + '）';
+            if (c.relation) desc += '，态度：' + c.relation;
+            if (c.favor >= 0) desc += '，好感度' + c.favor;
+            return desc;
+          });
+          wsParts.push('人物状态：' + charDescs.join('；'));
+        }
+        if (_ws.items && _ws.items.length > 0) {
+          var itemDescs = _ws.items.map(function (it) { return it.name + '→' + it.holder; });
+          wsParts.push('关键物品：' + itemDescs.join('；'));
+        }
+        worldStateHint = wsParts.join('\n');
+      }
+    }
+// ── 专家模式：如果有自定义系统提示词，直接使用 ──
+    if (j.customSysPrompt && j.customSysPrompt.trim()) {
+      var customMsgs = [{ role: 'system', content: j.customSysPrompt }];
+      // 仍然附带原著信息和记忆
+      if (excerpt) customMsgs[0].content += '\n\n## 原著参考\n' + excerpt;
+      if (memoryAnchor) customMsgs[0].content += '\n\n## 故事摘要\n' + memoryAnchor;
+      if (j.lockedFacts) customMsgs[0].content += '\n\n## 关键事实\n' + j.lockedFacts;
+      if (worldStateHint) customMsgs[0].content += '\n\n## 当前世界状态\n' + worldStateHint;
 
+      if (isOpening || (j.messages || []).length === 0) {
+        var customOpenPrompt = extraInstruction || '故事开始。以具体的时间、地点、环境描写开场，展现一个正在发生的事件或场景，让穿越者自然地置身其中。直接叙事，不做任何解释。';
+        customMsgs.push({ role: 'user', content: customOpenPrompt });
+      } else {
+        var customHistMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+        var customRounds = Math.min(j.contextRounds || 20, MAX_CONTEXT_ROUNDS);
+        var customRecentSlice = customHistMsgs.slice(-customRounds * 2);
+        customRecentSlice.forEach(function (m) {
+          var msgContent = m.content;
+          if (m.role === 'ai') {
+            msgContent = msgContent.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+          }
+          customMsgs.push({ role: m.role === 'ai' ? 'assistant' : 'user', content: msgContent });
+        });
+      }
+      return customMsgs;
+    }
     var sysLines = [
       '# 穿书叙事引擎',
       '',
@@ -4313,11 +5842,13 @@ placeholder.innerHTML = bmBtn + _renderMarkdown(parsedContent);
       charText ? '\n### 人物设定\n' + charText : '',
       worldText ? '\n### 世界观\n' + worldText : '',
       _settings.userIdentity ? '\n### 穿越者身份\n' + _settings.userIdentity : '',
+      _settings.identityRules ? '\n### 用户设定说明（必须遵守）\n' + _settings.identityRules : '',
       '',
       '## 记忆系统',
       j.lockedFacts ? '### 关键事实（绝对不可违背）\n' + j.lockedFacts : '',
       memoryAnchor ? '\n### 故事摘要（高优先级）\n' + memoryAnchor : '### 故事摘要\n暂无，这是故事初期。',
       j.assocSummary ? '\n### 前作传承\n' + j.assocSummary : '',
+      worldStateHint ? '\n### 当前世界状态（上次回复后的最新状态，在此基础上继续推进并更新）\n' + worldStateHint : '',
       '',
       '## 叙事规则',
       '',
@@ -4361,14 +5892,14 @@ placeholder.innerHTML = bmBtn + _renderMarkdown(parsedContent);
       '<!--WS',
       'TIME:故事内的具体时间（如：穿越第三天·午后）',
       'EVENT:一句话描述正在发生的事（如：主角在书房发现密信）',
-      'CHARS:人物名=当前位置=与穿越者关系或态度;第二个人物=位置=关系',
+      'CHARS:人物名=当前位置=与穿越者关系或态度=好感:75;第二个人物=位置=关系=好感:50',
       'ITEMS:物品名=持有者;物品名=持有者',
       'WS-->',
       '',
       '严格要求：',
       '- 标签必须以 <!--WS 开头，以 WS--> 结尾，各占独立一行',
       '- TIME 和 EVENT 每次必须填写，不可省略',
-      '- CHARS 最多6个人物，用英文分号;分隔，格式为 名字=位置=态度',
+      '- CHARS 最多6个人物，用英文分号;分隔，格式为 名字=位置=态度=好感:数字（0~100的好感度/信任度）',
       '- ITEMS 最多6个物品，用英文分号;分隔，格式为 物品=持有者',
       '- 如果 CHARS 或 ITEMS 暂无内容可省略该行',
       '- 标签不计入回复字数，用户看不到这些标签',
@@ -4619,7 +6150,159 @@ function genNovelSummary() {
       if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-wand-magic-sparkles"></i> AI生成全书梗概'; }
     });
   }
+// ── 系统提示词专家模式 ──
+  function openSysPromptEditor() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) { tbToast('请先进入旅途'); return; }
+    var body = document.getElementById('sysprompt-body');
+    if (!body) return;
 
+    // 获取当前生效的系统提示词
+    var currentPrompt = j.customSysPrompt || '';
+    var isCustom = !!currentPrompt;
+
+    body.innerHTML =
+      '<div class="sysprompt-warn">' +
+        '<i class="fas fa-triangle-exclamation"></i>' +
+        '<strong>专家模式</strong>：直接编辑系统提示词（System Prompt）。修改不当可能导致AI回复质量下降、角色崩塌或格式异常。' +
+        '<br>建议先「生成当前提示词」查看默认内容，在此基础上修改。' +
+      '</div>' +
+      '<div style="display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap">' +
+        '<button class="btn-secondary" style="flex:1;padding:9px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px" onclick="TB.generateCurrentSysPrompt()">' +
+          '<i class="fas fa-wand-magic-sparkles"></i> 生成当前提示词' +
+        '</button>' +
+        '<button class="btn-secondary" style="padding:9px 14px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:5px" onclick="TB.copySysPrompt()">' +
+          '<i class="fas fa-copy"></i> 复制' +
+        '</button>' +
+      '</div>' +
+      '<div style="display:flex;align-items:center;gap:8px;margin-bottom:10px">' +
+        '<label onclick="TB.toggleSysPromptMode()" style="display:flex;align-items:center;gap:8px;cursor:pointer;font-size:13px;color:var(--text)">' +
+          '<div id="sysprompt-toggle" style="width:40px;height:22px;border-radius:11px;background:' + (isCustom ? 'var(--accent)' : 'var(--border)') + ';position:relative;cursor:pointer;transition:background .2s">' +
+            '<div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;' + (isCustom ? 'right:2px' : 'left:2px') + ';transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>' +
+          '</div>' +
+          '<span>' + (isCustom ? '使用自定义提示词' : '使用默认提示词（推荐）') + '</span>' +
+        '</label>' +
+      '</div>' +
+      '<div class="sysprompt-editor">' +
+        '<textarea id="sysprompt-textarea" placeholder="在这里编辑系统提示词...\n\n点击上方「生成当前提示词」可以查看系统默认生成的完整内容，然后在此基础上修改。"' +
+          ' oninput="TB.onSysPromptInput()">' + _esc(currentPrompt) + '</textarea>' +
+        '<div class="sysprompt-toolbar">' +
+          '<span style="font-size:11px;color:var(--text2)"><i class="fas fa-info-circle" style="margin-right:4px"></i>修改后点击「保存」生效</span>' +
+          '<span class="sp-count" id="sysprompt-count">' + (currentPrompt.length) + ' 字</span>' +
+        '</div>' +
+      '</div>' +
+      '<div style="margin-top:12px;padding:10px 14px;background:rgba(108,92,231,.06);border-radius:10px;border:1px solid rgba(108,92,231,.15)">' +
+        '<p style="font-size:11px;color:var(--text2);line-height:1.8;margin:0">' +
+          '<i class="fas fa-lightbulb" style="color:var(--accent2);margin-right:4px"></i>' +
+          '<strong>使用建议：</strong><br>' +
+          '· 开启自定义后，系统将完全使用你编辑的提示词，不再自动拼接默认规则<br>' +
+          '· 可以保留默认结构，只修改叙事规则、文风要求等部分<br>' +
+          '· 如果回复质量变差，点击「恢复默认」即可回到系统默认状态<br>' +
+          '· 原著信息、记忆摘要、上下文对话仍会正常附带，不受影响' +
+        '</p>' +
+      '</div>';
+    openModal('modal-sysprompt');
+  }
+
+  function generateCurrentSysPrompt() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    // 调用 _buildMessages 获取当前系统提示词
+    var msgs = _buildMessages(j, null, false);
+    var sysContent = '';
+    for (var i = 0; i < msgs.length; i++) {
+      if (msgs[i].role === 'system') {
+        if (sysContent) sysContent += '\n\n---\n\n';
+        sysContent += msgs[i].content;
+      }
+    }
+    var ta = document.getElementById('sysprompt-textarea');
+    if (ta) {
+      ta.value = sysContent;
+      var countEl = document.getElementById('sysprompt-count');
+      if (countEl) countEl.textContent = sysContent.length + ' 字';
+    }
+    tbToast('已生成当前默认提示词，可在此基础上编辑');
+  }
+
+  function copySysPrompt() {
+    var ta = document.getElementById('sysprompt-textarea');
+    if (!ta || !ta.value.trim()) { tbToast('内容为空'); return; }
+    try {
+      navigator.clipboard.writeText(ta.value);
+      tbToast('已复制到剪贴板');
+    } catch (e) {
+      ta.select();
+      document.execCommand('copy');
+      tbToast('已复制');
+    }
+  }
+
+  function toggleSysPromptMode() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var isCustom = !!j.customSysPrompt;
+    if (isCustom) {
+      // 关闭自定义
+      j.customSysPrompt = '';
+      j.updatedAt = new Date().toISOString();
+      _saveJourneys();
+      openSysPromptEditor(); // 刷新界面
+      tbToast('已切换为默认提示词');
+    } else {
+      // 开启自定义：先检查输入框有没有内容
+      var ta = document.getElementById('sysprompt-textarea');
+      var content = ta ? ta.value.trim() : '';
+      if (!content) {
+        tbToast('请先点击「生成当前提示词」填充内容，再开启自定义');
+        return;
+      }
+      j.customSysPrompt = content;
+      j.updatedAt = new Date().toISOString();
+      _saveJourneys();
+      openSysPromptEditor(); // 刷新界面
+      tbToast('已开启自定义提示词');
+    }
+  }
+
+  function onSysPromptInput() {
+    var ta = document.getElementById('sysprompt-textarea');
+    var countEl = document.getElementById('sysprompt-count');
+    if (ta && countEl) {
+      countEl.textContent = ta.value.length + ' 字';
+    }
+  }
+
+  function saveSysPrompt() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var ta = document.getElementById('sysprompt-textarea');
+    if (!ta) return;
+    var content = ta.value.trim();
+    if (j.customSysPrompt || content) {
+      j.customSysPrompt = content;
+    }
+    j.updatedAt = new Date().toISOString();
+    _saveJourneys();
+    closeModal('modal-sysprompt');
+    tbToast('系统提示词已保存');
+  }
+
+  function resetSysPrompt() {
+    tbConfirm('确定恢复默认系统提示词吗？\n你的自定义内容将被清除。', function() {
+      var j = _getJourney(_curJourneyId);
+      if (!j) return;
+      j.customSysPrompt = '';
+      j.updatedAt = new Date().toISOString();
+      _saveJourneys();
+      var ta = document.getElementById('sysprompt-textarea');
+      if (ta) ta.value = '';
+      var countEl = document.getElementById('sysprompt-count');
+      if (countEl) countEl.textContent = '0 字';
+      openSysPromptEditor(); // 刷新界面
+      tbToast('已恢复默认提示词');
+    });
+  }
   function toggleNovelSummary() {
     var j = _getJourney(_curJourneyId);
     if (!j) return;
@@ -4632,7 +6315,7 @@ function genNovelSummary() {
     j.updatedAt = new Date().toISOString();
     _saveJourneys();
     openMemoryModal();
-    tbToast(j.useNovelSummary ? '已启用梗概模式，不再发送原文' : '已关闭梗概模式，恢复发送原文');
+    tbToast(j.useNovelSummary ? '已启用梗概模式' : '已关闭梗概模式');
   }
   // 保存记忆（从modal-memory关闭时）
   function _saveMemoryFromModal() {
@@ -4652,7 +6335,7 @@ function genNovelSummary() {
     if (novelSummaryEl) j.novelSummary = novelSummaryEl.value.trim();
     j.updatedAt = new Date().toISOString();
     _saveJourneys();
-    tbToast('已保存');
+    // 静默保存，不打扰用户
   }
 
   // ── 旅途选项 ──
@@ -4754,6 +6437,12 @@ function genNovelSummary() {
       '<div class="settings-item-icon" style="background:rgba(81,207,102,.1)"><i class="fas fa-download" style="color:var(--success)"></i></div>' +
       '<div class="settings-item-text"><div class="settings-item-title">导出旅途记录</div><div class="settings-item-desc">导出为TXT纯文本</div></div>' +
       '</div>');
+    rows.push(
+      '<div class="settings-item" style="border-radius:12px;margin-bottom:8px;background:var(--card2)" onclick="TB.openSysPromptEditor();TB.closeModal(' + "'modal-journey-opts'" + ')">' +
+      '<div class="settings-item-icon" style="background:rgba(231,76,60,.12)"><i class="fas fa-terminal" style="color:#e74c3c"></i></div>' +
+      '<div class="settings-item-text"><div class="settings-item-title">系统提示词（专家模式）</div><div class="settings-item-desc">直接查看和编辑发送给AI的完整System Prompt</div></div>' +
+      '<i class="fas fa-chevron-right settings-item-arrow"></i>' +
+      '</div>');
     rows.push('<div class="settings-item" style="border-radius:12px;margin-bottom:8px;background:var(--card2)" onclick="TB.openExportNovel(\'' + j.id + '\')">' +
       '<div class="settings-item-icon" style="background:rgba(162,155,254,.12)"><i class="fas fa-file-lines" style="color:var(--accent2)"></i></div>' +
       '<div class="settings-item-text"><div class="settings-item-title">导出排版小说</div><div class="settings-item-desc">HTML/Markdown格式，自动分章节，可分享</div></div>' +
@@ -4807,7 +6496,7 @@ function resumeJourney() {
       stopBtn.innerHTML = '<i class="fas fa-stop-circle"></i> 停止生成';
       var inputWrap = document.createElement('div');
       inputWrap.id = 'chat-input-wrap';
-      inputWrap.innerHTML = '<button id="chat-plus-btn" onclick="TB.togglePlusPopup()"><i class="fas fa-plus"></i></button><textarea id="chat-input" rows="1" placeholder="在故事中做出你的选择..." oninput="TB.autoResizeInput(this)" onkeydown="TB.onInputKeydown(event)" onfocus="TB.onInputFocus()" onblur="TB.onInputBlur()"></textarea><button id="chat-send" onclick="TB.sendMsg()"><i class="fas fa-paper-plane"></i></button>';
+      inputWrap.innerHTML = '<button id="chat-plus-btn" onclick="TB.togglePlusPopup()"><i class="fas fa-plus"></i></button><textarea id="chat-input" rows="1" placeholder="在故事中做出你的选择..." oninput="TB.autoResizeInput(this);TB.checkAtMention(this)" onkeydown="TB.onInputKeydown(event)" onfocus="TB.onInputFocus()" onblur="TB.onInputBlur()"></textarea><button id="chat-send" onclick="TB.sendMsg()"><i class="fas fa-paper-plane"></i></button>';
       inputArea.appendChild(scrollWrap);
       inputArea.appendChild(shortcutBar);
       inputArea.appendChild(stopBtn);
@@ -4816,9 +6505,13 @@ function resumeJourney() {
 plusPopup.id = 'plus-popup';
 plusPopup.innerHTML = '<button class="plus-popup-item" onclick="TB.showInspirationPanel()"><i class="fas fa-dice" style="color:var(--accent2)"></i> 灵感骰子</button><button class="plus-popup-item" onclick="TB.showWorldState()"><i class="fas fa-globe" style="color:var(--success)"></i> 世界状态</button>';
 inputArea.appendChild(plusPopup);
+var atPanel = document.createElement('div');
+atPanel.id = 'at-mention-panel';
+atPanel.style.cssText = 'display:none;position:absolute;bottom:calc(100% + 8px);left:14px;right:14px;background:rgba(26,26,36,.95);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);border:1px solid rgba(81,207,102,.25);border-radius:14px;padding:8px;z-index:35;box-shadow:0 8px 28px rgba(0,0,0,.45);max-height:200px;overflow-y:auto';
+inputArea.appendChild(atPanel);
 var inspPanel = document.createElement('div');
 inspPanel.id = 'inspiration-panel';
-inspPanel.innerHTML = '<div class="insp-header"><h4><i class="fas fa-dice" style="color:var(--accent2)"></i> 行动建议</h4><button onclick="TB.closeInspirationPanel()"><i class="fas fa-times"></i></button></div><div id="insp-content"><div style="text-align:center;padding:10px"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button></div></div>';
+inspPanel.innerHTML = '<div class="insp-header"><h4><i class="fas fa-dice" style="color:var(--accent2)"></i> 行动建议</h4><button onclick="TB.closeInspirationPanel()"><i class="fas fa-times"></i></button></div><div id="insp-content"><div style="display:flex;gap:8px;justify-content:center;padding:14px 10px;flex-wrap:wrap"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button><button class="btn-primary" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#e67e22,#f0b27a);box-shadow:0 3px 14px rgba(230,126,34,.35)" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 剧情分析</button></div></div>';
 inputArea.appendChild(inspPanel);
       _renderShortcutBar();
       // 恢复草稿
@@ -4840,6 +6533,10 @@ function clearAllMessages(id) {
       j.savePoints = [];
       j.bookmarks = [];
       j._collapsedMsgs = {};
+      j.worldState = null;
+      j.lastRecap = '';
+      j.lastRecapAt = null;
+      j._inputDraft = '';
       j.updatedAt = new Date().toISOString();
       _saveJourneys();
       closeModal('modal-journey-opts');
@@ -4861,6 +6558,21 @@ function renameJourney(id) {
       _saveJourneys();
       renderJourneys();
       tbToast('已重命名为：' + newName);
+    });
+  }
+function manageTags(id) {
+    var j = _getJourney(id);
+    if (!j) return;
+    var curTags = (j.tags || []).join('、');
+    tbPrompt('输入标签（用顿号、逗号或空格分隔）：\n例如：玄幻、言情、修仙', curTags, function(val) {
+      if (val === null) return;
+      var tags = val.split(/[、,，\s]+/).map(function(t){return t.trim();}).filter(Boolean);
+      tags = tags.filter(function(t, i, arr){return arr.indexOf(t) === i;}).slice(0, 5);
+      j.tags = tags;
+      j.updatedAt = new Date().toISOString();
+      _saveJourneys();
+      renderJourneys();
+      tbToast(tags.length > 0 ? '标签已更新：' + tags.join('、') : '标签已清空');
     });
   }
 function changeCover(id) {
@@ -4934,8 +6646,9 @@ function changeCover(id) {
 
   function switchAddTab(tab) {
     _addTab = tab;
-    ['cols', 'cr', 'txt'].forEach(function (t) {
-      document.getElementById('add-tab-' + t).classList.toggle('act', t === tab);
+    ['cols', 'cr', 'txt', 'epub'].forEach(function (t) {
+      var el = document.getElementById('add-tab-' + t);
+      if (el) el.classList.toggle('act', t === tab);
     });
     _renderAddTab(tab);
   }
@@ -4946,6 +6659,8 @@ function changeCover(id) {
       _renderColsTab(body);
     } else if (tab === 'cr') {
       _renderCrTab(body);
+    } else if (tab === 'epub') {
+      _renderEpubTab(body);
     } else {
       _renderTxtTab(body);
     }
@@ -5001,7 +6716,221 @@ function changeCover(id) {
         '</div>' +
       '</div>';
   }
+function _renderEpubTab(body) {
+    body.innerHTML =
+      '<p style="font-size:12px;color:var(--text2);line-height:1.8;margin-bottom:16px">选择本地 EPUB 电子书文件导入。系统会自动解析提取文本内容，字数需在 <strong>1万~20万字</strong>之间。</p>' +
+      '<div style="border:2px dashed var(--border);border-radius:14px;padding:32px;text-align:center;cursor:pointer" onclick="document.getElementById(\'epub-file-input\').click()">' +
+        '<i class="fas fa-book" style="font-size:36px;color:var(--accent2);margin-bottom:12px"></i>' +
+        '<p style="font-size:13px;color:var(--text2)">点击选择 EPUB 文件</p>' +
+        '<p style="font-size:11px;color:var(--text2);margin-top:6px;opacity:.6">支持标准EPUB格式电子书</p>' +
+      '</div>' +
+      '<input type="file" id="epub-file-input" accept=".epub,application/epub+zip" style="display:none" onchange="TB.handleEpubFile(event)">' +
+      '<div id="epub-preview" style="margin-top:14px"></div>' +
+      '<div id="epub-title-area" style="display:none;margin-top:10px">' +
+        '<div class="form-group" style="margin-bottom:0">' +
+          '<label class="form-label">书名（可修改）</label>' +
+          '<input class="form-input" type="text" id="epub-title-input" placeholder="输入书名">' +
+        '</div>' +
+      '</div>';
+  }
 
+  function handleEpubFile(e) {
+    var file = e.target.files && e.target.files[0];
+    if (!file) return;
+    var preview = document.getElementById('epub-preview');
+    if (!preview) return;
+    preview.innerHTML = '<div class="import-progress"><i class="fas fa-spinner fa-spin"></i><p>正在解析EPUB文件...</p></div>';
+
+    var reader = new FileReader();
+    reader.onload = function (ev) {
+      var arrayBuf = ev.target.result;
+      _parseEpub(arrayBuf, file.name).then(function (result) {
+        if (result.error) {
+          preview.innerHTML = '<p style="color:var(--danger);font-size:12px;text-align:center;padding:12px"><i class="fas fa-exclamation-triangle"></i> ' + _esc(result.error) + '</p>';
+          _addSelected = null;
+          return;
+        }
+        var text = result.text;
+        var title = result.title || file.name.replace(/\.epub$/i, '');
+        var len = text.length;
+        if (len < MIN_CHARS) {
+          preview.innerHTML = '<p style="color:var(--danger);font-size:12px;text-align:center;padding:12px"><i class="fas fa-exclamation-triangle"></i> 字数不足1万字（当前 ' + Math.round(len / 1000) + ' K字），不符合要求</p>';
+          _addSelected = null;
+          return;
+        }
+        if (len > MAX_CHARS) {
+          preview.innerHTML = '<p style="color:var(--danger);font-size:12px;text-align:center;padding:12px"><i class="fas fa-exclamation-triangle"></i> 字数超过20万字（当前约 ' + Math.round(len / 10000) + ' 万字），不符合要求</p>';
+          _addSelected = null;
+          return;
+        }
+        _addSelected = { source: 'epub', id: 'epub_' + Date.now(), title: title, cover: result.cover || '', content: text };
+        var titleArea = document.getElementById('epub-title-area');
+        if (titleArea) titleArea.style.display = '';
+        var titleInput = document.getElementById('epub-title-input');
+        if (titleInput) titleInput.value = title;
+        preview.innerHTML =
+          '<div style="padding:12px;background:rgba(81,207,102,.06);border:1px solid rgba(81,207,102,.2);border-radius:12px">' +
+          '<p style="font-size:13px;color:var(--success)"><i class="fas fa-check-circle"></i> EPUB解析成功</p>' +
+          '<p style="font-size:11px;color:var(--text2);margin-top:4px">《' + _esc(title) + '》约 ' + Math.round(len / 1000) + ' K字</p>' +
+          '</div>';
+      }).catch(function (err) {
+        preview.innerHTML = '<p style="color:var(--danger);font-size:12px;text-align:center;padding:12px"><i class="fas fa-exclamation-triangle"></i> 解析失败：' + _esc(err.message || '未知错误') + '</p>';
+        _addSelected = null;
+      });
+    };
+    reader.onerror = function () {
+      preview.innerHTML = '<p style="color:var(--danger);font-size:12px;text-align:center;padding:12px">文件读取失败</p>';
+    };
+    reader.readAsArrayBuffer(file);
+  }
+
+  function _parseEpub(arrayBuf) {
+    return new Promise(function (resolve, reject) {
+      try {
+        // 使用JSZip解析EPUB（EPUB本质是ZIP文件）
+        if (typeof JSZip === 'undefined') {
+          // 动态加载JSZip
+          var script = document.createElement('script');
+          script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
+          script.onload = function () {
+            _doParseEpub(arrayBuf).then(resolve).catch(reject);
+          };
+          script.onerror = function () {
+            resolve({ error: 'EPUB解析库加载失败，请检查网络连接' });
+          };
+          document.head.appendChild(script);
+        } else {
+          _doParseEpub(arrayBuf).then(resolve).catch(reject);
+        }
+      } catch (e) {
+        resolve({ error: '解析出错：' + e.message });
+      }
+    });
+  }
+
+  function _doParseEpub(arrayBuf) {
+    return JSZip.loadAsync(arrayBuf).then(function (zip) {
+      var title = '';
+      var cover = '';
+      var textParts = [];
+
+      // 先尝试从 container.xml 找到 OPF 文件路径
+      var containerFile = zip.file('META-INF/container.xml');
+      if (!containerFile) {
+        return { error: '不是有效的EPUB文件（缺少container.xml）' };
+      }
+
+      return containerFile.async('text').then(function (containerXml) {
+        var opfMatch = containerXml.match(/full-path="([^"]+)"/);
+        if (!opfMatch) {
+          return { error: '无法找到EPUB内容描述文件' };
+        }
+        var opfPath = opfMatch[1];
+        var opfDir = opfPath.replace(/[^/]*$/, '');
+        var opfFile = zip.file(opfPath);
+        if (!opfFile) {
+          return { error: 'EPUB结构异常：找不到OPF文件' };
+        }
+
+        return opfFile.async('text').then(function (opfXml) {
+          // 提取书名
+          var titleMatch = opfXml.match(/<dc:title[^>]*>([^<]+)<\/dc:title>/i);
+          if (titleMatch) title = titleMatch[1].trim();
+
+          // 提取 spine 中的阅读顺序
+          var spineItems = [];
+          var spineMatch = opfXml.match(/<spine[^>]*>([\s\S]*?)<\/spine>/i);
+          if (spineMatch) {
+            var itemRefRegex = /idref="([^"]+)"/g;
+            var irm;
+            while ((irm = itemRefRegex.exec(spineMatch[1])) !== null) {
+              spineItems.push(irm[1]);
+            }
+          }
+
+          // 建立 manifest id -> href 映射
+          var manifestMap = {};
+          var manifestRegex = /<item\s+[^>]*id="([^"]+)"[^>]*href="([^"]+)"[^>]*/gi;
+          var mm;
+          while ((mm = manifestRegex.exec(opfXml)) !== null) {
+            manifestMap[mm[1]] = mm[2];
+          }
+          // 另一种顺序：href先id后
+          var manifestRegex2 = /<item\s+[^>]*href="([^"]+)"[^>]*id="([^"]+)"[^>]*/gi;
+          while ((mm = manifestRegex2.exec(opfXml)) !== null) {
+            if (!manifestMap[mm[2]]) manifestMap[mm[2]] = mm[1];
+          }
+
+          // 按spine顺序读取HTML文件
+          var htmlFiles = [];
+          if (spineItems.length > 0) {
+            spineItems.forEach(function (id) {
+              var href = manifestMap[id];
+              if (href) htmlFiles.push(opfDir + decodeURIComponent(href));
+            });
+          } else {
+            // 无spine，遍历所有html/xhtml文件
+            zip.forEach(function (path, entry) {
+              if (/\.(x?html?|htm)$/i.test(path) && !entry.dir) {
+                htmlFiles.push(path);
+              }
+            });
+            htmlFiles.sort();
+          }
+
+          if (htmlFiles.length === 0) {
+            return { error: 'EPUB中未找到任何文本内容' };
+          }
+
+          // 逐个读取HTML文件提取文本
+          var promises = htmlFiles.map(function (path) {
+            var f = zip.file(path);
+            if (!f) return Promise.resolve('');
+            return f.async('text').then(function (html) {
+              return _stripHtmlTags(html);
+            }).catch(function () { return ''; });
+          });
+
+          return Promise.all(promises).then(function (parts) {
+            var fullText = parts.filter(Boolean).join('\n\n');
+            // 清理多余空白
+            fullText = fullText.replace(/\n{3,}/g, '\n\n').trim();
+            return { text: fullText, title: title, cover: cover };
+          });
+        });
+      });
+    }).catch(function (e) {
+      return { error: '解压EPUB失败：' + (e.message || '文件可能已损坏') };
+    });
+  }
+
+  function _stripHtmlTags(html) {
+    if (!html) return '';
+    // 移除 <head>...</head>
+    var s = html.replace(/<head[\s\S]*?<\/head>/gi, '');
+    // 移除所有 <style> 和 <script>
+    s = s.replace(/<style[\s\S]*?<\/style>/gi, '');
+    s = s.replace(/<script[\s\S]*?<\/script>/gi, '');
+    // 块级元素转换为换行
+    s = s.replace(/<\/(p|div|h[1-6]|li|tr|br|blockquote)[^>]*>/gi, '\n');
+    s = s.replace(/<br\s*\/?>/gi, '\n');
+    // 移除所有其他标签
+    s = s.replace(/<[^>]+>/g, '');
+    // 解码HTML实体
+    s = s.replace(/&nbsp;/g, ' ');
+    s = s.replace(/&lt;/g, '<');
+    s = s.replace(/&gt;/g, '>');
+    s = s.replace(/&amp;/g, '&');
+    s = s.replace(/&quot;/g, '"');
+    s = s.replace(/&#(\d+);/g, function (m, code) { return String.fromCharCode(parseInt(code)); });
+    s = s.replace(/&#x([0-9a-f]+);/gi, function (m, code) { return String.fromCharCode(parseInt(code, 16)); });
+    // 清理空白
+    s = s.replace(/[ \t]+/g, ' ');
+    s = s.replace(/\n[ \t]+/g, '\n');
+    s = s.replace(/[ \t]+\n/g, '\n');
+    s = s.replace(/\n{3,}/g, '\n\n');
+    return s.trim();
+  }
   function handleTxtFile(e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
@@ -5124,6 +7053,8 @@ function changeCover(id) {
   function confirmAddJourney() {
     if (_addTab === 'txt') {
       if (!_addSelected) { tbToast('请先选择TXT文件'); return; }
+    } else if (_addTab === 'epub') {
+      if (!_addSelected) { tbToast('请先选择EPUB文件'); return; }
     } else {
       if (!_addSelected) { tbToast('请先选择一本书'); return; }
     }
@@ -5132,6 +7063,13 @@ function changeCover(id) {
       var customTitle = document.getElementById('txt-title-input');
       if (customTitle && customTitle.value.trim()) {
         _addSelected.title = customTitle.value.trim();
+      }
+    }
+    // EPUB导入时允许用户修改书名
+    if (_addTab === 'epub' && _addSelected) {
+      var epubTitle = document.getElementById('epub-title-input');
+      if (epubTitle && epubTitle.value.trim()) {
+        _addSelected.title = epubTitle.value.trim();
       }
     }
     var id = 'j_' + Date.now() + '_' + Math.random().toString(36).slice(2, 7);
@@ -5159,7 +7097,7 @@ function changeCover(id) {
     _saveJourneys();
     closeModal('modal-add');
     renderJourneys();
-    tbToast('旅途已创建！可先在设置中配置API和身份，再点击进入');
+    tbToast('旅途已创建！推荐先配置设置');
   }
 
   // ── 置顶 ──
@@ -5191,8 +7129,16 @@ function toggleSeriesPin(leadId) {
     tbConfirm('确定删除《' + j.novelTitle + '》的旅途记录吗？\n相关绑定会自动解除（设定不会删除）。', function() {
       if (_bindings[j.novelId]) {
         delete _bindings[j.novelId];
-        tbSet(TB_BINDINGS_KEY, _bindings);
       }
+      if (j.associations && j.associations.length > 1) {
+        var leadId = j.associations[0];
+        var seriesKey = 'series_' + leadId;
+        var remainingMembers = (j.associations || []).filter(function(aid) { return aid !== id; });
+        if (remainingMembers.length <= 1 && _bindings[seriesKey]) {
+          delete _bindings[seriesKey];
+        }
+      }
+      tbSet(TB_BINDINGS_KEY, _bindings);
       _journeys.forEach(function (other) {
         if (other.associations) {
           other.associations = other.associations.filter(function (aid) { return aid !== id; });
@@ -5212,6 +7158,13 @@ function toggleSeriesPin(leadId) {
     if (id === 'modal-memory' && modalEl.classList.contains('show')) {
       var memEl = document.getElementById('memory-summary');
       if (memEl) _saveMemoryFromModal();
+    }
+    // 关闭 API 设置弹窗时清理模型列表面板
+    if (id === 'modal-api') {
+      var mla = document.getElementById('model-list-area');
+      if (mla) mla.innerHTML = '';
+      var fetchBtn = document.getElementById('fetch-models-btn');
+      if (fetchBtn) { fetchBtn.disabled = false; fetchBtn.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> 拉取'; }
     }
     modalEl.classList.remove('show');
   }
@@ -5357,14 +7310,20 @@ function fetchModels() {
       if (models.length === 0) { tbToast('未获取到模型列表'); return; }
       models.sort(function (a, b) { return a.localeCompare(b); });
       if (listArea) {
-        var html = '<div style="max-height:180px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;background:var(--card2)">';
+        listArea._allModels = models;
+        var html = '<div style="position:relative;margin-bottom:6px">' +
+          '<i class="fas fa-search" style="position:absolute;left:10px;top:50%;transform:translateY(-50%);font-size:11px;color:var(--text2);pointer-events:none"></i>' +
+          '<input type="text" id="model-filter-input" placeholder="输入关键词筛选模型..." oninput="TB.filterModels()" style="width:100%;box-sizing:border-box;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:8px 10px 8px 30px;color:var(--text);font-size:12px;outline:none">' +
+        '</div>' +
+        '<div id="model-list-items" style="max-height:220px;overflow-y:auto;border:1px solid var(--border);border-radius:10px;background:var(--card2)">';
         models.forEach(function (name) {
-          html += '<div onclick="TB.selectModel(\'' + name.replace(/'/g, "\\'") + '\')" style="padding:9px 14px;font-size:12px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background=\'rgba(108,92,231,.08)\'" onmouseout="this.style.background=\'\'">' +
-            '<i class="fas fa-cube" style="color:var(--accent2);font-size:10px"></i>' + name + '</div>';
+          html += '<div class="model-list-row" data-model="' + name.replace(/"/g, '&quot;') + '" onclick="TB.selectModel(\'' + name.replace(/'/g, "\\'") + '\')" style="padding:9px 14px;font-size:12px;color:var(--text);cursor:pointer;border-bottom:1px solid var(--border);transition:background .15s;display:flex;align-items:center;gap:8px" onmouseover="this.style.background=\'rgba(108,92,231,.08)\'" onmouseout="this.style.background=\'\'">' +
+            '<i class="fas fa-cube" style="color:var(--accent2);font-size:10px;flex-shrink:0"></i><span style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + name + '</span></div>';
         });
         html += '</div>';
-        html += '<div style="font-size:10px;color:var(--text2);margin-top:4px;text-align:center">共 ' + models.length + ' 个模型，点击选择</div>';
+        html += '<div id="model-filter-count" style="font-size:10px;color:var(--text2);margin-top:4px;text-align:center">共 ' + models.length + ' 个模型，点击选择</div>';
         listArea.innerHTML = html;
+        setTimeout(function() { var fi = document.getElementById('model-filter-input'); if (fi) fi.focus(); }, 100);
       }
       tbToast('已获取 ' + models.length + ' 个模型');
     }).catch(function (e) {
@@ -5374,7 +7333,29 @@ function fetchModels() {
       if (btn) { btn.disabled = false; btn.innerHTML = '<i class="fas fa-cloud-arrow-down"></i> 拉取'; }
     });
   }
-
+function filterModels() {
+    var input = document.getElementById('model-filter-input');
+    var container = document.getElementById('model-list-items');
+    var countEl = document.getElementById('model-filter-count');
+    if (!input || !container) return;
+    var query = input.value.trim().toLowerCase();
+    var rows = container.querySelectorAll('.model-list-row');
+    var visibleCount = 0;
+    rows.forEach(function (row) {
+      var modelName = (row.getAttribute('data-model') || '').toLowerCase();
+      var show = !query || modelName.indexOf(query) !== -1;
+      row.style.display = show ? '' : 'none';
+      if (show) visibleCount++;
+    });
+    if (countEl) {
+      if (!query) {
+        countEl.textContent = '共 ' + rows.length + ' 个模型，点击选择';
+      } else {
+        countEl.textContent = '匹配 ' + visibleCount + '/' + rows.length + ' 个模型';
+        countEl.style.color = visibleCount > 0 ? 'var(--text2)' : 'var(--danger)';
+      }
+    }
+  }
   function selectModel(name) {
     var el = document.getElementById('api-model');
     if (el) el.value = name;
@@ -5441,10 +7422,14 @@ function fetchModels() {
   // ── 身份设置 ──
   function saveAndCloseIdentity() {
     var el = document.getElementById('identity-input');
+    var rulesEl = document.getElementById('identity-rules-input');
     if (el) {
       _settings.userIdentity = el.value.trim();
-      tbSet(TB_SETTINGS_KEY, _settings);
     }
+    if (rulesEl) {
+      _settings.identityRules = rulesEl.value.trim();
+    }
+    tbSet(TB_SETTINGS_KEY, _settings);
     document.getElementById('modal-identity').classList.remove('show');
     _updateSettingsDesc();
   }
@@ -5456,6 +7441,12 @@ function fetchModels() {
       el.value = _settings.userIdentity || '';
       var count = document.getElementById('identity-count');
       if (count) count.textContent = el.value.length + '/1000';
+    }
+    var rulesEl = document.getElementById('identity-rules-input');
+    if (rulesEl) {
+      rulesEl.value = _settings.identityRules || '';
+      var rulesCount = document.getElementById('rules-count');
+      if (rulesCount) rulesCount.textContent = rulesEl.value.length + '/1500';
     }
     document.getElementById('modal-identity').classList.add('show');
   }
@@ -5471,7 +7462,8 @@ function fetchModels() {
         return '<div style="display:flex;align-items:flex-start;gap:10px;padding:12px;margin-bottom:8px;background:var(--card2);border-radius:12px;border:1px solid var(--border)">' +
           '<div style="flex:1;min-width:0">' +
             '<div style="font-size:13px;font-weight:600;margin-bottom:4px">' + _esc(p.name) + '</div>' +
-            '<div style="font-size:11px;color:var(--text2);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">' + _esc(p.content.slice(0, 80)) + (p.content.length > 80 ? '...' : '') + '</div>' +
+            '<div style="font-size:11px;color:var(--text2);line-height:1.6;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical">' + _esc((p.content || '').slice(0, 80)) + ((p.content || '').length > 80 ? '...' : '') + '</div>' +
+            (p.rules ? '<div style="font-size:10px;color:var(--accent2);margin-top:3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap"><i class="fas fa-scroll" style="margin-right:3px;font-size:9px"></i>' + _esc(p.rules.slice(0, 40)) + (p.rules.length > 40 ? '...' : '') + '</div>' : '') +
           '</div>' +
           '<div style="display:flex;gap:6px;flex-shrink:0">' +
             '<button onclick="TB.useIdentityPreset(' + i + ')" style="padding:6px 12px;border-radius:8px;border:1px solid rgba(108,92,231,.3);background:rgba(108,92,231,.08);color:var(--accent2);font-size:11px;cursor:pointer">使用</button>' +
@@ -5485,12 +7477,14 @@ function fetchModels() {
 
   function saveIdentityPreset() {
     var el = document.getElementById('identity-input');
+    var rulesEl = document.getElementById('identity-rules-input');
     var content = el ? el.value.trim() : (_settings.userIdentity || '');
-    if (!content) { tbToast('请先填写身份内容'); return; }
+    var rules = rulesEl ? rulesEl.value.trim() : (_settings.identityRules || '');
+    if (!content && !rules) { tbToast('请先填写身份内容或设定说明'); return; }
     tbPrompt('为这个预设起个名字：', '', function(name) {
       if (!name || !name.trim()) return;
       if (!_settings.identityPresets) _settings.identityPresets = [];
-      _settings.identityPresets.push({ name: name.trim(), content: content });
+      _settings.identityPresets.push({ name: name.trim(), content: content, rules: rules });
       tbSet(TB_SETTINGS_KEY, _settings);
       tbToast('预设已保存');
     });
@@ -5502,9 +7496,15 @@ function fetchModels() {
     if (!p) return;
     var el = document.getElementById('identity-input');
     if (el) {
-      el.value = p.content;
+      el.value = p.content || '';
       var count = document.getElementById('identity-count');
       if (count) count.textContent = el.value.length + '/1000';
+    }
+    var rulesEl = document.getElementById('identity-rules-input');
+    if (rulesEl) {
+      rulesEl.value = p.rules || '';
+      var rulesCount = document.getElementById('rules-count');
+      if (rulesCount) rulesCount.textContent = rulesEl.value.length + '/1500';
     }
     document.getElementById('modal-identity-presets').classList.remove('show');
     tbToast('已加载：' + p.name);
@@ -5879,16 +7879,44 @@ function onAssocNameChange(val) {
       '</div>' +
       '<div class="form-group">' +
         '<label class="form-label">对话字号：<span id="fs-val">' + (_beauty.fontSize || 15) + '</span> px</label>' +
-        '<input type="range" min="12" max="22" step="1" value="' + (_beauty.fontSize || 15) + '" style="width:100%;accent-color:var(--accent)" id="font-size-range" oninput="document.getElementById(\'fs-val\').textContent=this.value">' +
+        '<input type="range" min="12" max="22" step="1" value="' + (_beauty.fontSize || 15) + '" style="width:100%" id="font-size-range" oninput="document.getElementById(\'fs-val\').textContent=this.value">' +
       '</div>' +
       '<div class="form-group">' +
         '<label class="form-label">字距（字间距）：<span id="ls-val">' + curLS + '</span> px</label>' +
-        '<input type="range" min="0" max="10" step="0.5" value="' + curLS + '" style="width:100%;accent-color:var(--accent)" id="letter-spacing-range" oninput="document.getElementById(\'ls-val\').textContent=this.value">' +
+        '<input type="range" min="0" max="10" step="0.5" value="' + curLS + '" style="width:100%" id="letter-spacing-range" oninput="document.getElementById(\'ls-val\').textContent=this.value">' +
       '</div>' +
       '<div class="form-group">' +
         '<label class="form-label">字宽（词间距）：<span id="ws-val">' + curWS + '</span> px</label>' +
-        '<input type="range" min="0" max="12" step="0.5" value="' + curWS + '" style="width:100%;accent-color:var(--accent)" id="word-spacing-range" oninput="document.getElementById(\'ws-val\').textContent=this.value">' +
+        '<input type="range" min="0" max="12" step="0.5" value="' + curWS + '" style="width:100%" id="word-spacing-range" oninput="document.getElementById(\'ws-val\').textContent=this.value">' +
       '</div>' +
+            '<div class="form-group">' +
+        '<label class="form-label">对话样式</label>' +
+        '<div class="font-options" style="grid-template-columns:1fr 1fr">' +
+          '<div class="font-opt' + (!_beauty.bubbleMode ? ' sel' : '') + '" onclick="TB.setBubbleStyle(\'off\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px"><i class="fas fa-align-left" style="font-size:16px;color:var(--accent2)"></i><span>小说排版</span></div>' +
+          '<div class="font-opt' + (_beauty.bubbleMode && _beauty.bubbleShape !== 'sharp' && _beauty.bubbleShape !== 'round' ? ' sel' : '') + '" onclick="TB.setBubbleStyle(\'normal\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px"><i class="fas fa-comment" style="font-size:16px;color:var(--accent2)"></i><span>常规气泡</span></div>' +
+          '<div class="font-opt' + (_beauty.bubbleShape === 'round' ? ' sel' : '') + '" onclick="TB.setBubbleStyle(\'round\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px"><i class="fas fa-comment-dots" style="font-size:16px;color:var(--accent2)"></i><span>圆角气泡</span></div>' +
+          '<div class="font-opt' + (_beauty.bubbleShape === 'sharp' ? ' sel' : '') + '" onclick="TB.setBubbleStyle(\'sharp\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;padding:12px 8px"><i class="fas fa-square" style="font-size:16px;color:var(--accent2)"></i><span>尖角气泡</span></div>' +
+        '</div>' +
+      '</div>' +
+      (_beauty.bubbleMode ? '<div class="form-group">' +
+        '<label class="form-label">气泡颜色</label>' +
+        '<div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px">' +
+          [['fogwhite','雾白','rgba(255,255,255,.5)'],['pinkwhite','粉白','rgba(255,180,200,.6)'],['purpleblack','紫黑','rgba(108,92,231,.6)'],['bluewhite','蓝白','rgba(93,173,226,.6)'],['redblack','红黑','rgba(231,76,60,.6)'],['orangeyellow','橙黄','rgba(253,203,110,.6)'],['cyan','青绿','rgba(81,207,102,.6)']].map(function(c){
+            var isSel = _beauty.bubbleColor === c[0];
+            return '<div onclick="TB.setBubbleColor(\'' + c[0] + '\')" style="display:flex;flex-direction:column;align-items:center;gap:4px;cursor:pointer;transition:transform .15s' + (isSel ? ';transform:scale(1.08)' : '') + '">' +
+              '<div style="width:36px;height:36px;border-radius:50%;background:' + c[2] + ';border:3px solid ' + (isSel ? 'var(--text)' : 'transparent') + ';transition:border-color .15s"></div>' +
+              '<span style="font-size:10px;color:' + (isSel ? 'var(--accent2)' : 'var(--text2)') + ';font-weight:' + (isSel ? '600' : '400') + '">' + c[1] + '</span>' +
+            '</div>';
+          }).join('') +
+        '</div>' +
+        '<div style="padding:14px;border-radius:14px;border:1px solid var(--border);background:var(--card2);overflow:hidden">' +
+          '<div style="font-size:11px;color:var(--text2);margin-bottom:10px;text-align:center;font-weight:600">气泡预览</div>' +
+          '<div style="display:flex;flex-direction:column;gap:8px">' +
+            '<div style="align-self:flex-start;max-width:75%;padding:10px 14px;border-radius:' + (_beauty.bubbleShape === 'round' ? '20px' : _beauty.bubbleShape === 'sharp' ? '4px' : '16px') + ';border-bottom-left-radius:' + (_beauty.bubbleShape === 'round' ? '6px' : _beauty.bubbleShape === 'sharp' ? '0' : '4px') + ';font-size:13px;line-height:1.7;color:var(--text);' + (function(){ var bgMap = {fogwhite:'rgba(255,255,255,.12)',pinkwhite:'rgba(255,200,220,.15)',purpleblack:'rgba(108,92,231,.18)',bluewhite:'rgba(93,173,226,.15)',redblack:'rgba(231,76,60,.15)',orangeyellow:'rgba(253,203,110,.15)',cyan:'rgba(81,207,102,.12)'}; return 'background:' + (bgMap[_beauty.bubbleColor] || 'rgba(255,255,255,.12)'); }()) + '">夜风卷过长廊，她回过头来，目光如秋水般清澈。<span style="color:var(--accent2);font-style:italic">"你终于来了。"</span></div>' +
+            '<div style="align-self:flex-end;max-width:75%;padding:10px 14px;border-radius:' + (_beauty.bubbleShape === 'round' ? '20px' : _beauty.bubbleShape === 'sharp' ? '4px' : '16px') + ';border-bottom-right-radius:' + (_beauty.bubbleShape === 'round' ? '6px' : _beauty.bubbleShape === 'sharp' ? '0' : '4px') + ';font-size:13px;line-height:1.7;color:var(--accent2);text-align:left;' + (function(){ var bgMap = {fogwhite:'rgba(255,255,255,.18)',pinkwhite:'rgba(255,180,200,.22)',purpleblack:'rgba(162,155,254,.22)',bluewhite:'rgba(93,173,226,.22)',redblack:'rgba(255,107,107,.2)',orangeyellow:'rgba(230,126,34,.2)',cyan:'rgba(39,174,96,.18)'}; return 'background:' + (bgMap[_beauty.bubbleColor] || 'rgba(255,255,255,.18)'); }()) + '">我走上前，轻声说道："等久了吗？"</div>' +
+          '</div>' +
+        '</div>' +
+      '</div>' : '') +
       '<div class="form-group">' +
         '<label class="form-label">对话背景图</label>' +
         '<div id="bg-preview-area">' +
@@ -5980,6 +8008,7 @@ function _loadCustomFont(url, name, callback) {
   function handleBgFile(e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
+    e.target.value = '';
     var reader = new FileReader();
     reader.onload = function (ev) {
       // 压缩图片：绘制到 canvas 后以 0.75 质量导出，避免 base64 过大导致 localStorage 溢出
@@ -6014,6 +8043,7 @@ function _loadCustomFont(url, name, callback) {
 function handleReaderBgFile(e) {
     var file = e.target.files && e.target.files[0];
     if (!file) return;
+    e.target.value = '';
     var reader = new FileReader();
     reader.onload = function (ev) {
       var img = new Image();
@@ -6157,7 +8187,35 @@ function handleReaderBgFile(e) {
       tbToast('同步失败：' + e.message);
     }
   }
+  
+function _syncBeautyUIValues() {
+    var lsEl = document.getElementById('letter-spacing-range');
+    var wsEl = document.getElementById('word-spacing-range');
+    var fsEl = document.getElementById('font-size-range');
+    if (fsEl) _beauty.fontSize = parseInt(fsEl.value) || 15;
+    if (lsEl) _beauty.letterSpacing = parseFloat(lsEl.value) || 0;
+    if (wsEl) _beauty.wordSpacing = parseFloat(wsEl.value) || 0;
+  }
+function setBubbleStyle(mode) {
+    _syncBeautyUIValues();
+    if (mode === 'off') {
+      _beauty.bubbleMode = false;
+      _beauty.bubbleShape = '';
+    } else {
+      _beauty.bubbleMode = true;
+      _beauty.bubbleShape = (mode === 'round' || mode === 'sharp') ? mode : 'normal';
+      if (!_beauty.bubbleColor) _beauty.bubbleColor = 'fogwhite';
+    }
+    _applyBeauty();
+    _renderBeautyModal();
+  }
 
+  function setBubbleColor(color) {
+    _syncBeautyUIValues();
+    _beauty.bubbleColor = color;
+    _applyBeauty();
+    _renderBeautyModal();
+  }
   // ── 上手引导 ──
   function showOnboard() {
     document.getElementById('onboard-ov').classList.add('show');
@@ -6192,20 +8250,40 @@ function handleReaderBgFile(e) {
         _esc(sc.name) +
         '</div>';
     }).join('');
-    // 如果两者都有，加一个分隔符
+    // 分隔符
     if (_shortcuts.length > 0 && _phrases.length > 0) {
       html += '<div style="width:1px;height:20px;background:var(--border);flex-shrink:0;margin:0 4px;pointer-events:none"></div>';
     }
-    // 再渲染快捷短语
-    html += _phrases.map(function (p, i) {
-      return '<div class="qp-pill" data-ph-idx="' + i + '"' +
-        ' onclick="TB.sendQuickPhrase(' + i + ')"' +
-        ' ontouchstart="TB._phTouchStart(event,' + i + ')"' +
+    // 快捷短语分组渲染
+    var groups = {};
+    var ungrouped = [];
+    _phrases.forEach(function (p, i) {
+      var g = p.group || '';
+      if (g) {
+        if (!groups[g]) groups[g] = [];
+        groups[g].push({ phrase: p, idx: i });
+      } else {
+        ungrouped.push({ phrase: p, idx: i });
+      }
+    });
+    // 有分组的：显示组名胶囊
+    var groupNames = Object.keys(groups);
+    groupNames.forEach(function (gName) {
+      html += '<div class="qp-group-pill" onclick="TB.togglePhraseGroup(\'' + _esc(gName).replace(/'/g, "\\'") + '\')">' +
+        '<i class="fas fa-folder" style="font-size:10px"></i>' + _esc(gName) +
+        '<i class="fas fa-chevron-down" style="font-size:9px;opacity:.6"></i>' +
+        '</div>';
+    });
+    // 无分组的：直接显示
+    ungrouped.forEach(function (item) {
+      html += '<div class="qp-pill" data-ph-idx="' + item.idx + '"' +
+        ' onclick="TB.sendQuickPhrase(' + item.idx + ')"' +
+        ' ontouchstart="TB._phTouchStart(event,' + item.idx + ')"' +
         ' ontouchmove="TB._phTouchMove(event)"' +
         ' ontouchend="TB._phTouchEnd(event)">' +
-        '<i class="fas fa-bolt"></i>' + _esc(p.name) +
+        '<i class="fas fa-bolt"></i>' + _esc(item.phrase.name) +
         '</div>';
-    }).join('');
+    });
     bar.innerHTML = html;
   }
 
@@ -6237,18 +8315,32 @@ function handleReaderBgFile(e) {
     autoResizeInput(ta);
   }
 function insertTimeMark() {
+    _closePlusPopup();
+    closeInspirationPanel();
     var j = _getJourney(_curJourneyId);
     if (!j) { tbToast('请先进入旅途'); return; }
     if (j.status === 'stopped') { tbToast('旅途已停止'); return; }
-    tbPrompt('输入时间/场景标记：', '', function(text) {
+    tbPrompt('输入章节/场景标记名称：', '', function(text) {
       if (text === null || !text.trim()) return;
       if (!j.messages) j.messages = [];
-      j.messages.push({ isTimeMark: true, content: text.trim(), ts: new Date().toISOString() });
+      // 创建章节节点，自动捕获当前世界状态快照
+      var snapshot = null;
+      if (j.worldState) {
+        snapshot = JSON.parse(JSON.stringify(j.worldState));
+      }
+      j.messages.push({
+        isTimeMark: true,
+        isChapterMark: true,
+        content: text.trim(),
+        ts: new Date().toISOString(),
+        worldSnapshot: snapshot,
+        msgIndex: j.messages.length
+      });
       j.updatedAt = new Date().toISOString();
       _saveJourneys();
       _renderChat();
       _scrollToBottom();
-      tbToast('已插入分隔标记');
+      tbToast('章节标记已插入');
     });
   }
   function insertCursorMark() {
@@ -6853,7 +8945,15 @@ function _showQuickBindSheet(type, localIdx) {
   // ── openModal（统一入口，处理 identity / presets 特殊逻辑）──
   function openModal(id) {
     if (id === 'modal-api') _renderApiModal();
-    else if (id === 'modal-binding') _renderBindingModal();
+    else if (id === 'modal-binding') {
+      _bindFilter = 'all';
+      var bindTypes = ['all', 'book', 'series'];
+      for (var bi = 0; bi < bindTypes.length; bi++) {
+        var bBtn = document.getElementById('bind-filter-' + bindTypes[bi]);
+        if (bBtn) bBtn.classList.toggle('act', bindTypes[bi] === 'all');
+      }
+      _renderBindingModal();
+    }
     else if (id === 'modal-beauty') _renderBeautyModal();
     else if (id === 'modal-identity') { _openIdentityModal(); return; }
     else if (id === 'modal-shortcuts') { _renderShortcutsBody(); }
@@ -6887,7 +8987,7 @@ function _showQuickBindSheet(type, localIdx) {
       });
       try {
         tbSet(TB_JOURNEY_KEY, _journeys);
-        tbToast('存储空间不足，已自动压缩小说内容');
+        tbToast('空间不足，已自动压缩');
       } catch (e2) {
         tbToast('存储失败，请清理部分旅途');
       }
@@ -7053,27 +9153,67 @@ function _renderMarkdown(text) {
   }
 // ── 导出排版小说 ──
   function _buildNovelChapters(j) {
-    var msgs = (j.messages || []).filter(function (m) { return !m.isTimeMark && m.role === 'ai'; });
+    var msgs = (j.messages || []);
     if (msgs.length === 0) return [];
-    var CHARS_PER_CHAPTER = 3000;
+
+    // 优先使用用户手动创建的章节标记来分章
+    var chapterMarks = [];
+    for (var ci = 0; ci < msgs.length; ci++) {
+      if (msgs[ci].isChapterMark) {
+        chapterMarks.push({ idx: ci, name: msgs[ci].content });
+      }
+    }
+
     var chapters = [];
-    var chapterNum = 1;
-    var currentContent = '';
-    for (var i = 0; i < msgs.length; i++) {
-      var msgText = msgs[i].content.trim();
-      // 清除世界状态标签
-      msgText = msgText.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
-      if (!msgText) continue;
-      if (currentContent) currentContent += '\n\n';
-      currentContent += msgText;
-      // 达到字数阈值或最后一条消息时，切分章节
-      if (currentContent.length >= CHARS_PER_CHAPTER || i === msgs.length - 1) {
-        chapters.push({
-          title: '第' + _toChinese(chapterNum) + '章',
-          content: currentContent
-        });
-        chapterNum++;
-        currentContent = '';
+
+    if (chapterMarks.length > 0) {
+      // 有手动章节标记：按标记分章
+      var segments = [];
+      // 第一段：从开始到第一个标记
+      segments.push({ name: chapterMarks[0].name, startIdx: 0, endIdx: chapterMarks[0].idx });
+      // 中间段
+      for (var si = 0; si < chapterMarks.length; si++) {
+        var nextEnd = (si + 1 < chapterMarks.length) ? chapterMarks[si + 1].idx : msgs.length;
+        if (si === 0 && chapterMarks[0].idx === 0) {
+          segments[0].endIdx = nextEnd;
+          continue;
+        }
+        segments.push({ name: chapterMarks[si].name, startIdx: chapterMarks[si].idx, endIdx: nextEnd });
+      }
+
+      segments.forEach(function (seg, segIdx) {
+        var content = '';
+        for (var mi = seg.startIdx; mi < seg.endIdx; mi++) {
+          var m = msgs[mi];
+          if (m.isTimeMark || m.role !== 'ai') continue;
+          var msgText = m.content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+          if (!msgText) continue;
+          if (content) content += '\n\n';
+          content += msgText;
+        }
+        if (content) {
+          chapters.push({ title: seg.name, content: content });
+        }
+      });
+    } else {
+      // 无手动标记：按字数自动分章（原有逻辑）
+      var CHARS_PER_CHAPTER = 3000;
+      var chapterNum = 1;
+      var currentContent = '';
+      var aiMsgs = msgs.filter(function (m) { return !m.isTimeMark && m.role === 'ai'; });
+      for (var i = 0; i < aiMsgs.length; i++) {
+        var msgText = aiMsgs[i].content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+        if (!msgText) continue;
+        if (currentContent) currentContent += '\n\n';
+        currentContent += msgText;
+        if (currentContent.length >= CHARS_PER_CHAPTER || i === aiMsgs.length - 1) {
+          chapters.push({
+            title: '第' + _toChinese(chapterNum) + '章',
+            content: currentContent
+          });
+          chapterNum++;
+          currentContent = '';
+        }
       }
     }
     return chapters;
@@ -7159,7 +9299,7 @@ function _renderMarkdown(text) {
           if (p.trim()) {
           var lines = p.split('\n');
           lines.forEach(function (line) {
-            if (line.trim()) html += '<p>' + _renderMarkdown(line.trim()) + '</p>';
+            if (line.trim()) htmlContent += '<p>' + _renderMarkdown(line.trim()) + '</p>';
           });
         }
         });
@@ -7253,6 +9393,7 @@ function _renderMarkdown(text) {
     document.getElementById('readerModeH').classList.add('act');
     document.getElementById('readerModeV').classList.remove('act');
     document.getElementById('readerOverlay').classList.add('show');
+    document.getElementById('readerContent').scrollTop = 0;
     document.body.style.overflow = 'hidden';
     // 应用页面美化字体到阅读器
     _applyReaderFont();
@@ -7269,6 +9410,10 @@ function _renderMarkdown(text) {
     } else {
       contentEl.style.fontFamily = '';
     }
+    var ls = parseFloat(_beauty.letterSpacing) || 0;
+    var ws = parseFloat(_beauty.wordSpacing) || 0;
+    contentEl.style.letterSpacing = ls > 0 ? ls + 'px' : '';
+    contentEl.style.wordSpacing = ws > 0 ? ws + 'px' : '';
   }
 
   function _applyReaderBg() {
@@ -7360,11 +9505,11 @@ function _renderMarkdown(text) {
     var fsVal = document.getElementById('readerFsVal');
     var lhVal = document.getElementById('readerLhVal');
     if (fsEl && content) {
-      content.style.fontSize = fsEl.value + 'px';
+      content.style.setProperty('font-size', fsEl.value + 'px', 'important');
       if (fsVal) fsVal.textContent = fsEl.value;
     }
     if (lhEl && content) {
-      content.style.lineHeight = lhEl.value;
+      content.style.setProperty('line-height', lhEl.value, 'important');
       if (lhVal) lhVal.textContent = lhEl.value;
     }
   }
@@ -8070,8 +10215,8 @@ function _renderMarkdown(text) {
         }
         target.scrollIntoView({ behavior: 'smooth', block: 'center' });
         target.style.transition = 'background .3s, box-shadow .3s';
-        target.style.background = 'rgba(253,203,110,.12)';
-        target.style.boxShadow = 'inset 3px 0 0 #fdcb6e';
+        target.style.background = 'rgba(253,203,110,.18)';
+        target.style.boxShadow = 'inset 4px 0 0 #fdcb6e';
         target.style.borderRadius = '8px';
         target.style.padding = '6px 8px';
         setTimeout(function () {
@@ -8105,11 +10250,11 @@ function _renderMarkdown(text) {
 
   function _initPhrases() {
     _phrases = tbGet(TB_PHRASES_KEY, [
-      { name: '继续', content: '请继续往下写' },
-      { name: '详细描写', content: '请对当前场景进行更详细的描写，包括环境、人物表情和氛围' },
-      { name: '换个方向', content: '我觉得这个走向不太好，换一个方向发展剧情' },
-      { name: '加快节奏', content: '加快叙事节奏，推进到下一个关键情节' },
-      { name: '对话模式', content: '接下来以对话为主推进剧情，多写人物间的交锋' }
+      { name: '继续', content: '请继续往下写', group: '节奏控制' },
+      { name: '详细描写', content: '请对当前场景进行更详细的描写，包括环境、人物表情和氛围', group: '节奏控制' },
+      { name: '加快节奏', content: '加快叙事节奏，推进到下一个关键情节', group: '节奏控制' },
+      { name: '换个方向', content: '我觉得这个走向不太好，换一个方向发展剧情', group: '场景切换' },
+      { name: '对话模式', content: '接下来以对话为主推进剧情，多写人物间的交锋', group: '角色互动' }
     ]);
   }
 
@@ -8144,7 +10289,7 @@ function _renderMarkdown(text) {
         return '<div class="assoc-drag-item" draggable="true" data-phrase-idx="' + i + '" style="margin-bottom:8px">' +
           '<i class="fas fa-grip-vertical handle" style="cursor:grab"></i>' +
           '<div style="flex:1;min-width:0">' +
-            '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:6px"><i class="fas fa-bolt" style="color:var(--success);font-size:10px"></i>' + _esc(p.name) + '</div>' +
+            '<div style="font-size:13px;font-weight:600;color:var(--text);margin-bottom:3px;display:flex;align-items:center;gap:6px"><i class="fas fa-bolt" style="color:var(--success);font-size:10px"></i>' + _esc(p.name) + (p.group ? '<span style="font-size:9px;padding:1px 6px;border-radius:6px;background:rgba(81,207,102,.1);color:var(--success);margin-left:4px">' + _esc(p.group) + '</span>' : '') + '</div>' +
             '<div style="font-size:11px;color:var(--text2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap">' + _esc(displayContent) + (p.content && p.content.length > 40 ? '…' : '') + '</div>' +
           '</div>' +
           '<div style="display:flex;gap:6px;flex-shrink:0">' +
@@ -8184,17 +10329,6 @@ function _initPhraseManageDrag() {
           }
           return;
         }
-        e.preventDefault();
-        var touch = e.touches[0];
-        var el = document.elementFromPoint(touch.clientX, touch.clientY);
-        var target = el && el.closest('.assoc-drag-item');
-        list.querySelectorAll('.assoc-drag-item').forEach(function (it) { it.style.borderTop = ''; });
-        if (target && target !== dragSrc) {
-          target.style.borderTop = '2px solid var(--success)';
-        }
-      }, { passive: false });
-      item.addEventListener('touchmove', function (e) {
-        if (!dragSrc) { if (lpTimer) { clearTimeout(lpTimer); lpTimer = null; } return; }
         e.preventDefault();
         var touch = e.touches[0];
         var el = document.elementFromPoint(touch.clientX, touch.clientY);
@@ -8257,8 +10391,10 @@ function _initPhraseManageDrag() {
     if (titleEl) titleEl.innerHTML = '<i class="fas fa-plus" style="color:var(--success)"></i> 新建短语';
     var nameEl = document.getElementById('phrase-name-input');
     var contentEl = document.getElementById('phrase-content-input');
+    var groupEl = document.getElementById('phrase-group-input');
     if (nameEl) nameEl.value = '';
     if (contentEl) contentEl.value = '';
+    if (groupEl) groupEl.value = '';
     document.getElementById('modal-phrase-edit').classList.add('show');
   }
 
@@ -8270,23 +10406,27 @@ function _initPhraseManageDrag() {
     if (titleEl) titleEl.innerHTML = '<i class="fas fa-pen" style="color:var(--success)"></i> 编辑短语';
     var nameEl = document.getElementById('phrase-name-input');
     var contentEl = document.getElementById('phrase-content-input');
+    var groupEl = document.getElementById('phrase-group-input');
     if (nameEl) nameEl.value = p.name || '';
     if (contentEl) contentEl.value = p.content || '';
+    if (groupEl) groupEl.value = p.group || '';
     document.getElementById('modal-phrase-edit').classList.add('show');
   }
 
   function savePhrase() {
     var nameEl = document.getElementById('phrase-name-input');
     var contentEl = document.getElementById('phrase-content-input');
+    var groupEl = document.getElementById('phrase-group-input');
     if (!nameEl) return;
     var name = nameEl.value.trim();
     var content = contentEl ? contentEl.value.trim() : '';
+    var group = groupEl ? groupEl.value.trim() : '';
     if (!name) { tbToast('请填写按钮显示文字'); return; }
     if (!content) content = name;
     if (_phraseEditIdx === -1) {
-      _phrases.push({ name: name, content: content });
+      _phrases.push({ name: name, content: content, group: group });
     } else {
-      _phrases[_phraseEditIdx] = { name: name, content: content };
+      _phrases[_phraseEditIdx] = { name: name, content: content, group: group };
     }
     tbSet(TB_PHRASES_KEY, _phrases);
     document.getElementById('modal-phrase-edit').classList.remove('show');
@@ -8437,6 +10577,7 @@ function _initPhraseManageDrag() {
     deleteMsg: deleteMsg,
     editMsg: editMsg,
     regenMsg: regenMsg,
+    continueGen: continueGen,
     regenWithVersion: regenWithVersion,
     deleteCurrentVersion: deleteCurrentVersion,
     switchMsgVersion: switchMsgVersion,
@@ -8454,6 +10595,7 @@ function _initPhraseManageDrag() {
     openAddModal: openAddModal,
     switchAddTab: switchAddTab,
     handleTxtFile: handleTxtFile,
+    handleEpubFile: handleEpubFile,
     confirmAddJourney: confirmAddJourney,
     openModal: openModal,
     closeModal: closeModal,
@@ -8481,12 +10623,15 @@ function _initPhraseManageDrag() {
     saveBeauty: saveBeauty,
     resetBeauty: resetBeauty,
     _syncBJFont: _syncBJFont,
+    setBubbleStyle: setBubbleStyle,
+    setBubbleColor: setBubbleColor,
     showOnboard: showOnboard,
     closeOnboard: closeOnboard,
     openMemoryModal: openMemoryModal,
     aiSummarize: aiSummarize,
     fetchModels: fetchModels,
     selectModel: selectModel,
+    filterModels: filterModels,
     testApi: testApi,
     openIdentityPresets: openIdentityPresets,
     saveIdentityPreset: saveIdentityPreset,
@@ -8494,6 +10639,10 @@ function _initPhraseManageDrag() {
     deleteIdentityPreset: deleteIdentityPreset,
     openCardMenu: openCardMenu,
     renameJourney: renameJourney,
+    manageTags: manageTags,
+    setTagFilter: setTagFilter,
+    togglePhraseGroup: togglePhraseGroup,
+    closePhraseGroup: closePhraseGroup,
     changeCover: changeCover,
     _hideCardMenuPub: _hideCardMenu,
     switchPresetTab: switchPresetTab,
@@ -8569,12 +10718,30 @@ function _initPhraseManageDrag() {
     showInspirationPanel: showInspirationPanel,
     closeInspirationPanel: closeInspirationPanel,
     genInspiration: genInspiration,
+    genPlotAdvice: genPlotAdvice,
+    usePlotAdvice: usePlotAdvice,
     useInspiration: useInspiration,
+    checkAtMention: checkAtMention,
+    insertAtMention: insertAtMention,
     showWorldState: showWorldState,
     closeWorldState: closeWorldState,
     toggleFullscreen: toggleFullscreen,
     genNovelSummary: genNovelSummary,
+    openSysPromptEditor: openSysPromptEditor,
+    generateCurrentSysPrompt: generateCurrentSysPrompt,
+    copySysPrompt: copySysPrompt,
+    toggleSysPromptMode: toggleSysPromptMode,
+    onSysPromptInput: onSysPromptInput,
+    saveSysPrompt: saveSysPrompt,
+    resetSysPrompt: resetSysPrompt,
+    showChapterSnapshot: showChapterSnapshot,
+    rewriteParagraph: rewriteParagraph,
+    selectRewriteVersion: selectRewriteVersion,
+    rewriteAgain: rewriteAgain,
+    applyRewrite: applyRewrite,
+    closeRewriteCompare: closeRewriteCompare,
     toggleNovelSummary: toggleNovelSummary,
+    toggleTrendChart: toggleTrendChart,
     _onFsChange: _onFullscreenChange
   };
 // ── 加号弹窗 ──
@@ -8603,7 +10770,40 @@ function _initPhraseManageDrag() {
     var panel = document.getElementById('inspiration-panel');
     if (panel) panel.classList.add('show');
   }
+var _openGroupName = '';
+  function togglePhraseGroup(gName) {
+    var inputArea = document.getElementById('chat-input-area');
+    var existing = document.getElementById('phrase-group-expand');
+    if (existing) {
+      var wasOpen = existing.classList.contains('show') && _openGroupName === gName;
+      existing.remove();
+      _openGroupName = '';
+      if (wasOpen) return;
+    }
+    _openGroupName = gName;
+    var items = [];
+    _phrases.forEach(function (p, i) {
+      if ((p.group || '') === gName) items.push({ phrase: p, idx: i });
+    });
+    if (items.length === 0) return;
+    var panel = document.createElement('div');
+    panel.id = 'phrase-group-expand';
+    panel.className = 'qp-group-expand show';
+    var html = '<div class="qp-group-header"><span><i class="fas fa-folder-open" style="margin-right:4px"></i>' + _esc(gName) + '</span><button onclick="TB.closePhraseGroup()"><i class="fas fa-times"></i></button></div>';
+    items.forEach(function (item) {
+      html += '<div class="qp-pill" style="pointer-events:auto" onclick="TB.sendQuickPhrase(' + item.idx + ');TB.closePhraseGroup()">' +
+        '<i class="fas fa-bolt"></i>' + _esc(item.phrase.name) +
+        '</div>';
+    });
+    panel.innerHTML = html;
+    inputArea.appendChild(panel);
+  }
 
+  function closePhraseGroup() {
+    var existing = document.getElementById('phrase-group-expand');
+    if (existing) existing.remove();
+    _openGroupName = '';
+  }
   function closeInspirationPanel() {
     var panel = document.getElementById('inspiration-panel');
     if (panel) panel.classList.remove('show');
@@ -8618,19 +10818,25 @@ function _initPhraseManageDrag() {
     if (!contentEl) return;
     contentEl.innerHTML = '<div class="insp-loading"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:8px">正在摇骰子...</p></div>';
 
-    // 取最近几轮对话作为上下文
     var histMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+    if (histMsgs.length < 2) {
+      contentEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text2);font-size:12px">对话太少，请先推进几轮故事再使用灵感骰子</div>' +
+        '<div style="display:flex;gap:8px;justify-content:center;padding:8px 10px;flex-wrap:wrap"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button><button class="btn-primary" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#e67e22,#f0b27a);box-shadow:0 3px 14px rgba(230,126,34,.35)" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 剧情分析</button></div>';
+      return;
+    }
     var recentSlice = histMsgs.slice(-8);
     var chatContext = recentSlice.map(function (m) {
-      return (m.role === 'ai' ? '[故事]' : '[用户]') + ' ' + m.content.slice(0, 200);
+      return (m.role === 'ai' ? '[叙事]' : '[玩家行动]') + ' ' + m.content.slice(0, 200);
     }).join('\n');
 
     var identity = _settings.userIdentity || '穿越者';
 
-    var promptMsgs = [
-      { role: 'system', content: '你是一个创意灵感助手。根据当前故事进展，为穿越者（用户）提供3条简短的行动/台词/心理活动建议。\n\n规则：\n- 每条建议一行，不超过20字\n- 用【数字】开头标记\n- 覆盖不同方向：一条倾向行动，一条倾向对话，一条倾向内心/观察\n- 保持简短，只给灵感方向，不展开描写\n- 符合当前场景和人物关系\n- 穿越者身份：' + identity },
-      { role: 'user', content: '当前故事进展：\n\n' + chatContext + '\n\n请给出3条行动建议：' }
-    ];
+    var sysPrompt = '你的唯一任务：根据故事上下文，输出3条角色可以采取的具体行动建议。\n\n' +
+      '## 绝对禁止\n- 禁止输出任何开场白、分析、解释、总结\n- 禁止输出"好的""根据""以下是"等废话\n- 禁止输出单个词语，每条必须是完整的动作描述句\n- 禁止输出超过3行\n\n' +
+      '## 输出格式（逐字遵守）\n只输出3行纯文本，每行格式为：\n字母|具体描述句\n\n' +
+      '第1行以A|开头，是一条行动建议（8~20字）\n第2行以B|开头，是一条台词/对话建议（8~20字）\n第3行以C|开头，是一条观察/心理建议（8~20字）\n\n' +
+      '## 正确输出示例\nA|悄悄跟上那个形迹可疑的侍卫\nB|走到她面前说"你刚才的话，我不信"\nC|仔细观察他的表情判断是否在说谎\n\n' +
+      '穿越者身份：' + identity + '\n注意：你的回复必须恰好3行，第一个字符必须是大写A';
 
     var url = api.url.replace(/\/$/, '') + '/chat/completions';
     fetch(url, {
@@ -8638,50 +10844,323 @@ function _initPhraseManageDrag() {
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
       body: JSON.stringify({
         model: api.model || 'gpt-3.5-turbo',
-        messages: promptMsgs,
-        max_tokens: 150,
+        messages: [
+          { role: 'system', content: sysPrompt },
+          { role: 'user', content: chatContext + '\n\n现在直接输出A|B|C三行：' }
+        ],
+        max_tokens: 200,
         temperature: 1.0
-      })
+      }),
+      signal: (function() { var ac = new AbortController(); setTimeout(function(){ ac.abort(); }, 60000); return ac.signal; })()
     }).then(function (res) {
-      if (!res.ok) throw new Error('API ' + res.status);
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          throw new Error('API错误 ' + res.status + ': ' + t.slice(0, 80));
+        });
+      }
       return res.json();
     }).then(function (data) {
-      var result = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
-      if (!result) throw new Error('无返回');
+      var result = '';
+      try {
+        result = data.choices[0].message.content || '';
+      } catch (e) {
+        throw new Error('返回数据格式异常');
+      }
+      if (!result.trim()) throw new Error('AI返回了空内容');
       _renderInspirationResults(result);
     }).catch(function (e) {
-      contentEl.innerHTML = '<div style="text-align:center;padding:12px;color:var(--danger);font-size:12px"><i class="fas fa-circle-xmark"></i> 生成失败：' + e.message + '</div>' +
-        '<div style="display:flex;justify-content:center;padding:6px"><button class="btn-primary" style="padding:8px 16px;font-size:12px" onclick="TB.genInspiration()"><i class="fas fa-rotate-right"></i> 重试</button></div>';
+      var errMsg = e.name === 'AbortError' ? '请求超时（60秒），请检查网络' : e.message;
+      contentEl.innerHTML = '<div style="text-align:center;padding:12px;color:var(--danger);font-size:12px"><i class="fas fa-circle-xmark"></i> ' + _esc(errMsg) + '</div>' +
+        '<div style="display:flex;gap:8px;justify-content:center;padding:8px 10px;flex-wrap:wrap"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 重试</button><button class="btn-primary" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#e67e22,#f0b27a);box-shadow:0 3px 14px rgba(230,126,34,.35)" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 剧情分析</button></div>';
     });
   }
 
   function _renderInspirationResults(text) {
     var contentEl = document.getElementById('insp-content');
     if (!contentEl) return;
-    // 解析结果：按行分割，提取建议
-    var lines = text.split('\n').filter(function (l) { return l.trim(); });
     var suggestions = [];
+    var typeIcons = { 'A': 'fa-person-walking', 'B': 'fa-comment', 'C': 'fa-eye' };
+    var typeLabels = { 'A': '行动', 'B': '对话', 'C': '观察' };
+    var lines = text.split('\n').filter(function (l) { return l.trim(); });
     lines.forEach(function (line) {
-      var cleaned = line.replace(/^【?\d+[】.、:：)\]]\s*/, '').trim();
-      if (cleaned && cleaned.length >= 2) {
-        suggestions.push(cleaned);
+      var cleaned = line.trim();
+      var pipeMatch = cleaned.match(/^([A-Ca-c])\|(.+)/);
+      if (pipeMatch) {
+        var typeKey = pipeMatch[1].toUpperCase();
+        suggestions.push({ text: pipeMatch[2].trim(), type: typeKey });
+        return;
+      }
+      cleaned = cleaned.replace(/^【?\d+[】.、:：)\]]\s*/, '').trim();
+      cleaned = cleaned.replace(/^[A-Ca-c][.、:：)\]]\s*/, '').trim();
+      if (cleaned && cleaned.length >= 4) {
+        var autoType = suggestions.length === 0 ? 'A' : suggestions.length === 1 ? 'B' : 'C';
+        suggestions.push({ text: cleaned, type: autoType });
       }
     });
-    if (suggestions.length === 0) {
-      suggestions = [text.trim()];
+    if (suggestions.length === 0 && text.trim().length >= 4) {
+      suggestions.push({ text: text.trim().slice(0, 50), type: 'A' });
     }
-    // 最多取3条
     suggestions = suggestions.slice(0, 3);
-    var html = suggestions.map(function (s) {
-      return '<div class="insp-item" onclick="TB.useInspiration(this)">' + _esc(s) + '</div>';
-    }).join('');
+    var html = '';
+    suggestions.forEach(function (s) {
+      var icon = typeIcons[s.type] || 'fa-lightbulb';
+      var label = typeLabels[s.type] || '建议';
+      html += '<div class="insp-item" onclick="TB.useInspiration(this)" style="display:flex;align-items:flex-start;gap:10px">' +
+        '<div style="display:flex;flex-direction:column;align-items:center;gap:2px;flex-shrink:0;min-width:32px;padding-top:2px">' +
+          '<i class="fas ' + icon + '" style="font-size:13px;color:var(--accent2)"></i>' +
+          '<span style="font-size:9px;color:var(--text2);font-weight:600">' + label + '</span>' +
+        '</div>' +
+        '<span style="flex:1;line-height:1.6">' + _esc(s.text) + '</span>' +
+      '</div>';
+    });
     html += '<div style="display:flex;justify-content:center;padding:8px 0 2px"><button onclick="TB.genInspiration()" style="background:none;border:none;color:var(--accent2);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;transition:background .15s" onmouseover="this.style.background=\'rgba(108,92,231,.1)\'" onmouseout="this.style.background=\'\'"><i class="fas fa-rotate-right"></i> 换一批</button></div>';
     contentEl.innerHTML = html;
   }
+function genPlotAdvice() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) { tbToast('请先进入旅途'); return; }
+    var api = _getActiveApi();
+    if (!api || !api.url || !api.key) { tbToast('请先配置API'); return; }
+    var contentEl = document.getElementById('insp-content');
+    if (!contentEl) return;
+    contentEl.innerHTML = '<div class="insp-loading"><div class="loading-dots"><span></span><span></span><span></span></div><p style="margin-top:8px">正在分析局势...</p></div>';
 
-  function useInspiration(el) {
-    var text = el.textContent || el.innerText || '';
+    var histMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+    if (histMsgs.length < 4) {
+      contentEl.innerHTML = '<div style="text-align:center;padding:16px;color:var(--text2);font-size:12px">对话太少，请先推进几轮故事再使用剧情分析</div>' +
+        '<div style="display:flex;gap:8px;justify-content:center;padding:8px 10px;flex-wrap:wrap"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 给我灵感</button><button class="btn-primary" style="padding:10px 20px;font-size:13px;background:linear-gradient(135deg,#e67e22,#f0b27a);box-shadow:0 3px 14px rgba(230,126,34,.35)" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 剧情分析</button></div>';
+      return;
+    }
+    var recentSlice = histMsgs.slice(-12);
+    var chatContext = recentSlice.map(function (m) {
+      return (m.role === 'ai' ? '[叙事]' : '[玩家行动]') + ' ' + m.content.slice(0, 250);
+    }).join('\n');
+
+    var summaryHint = j.memorySummary ? '故事摘要：' + j.memorySummary.slice(0, 300) + '\n\n' : '';
+    var wsHint = '';
+    if (j.worldState) {
+      var ws = j.worldState;
+      if (ws.time) wsHint += '时间：' + ws.time + '；';
+      if (ws.event) wsHint += '事件：' + ws.event + '；';
+      if (ws.characters && ws.characters.length > 0) {
+        wsHint += '人物：' + ws.characters.map(function (c) {
+          return c.name + '(' + (c.relation || '') + (c.favor >= 0 ? ',好感' + c.favor : '') + ')';
+        }).join('、');
+      }
+    }
+
+    var identity = _settings.userIdentity || '穿越者';
+
+    var sysPrompt = '你的唯一任务：分析故事局势，直接输出3条剧情走向建议。\n\n' +
+      '## 绝对禁止\n- 禁止输出任何开场白（"好的""根据当前""以下是"等全部禁止）\n- 禁止输出总结段落或补充说明\n- 禁止输出超过3行主体内容\n- 你的回复第一个字符必须是数字1\n\n' +
+      '## 输出格式（逐字遵守）\n只输出3行，每行用竖线|分隔4个字段：\n\n' +
+      '1|行动描述（10~25字具体动作句）|影响描述（10~25字后果说明）|标签\n2|行动描述|影响描述|标签\n3|行动描述|影响描述|标签\n\n' +
+      '## 标签只能从以下6个选一个\n好感提升、关系恶化、剧情加速、埋下伏笔、高风险高回报、稳扎稳打\n\n' +
+      '## 三条风格要求\n1=稳妥保守  2=激进冒险  3=出人意料\n\n' +
+      '## 正确示例\n1|主动向她坦白自己知道密信的事|她会震惊但对你的信任度大幅提升|好感提升\n2|趁夜潜入书房偷取那份名单|可能被发现导致关系破裂但能掌握情报|高风险高回报\n3|在宴会上故意说错一个细节引蛇出洞|幕后之人可能主动暴露但自身也有风险|埋下伏笔\n\n' +
+      '穿越者身份：' + identity;
+
+    var url = api.url.replace(/\/$/, '') + '/chat/completions';
+    fetch(url, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
+      body: JSON.stringify({
+        model: api.model || 'gpt-3.5-turbo',
+        messages: [
+          { role: 'system', content: sysPrompt },
+          { role: 'user', content: summaryHint + (wsHint ? '当前状态：' + wsHint + '\n\n' : '') + '最近对话：\n' + chatContext + '\n\n现在直接输出，第一个字符是1：' }
+        ],
+        max_tokens: 400,
+        temperature: 0.85
+      }),
+      signal: (function() { var ac = new AbortController(); setTimeout(function(){ ac.abort(); }, 60000); return ac.signal; })()
+    }).then(function (res) {
+      if (!res.ok) {
+        return res.text().then(function (t) {
+          throw new Error('API错误 ' + res.status + ': ' + t.slice(0, 80));
+        });
+      }
+      return res.json();
+    }).then(function (data) {
+      var result = '';
+      try {
+        result = data.choices[0].message.content || '';
+      } catch (e) {
+        throw new Error('返回数据格式异常');
+      }
+      if (!result.trim()) throw new Error('AI返回了空内容');
+      _renderPlotAdviceResults(result);
+    }).catch(function (e) {
+      var errMsg = e.name === 'AbortError' ? '请求超时（60秒），请检查网络' : e.message;
+      contentEl.innerHTML = '<div style="text-align:center;padding:12px;color:var(--danger);font-size:12px"><i class="fas fa-circle-xmark"></i> ' + _esc(errMsg) + '</div>' +
+        '<div style="display:flex;gap:8px;justify-content:center;padding:8px 10px;flex-wrap:wrap"><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genPlotAdvice()"><i class="fas fa-chess"></i> 重试</button><button class="btn-primary" style="padding:10px 20px;font-size:13px" onclick="TB.genInspiration()"><i class="fas fa-wand-magic-sparkles"></i> 灵感骰子</button></div>';
+    });
+  }
+
+  function _renderPlotAdviceResults(text) {
+    var contentEl = document.getElementById('insp-content');
+    if (!contentEl) return;
+    var advices = [];
+    var lines = text.split('\n').filter(function (l) { return l.trim(); });
+    lines.forEach(function (line) {
+      var cleaned = line.trim();
+      var pipeMatch = cleaned.match(/^(\d)[|｜](.+)/);
+      if (pipeMatch) {
+        var parts = pipeMatch[2].split(/[|｜]/);
+        var title = (parts[0] || '').trim();
+        var impact = (parts[1] || '').trim();
+        var tag = (parts[2] || '').trim();
+        if (title && title.length >= 4) {
+          advices.push({ title: title, impact: impact, tag: tag });
+        }
+        return;
+      }
+      var bracketMatch = cleaned.match(/^【建议\d+】\s*(.+)/);
+      if (bracketMatch) {
+        advices.push({ title: bracketMatch[1].trim(), impact: '', tag: '' });
+        return;
+      }
+      var numMatch = cleaned.match(/^\d+[.、:：)\]]\s*(.+)/);
+      if (numMatch && numMatch[1].length >= 4) {
+        advices.push({ title: numMatch[1].trim(), impact: '', tag: '' });
+      }
+    });
+    if (advices.length === 0 && text.trim().length >= 8) {
+      var fallbackLines = text.split('\n').filter(function (l) { return l.trim() && l.trim().length >= 6; });
+      fallbackLines.slice(0, 3).forEach(function (l) {
+        advices.push({ title: l.trim().slice(0, 50), impact: '', tag: '' });
+      });
+    }
+    advices = advices.slice(0, 3);
+    var tagColors = {
+      '好感提升': { bg: 'rgba(81,207,102,.12)', color: '#51cf66', icon: 'fa-heart' },
+      '关系恶化': { bg: 'rgba(255,107,107,.1)', color: '#ff6b6b', icon: 'fa-heart-crack' },
+      '剧情加速': { bg: 'rgba(253,203,110,.12)', color: '#fdcb6e', icon: 'fa-forward-fast' },
+      '埋下伏笔': { bg: 'rgba(108,92,231,.12)', color: '#a29bfe', icon: 'fa-eye' },
+      '高风险高回报': { bg: 'rgba(231,76,60,.1)', color: '#e74c3c', icon: 'fa-bolt' },
+      '稳扎稳打': { bg: 'rgba(41,128,185,.12)', color: '#5dade2', icon: 'fa-shield-halved' }
+    };
+    var styleIcons = ['fa-shield-halved', 'fa-fire', 'fa-star'];
+    var styleLabels = ['稳妥路线', '激进路线', '意外路线'];
+    var html = '';
+    if (advices.length === 0) {
+      html = '<div style="text-align:center;padding:16px;color:var(--text2);font-size:12px">AI未能按格式输出，请重试</div>';
+    } else {
+      advices.forEach(function (adv, ai) {
+        var matchedTag = '';
+        Object.keys(tagColors).forEach(function (k) {
+          if (adv.tag && adv.tag.indexOf(k) !== -1) matchedTag = k;
+        });
+        var tc = tagColors[matchedTag] || { bg: 'rgba(108,92,231,.08)', color: 'var(--accent2)', icon: 'fa-tag' };
+        html += '<div class="insp-item" onclick="TB.usePlotAdvice(this)" style="padding:12px 14px">' +
+          '<div style="display:flex;align-items:center;gap:6px;margin-bottom:6px">' +
+            '<i class="fas ' + (styleIcons[ai] || 'fa-circle') + '" style="font-size:11px;color:' + tc.color + '"></i>' +
+            '<span style="font-size:10px;color:var(--text2);font-weight:600">' + (styleLabels[ai] || '路线' + (ai+1)) + '</span>' +
+            (matchedTag ? '<span style="font-size:9px;padding:2px 7px;border-radius:8px;background:' + tc.bg + ';color:' + tc.color + ';margin-left:auto;display:inline-flex;align-items:center;gap:3px"><i class="fas ' + tc.icon + '" style="font-size:8px"></i>' + _esc(matchedTag) + '</span>' : '') +
+          '</div>' +
+          '<div style="font-size:13px;color:var(--text);line-height:1.6;font-weight:600" data-advice-text="' + _esc(adv.title) + '">' + _esc(adv.title) + '</div>' +
+          (adv.impact ? '<div style="margin-top:6px;padding:6px 10px;border-radius:8px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.06);font-size:11px;color:var(--text2);line-height:1.6;display:flex;align-items:flex-start;gap:5px"><i class="fas fa-chart-line" style="color:var(--accent2);font-size:10px;margin-top:2px;flex-shrink:0"></i><span>' + _esc(adv.impact) + '</span></div>' : '') +
+        '</div>';
+      });
+    }
+    html += '<div style="display:flex;gap:8px;justify-content:center;padding:8px 0 2px;flex-wrap:wrap">' +
+      '<button onclick="TB.genPlotAdvice()" style="background:none;border:none;color:#e67e22;font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;transition:background .15s" onmouseover="this.style.background=\'rgba(230,126,34,.1)\'" onmouseout="this.style.background=\'\'"><i class="fas fa-rotate-right"></i> 重新分析</button>' +
+      '<button onclick="TB.genInspiration()" style="background:none;border:none;color:var(--accent2);font-size:12px;cursor:pointer;padding:6px 12px;border-radius:8px;transition:background .15s" onmouseover="this.style.background=\'rgba(108,92,231,.1)\'" onmouseout="this.style.background=\'\'"><i class="fas fa-dice"></i> 切换灵感</button>' +
+    '</div>';
+    contentEl.innerHTML = html;
+  }
+
+  function usePlotAdvice(el) {
+    var textEl = el.querySelector('[data-advice-text]');
+    var text = textEl ? textEl.getAttribute('data-advice-text') : '';
     text = text.trim();
+    if (!text) return;
+    var ta = document.getElementById('chat-input');
+    if (ta) {
+      ta.value = text;
+      autoResizeInput(ta);
+      ta.focus();
+    }
+    closeInspirationPanel();
+    tbToast('已填入输入框，可编辑后发送');
+  }
+  var _atMentionOpen = false;
+
+  function checkAtMention(ta) {
+    var val = ta.value || '';
+    var cursorPos = ta.selectionStart;
+    var textBeforeCursor = val.slice(0, cursorPos);
+    var atMatch = textBeforeCursor.match(/@([^\s@]*)$/);
+    var panel = document.getElementById('at-mention-panel');
+    if (!panel) return;
+
+    if (!atMatch) {
+      panel.style.display = 'none';
+      _atMentionOpen = false;
+      return;
+    }
+
+    var query = atMatch[1].toLowerCase();
+    var j = _getJourney(_curJourneyId);
+    if (!j || !j.worldState || !j.worldState.characters || j.worldState.characters.length === 0) {
+      panel.style.display = 'none';
+      _atMentionOpen = false;
+      return;
+    }
+
+    var chars = j.worldState.characters.filter(function (c) {
+      if (!query) return true;
+      return c.name.toLowerCase().indexOf(query) !== -1;
+    });
+
+    if (chars.length === 0) {
+      panel.style.display = 'none';
+      _atMentionOpen = false;
+      return;
+    }
+
+    var html = '<div style="font-size:10px;color:var(--text2);padding:4px 8px;margin-bottom:4px"><i class="fas fa-at" style="margin-right:4px"></i>选择角色</div>';
+    chars.forEach(function (c) {
+      var favor = '';
+      if (c.favor >= 0) {
+        var fColor = c.favor >= 60 ? '#51cf66' : c.favor >= 30 ? '#fdcb6e' : '#ff6b6b';
+        favor = '<span style="font-size:9px;color:' + fColor + ';margin-left:auto">♥ ' + c.favor + '</span>';
+      }
+      html += '<div onclick="TB.insertAtMention(\'' + _esc(c.name).replace(/'/g, "\\'") + '\')" style="display:flex;align-items:center;gap:8px;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px;color:var(--text);transition:background .15s" onmouseover="this.style.background=\'rgba(108,92,231,.1)\'" onmouseout="this.style.background=\'\'">' +
+        '<i class="fas fa-user" style="color:var(--accent2);font-size:11px;width:16px;text-align:center"></i>' +
+        '<span>' + _esc(c.name) + '</span>' +
+        (c.relation ? '<span style="font-size:10px;color:var(--text2)">' + _esc(c.relation) + '</span>' : '') +
+        favor +
+      '</div>';
+    });
+    panel.innerHTML = html;
+    panel.style.display = 'block';
+    _atMentionOpen = true;
+  }
+
+  function insertAtMention(name) {
+    var ta = document.getElementById('chat-input');
+    if (!ta) return;
+    var val = ta.value;
+    var cursorPos = ta.selectionStart;
+    var textBefore = val.slice(0, cursorPos);
+    var textAfter = val.slice(cursorPos);
+    var newBefore = textBefore.replace(/@[^\s@]*$/, name + ' ');
+    ta.value = newBefore + textAfter;
+    var newPos = newBefore.length;
+    ta.setSelectionRange(newPos, newPos);
+    ta.focus();
+    autoResizeInput(ta);
+    var panel = document.getElementById('at-mention-panel');
+    if (panel) panel.style.display = 'none';
+    _atMentionOpen = false;
+  }
+  function useInspiration(el) {
+    var spanEl = el.querySelector('span[style*="flex:1"]');
+    var text = spanEl ? (spanEl.textContent || '').trim() : '';
+    if (!text) {
+      text = (el.textContent || '').trim();
+    }
     if (!text) return;
     var ta = document.getElementById('chat-input');
     if (ta) {
@@ -8697,6 +11176,10 @@ function _initPhraseManageDrag() {
   function showWorldState() {
     _closePlusPopup();
     var j = _getJourney(_curJourneyId);
+    var wsHeader = document.querySelector('#wsBody').parentElement.querySelector('.ws-header h3');
+    if (wsHeader) {
+      wsHeader.innerHTML = '<i class="fas fa-globe" style="color:var(--success)"></i> 世界状态';
+    }
     _renderWorldStateBody(j);
     document.getElementById('wsOverlay').classList.add('show');
   }
@@ -8709,7 +11192,7 @@ function _initPhraseManageDrag() {
     var body = document.getElementById('wsBody');
     if (!body) return;
     if (!j || !j.worldState) {
-      body.innerHTML = '<div class="ws-empty"><i class="fas fa-globe"></i>故事尚未开始，世界状态将随着剧情推进自动更新<br><br><span style="font-size:11px;color:var(--text2)">AI每次回复后会自动提取并更新状态信息</span></div>';
+      body.innerHTML = '<div class="ws-empty"><i class="fas fa-globe"></i>故事尚未开始<br>世界状态将随着剧情推进自动更新<br><br><span style="font-size:11px;color:var(--text2)">AI每次回复后会自动提取并更新状态信息</span></div>';
       return;
     }
     var ws = j.worldState;
@@ -8731,10 +11214,31 @@ function _initPhraseManageDrag() {
     if (ws.characters && ws.characters.length > 0) {
       html += '<div class="ws-section"><div class="ws-section-title"><i class="fas fa-users"></i> 人物状态</div>';
       ws.characters.forEach(function (c) {
-        html += '<div class="ws-item"><div class="ws-item-label">' + _esc(c.name) + '</div><div class="ws-item-value">' +
-          (c.location ? '📍 ' + _esc(c.location) : '') +
-          (c.relation ? (c.location ? ' · ' : '') + '💬 ' + _esc(c.relation) : '') +
-          '</div></div>';
+        var favorHtml = '';
+        if (c.favor !== undefined && c.favor >= 0) {
+          var fv = c.favor;
+          var barColor = fv >= 70 ? '#51cf66' : fv >= 40 ? '#fdcb6e' : fv >= 20 ? '#e67e22' : '#ff6b6b';
+          var favorLabel = fv >= 80 ? '亲密' : fv >= 60 ? '友好' : fv >= 40 ? '普通' : fv >= 20 ? '冷淡' : '敌对';
+          favorHtml = '<div style="margin-top:6px">' +
+            '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:3px">' +
+              '<span style="font-size:10px;color:var(--text2)">好感度</span>' +
+              '<span style="font-size:10px;font-weight:700;color:' + barColor + '">' + fv + '/100 · ' + favorLabel + '</span>' +
+            '</div>' +
+            '<div style="height:6px;border-radius:3px;background:rgba(255,255,255,.08);overflow:hidden">' +
+              '<div style="height:100%;width:' + fv + '%;border-radius:3px;background:linear-gradient(90deg,' + barColor + ',' + barColor + 'aa);transition:width .4s"></div>' +
+            '</div>' +
+          '</div>';
+        }
+        html += '<div class="ws-item" style="flex-direction:column;align-items:stretch;gap:2px">' +
+          '<div style="display:flex;align-items:center;gap:8px">' +
+            '<div class="ws-item-label">' + _esc(c.name) + '</div>' +
+            '<div class="ws-item-value">' +
+              (c.location ? '📍 ' + _esc(c.location) : '') +
+              (c.relation ? (c.location ? ' · ' : '') + '💬 ' + _esc(c.relation) : '') +
+            '</div>' +
+          '</div>' +
+          favorHtml +
+        '</div>';
       });
       html += '</div>';
     }
@@ -8763,6 +11267,7 @@ function _initPhraseManageDrag() {
   // ── 解析AI回复中的世界状态标签 ──
   function _parseAndStoreWorldState(j, content) {
     if (!j || !content) return content;
+    try {
     // 匹配 <!--WS ... WS--> 块
     var wsRegex = /<!--WS\s*\n?([\s\S]*?)\n?\s*WS-->/;
     var match = content.match(wsRegex);
@@ -8795,11 +11300,27 @@ function _initPhraseManageDrag() {
           if (!p) return;
           var segs = p.split('=');
           if (segs.length >= 2) {
-            wsData.characters.push({
+            var charObj = {
               name: segs[0].trim(),
               location: segs[1] ? segs[1].trim() : '',
-              relation: segs[2] ? segs[2].trim() : ''
-            });
+              relation: segs[2] ? segs[2].trim() : '',
+              favor: -1
+            };
+            for (var si = 0; si < segs.length; si++) {
+              var seg = segs[si].trim();
+              var favorMatch = seg.match(/好感[:：]?\s*(\d+)/);
+              if (favorMatch) {
+                charObj.favor = Math.max(0, Math.min(100, parseInt(favorMatch[1]) || 0));
+                if (si === 2) charObj.relation = seg.replace(/[=]?好感[:：]?\s*\d+/, '').trim();
+                break;
+              }
+            }
+            if (segs.length >= 4 && charObj.favor === -1) {
+              var lastSeg = segs[3].trim();
+              var fm2 = lastSeg.match(/好感[:：]?\s*(\d+)/);
+              if (fm2) charObj.favor = Math.max(0, Math.min(100, parseInt(fm2[1]) || 0));
+            }
+            wsData.characters.push(charObj);
           }
         });
       } else if (key === 'ITEMS') {
@@ -8820,16 +11341,32 @@ function _initPhraseManageDrag() {
     });
 
     // 只有解析到有效数据才更新
-    if (wsData.time || wsData.event || wsData.characters || wsData.items) {
+    var hasValidData = false;
+    if (wsData.time && wsData.time.length >= 2) hasValidData = true;
+    if (wsData.event && wsData.event.length >= 2) hasValidData = true;
+    if (wsData.characters && wsData.characters.length > 0) {
+      var validChars = wsData.characters.filter(function (c) { return c.name && c.name.length >= 1; });
+      if (validChars.length > 0) { wsData.characters = validChars; hasValidData = true; }
+      else { wsData.characters = null; }
+    }
+    if (wsData.items && wsData.items.length > 0) {
+      var validItems = wsData.items.filter(function (it) { return it.name && it.name.length >= 1 && it.holder && it.holder.length >= 1; });
+      if (validItems.length > 0) { wsData.items = validItems; hasValidData = true; }
+      else { wsData.items = null; }
+    }
+    if (hasValidData) {
       if (!j.worldState) j.worldState = {};
-      if (wsData.time) j.worldState.time = wsData.time;
-      if (wsData.event) j.worldState.event = wsData.event;
+      if (wsData.time && wsData.time.length >= 2) j.worldState.time = wsData.time;
+      if (wsData.event && wsData.event.length >= 2) j.worldState.event = wsData.event;
       if (wsData.characters && wsData.characters.length > 0) j.worldState.characters = wsData.characters;
       if (wsData.items && wsData.items.length > 0) j.worldState.items = wsData.items;
       j.worldState.updatedAt = new Date().toISOString();
     }
 
     return cleanContent;
+    } catch (e) {
+      return content.replace(/<!--WS[\s\S]*?WS-->/g, '').trim();
+    }
   }
   function toggleFullscreen() {
     var doc = document;
@@ -8856,7 +11393,7 @@ function _initPhraseManageDrag() {
     var desc = doc.getElementById('fullscreen-desc');
     if (icon) icon.className = 'fas ' + (isFs ? 'fa-compress' : 'fa-expand');
     if (desc) desc.textContent = isFs ? '当前已全屏，点击退出' : '点击进入/退出全屏，隐藏地址栏和状态栏';
-    tbToast(isFs ? '已进入全屏沉浸模式' : '已退出全屏模式');
+    tbToast(isFs ? '已开启全屏模式' : '已关闭全屏模式');
   }
 
 })();
@@ -8868,10 +11405,19 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('keydown', function(e) {
     // Esc 关闭弹窗
     if (e.key === 'Escape') {
+      var rewriteOv = document.getElementById('rewriteCompareOv');
+      if (rewriteOv && rewriteOv.classList.contains('show')) { TB.closeRewriteCompare(); e.preventDefault(); return; }
       var modals = document.querySelectorAll('.modal-ov.show');
       if (modals.length > 0) {
-        var last = modals[modals.length - 1];
-        TB.closeModal(last.id);
+        var topModal = null;
+        var topZ = -1;
+        modals.forEach(function(m) {
+          var z = parseInt(window.getComputedStyle(m).zIndex) || 0;
+          if (!z) z = parseInt(m.style.zIndex) || 500;
+          if (z > topZ) { topZ = z; topModal = m; }
+        });
+        if (topModal) TB.closeModal(topModal.id);
+        else TB.closeModal(modals[modals.length - 1].id);
         e.preventDefault();
         return;
       }
@@ -8887,6 +11433,35 @@ document.addEventListener('DOMContentLoaded', function () {
   document.addEventListener('fullscreenchange', function () { TB._onFsChange(); });
   document.addEventListener('webkitfullscreenchange', function () { TB._onFsChange(); });
 });
+</script>
+<script>
+(function(){
+  function _upd(el){
+    var min=parseFloat(el.min)||0,max=parseFloat(el.max)||100,val=parseFloat(el.value)||0;
+    el.style.setProperty('--pct',((val-min)/(max-min)*100).toFixed(1)+'%');
+  }
+  function _updAll(){
+    document.querySelectorAll('input[type=range]').forEach(_upd);
+  }
+  window._rangeUpdAll = _updAll;
+  function _init(){
+    _updAll();
+    document.addEventListener('input',function(e){
+      if(e.target.type==='range')_upd(e.target);
+    },{passive:true});
+    setTimeout(_updAll,500);
+    setTimeout(_updAll,1500);
+    var _moTimer=null;
+    var _obs=new MutationObserver(function(){
+      clearTimeout(_moTimer);
+      _moTimer=setTimeout(_updAll,80);
+    });
+    _obs.observe(document.body,{childList:true,subtree:true,attributes:true,attributeFilter:['style','class']});
+    window.addEventListener('beforeunload',function(){try{_obs.disconnect();}catch(e){}});
+  }
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_init);
+  else _init();
+})();
 </script>
 </body>
 </html>
