@@ -268,7 +268,7 @@ body.theme-light .jcard-popup{
 }
 #chat-hdr .chat-act:hover{color:var(--accent2);background:rgba(108,92,231,.1);}
 #chat-body{
-  flex:1;overflow-y:auto;padding:16px 18px 60px;
+  flex:1;overflow-y:auto;padding:16px 18px 0;
   display:flex;flex-direction:column;gap:0;
   background-image:var(--chat-bg);
   background-size:cover;background-position:center;
@@ -710,6 +710,25 @@ body.theme-light .modal-hdr{background:linear-gradient(180deg,rgba(108,92,231,.0
   border-radius:10px;padding:10px 12px;color:var(--text);
   font-size:13px;outline:none;cursor:pointer;
 }
+/* ── 记忆徽章（脑图标上的进度提示） ── */
+.mem-badge{
+  position:absolute;top:1px;right:1px;
+  min-width:15px;height:15px;border-radius:8px;
+  background:var(--accent);color:#fff;
+  font-size:9px;font-weight:700;line-height:15px;
+  display:flex;align-items:center;justify-content:center;
+  padding:0 3px;pointer-events:none;
+  transition:background .3s,transform .2s;
+  box-shadow:0 1px 4px rgba(0,0,0,.3);
+}
+.mem-badge.near{background:#fdcb6e;color:#333;}
+.mem-badge.urgent{background:var(--danger);}
+@keyframes brainPulse{0%{transform:scale(1)}40%{transform:scale(1.35)}100%{transform:scale(1)}}
+.brain-pulse{animation:brainPulse .5s ease 3;}
+/* ── 自动摘要进度条 ── */
+.auto-sum-bar-wrap{height:6px;background:rgba(108,92,231,.12);border-radius:3px;overflow:hidden;margin:8px 0 4px}
+.auto-sum-bar{height:100%;border-radius:3px;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:width .4s}
+
 /* ── 记忆总结块 ── */
 .memory-block{
   background:rgba(108,92,231,.06);border:1px solid rgba(108,92,231,.2);
@@ -2055,6 +2074,7 @@ body.theme-light .timeline-drawer{box-shadow:-8px 0 32px rgba(108,92,231,.1);}
 <div class="pg" id="pg-chat">
   <div id="chat-body" onclick="TB.hideCtxMenu()" style="position:relative">
   <div id="pull-refresh-indicator"><i class="fas fa-arrow-down pri-icon"></i><span class="pri-text">下拉加载更早消息</span></div>
+  <div id="chat-body-spacer" style="flex-shrink:0;height:16px;pointer-events:none"></div>
 </div>
   <div id="batch-toolbar">
     <div class="batch-count" id="batchCount">已选 0 条</div>
@@ -3670,7 +3690,7 @@ var TB = (function () {
       hdrRight.innerHTML =
         '<div style="display:flex;gap:0">' +
         '<button class="hdr-btn" onclick="TB.openTimeline()" title="时间线"><i class="fas fa-timeline"></i></button>' +
-        '<button class="hdr-btn" onclick="TB.openMemoryModal()" title="记忆管理"><i class="fas fa-brain"></i></button>' +
+        '<button class="hdr-btn" id="btn-memory" onclick="TB.openMemoryModal()" style="position:relative" title="记忆管理"><i class="fas fa-brain" id="brain-icon"></i><span id="mem-badge" class="mem-badge" style="display:none"></span></button>' +
         '<button class="hdr-btn" onclick="TB.openJourneyOpts()" title="旅途选项"><i class="fas fa-ellipsis-vertical"></i></button>' +
         '</div>';
     }
@@ -3696,6 +3716,7 @@ var TB = (function () {
 
   function _doExitChat() {
     if (_draftTimer) { clearTimeout(_draftTimer); _draftTimer = null; }
+    _stopTimedAutoSummary();
     // 若重写面板开着且有在途请求，先中止
     var rewriteOv = document.getElementById('rewriteCompareOv');
     if (rewriteOv && rewriteOv.classList.contains('show')) {
@@ -4052,6 +4073,8 @@ function toggleFolder(leadId) {
     switchPage('chat');
     _renderChat();
     _renderShortcutBar();
+    _updateMemoryBadge();
+    _startTimedAutoSummary();
     if (!j.status || j.status === 'active') {
       document.getElementById('chat-input-area').style.display = '';
       document.getElementById('chat-input').disabled = false;
@@ -4061,6 +4084,7 @@ function toggleFolder(leadId) {
     }
     setTimeout(function () {
       _scrollToBottom(true);
+      _syncChatLayout();
       var inputEl = document.getElementById('chat-input');
       if (inputEl) {
         inputEl.scrollIntoView({ block: 'nearest' });
@@ -5429,20 +5453,41 @@ function deleteCurrentVersion(idx) {
   function onInputFocus() {
     _closePlusPopup();
     closeInspirationPanel();
-    setTimeout(function () {
-      var body = document.getElementById('chat-body');
-      if (body) body.scrollTop = body.scrollHeight;
-    }, 300);
-    setTimeout(function () {
-      var body = document.getElementById('chat-body');
-      if (body) body.scrollTop = body.scrollHeight;
-    }, 600);
+    // 短延迟后滚到底，等键盘动画完成
+    setTimeout(_syncChatLayout, 300);
+    setTimeout(_syncChatLayout, 600);
   }
 
   function onInputBlur() {
+    // 键盘收起后强制重置布局，消除空白
     setTimeout(function () {
       window.scrollTo(0, 0);
+      _syncChatLayout();
     }, 100);
+    setTimeout(_syncChatLayout, 350);
+  }
+
+  // ── 动态同步聊天区布局（解决键盘弹起/收起留白 & 消息被遮挡问题）──
+  function _syncChatLayout() {
+    var pgChat = document.getElementById('pg-chat');
+    var inputArea = document.getElementById('chat-input-area');
+    var body = document.getElementById('chat-body');
+    var spacer = document.getElementById('chat-body-spacer');
+    if (!pgChat || !inputArea || !body) return;
+
+    // 用 visualViewport 高度（精确到键盘缩进后的可视区）
+    var vvh = (window.visualViewport ? window.visualViewport.height : window.innerHeight);
+    var inputH = inputArea.offsetHeight || 64;
+
+    // 让 chat-body spacer 等于输入区高度，确保最后一条消息完全可见
+    if (spacer) spacer.style.height = (inputH + 8) + 'px';
+
+    // 修正 pg-chat 高度，防止键盘收起后底部残留空白
+    pgChat.style.height = vvh + 'px';
+    pgChat.style.maxHeight = vvh + 'px';
+
+    // 滚到底
+    body.scrollTop = body.scrollHeight;
   }
   function autoResizeInput(ta) {
     ta.style.height = 'auto';
@@ -5650,9 +5695,10 @@ function deleteCurrentVersion(idx) {
     // 使用用户自定义的自动总结间隔，默认与上下文轮数一致
     var interval = j.autoSummaryInterval || j.contextRounds || 20;
     interval = Math.max(5, Math.min(50, interval));
-    if (aiMsgCount > 0 && aiMsgCount % interval === 0) {
+    if (aiMsgCount > 0 && aiMsgCount % interval === 0 && j.autoSummaryEnabled !== false) {
       _autoSummarize(j);
     }
+    _updateMemoryBadge();
     // 更新元素 data-idx
     var idx = j.messages.length - 1;
     placeholder.dataset.idx = idx;
@@ -5673,25 +5719,66 @@ function deleteCurrentVersion(idx) {
   }
 
   var _autoSummarizing = false;
+  var _autoSummaryTimerHandle = null;
+
+  // ── 更新脑图标上的进度徽章 ──
+  function _updateMemoryBadge() {
+    var badge = document.getElementById('mem-badge');
+    if (!badge) return;
+    var j = _getJourney(_curJourneyId);
+    if (!j || j.autoSummaryEnabled === false) { badge.style.display = 'none'; return; }
+    var interval = j.autoSummaryInterval || j.contextRounds || 20;
+    interval = Math.max(5, Math.min(50, interval));
+    var aiMsgCount = (j.messages || []).filter(function (m) { return m.role === 'ai' && !m.isTimeMark; }).length;
+    if (aiMsgCount === 0) { badge.style.display = 'none'; return; }
+    var progress = aiMsgCount % interval;
+    var remaining = (progress === 0) ? interval : (interval - progress);
+    badge.textContent = remaining + '轮';
+    badge.style.display = '';
+    badge.className = 'mem-badge' + (remaining <= 3 ? ' urgent' : remaining <= Math.ceil(interval / 3) ? ' near' : '');
+  }
+
+  // ── 基于真实时间的定时自动总结 ──
+  function _startTimedAutoSummary() {
+    _stopTimedAutoSummary();
+    var j = _getJourney(_curJourneyId);
+    if (!j || j.autoSummaryEnabled === false) return;
+    var minutes = j.autoSummaryMinutes || 0;
+    if (minutes < 1) return; // 0 = 仅轮数触发，不启用定时
+    _autoSummaryTimerHandle = setInterval(function () {
+      var jj = _getJourney(_curJourneyId);
+      if (!jj || jj.autoSummaryEnabled === false) { _stopTimedAutoSummary(); return; }
+      var histMsgs = (jj.messages || []).filter(function (m) { return !m.isTimeMark; });
+      if (histMsgs.length >= 8) _autoSummarize(jj);
+    }, minutes * 60 * 1000);
+  }
+
+  function _stopTimedAutoSummary() {
+    if (_autoSummaryTimerHandle) {
+      clearInterval(_autoSummaryTimerHandle);
+      _autoSummaryTimerHandle = null;
+    }
+  }
+
   function _autoSummarize(j) {
     if (_autoSummarizing) return;
     var api = _getActiveApi();
     if (!api || !api.url || !api.key) return;
     var histMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
-    if (histMsgs.length < 10) return;  // ← 在设置标志前做提前返回
+    if (histMsgs.length < 10) return;
     _autoSummarizing = true;
     var chatText = histMsgs.slice(-40).map(function (m) {
       return (m.role === 'ai' ? '[故事]' : '[用户]') + ' ' + m.content;
     }).join('\n\n');
     var promptMsgs = [
-      { role: 'system', content: '你是故事记忆管理器。任务：将已有摘要与最新剧情合并，输出一份完整的故事状态档案。\n\n输出格式（严格遵守）：\n【时间线】当前故事进行到什么时间\n【地点】当前场景\n【已发生关键事件】按时间顺序列出（每条一句话）\n【人物状态】各主要人物当前的态度、关系、状况\n【悬念/伏笔】尚未解决的冲突或线索\n\n要求：总字数200字以内，客观记录不加评论，不遗漏重要信息。' },
-      { role: 'user', content: (j.memorySummary ? '已有摘要：\n' + j.memorySummary + '\n\n---\n\n' : '') + '最新对话内容：\n\n' + chatText }
+      { role: 'system', content: '你是故事记录员。任务：将下方最新对话提炼成一条简短记录，追加到故事档案中。\n\n输出格式（严格遵守，只输出这一条记录，不要输出其他任何内容）：\n【第N段】时间/地点：……；关键事件：……；人物变化：……；悬念：……\n\n要求：100字以内，客观记录，不加评论。' },
+      { role: 'user', content: '当前档案共 ' + (j.memorySummary ? j.memorySummary.split('\n').filter(function(l){return l.trim();}).length : 0) + ' 条记录。\n\n最新对话内容：\n\n' + chatText + '\n\n请只输出新追加的这一条记录。' }
     ];
     var url = api.url.replace(/\/$/, '') + '/chat/completions';
     fetch(url, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + api.key },
-      body: JSON.stringify({ model: api.model || 'gpt-3.5-turbo', messages: promptMsgs, max_tokens: 400, temperature: 0.5 })
+      body: JSON.stringify({ model: api.model || 'gpt-3.5-turbo', messages: promptMsgs, max_tokens: 200, temperature: 0.5 })
     }).then(function (res) {
       if (!res.ok) return;
       return res.json();
@@ -5699,13 +5786,17 @@ function deleteCurrentVersion(idx) {
       if (!data) return;
       var result = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
       if (!result) return;
-      j.memorySummary = result.trim();
+      // 追加模式：旧内容保留，新记录追加到末尾
+      j.memorySummary = (j.memorySummary ? j.memorySummary.trim() + '\n' : '') + result.trim();
+      j.lastAutoSummaryAt = new Date().toISOString();
       j.updatedAt = new Date().toISOString();
       _saveJourneys();
-      // 如果记忆弹窗是开着的，同步更新文本框
       var summaryEl = document.getElementById('memory-summary');
       if (summaryEl) summaryEl.value = j.memorySummary;
-      tbToast('记忆已自动更新');
+      var brainIcon = document.getElementById('brain-icon');
+      if (brainIcon) { brainIcon.classList.remove('brain-pulse'); void brainIcon.offsetWidth; brainIcon.classList.add('brain-pulse'); }
+      _updateMemoryBadge();
+      tbToast('🧠 记忆已自动更新');
     }).catch(function () { /* 后台静默失败 */ }).finally(function () { _autoSummarizing = false; });
   }
 
@@ -6010,9 +6101,46 @@ function deleteCurrentVersion(idx) {
         '<div class="form-hint">超出轮数的历史记录不会发送给AI，建议定期生成摘要</div>' +
       '</div>' +
       '<div class="form-group">' +
-        '<label class="form-label">自动总结间隔（每 N 轮AI回复自动总结，最大50）</label>' +
-        '<input class="form-input" type="number" id="auto-summary-interval" min="5" max="50" value="' + (j.autoSummaryInterval || rounds) + '">' +
-        '<div class="form-hint">默认与上下文轮数一致。设得越小总结越频繁，消耗更多API额度</div>' +
+        '<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:10px">' +
+          '<label class="form-label" style="margin:0"><i class="fas fa-clock-rotate-left" style="color:var(--accent2);margin-right:5px"></i>自动摘要设置</label>' +
+          '<label style="display:flex;align-items:center;gap:6px;cursor:pointer;font-size:12px;color:' + (j.autoSummaryEnabled !== false ? 'var(--success)' : 'var(--text2)') + '">' +
+            '<span id="auto-sum-status-label">' + (j.autoSummaryEnabled !== false ? '已启用' : '已关闭') + '</span>' +
+            '<div id="auto-sum-toggle" onclick="TB._toggleAutoSummary()" style="width:40px;height:22px;border-radius:11px;background:' + (j.autoSummaryEnabled !== false ? 'var(--success)' : 'var(--border)') + ';position:relative;cursor:pointer;transition:background .2s">' +
+              '<div style="width:18px;height:18px;border-radius:50%;background:#fff;position:absolute;top:2px;' + (j.autoSummaryEnabled !== false ? 'right:2px' : 'left:2px') + ';transition:all .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)"></div>' +
+            '</div>' +
+          '</label>' +
+        '</div>' +
+        (function(){
+          var enabled = j.autoSummaryEnabled !== false;
+          var interval = j.autoSummaryInterval || rounds;
+          var aiCount = (j.messages||[]).filter(function(m){return m.role==='ai'&&!m.isTimeMark;}).length;
+          var progress = aiCount % interval;
+          var remaining = (progress===0&&aiCount>0) ? interval : interval - progress;
+          var pct = aiCount===0 ? 0 : Math.round(progress / interval * 100);
+          var lastSumStr = j.lastAutoSummaryAt ? new Date(j.lastAutoSummaryAt).toLocaleString('zh-CN',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'}) : '从未';
+          return (enabled ?
+            '<div class="auto-sum-bar-wrap"><div class="auto-sum-bar" style="width:' + pct + '%"></div></div>' +
+            '<div style="display:flex;justify-content:space-between;font-size:11px;color:var(--text2);margin-bottom:10px">' +
+              '<span>距下次自动总结：<strong style="color:' + (remaining<=3?'var(--danger)':remaining<=Math.ceil(interval/3)?'#fdcb6e':'var(--accent)') + '">' + remaining + ' 轮</strong></span>' +
+              '<span>上次：' + lastSumStr + '</span>' +
+            '</div>'
+          : '<div style="font-size:11px;color:var(--text2);margin-bottom:10px;padding:6px 0">自动摘要已关闭，仅手动触发</div>');
+        })() +
+        '<div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">' +
+          '<div>' +
+            '<label class="form-label" style="font-size:11px">每 N 轮触发一次</label>' +
+            '<input class="form-input" type="number" id="auto-summary-interval" min="5" max="50" value="' + (j.autoSummaryInterval || rounds) + '">' +
+            '<div class="form-hint" style="font-size:10px">5~50 轮</div>' +
+          '</div>' +
+          '<div>' +
+            '<label class="form-label" style="font-size:11px">每 N 分钟触发一次</label>' +
+            '<input class="form-input" type="number" id="auto-summary-minutes" min="0" max="120" value="' + (j.autoSummaryMinutes || 0) + '">' +
+            '<div class="form-hint" style="font-size:10px">0=不启用定时</div>' +
+          '</div>' +
+        '</div>' +
+        '<button class="btn-secondary" style="width:100%;margin-top:10px;padding:9px;font-size:12px;display:flex;align-items:center;justify-content:center;gap:6px" onclick="TB._triggerManualAutoSummary()">' +
+          '<i class="fas fa-wand-magic-sparkles"></i> 立即触发一次自动总结' +
+        '</button>' +
       '</div>' +
       '<div class="form-group">' +
         '<label class="form-label"><i class="fas fa-lock" style="color:var(--accent2);margin-right:4px"></i>关键事实锁定（永不遗忘）</label>' +
@@ -6071,8 +6199,8 @@ function deleteCurrentVersion(idx) {
       return (m.role === 'ai' ? '[故事]' : '[用户]') + ' ' + m.content;
     }).join('\n\n');
     var promptMsgs = [
-      { role: 'system', content: '你是故事记忆管理器。任务：将已有摘要与最新剧情合并，输出一份完整的故事状态档案。\n\n输出格式（严格遵守）：\n【时间线】当前故事进行到什么时间\n【地点】当前场景\n【已发生关键事件】按时间顺序列出（每条一句话）\n【人物状态】各主要人物当前的态度、关系、状况\n【悬念/伏笔】尚未解决的冲突或线索\n\n要求：总字数200~300字，客观记录不加评论，不遗漏重要信息。' },
-      { role: 'user', content: (prevSummary ? '已有摘要：\n' + prevSummary + '\n\n---\n\n' : '') + '最新对话内容：\n\n' + chatText }
+      { role: 'system', content: '你是故事记录员。任务：将下方最新对话提炼成一条简短记录，追加到故事档案中。\n\n输出格式（严格遵守，只输出这一条记录，不要输出其他任何内容）：\n【第N段】时间/地点：……；关键事件：……；人物变化：……；悬念：……\n\n要求：100字以内，客观记录，不加评论。' },
+      { role: 'user', content: '当前档案共 ' + (prevSummary ? prevSummary.split('\n').filter(function(l){return l.trim();}).length : 0) + ' 条记录。\n\n最新对话内容：\n\n' + chatText + '\n\n请只输出新追加的这一条记录。' }
     ];
     var url = api.url.replace(/\/$/, '') + '/chat/completions';
     fetch(url, {
@@ -6085,8 +6213,16 @@ function deleteCurrentVersion(idx) {
     }).then(function (data) {
       var result = data.choices && data.choices[0] && data.choices[0].message && data.choices[0].message.content;
       if (!result) throw new Error('无返回内容');
-      if (summaryEl) summaryEl.value = result.trim();
-      tbToast('摘要生成成功');
+      var trimmed = result.trim();
+      // 追加模式：旧内容保留，新记录追加到末尾
+      var appended = (prevSummary ? prevSummary.trim() + '\n' : '') + trimmed;
+      if (summaryEl) summaryEl.value = appended;
+      j.memorySummary = appended;
+      j.lastAutoSummaryAt = new Date().toISOString();
+      j.updatedAt = new Date().toISOString();
+      _saveJourneys();
+      _updateMemoryBadge();
+      tbToast('摘要生成成功，已追加到长期记忆');
     }).catch(function (e) {
       tbToast('摘要生成失败：' + e.message);
     }).finally(function () {
@@ -6314,6 +6450,36 @@ function genNovelSummary() {
     tbToast(j.useNovelSummary ? '已启用梗概模式' : '已关闭梗概模式');
   }
   // 保存记忆（从modal-memory关闭时）
+  function _toggleAutoSummary() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    j.autoSummaryEnabled = (j.autoSummaryEnabled === false) ? true : false;
+    _saveJourneys();
+    // 更新开关UI
+    var toggle = document.getElementById('auto-sum-toggle');
+    var label = document.getElementById('auto-sum-status-label');
+    if (toggle) {
+      toggle.style.background = j.autoSummaryEnabled ? 'var(--success)' : 'var(--border)';
+      var dot = toggle.querySelector('div');
+      if (dot) { dot.style.left = j.autoSummaryEnabled ? '' : '2px'; dot.style.right = j.autoSummaryEnabled ? '2px' : ''; }
+    }
+    if (label) { label.textContent = j.autoSummaryEnabled ? '已启用' : '已关闭'; label.style.color = j.autoSummaryEnabled ? 'var(--success)' : 'var(--text2)'; }
+    if (j.autoSummaryEnabled) { _startTimedAutoSummary(); } else { _stopTimedAutoSummary(); }
+    _updateMemoryBadge();
+    tbToast(j.autoSummaryEnabled ? '✅ 自动摘要已开启' : '⏸ 自动摘要已关闭');
+  }
+
+  function _triggerManualAutoSummary() {
+    var j = _getJourney(_curJourneyId);
+    if (!j) return;
+    var api = _getActiveApi();
+    if (!api || !api.url || !api.key) { tbToast('请先配置API'); return; }
+    var histMsgs = (j.messages || []).filter(function (m) { return !m.isTimeMark; });
+    if (histMsgs.length < 4) { tbToast('对话内容太少，无需总结'); return; }
+    tbToast('⏳ 正在生成摘要...');
+    _autoSummarize(j);
+  }
+
   function _saveMemoryFromModal() {
     var j = _getJourney(_curJourneyId);
     if (!j) return;
@@ -6323,6 +6489,12 @@ function genNovelSummary() {
     if (roundsEl) j.contextRounds = Math.max(1, Math.min(MAX_CONTEXT_ROUNDS, parseInt(roundsEl.value) || 20));
     var autoIntervalEl = document.getElementById('auto-summary-interval');
     if (autoIntervalEl) j.autoSummaryInterval = Math.max(5, Math.min(50, parseInt(autoIntervalEl.value) || j.contextRounds || 20));
+    var autoMinutesEl = document.getElementById('auto-summary-minutes');
+    if (autoMinutesEl) {
+      j.autoSummaryMinutes = Math.max(0, Math.min(120, parseInt(autoMinutesEl.value) || 0));
+      // 重启定时器以应用新间隔
+      _startTimedAutoSummary();
+    }
     if (summaryEl) j.memorySummary = summaryEl.value.trim();
     var displayLimitEl = document.getElementById('display-msg-limit');
     if (displayLimitEl) j.displayMsgLimit = Math.max(0, Math.min(500, parseInt(displayLimitEl.value) || 0));
@@ -6331,7 +6503,7 @@ function genNovelSummary() {
     if (novelSummaryEl) j.novelSummary = novelSummaryEl.value.trim();
     j.updatedAt = new Date().toISOString();
     _saveJourneys();
-    // 静默保存，不打扰用户
+    _updateMemoryBadge(); // 设置变更后立即刷新徽章
   }
 
   // ── 旅途选项 ──
@@ -10625,6 +10797,9 @@ function _initPhraseManageDrag() {
     closeOnboard: closeOnboard,
     openMemoryModal: openMemoryModal,
     aiSummarize: aiSummarize,
+    _toggleAutoSummary: _toggleAutoSummary,
+    _triggerManualAutoSummary: _triggerManualAutoSummary,
+    _syncChatLayout: _syncChatLayout,
     fetchModels: fetchModels,
     selectModel: selectModel,
     filterModels: filterModels,
@@ -11458,6 +11633,18 @@ document.addEventListener('DOMContentLoaded', function () {
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',_init);
   else _init();
 })();
+// ── visualViewport 监听：键盘弹起/收起时实时修正布局 ──
+(function(){
+  function _onVVResize(){
+    // 只在聊天页激活时处理
+    if (!document.getElementById('pg-chat') || !document.getElementById('pg-chat').classList.contains('act')) return;
+    if (typeof TB !== 'undefined' && TB._syncChatLayout) TB._syncChatLayout();
+  }
+  if (window.visualViewport) {
+    window.visualViewport.addEventListener('resize', _onVVResize);
+    window.visualViewport.addEventListener('scroll', _onVVResize);
+  } else {
+    window.addEventListener('resize', _onVVResize);
+  }
+})();
 </script>
-</body>
-</html>
